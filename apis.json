@@ -1,0 +1,70 @@
+{
+    "name": "ArangoDB",
+    "description": "ArangoDB is an easy to use mostly memory, high performance, open source NoSQL database with a unique combination of features like graph & geo algorithms.",
+    "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/18684-arangodb.jpg",
+    "tags": [
+        "api service provider",
+        "databases",
+        "have api",
+        "nosql"
+    ],
+    "created": "2019-12-19",
+    "modified": "2019-12-19",
+    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/arangodb\/master\/apis.json",
+    "specificationVersion": "0.14",
+    "apis": [
+        {
+            "name": "ArangoDB",
+            "description": null,
+            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/18684-arangodb.jpg",
+            "humanURL": "https:\/\/www.arangodb.com\/",
+            "baseURL": "",
+            "tags": [],
+            "properties": [
+                {
+                    "type": "x-openapi",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/arangodb-openapi.json"
+                },
+                {
+                    "type": "x-postman-collecction",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/arangodb-postman-collection.json"
+                }
+            ]
+        }
+    ],
+    "include": [],
+    "x-common": [
+        {
+            "type": "Blog",
+            "url": "https:\/\/www.arangodb.com\/blog\/"
+        },
+        {
+            "type": "Blog RSS",
+            "url": "https:\/\/www.arangodb.com\/feed\/"
+        },
+        {
+            "type": "Crunchbase",
+            "url": "https:\/\/crunchbase.com\/organization\/arangodb-gmbh"
+        },
+        {
+            "type": "Email",
+            "url": "info@arangodb.com"
+        },
+        {
+            "type": "Github",
+            "url": "https:\/\/github.com\/arangodb"
+        },
+        {
+            "type": "Road Map",
+            "url": "https:\/\/www.arangodb.com\/roadmap\/"
+        },
+        {
+            "type": "Twitter",
+            "url": "https:\/\/twitter.com\/arangodb"
+        },
+        {
+            "type": "Website",
+            "url": "https:\/\/www.arangodb.com\/"
+        }
+    ]
+}
