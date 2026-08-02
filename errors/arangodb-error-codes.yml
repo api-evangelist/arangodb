@@ -1,0 +1,1895 @@
+generated: '2026-08-02'
+method: searched
+source: https://raw.githubusercontent.com/arangodb/arangodb/v3.12.10/lib/Basics/errors.dat
+docs: https://docs.arango.ai/arangodb/stable/develop/error-codes/
+format: arangodb-errornum
+description: 'ArangoDB''s first-party error registry. Every error reply from an ArangoDB server carries
+  an HTTP status in `code`, `error: true`, an ArangoDB-specific numeric `errorNum`, and a human-readable
+  `errorMessage`. `errorNum` is the stable identifier clients should branch on; the message text can vary
+  for the same error kind. Harvested verbatim from lib/Basics/errors.dat in the arangodb/arangodb source
+  tree at tag v3.12.10, which is the same source the documentation''s error-codes page is generated from.'
+envelope:
+  media_type: application/json
+  fields:
+  - field: error
+    type: boolean
+    note: always true on an error reply
+  - field: code
+    type: integer
+    note: HTTP status code, repeated in the body
+  - field: errorNum
+    type: integer
+    note: ArangoDB error number — the stable identifier
+  - field: errorMessage
+    type: string
+    note: human-readable message; may be overridden with more detail
+  example: '{"code":401,"error":true,"errorNum":11,"errorMessage":"not authorized to execute this request"}'
+categories:
+- General errors
+- HTTP error status codes
+- HTTP processing errors
+- Internal ArangoDB storage errors
+- External ArangoDB storage errors
+- General ArangoDB storage errors
+- Checked ArangoDB storage errors
+- ArangoDB replication errors
+- ArangoDB cluster errors
+- ArangoDB query errors
+- AQL user function errors
+- AQL query registry errors
+- ArangoDB cursor errors
+- ArangoDB schema validation errors
+- ArangoDB transaction errors
+- User management errors
+- Service management errors (legacy)
+- Task errors
+- Graph / traversal errors
+- Session errors
+- Simple Client errors
+- internal AQL errors
+- Foxx management errors
+- JavaScript module loader errors
+- Enterprise Edition errors
+- Agency errors
+- Supervision errors
+- Scheduler errors
+- Maintenance errors
+- Backup/Restore errors
+- Plan Analyzers errors
+- Licensing
+error_count: 348
+errors:
+- name: ERROR_NO_ERROR
+  code: 0
+  message: no error
+  description: No error has occurred.
+  category: General errors
+- name: ERROR_FAILED
+  code: 1
+  message: failed
+  description: Will be raised when a general error occurred.
+  category: General errors
+- name: ERROR_SYS_ERROR
+  code: 2
+  message: system error
+  description: Will be raised when operating system error occurred.
+  category: General errors
+- name: ERROR_OUT_OF_MEMORY
+  code: 3
+  message: out of memory
+  description: Will be raised when there is a memory shortage.
+  category: General errors
+- name: ERROR_INTERNAL
+  code: 4
+  message: internal error
+  description: Will be raised when an internal error occurred.
+  category: General errors
+- name: ERROR_ILLEGAL_NUMBER
+  code: 5
+  message: illegal number
+  description: Will be raised when an illegal representation of a number was given.
+  category: General errors
+- name: ERROR_NUMERIC_OVERFLOW
+  code: 6
+  message: numeric overflow
+  description: Will be raised when a numeric overflow occurred.
+  category: General errors
+- name: ERROR_ILLEGAL_OPTION
+  code: 7
+  message: illegal option
+  description: Will be raised when an unknown option was supplied by the user.
+  category: General errors
+- name: ERROR_DEAD_PID
+  code: 8
+  message: dead process identifier
+  description: Will be raised when a PID without a living process was found.
+  category: General errors
+- name: ERROR_NOT_IMPLEMENTED
+  code: 9
+  message: not implemented
+  description: Will be raised when hitting an unimplemented feature.
+  category: General errors
+- name: ERROR_BAD_PARAMETER
+  code: 10
+  message: bad parameter
+  description: Will be raised when the parameter does not fulfill the requirements.
+  category: General errors
+- name: ERROR_FORBIDDEN
+  code: 11
+  message: forbidden
+  description: Will be raised when you are missing permission for the operation.
+  category: General errors
+- name: ERROR_CORRUPTED_CSV
+  code: 13
+  message: csv is corrupt
+  description: Will be raised when encountering a corrupt csv line.
+  category: General errors
+- name: ERROR_FILE_NOT_FOUND
+  code: 14
+  message: file not found
+  description: Will be raised when a file is not found.
+  category: General errors
+- name: ERROR_CANNOT_WRITE_FILE
+  code: 15
+  message: cannot write file
+  description: Will be raised when a file cannot be written.
+  category: General errors
+- name: ERROR_CANNOT_OVERWRITE_FILE
+  code: 16
+  message: cannot overwrite file
+  description: Will be raised when an attempt is made to overwrite an existing file.
+  category: General errors
+- name: ERROR_TYPE_ERROR
+  code: 17
+  message: type error
+  description: Will be raised when a type error is encountered.
+  category: General errors
+- name: ERROR_LOCK_TIMEOUT
+  code: 18
+  message: lock timeout
+  description: Will be raised when there's a timeout waiting for a lock.
+  category: General errors
+- name: ERROR_CANNOT_CREATE_DIRECTORY
+  code: 19
+  message: cannot create directory
+  description: Will be raised when an attempt to create a directory fails.
+  category: General errors
+- name: ERROR_CANNOT_CREATE_TEMP_FILE
+  code: 20
+  message: cannot create temporary file
+  description: Will be raised when an attempt to create a temporary file fails.
+  category: General errors
+- name: ERROR_REQUEST_CANCELED
+  code: 21
+  message: canceled request
+  description: Will be raised when a request is canceled by the user.
+  category: General errors
+- name: ERROR_DEBUG
+  code: 22
+  message: intentional debug error
+  description: Will be raised intentionally during debugging.
+  category: General errors
+- name: ERROR_IP_ADDRESS_INVALID
+  code: 25
+  message: IP address is invalid
+  description: Will be raised when the structure of an IP address is invalid.
+  category: General errors
+- name: ERROR_FILE_EXISTS
+  code: 27
+  message: file exists
+  description: Will be raised when a file already exists.
+  category: General errors
+- name: ERROR_LOCKED
+  code: 28
+  message: locked
+  description: Will be raised when a resource or an operation is locked.
+  category: General errors
+- name: ERROR_DEADLOCK
+  code: 29
+  message: deadlock detected
+  description: Will be raised when a deadlock is detected when accessing collections.
+  category: General errors
+- name: ERROR_SHUTTING_DOWN
+  code: 30
+  message: shutdown in progress
+  description: Will be raised when a call cannot succeed because a server shutdown is already in progress.
+  category: General errors
+- name: ERROR_ONLY_ENTERPRISE
+  code: 31
+  message: only enterprise version
+  description: Will be raised when a feature is requested that is implemented in the non-public enterprise
+    code and thus not available in custom builds.
+  category: General errors
+- name: ERROR_RESOURCE_LIMIT
+  code: 32
+  message: resource limit exceeded
+  description: Will be raised when the resources used by an operation exceed the configured maximum value.
+  category: General errors
+- name: ERROR_ARANGO_ICU_ERROR
+  code: 33
+  message: 'icu error: %s'
+  description: will be raised if ICU operations failed.
+  category: General errors
+- name: ERROR_CANNOT_READ_FILE
+  code: 34
+  message: cannot read file
+  description: Will be raised when a file cannot be read.
+  category: General errors
+- name: ERROR_INCOMPATIBLE_VERSION
+  code: 35
+  message: incompatible server version
+  description: Will be raised when a server is running an incompatible version of ArangoDB.
+  category: General errors
+- name: ERROR_DISABLED
+  code: 36
+  message: disabled
+  description: Will be raised when a requested resource is not enabled.
+  category: General errors
+- name: ERROR_MALFORMED_JSON
+  code: 37
+  message: malformed json
+  description: Will be raised when a JSON string could not be parsed.
+  category: General errors
+- name: ERROR_STARTING_UP
+  code: 38
+  message: startup ongoing
+  description: Will be raised when a call cannot succeed because the server startup phase is still in
+    progress.
+  category: General errors
+- name: ERROR_DESERIALIZE
+  code: 39
+  message: error during deserialization
+  description: Will be raised when a data structure cannot be deserialized, e.g. because the input is
+    invalid.
+  category: General errors
+- name: ERROR_END_OF_FILE
+  code: 40
+  message: reached end of file
+  description: Will be raised when a read operation reaches the end of the file.
+  category: General errors
+- name: ERROR_HTTP_BAD_PARAMETER
+  code: 400
+  message: bad parameter
+  description: Will be raised when the HTTP request does not fulfill the requirements.
+  category: HTTP error status codes
+- name: ERROR_HTTP_UNAUTHORIZED
+  code: 401
+  message: unauthorized
+  description: Will be raised when authorization is required but the user is not authorized.
+  category: HTTP error status codes
+- name: ERROR_HTTP_FORBIDDEN
+  code: 403
+  message: forbidden
+  description: Will be raised when the operation is forbidden.
+  category: HTTP error status codes
+- name: ERROR_HTTP_NOT_FOUND
+  code: 404
+  message: not found
+  description: Will be raised when an URI is unknown.
+  category: HTTP error status codes
+- name: ERROR_HTTP_METHOD_NOT_ALLOWED
+  code: 405
+  message: method not supported
+  description: Will be raised when an unsupported HTTP method is used for an operation.
+  category: HTTP error status codes
+- name: ERROR_HTTP_NOT_ACCEPTABLE
+  code: 406
+  message: request not acceptable
+  description: Will be raised when an unsupported HTTP content type is used for an operation, or if a
+    request is not acceptable for a leader or follower.
+  category: HTTP error status codes
+- name: ERROR_HTTP_REQUEST_TIMEOUT
+  code: 408
+  message: request timeout
+  description: Will be raised when a timeout occurred.
+  category: HTTP error status codes
+- name: ERROR_HTTP_CONFLICT
+  code: 409
+  message: conflict
+  description: Will be raised when a conflict occurs in an HTTP operation.
+  category: HTTP error status codes
+- name: ERROR_HTTP_GONE
+  code: 410
+  message: content permanently deleted
+  description: Will be raised when the requested content has been permanently deleted.
+  category: HTTP error status codes
+- name: ERROR_HTTP_PRECONDITION_FAILED
+  code: 412
+  message: precondition failed
+  description: Will be raised when a precondition for an HTTP request is not met.
+  category: HTTP error status codes
+- name: ERROR_HTTP_ENHANCE_YOUR_CALM
+  code: 420
+  message: enhance your calm
+  description: Will be raised when too many requests were sent to a rate-limited API.
+  category: HTTP error status codes
+- name: ERROR_HTTP_SERVER_ERROR
+  code: 500
+  message: internal server error
+  description: Will be raised when an internal server is encountered.
+  category: HTTP error status codes
+- name: ERROR_HTTP_NOT_IMPLEMENTED
+  code: 501
+  message: not implemented
+  description: Will be raised when an API is called this is not implemented in general, or not implemented
+    for the current setup.
+  category: HTTP error status codes
+- name: ERROR_HTTP_SERVICE_UNAVAILABLE
+  code: 503
+  message: service unavailable
+  description: Will be raised when a service is temporarily unavailable.
+  category: HTTP error status codes
+- name: ERROR_HTTP_GATEWAY_TIMEOUT
+  code: 504
+  message: gateway timeout
+  description: Will be raised when a service contacted by ArangoDB does not respond in a timely manner.
+  category: HTTP error status codes
+- name: ERROR_HTTP_CORRUPTED_JSON
+  code: 600
+  message: invalid JSON object
+  description: Will be raised when a string representation of a JSON object is corrupt.
+  category: HTTP processing errors
+- name: ERROR_HTTP_SUPERFLUOUS_SUFFICES
+  code: 601
+  message: superfluous URL suffices
+  description: Will be raised when the URL contains superfluous suffices.
+  category: HTTP processing errors
+- name: ERROR_ARANGO_ILLEGAL_STATE
+  code: 1000
+  message: illegal state
+  description: Internal error that will be raised when the datafile is not in the required state.
+  category: Internal ArangoDB storage errors
+- name: ERROR_ARANGO_READ_ONLY
+  code: 1004
+  message: read only
+  description: Internal error that will be raised when trying to write to a read-only datafile or collection.
+  category: Internal ArangoDB storage errors
+- name: ERROR_ARANGO_DUPLICATE_IDENTIFIER
+  code: 1005
+  message: duplicate identifier
+  description: Internal error that will be raised when a identifier duplicate is detected.
+  category: Internal ArangoDB storage errors
+- name: ERROR_ARANGO_CORRUPTED_DATAFILE
+  code: 1100
+  message: corrupted datafile
+  description: Will be raised when a corruption is detected in a datafile.
+  category: External ArangoDB storage errors
+- name: ERROR_ARANGO_ILLEGAL_PARAMETER_FILE
+  code: 1101
+  message: illegal or unreadable parameter file
+  description: Will be raised if a parameter file is corrupted or cannot be read.
+  category: External ArangoDB storage errors
+- name: ERROR_ARANGO_CORRUPTED_COLLECTION
+  code: 1102
+  message: corrupted collection
+  description: Will be raised when a collection contains one or more corrupted data files.
+  category: External ArangoDB storage errors
+- name: ERROR_ARANGO_FILESYSTEM_FULL
+  code: 1104
+  message: filesystem full
+  description: Will be raised when the filesystem is full.
+  category: External ArangoDB storage errors
+- name: ERROR_ARANGO_DATADIR_LOCKED
+  code: 1107
+  message: database directory is locked
+  description: Will be raised when the database directory is locked by a different process.
+  category: External ArangoDB storage errors
+- name: ERROR_ARANGO_CONFLICT
+  code: 1200
+  message: conflict
+  description: Will be raised when updating or deleting a document and a conflict has been detected.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_NOT_FOUND
+  code: 1202
+  message: document not found
+  description: Will be raised when a document with a given identifier is unknown.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DATA_SOURCE_NOT_FOUND
+  code: 1203
+  message: collection or view not found
+  description: Will be raised when a collection or View with the given identifier or name is unknown.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_COLLECTION_PARAMETER_MISSING
+  code: 1204
+  message: parameter 'collection' not found
+  description: Will be raised when the collection parameter is missing.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_HANDLE_BAD
+  code: 1205
+  message: illegal document identifier
+  description: Will be raised when a document identifier is corrupt.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DUPLICATE_NAME
+  code: 1207
+  message: duplicate name
+  description: Will be raised when a name duplicate is detected.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_ILLEGAL_NAME
+  code: 1208
+  message: illegal name
+  description: Will be raised when the name of a database, collection, View, Analyzer, index, graph, or
+    other object is invalid, respectively, when it is against the naming constraints.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_NO_INDEX
+  code: 1209
+  message: no suitable index known
+  description: Will be raised when no suitable index for the query is known.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_UNIQUE_CONSTRAINT_VIOLATED
+  code: 1210
+  message: unique constraint violated
+  description: Will be raised when there is a unique constraint violation.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_INDEX_NOT_FOUND
+  code: 1212
+  message: index not found
+  description: Will be raised when an index with a given identifier is unknown.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_CROSS_COLLECTION_REQUEST
+  code: 1213
+  message: cross collection request not allowed
+  description: Will be raised when a cross-collection is requested.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_INDEX_HANDLE_BAD
+  code: 1214
+  message: illegal index identifier
+  description: Will be raised when a index identifier is corrupt.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_TOO_LARGE
+  code: 1216
+  message: document too large
+  description: Will be raised when the document cannot fit into any datafile because of it is too large.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_COLLECTION_TYPE_INVALID
+  code: 1218
+  message: collection type invalid
+  description: Will be raised when an invalid collection type is used in a request.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_ATTRIBUTE_PARSER_FAILED
+  code: 1220
+  message: parsing attribute name definition failed
+  description: Will be raised when parsing an attribute name definition failed.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_KEY_BAD
+  code: 1221
+  message: illegal document key
+  description: Will be raised when a document key is corrupt.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_KEY_UNEXPECTED
+  code: 1222
+  message: unexpected document key
+  description: Will be raised when a user-defined document key is supplied for collections with auto key
+    generation.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DATADIR_NOT_WRITABLE
+  code: 1224
+  message: server database directory not writable
+  description: Will be raised when the server's database directory is not writable for the current user.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_OUT_OF_KEYS
+  code: 1225
+  message: out of keys
+  description: Will be raised when a key generator runs out of keys.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_KEY_MISSING
+  code: 1226
+  message: missing document key
+  description: Will be raised when a document key is missing.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_TYPE_INVALID
+  code: 1227
+  message: invalid document type
+  description: Will be raised when there is an attempt to create a document with an invalid type.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DATABASE_NOT_FOUND
+  code: 1228
+  message: database not found
+  description: Will be raised when a non-existing database is accessed.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DATABASE_NAME_INVALID
+  code: 1229
+  message: database name invalid
+  description: Will be raised when an invalid database name is used.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_USE_SYSTEM_DATABASE
+  code: 1230
+  message: operation only allowed in system database
+  description: Will be raised when an operation is requested in a database other than the system database.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_INVALID_KEY_GENERATOR
+  code: 1232
+  message: invalid key generator
+  description: Will be raised when an invalid key generator description is used.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_INVALID_EDGE_ATTRIBUTE
+  code: 1233
+  message: 'expecting both `_from` and `_to` attributes to be defined in the edge document and have the
+    format `<collectionName>/<vertexKey>` '
+  description: will be raised when the _from or _to values of an edge are undefined or contain an invalid
+    value.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_INDEX_CREATION_FAILED
+  code: 1235
+  message: index creation failed
+  description: Will be raised when an attempt to create an index has failed.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_COLLECTION_TYPE_MISMATCH
+  code: 1237
+  message: collection type mismatch
+  description: Will be raised when a collection has a different type from what has been expected.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_COLLECTION_NOT_LOADED
+  code: 1238
+  message: collection not loaded
+  description: Will be raised when a collection is accessed that is not yet loaded.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_DOCUMENT_REV_BAD
+  code: 1239
+  message: illegal document revision
+  description: Will be raised when a document revision is corrupt or is missing where needed.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_INCOMPLETE_READ
+  code: 1240
+  message: incomplete read
+  description: Will be raised by the storage engine when a read cannot be completed.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_OLD_ROCKSDB_FORMAT
+  code: 1241
+  message: not supported by old legacy data format
+  description: Will be raised by the storage engine when an operation cannot be performed because the
+    old, deprecated, little endian key encoding format is still used and an operation is tried which is
+    not supported by this format.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_INDEX_HAS_LEGACY_SORTED_KEYS
+  code: 1242
+  message: an index with legacy sorted keys has been found
+  description: Will be raised if the VPackSortMigration has detected an index, which is using the old
+    legacy sorting order and would be corrupt if the database is migrated to the new, correct sorting
+    order.
+  category: General ArangoDB storage errors
+- name: ERROR_ARANGO_EMPTY_DATADIR
+  code: 1301
+  message: server database directory is empty
+  description: Will be raised when encountering an empty server database directory.
+  category: Checked ArangoDB storage errors
+- name: ERROR_ARANGO_TRY_AGAIN
+  code: 1302
+  message: operation should be tried again
+  description: Will be raised when an operation should be retried.
+  category: Checked ArangoDB storage errors
+- name: ERROR_ARANGO_BUSY
+  code: 1303
+  message: engine is busy
+  description: Will be raised when storage engine is busy.
+  category: Checked ArangoDB storage errors
+- name: ERROR_ARANGO_MERGE_IN_PROGRESS
+  code: 1304
+  message: merge in progress
+  description: Will be raised when storage engine has a datafile merge in progress and cannot complete
+    the operation.
+  category: Checked ArangoDB storage errors
+- name: ERROR_ARANGO_IO_ERROR
+  code: 1305
+  message: storage engine I/O error
+  description: Will be raised when storage engine encounters an I/O error.
+  category: Checked ArangoDB storage errors
+- name: ERROR_REPLICATION_NO_RESPONSE
+  code: 1400
+  message: no response
+  description: Will be raised when the replication applier does not receive any or an incomplete response
+    from the leader.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_INVALID_RESPONSE
+  code: 1401
+  message: invalid response
+  description: Will be raised when the replication applier receives an invalid response from the leader.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_LEADER_ERROR
+  code: 1402
+  message: leader error
+  description: Will be raised when the replication applier receives a server error from the leader.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_LEADER_INCOMPATIBLE
+  code: 1403
+  message: leader incompatible
+  description: Will be raised when the replication applier connects to a leader that has an incompatible
+    version.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_LEADER_CHANGE
+  code: 1404
+  message: leader change
+  description: Will be raised when the replication applier connects to a different leader than before.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_LOOP
+  code: 1405
+  message: loop detected
+  description: Will be raised when the replication applier is asked to connect to itself for replication.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_UNEXPECTED_MARKER
+  code: 1406
+  message: unexpected marker
+  description: Will be raised when an unexpected marker is found in the replication log stream.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_INVALID_APPLIER_STATE
+  code: 1407
+  message: invalid applier state
+  description: Will be raised when an invalid replication applier state file is found.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_UNEXPECTED_TRANSACTION
+  code: 1408
+  message: invalid transaction
+  description: Will be raised when an unexpected transaction id is found.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_SHARD_SYNC_ATTEMPT_TIMEOUT_EXCEEDED
+  code: 1409
+  message: shard synchronization attempt timeout exceeded
+  description: Will be raised when the synchronization of a shard takes longer than the configured timeout.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_INVALID_APPLIER_CONFIGURATION
+  code: 1410
+  message: invalid replication applier configuration
+  description: Will be raised when the configuration for the replication applier is invalid.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_RUNNING
+  code: 1411
+  message: cannot perform operation while applier is running
+  description: Will be raised when there is an attempt to perform an operation while the replication applier
+    is running.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_APPLIER_STOPPED
+  code: 1412
+  message: replication stopped
+  description: Special error code used to indicate the replication applier was stopped by a user.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_NO_START_TICK
+  code: 1413
+  message: no start tick
+  description: Will be raised when the replication applier is started without a known start tick value.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_START_TICK_NOT_PRESENT
+  code: 1414
+  message: start tick not present
+  description: Will be raised when the replication applier fetches data using a start tick, but that start
+    tick is not present on the logger server anymore.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_WRONG_CHECKSUM
+  code: 1416
+  message: wrong checksum
+  description: Will be raised when a new born follower submits a wrong checksum
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_SHARD_NONEMPTY
+  code: 1417
+  message: shard not empty
+  description: Will be raised when a shard is not empty and the follower tries a shortcut
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_NOT_FOUND
+  code: 1418
+  message: replicated log {} not found
+  description: Will be raised when a specific replicated log is not found
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_NOT_THE_LEADER
+  code: 1419
+  message: not the log leader
+  description: Will be raised when a participant of a replicated log is ordered to do something only the
+    leader can do
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_NOT_A_FOLLOWER
+  code: 1420
+  message: not a log follower
+  description: Will be raised when a participant of a replicated log is ordered to do something only a
+    follower can do
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_APPEND_ENTRIES_REJECTED
+  code: 1421
+  message: follower rejected append entries request
+  description: Will be raised when a follower of a replicated log rejects an append entries request
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_LEADER_RESIGNED
+  code: 1422
+  message: a resigned leader instance rejected a request
+  description: Will be raised when a leader instance of a replicated log rejects a request because it
+    just resigned. This can also happen if the term changes (due to a configuration change), even if the
+    leader stays the same.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_FOLLOWER_RESIGNED
+  code: 1423
+  message: a resigned follower instance rejected a request
+  description: Will be raised when a follower instance of a replicated log rejects a request because it
+    just resigned. This can also happen if the term changes (due to a configuration change), even if the
+    server stays a follower.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_PARTICIPANT_GONE
+  code: 1424
+  message: the replicated log of the participant is gone
+  description: Will be raised when a participant instance of a replicated log is no longer available.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_INVALID_TERM
+  code: 1425
+  message: an invalid term was given
+  description: Will be raised when a participant tries to change its term but found a invalid new term.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_UNCONFIGURED
+  code: 1426
+  message: log participant unconfigured
+  description: Will be raised when a participant is currently unconfigured, i.e. neither a leader nor
+    a follower.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_STATE_NOT_FOUND
+  code: 1427
+  message: replicated state {id:} of type {type:} not found
+  description: Will be raised when a specific replicated state was not found.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_STATE_NOT_AVAILABLE
+  code: 1428
+  message: replicated state {id:} of type {type:} is unavailable
+  description: Will be raised when a specific replicated state was accessed but is not (yet) available.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_WRITE_CONCERN_NOT_FULFILLED
+  code: 1429
+  message: not enough replicas for the configured write-concern are present
+  description: Will be raised when there are not enough replicas of a shard available to fulfill the write-concern
+    for a write operation.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_LOG_SUBSEQUENT_FAULT
+  code: 1430
+  message: operation aborted because a previous operation failed
+  description: Will be raised when an operation is aborted due to a cascading failure.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_STATE_IMPLEMENTATION_NOT_FOUND
+  code: 1431
+  message: replicated state type {type:} is unavailable
+  description: Will be raised when a specific replicated state type was used but is not (yet) available.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_WAL_ERROR
+  code: 1432
+  message: error in the replicated WAL subsystem
+  description: Will be raised when an error occurred in the replicated WAL subsystem
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_WAL_INVALID_FILE
+  code: 1433
+  message: replicated WAL {file:} has an invalid or missing file header
+  description: Will be raised when a log file has an invalid or missing file header.
+  category: ArangoDB replication errors
+- name: ERROR_REPLICATION_REPLICATED_WAL_CORRUPT
+  code: 1434
+  message: replicated WAL {file:} is corrupt
+  description: Will be raised when a log file has an invalid size or reading from a log file produced
+    unexpected data.
+  category: ArangoDB replication errors
+- name: ERROR_CLUSTER_NOT_FOLLOWER
+  code: 1446
+  message: not a follower
+  description: Will be raised when an operation is sent to a non-following server.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_FOLLOWER_TRANSACTION_COMMIT_PERFORMED
+  code: 1447
+  message: follower transaction intermediate commit already performed
+  description: Will be raised when a follower transaction has already performed an intermediate commit
+    and must be rolled back.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_CREATE_COLLECTION_PRECONDITION_FAILED
+  code: 1448
+  message: creating collection failed due to precondition
+  description: Will be raised when updating the plan on collection creation failed.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_SERVER_UNKNOWN
+  code: 1449
+  message: got a request from an unknown server
+  description: Will be raised on some occasions when one server gets a request from another, which has
+    not (yet?) been made known via the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_TOO_MANY_SHARDS
+  code: 1450
+  message: too many shards
+  description: Will be raised when the number of shards for a collection is higher than allowed.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_CREATE_COLLECTION_IN_PLAN
+  code: 1454
+  message: could not create collection in plan
+  description: Will be raised when a Coordinator in a cluster cannot create an entry for a new collection
+    in the Plan hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_CREATE_COLLECTION
+  code: 1456
+  message: could not create collection
+  description: Will be raised when a Coordinator in a cluster notices that some DB-Servers report problems
+    when creating shards for a new collection.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_TIMEOUT
+  code: 1457
+  message: timeout in cluster operation
+  description: Will be raised when a Coordinator in a cluster runs into a timeout for some cluster wide
+    operation.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_REMOVE_COLLECTION_IN_PLAN
+  code: 1458
+  message: could not remove collection from plan
+  description: Will be raised when a Coordinator in a cluster cannot remove an entry for a collection
+    in the Plan hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_CREATE_DATABASE_IN_PLAN
+  code: 1460
+  message: could not create database in plan
+  description: Will be raised when a Coordinator in a cluster cannot create an entry for a new database
+    in the Plan hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_CREATE_DATABASE
+  code: 1461
+  message: could not create database
+  description: Will be raised when a Coordinator in a cluster notices that some DB-Servers report problems
+    when creating databases for a new cluster wide database.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_REMOVE_DATABASE_IN_PLAN
+  code: 1462
+  message: could not remove database from plan
+  description: Will be raised when a Coordinator in a cluster cannot remove an entry for a database in
+    the Plan hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_REMOVE_DATABASE_IN_CURRENT
+  code: 1463
+  message: could not remove database from current
+  description: Will be raised when a Coordinator in a cluster cannot remove an entry for a database in
+    the Current hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_SHARD_GONE
+  code: 1464
+  message: no responsible shard found
+  description: Will be raised when a Coordinator in a cluster cannot determine the shard that is responsible
+    for a given document.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_CONNECTION_LOST
+  code: 1465
+  message: cluster internal HTTP connection broken
+  description: Will be raised when a Coordinator in a cluster loses an HTTP connection to a DB-Server
+    in the cluster whilst transferring data.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_MUST_NOT_SPECIFY_KEY
+  code: 1466
+  message: must not specify _key for this collection
+  description: Will be raised when a Coordinator in a cluster finds that the _key attribute was specified
+    in a sharded collection the uses not only _key as sharding attribute.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_GOT_CONTRADICTING_ANSWERS
+  code: 1467
+  message: got contradicting answers from different shards
+  description: Will be raised if a Coordinator in a cluster gets conflicting results from different shards,
+    which should never happen.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_NOT_ALL_SHARDING_ATTRIBUTES_GIVEN
+  code: 1468
+  message: not all sharding attributes given
+  description: Will be raised if a Coordinator tries to find out which shard is responsible for a partial
+    document, but cannot do this because not all sharding attributes are specified.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_MUST_NOT_CHANGE_SHARDING_ATTRIBUTES
+  code: 1469
+  message: must not change the value of a shard key attribute
+  description: Will be raised if there is an attempt to update the value of a shard attribute.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_UNSUPPORTED
+  code: 1470
+  message: unsupported operation or parameter for clusters
+  description: Will be raised when there is an attempt to carry out an operation that is not supported
+    in the context of a sharded collection.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_ONLY_ON_COORDINATOR
+  code: 1471
+  message: this operation is only valid on a coordinator in a cluster
+  description: Will be raised if there is an attempt to run a Coordinator-only operation on a different
+    type of node.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_READING_PLAN_AGENCY
+  code: 1472
+  message: error reading Plan in agency
+  description: Will be raised if a Coordinator or DB-Server cannot read the Plan in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_AQL_COMMUNICATION
+  code: 1474
+  message: error in cluster internal communication for AQL
+  description: Will be raised if the internal communication of the cluster for AQL produces an error.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_ONLY_ON_DBSERVER
+  code: 1477
+  message: this operation is only valid on a DBserver in a cluster
+  description: Will be raised if there is an attempt to run a DB-Server-only operation on a different
+    type of node.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_BACKEND_UNAVAILABLE
+  code: 1478
+  message: A cluster backend which was required for the operation could not be reached
+  description: Will be raised if a required DB-Server can't be reached.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_AQL_COLLECTION_OUT_OF_SYNC
+  code: 1481
+  message: collection/view is out of sync
+  description: Will be raised if a collection/view needed during query execution is out of sync. This
+    currently can happen when using SatelliteCollections, ArangoSearch links or inverted indexes.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_CREATE_INDEX_IN_PLAN
+  code: 1482
+  message: could not create index in plan
+  description: Will be raised when a Coordinator in a cluster cannot create an entry for a new index in
+    the Plan hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_DROP_INDEX_IN_PLAN
+  code: 1483
+  message: could not drop index in plan
+  description: Will be raised when a Coordinator in a cluster cannot remove an index from the Plan hierarchy
+    in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_CHAIN_OF_DISTRIBUTESHARDSLIKE
+  code: 1484
+  message: chain of distributeShardsLike references
+  description: Will be raised if one tries to create a collection with a distributeShardsLike attribute
+    which points to another collection that also has one.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_MUST_NOT_DROP_COLL_OTHER_DISTRIBUTESHARDSLIKE
+  code: 1485
+  message: must not drop collection while another has a distributeShardsLike attribute pointing to it
+  description: Will be raised if one tries to drop a collection to which another collection points with
+    its distributeShardsLike attribute.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_UNKNOWN_DISTRIBUTESHARDSLIKE
+  code: 1486
+  message: must not have a distributeShardsLike attribute pointing to an unknown collection
+  description: Will be raised if one tries to create a collection which points to an unknown collection
+    in its distributeShardsLike attribute.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_INSUFFICIENT_DBSERVERS
+  code: 1487
+  message: the number of current DB-Servers is lower than the requested replicationFactor/writeConcern
+  description: Will be raised if one tries to create a collection with a replicationFactor or writeConcern
+    value greater than the available number of DB-Servers.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_DROP_FOLLOWER
+  code: 1488
+  message: a follower could not be dropped in agency
+  description: Will be raised if a follower that ought to be dropped could not be dropped in the Agency
+    (under Current).
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_SHARD_LEADER_REFUSES_REPLICATION
+  code: 1489
+  message: a shard leader refuses to perform a replication operation
+  description: Will be raised if a replication operation is refused by a shard leader.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_SHARD_FOLLOWER_REFUSES_OPERATION
+  code: 1490
+  message: a shard follower refuses to perform an operation
+  description: Will be raised if a replication operation is refused by a shard follower because it is
+    coming from the wrong leader.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_SHARD_LEADER_RESIGNED
+  code: 1491
+  message: a (former) shard leader refuses to perform an operation, because it has resigned in the meantime
+  description: Will be raised if a non-replication operation is refused by a former shard leader that
+    has found out that it is no longer the leader.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_AGENCY_COMMUNICATION_FAILED
+  code: 1492
+  message: some agency operation failed
+  description: Will be raised if after various retries an Agency operation could not be performed successfully.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_LEADERSHIP_CHALLENGE_ONGOING
+  code: 1495
+  message: leadership challenge is ongoing
+  description: Will be raised when servers are currently competing for leadership, and the result is still
+    unknown.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_NOT_LEADER
+  code: 1496
+  message: not a leader
+  description: Will be raised when an operation is sent to a non-leading server.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_CREATE_VIEW_IN_PLAN
+  code: 1497
+  message: could not create view in plan
+  description: Will be raised when a Coordinator in a cluster cannot create an entry for a new View in
+    the Plan hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_VIEW_ID_EXISTS
+  code: 1498
+  message: view ID already exists
+  description: Will be raised when a Coordinator in a cluster tries to create a View and the View ID already
+    exists.
+  category: ArangoDB cluster errors
+- name: ERROR_CLUSTER_COULD_NOT_DROP_COLLECTION
+  code: 1499
+  message: could not drop collection in plan
+  description: Will be raised when a Coordinator in a cluster cannot drop a collection entry in the Plan
+    hierarchy in the Agency.
+  category: ArangoDB cluster errors
+- name: ERROR_QUERY_KILLED
+  code: 1500
+  message: query killed
+  description: Will be raised when a running query is killed by an explicit admin command.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_PARSE
+  code: 1501
+  message: '%s'
+  description: Will be raised when query is parsed and is found to be syntactically invalid.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_EMPTY
+  code: 1502
+  message: query is empty
+  description: Will be raised when an empty query is specified.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_SCRIPT
+  code: 1503
+  message: runtime error '%s'
+  description: Will be raised when a runtime error is caused by the query.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_NUMBER_OUT_OF_RANGE
+  code: 1504
+  message: number out of range
+  description: Will be raised when a number is outside the expected range.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_INVALID_GEO_VALUE
+  code: 1505
+  message: invalid geo coordinate value
+  description: Will be raised when a geo index coordinate is invalid or out of range.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_VARIABLE_NAME_INVALID
+  code: 1510
+  message: variable name '%s' has an invalid format
+  description: Will be raised when an invalid variable name is used.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_VARIABLE_REDECLARED
+  code: 1511
+  message: variable '%s' is assigned multiple times
+  description: Will be raised when a variable gets re-assigned in a query.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_VARIABLE_NAME_UNKNOWN
+  code: 1512
+  message: unknown variable '%s'
+  description: Will be raised when an unknown variable is used or the variable is undefined the context
+    it is used.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_COLLECTION_LOCK_FAILED
+  code: 1521
+  message: unable to read-lock collection %s
+  description: Will be raised when a read lock on the collection cannot be acquired.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_TOO_MANY_COLLECTIONS
+  code: 1522
+  message: too many collections/shards
+  description: Will be raised when the number of collections or shards in a query is beyond the allowed
+    value.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_TOO_MUCH_NESTING
+  code: 1524
+  message: too much nesting or too many objects
+  description: Will be raised when a query contains expressions or other constructs with too many objects
+    or that are too deeply nested.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_INVALID_OPTIONS_ATTRIBUTE
+  code: 1539
+  message: unknown/invalid OPTIONS attribute used
+  description: Will be raised when an unknown attribute name or an invalid attribute value is used inside
+    an OPTIONS clause.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_FUNCTION_NAME_UNKNOWN
+  code: 1540
+  message: usage of unknown function '%s()'
+  description: Will be raised when an undefined function is called.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_FUNCTION_ARGUMENT_NUMBER_MISMATCH
+  code: 1541
+  message: 'invalid number of arguments for function ''%s()'', expected number of arguments: minimum:
+    %d, maximum: %d'
+  description: Will be raised when the number of arguments used in a function call does not match the
+    expected number of arguments for the function.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_FUNCTION_ARGUMENT_TYPE_MISMATCH
+  code: 1542
+  message: invalid argument type in call to function '%s()'
+  description: Will be raised when the type of an argument used in a function call does not match the
+    expected argument type.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_INVALID_REGEX
+  code: 1543
+  message: invalid regex value
+  description: Will be raised when an invalid regex argument value is used in a call to a function that
+    expects a regex.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_BIND_PARAMETERS_INVALID
+  code: 1550
+  message: invalid structure of bind parameters
+  description: Will be raised when the structure of bind parameters passed has an unexpected format.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_BIND_PARAMETER_MISSING
+  code: 1551
+  message: no value specified for declared bind parameter '%s'
+  description: Will be raised when a bind parameter was declared in the query but the query is being executed
+    with no value for that parameter.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_BIND_PARAMETER_UNDECLARED
+  code: 1552
+  message: bind parameter '%s' was not declared in the query
+  description: Will be raised when a value gets specified for an undeclared bind parameter.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_BIND_PARAMETER_TYPE
+  code: 1553
+  message: bind parameter '%s' has an invalid value or type
+  description: Will be raised when a bind parameter has an invalid value or type.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_VECTOR_SEARCH_NOT_APPLIED
+  code: 1554
+  message: failed vector search
+  description: APPROX_NEAR function could not apply vector search, either the vector index is missing
+    or the query optimization could not apply vector index.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_VECTOR_INDEX_NOT_READY
+  code: 1555
+  message: vector index not ready
+  description: The vector index is not yet trained. Please wait for the index training to complete before
+    executing vector search queries.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_INVALID_ARITHMETIC_VALUE
+  code: 1561
+  message: invalid arithmetic value
+  description: Will be raised when a non-numeric value is used in an arithmetic operation.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_DIVISION_BY_ZERO
+  code: 1562
+  message: division by zero
+  description: Will be raised when there is an attempt to divide by zero.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_ARRAY_EXPECTED
+  code: 1563
+  message: array expected
+  description: Will be raised when a non-array operand is used for an operation that expects an array
+    argument operand.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_COLLECTION_USED_IN_EXPRESSION
+  code: 1568
+  message: collection '%s' used as expression operand
+  description: Will be raised when a collection is used as an operand in an AQL expression.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_FAIL_CALLED
+  code: 1569
+  message: FAIL(%s) called
+  description: Will be raised when the function FAIL() is called from inside a query.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_GEO_INDEX_MISSING
+  code: 1570
+  message: no suitable geo index found for geo restriction on '%s'
+  description: Will be raised when a geo restriction was specified but no suitable geo index is found
+    to resolve it.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_FULLTEXT_INDEX_MISSING
+  code: 1571
+  message: no suitable fulltext index found for fulltext query on '%s'
+  description: Will be raised when a fulltext query is performed on a collection without a suitable fulltext
+    index.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_INVALID_DATE_VALUE
+  code: 1572
+  message: invalid date value
+  description: Will be raised when a value cannot be converted to a date.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_MULTI_MODIFY
+  code: 1573
+  message: multi-modify query
+  description: Will be raised when an AQL query contains more than one data-modifying operation.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_INVALID_AGGREGATE_EXPRESSION
+  code: 1574
+  message: invalid aggregate expression
+  description: Will be raised when an AQL query contains an invalid aggregate expression.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_COMPILE_TIME_OPTIONS
+  code: 1575
+  message: query options must be readable at query compile time
+  description: Will be raised when an AQL query contains OPTIONS that cannot be figured out at query compile
+    time.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_DNF_COMPLEXITY
+  code: 1576
+  message: FILTER/PRUNE condition complexity is too high
+  description: Will be raised internally when a too complex FILTER/PRUNE condition is encountered during
+    the DNF conversion of the condition.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_FORCED_INDEX_HINT_UNUSABLE
+  code: 1577
+  message: could not use forced index hint
+  description: Will be raised when forceIndexHint is specified, and the hint cannot be used to serve the
+    query.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_DISALLOWED_DYNAMIC_CALL
+  code: 1578
+  message: disallowed dynamic call to '%s'
+  description: Will be raised when a dynamic function call is made to a function that cannot be called
+    dynamically.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_ACCESS_AFTER_MODIFICATION
+  code: 1579
+  message: access after data-modification by %s
+  description: Will be raised when collection data are accessed after a data-modification operation.
+  category: ArangoDB query errors
+- name: ERROR_QUERY_FUNCTION_INVALID_NAME
+  code: 1580
+  message: invalid user function name
+  description: Will be raised when a user function with an invalid name is registered.
+  category: AQL user function errors
+- name: ERROR_QUERY_FUNCTION_INVALID_CODE
+  code: 1581
+  message: invalid user function code
+  description: Will be raised when a user function is registered with invalid code.
+  category: AQL user function errors
+- name: ERROR_QUERY_FUNCTION_NOT_FOUND
+  code: 1582
+  message: user function '%s()' not found
+  description: Will be raised when a user function is accessed but not found.
+  category: AQL user function errors
+- name: ERROR_QUERY_FUNCTION_RUNTIME_ERROR
+  code: 1583
+  message: 'user function runtime error: %s'
+  description: Will be raised when a user function throws a runtime exception.
+  category: AQL user function errors
+- name: ERROR_QUERY_NOT_ELIGIBLE_FOR_PLAN_CACHING
+  code: 1584
+  message: query is not eligible for plan caching
+  description: Will be raised when a query is not eligible for plan caching and yet, the usePlanCache
+    option was set to true.
+  category: AQL user function errors
+- name: ERROR_QUERY_BAD_JSON_PLAN
+  code: 1590
+  message: bad execution plan JSON
+  description: Will be raised when an HTTP API for a query got an invalid JSON object.
+  category: AQL query registry errors
+- name: ERROR_QUERY_NOT_FOUND
+  code: 1591
+  message: query ID not found
+  description: Will be raised when an Id of a query is not found by the HTTP API.
+  category: AQL query registry errors
+- name: ERROR_QUERY_USER_ASSERT
+  code: 1593
+  message: '%s'
+  description: Will be raised if and user provided expression fails to evaluate to true
+  category: AQL query registry errors
+- name: ERROR_QUERY_USER_WARN
+  code: 1594
+  message: '%s'
+  description: Will be raised if and user provided expression fails to evaluate to true
+  category: AQL query registry errors
+- name: ERROR_QUERY_WINDOW_AFTER_MODIFICATION
+  code: 1595
+  message: window operation after data-modification
+  description: Will be raised when a window node is created after a data-modification operation.
+  category: AQL query registry errors
+- name: ERROR_CURSOR_NOT_FOUND
+  code: 1600
+  message: cursor not found
+  description: Will be raised when a cursor is requested via its id but a cursor with that id cannot be
+    found.
+  category: ArangoDB cursor errors
+- name: ERROR_CURSOR_BUSY
+  code: 1601
+  message: cursor is busy
+  description: Will be raised when a cursor is requested via its id but a concurrent request is still
+    using the cursor.
+  category: ArangoDB cursor errors
+- name: ERROR_VALIDATION_FAILED
+  code: 1620
+  message: schema validation failed
+  description: Will be raised when a document does not pass schema validation.
+  category: ArangoDB schema validation errors
+- name: ERROR_VALIDATION_BAD_PARAMETER
+  code: 1621
+  message: invalid schema validation parameter
+  description: Will be raised when the schema description is invalid.
+  category: ArangoDB schema validation errors
+- name: ERROR_TRANSACTION_INTERNAL
+  code: 1650
+  message: internal transaction error
+  description: Will be raised when a wrong usage of transactions is detected. this is an internal error
+    and indicates a bug in ArangoDB.
+  category: ArangoDB transaction errors
+- name: ERROR_TRANSACTION_NESTED
+  code: 1651
+  message: nested transactions detected
+  description: Will be raised when transactions are nested.
+  category: ArangoDB transaction errors
+- name: ERROR_TRANSACTION_UNREGISTERED_COLLECTION
+  code: 1652
+  message: unregistered collection used in transaction
+  description: Will be raised when a collection is used in the middle of a transaction but was not registered
+    at transaction start.
+  category: ArangoDB transaction errors
+- name: ERROR_TRANSACTION_DISALLOWED_OPERATION
+  code: 1653
+  message: disallowed operation inside transaction
+  description: Will be raised when a disallowed operation is carried out in a transaction.
+  category: ArangoDB transaction errors
+- name: ERROR_TRANSACTION_ABORTED
+  code: 1654
+  message: transaction aborted
+  description: Will be raised when a transaction was aborted.
+  category: ArangoDB transaction errors
+- name: ERROR_TRANSACTION_NOT_FOUND
+  code: 1655
+  message: transaction not found
+  description: Will be raised when a transaction was not found.
+  category: ArangoDB transaction errors
+- name: ERROR_USER_INVALID_NAME
+  code: 1700
+  message: invalid user name
+  description: Will be raised when an invalid user name is used.
+  category: User management errors
+- name: ERROR_USER_DUPLICATE
+  code: 1702
+  message: duplicate user
+  description: Will be raised when a user name already exists.
+  category: User management errors
+- name: ERROR_USER_NOT_FOUND
+  code: 1703
+  message: user not found
+  description: Will be raised when a user name is updated that does not exist.
+  category: User management errors
+- name: ERROR_USER_EXTERNAL
+  code: 1705
+  message: user is external
+  description: Will be raised when the user is authenticated by an external server.
+  category: User management errors
+- name: ERROR_SERVICE_DOWNLOAD_FAILED
+  code: 1752
+  message: service download failed
+  description: Will be raised when a service download from the central repository failed.
+  category: Service management errors (legacy)
+- name: ERROR_SERVICE_UPLOAD_FAILED
+  code: 1753
+  message: service upload failed
+  description: Will be raised when a service upload from the client to the ArangoDB server failed.
+  category: Service management errors (legacy)
+- name: ERROR_TASK_INVALID_ID
+  code: 1850
+  message: invalid task id
+  description: Will be raised when a task is created with an invalid id.
+  category: Task errors
+- name: ERROR_TASK_DUPLICATE_ID
+  code: 1851
+  message: duplicate task id
+  description: Will be raised when a task id is created with a duplicate id.
+  category: Task errors
+- name: ERROR_TASK_NOT_FOUND
+  code: 1852
+  message: task not found
+  description: Will be raised when a task with the specified id could not be found.
+  category: Task errors
+- name: ERROR_GRAPH_INVALID_GRAPH
+  code: 1901
+  message: invalid graph
+  description: Will be raised when an invalid name is passed to the server.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_INVALID_EDGE
+  code: 1906
+  message: invalid edge
+  description: Will be raised when an invalid edge id is passed to the server.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_INVALID_FILTER_RESULT
+  code: 1910
+  message: invalid filter result
+  description: Will be raised when an invalid filter result is returned in a graph traversal.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_COLLECTION_MULTI_USE
+  code: 1920
+  message: multi use of edge collection in edge def
+  description: an edge collection may only be used once in one edge definition of a graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_COLLECTION_USE_IN_MULTI_GRAPHS
+  code: 1921
+  message: edge collection already used in edge def
+  description: ' is already used by another graph in a different edge definition.'
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_CREATE_MISSING_NAME
+  code: 1922
+  message: missing graph name
+  description: a graph name is required to create or drop a graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_CREATE_MALFORMED_EDGE_DEFINITION
+  code: 1923
+  message: malformed edge definition
+  description: the edge definition is malformed. It has to be an array of objects.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_NOT_FOUND
+  code: 1924
+  message: graph '%s' not found
+  description: a graph with this name could not be found.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_DUPLICATE
+  code: 1925
+  message: graph already exists
+  description: a graph with this name already exists.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_VERTEX_COL_DOES_NOT_EXIST
+  code: 1926
+  message: vertex collection does not exist or is not part of the graph
+  description: the specified vertex collection does not exist or is not part of the graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_WRONG_COLLECTION_TYPE_VERTEX
+  code: 1927
+  message: collection not a vertex collection
+  description: the collection is not a vertex collection.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_NOT_IN_ORPHAN_COLLECTION
+  code: 1928
+  message: collection is not in list of orphan collections
+  description: Vertex collection not in list of orphan collections of the graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_COLLECTION_USED_IN_EDGE_DEF
+  code: 1929
+  message: collection already used in edge def
+  description: The collection is already used in an edge definition of the graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_EDGE_COLLECTION_NOT_USED
+  code: 1930
+  message: edge collection not used in graph
+  description: The edge collection is not used in any edge definition of the graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_NO_GRAPH_COLLECTION
+  code: 1932
+  message: collection _graphs does not exist
+  description: collection _graphs does not exist.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_INVALID_NUMBER_OF_ARGUMENTS
+  code: 1935
+  message: 'Invalid number of arguments. Expected: '
+  description: 'Invalid number of arguments. Expected: '
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_INVALID_PARAMETER
+  code: 1936
+  message: Invalid parameter type.
+  description: Invalid parameter type.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_COLLECTION_USED_IN_ORPHANS
+  code: 1938
+  message: collection used in orphans
+  description: The collection is already used in the orphans of the graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_EDGE_COL_DOES_NOT_EXIST
+  code: 1939
+  message: edge collection does not exist or is not part of the graph
+  description: the specified edge collection does not exist or is not part of the graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_EMPTY
+  code: 1940
+  message: empty graph
+  description: The requested graph has no edge collections.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_INTERNAL_DATA_CORRUPT
+  code: 1941
+  message: internal graph data corrupt
+  description: The _graphs collection contains invalid data.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_MUST_NOT_DROP_COLLECTION
+  code: 1942
+  message: must not drop collection while part of graph
+  description: The collection must not be dropped while it is used as part of at least one graph definition.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_CREATE_MALFORMED_ORPHAN_LIST
+  code: 1943
+  message: malformed orphan list
+  description: the orphan list argument is malformed. It has to be an array of strings.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_EDGE_DEFINITION_IS_DOCUMENT
+  code: 1944
+  message: edge definition collection is a document collection
+  description: the collection used as a relation is existing, but is a document collection, it cannot
+    be used here.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_COLLECTION_IS_INITIAL
+  code: 1945
+  message: initial collection is not allowed to be removed manually
+  description: the collection is used as the initial collection of this graph and is not allowed to be
+    removed manually.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_NO_INITIAL_COLLECTION
+  code: 1946
+  message: no valid initial collection found
+  description: during the graph creation process no collection could be selected as the needed initial
+    collection. Happens if a distributeShardsLike or replicationFactor mismatch was found.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_REFERENCED_VERTEX_COLLECTION_NOT_PART_OF_THE_GRAPH
+  code: 1947
+  message: referenced vertex collection is not part of the graph
+  description: the _from or _to collection specified for the edge refers to a vertex collection which
+    is not used in any edge definition of the graph.
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_NEGATIVE_EDGE_WEIGHT
+  code: 1948
+  message: negative edge weight found
+  description: a negative edge weight was found during a weighted graph traversal or shortest path query
+  category: Graph / traversal errors
+- name: ERROR_GRAPH_COLLECTION_NOT_PART_OF_THE_GRAPH
+  code: 1949
+  message: the given collection is not part of the graph
+  description: The collection is not used in any edge definition or as an orphan collection.
+  category: Graph / traversal errors
+- name: ERROR_SESSION_UNKNOWN
+  code: 1950
+  message: unknown session
+  description: Will be raised when an invalid/unknown session id is passed to the server.
+  category: Session errors
+- name: ERROR_SESSION_EXPIRED
+  code: 1951
+  message: session expired
+  description: Will be raised when a session is expired.
+  category: Session errors
+- name: ERROR_SIMPLE_CLIENT_UNKNOWN_ERROR
+  code: 2000
+  message: unknown client error
+  description: This error should not happen.
+  category: Simple Client errors
+- name: ERROR_SIMPLE_CLIENT_COULD_NOT_CONNECT
+  code: 2001
+  message: could not connect to server
+  description: Will be raised when the client could not connect to the server.
+  category: Simple Client errors
+- name: ERROR_SIMPLE_CLIENT_COULD_NOT_WRITE
+  code: 2002
+  message: could not write to server
+  description: Will be raised when the client could not write data.
+  category: Simple Client errors
+- name: ERROR_SIMPLE_CLIENT_COULD_NOT_READ
+  code: 2003
+  message: could not read from server
+  description: Will be raised when the client could not read data.
+  category: Simple Client errors
+- name: ERROR_WAS_ERLAUBE
+  code: 2019
+  message: was erlaube?!
+  description: Will be raised if was erlaube?!
+  category: Simple Client errors
+- name: ERROR_INTERNAL_AQL
+  code: 2200
+  message: General internal AQL error
+  description: Internal error during AQL execution
+  category: internal AQL errors
+- name: ERROR_MALFORMED_MANIFEST_FILE
+  code: 3000
+  message: failed to parse manifest file
+  description: The service manifest file is not well-formed JSON.
+  category: Foxx management errors
+- name: ERROR_INVALID_SERVICE_MANIFEST
+  code: 3001
+  message: manifest file is invalid
+  description: The service manifest contains invalid values.
+  category: Foxx management errors
+- name: ERROR_SERVICE_FILES_MISSING
+  code: 3002
+  message: service files missing
+  description: The service folder or bundle does not exist on this server.
+  category: Foxx management errors
+- name: ERROR_SERVICE_FILES_OUTDATED
+  code: 3003
+  message: service files outdated
+  description: The local service bundle does not match the checksum in the database.
+  category: Foxx management errors
+- name: ERROR_INVALID_FOXX_OPTIONS
+  code: 3004
+  message: service options are invalid
+  description: The service options contain invalid values.
+  category: Foxx management errors
+- name: ERROR_INVALID_MOUNTPOINT
+  code: 3007
+  message: invalid mountpath
+  description: The service mountpath contains invalid characters.
+  category: Foxx management errors
+- name: ERROR_SERVICE_NOT_FOUND
+  code: 3009
+  message: service not found
+  description: No service found at the given mountpath.
+  category: Foxx management errors
+- name: ERROR_SERVICE_NEEDS_CONFIGURATION
+  code: 3010
+  message: service needs configuration
+  description: The service is missing configuration or dependencies.
+  category: Foxx management errors
+- name: ERROR_SERVICE_MOUNTPOINT_CONFLICT
+  code: 3011
+  message: service already exists
+  description: A service already exists at the given mountpath.
+  category: Foxx management errors
+- name: ERROR_SERVICE_MANIFEST_NOT_FOUND
+  code: 3012
+  message: missing manifest file
+  description: The service directory does not contain a manifest file.
+  category: Foxx management errors
+- name: ERROR_SERVICE_OPTIONS_MALFORMED
+  code: 3013
+  message: failed to parse service options
+  description: The service options are not well-formed JSON.
+  category: Foxx management errors
+- name: ERROR_SERVICE_SOURCE_NOT_FOUND
+  code: 3014
+  message: source path not found
+  description: The source path does not match a file or directory.
+  category: Foxx management errors
+- name: ERROR_SERVICE_SOURCE_ERROR
+  code: 3015
+  message: error resolving source
+  description: The source path could not be resolved.
+  category: Foxx management errors
+- name: ERROR_SERVICE_UNKNOWN_SCRIPT
+  code: 3016
+  message: unknown script
+  description: The service does not have a script with this name.
+  category: Foxx management errors
+- name: ERROR_SERVICE_API_DISABLED
+  code: 3099
+  message: service api disabled
+  description: The API for managing Foxx services has been disabled on this server.
+  category: Foxx management errors
+- name: ERROR_MODULE_NOT_FOUND
+  code: 3100
+  message: cannot locate module
+  description: The module path could not be resolved.
+  category: JavaScript module loader errors
+- name: ERROR_MODULE_SYNTAX_ERROR
+  code: 3101
+  message: syntax error in module
+  description: The module could not be parsed because of a syntax error.
+  category: JavaScript module loader errors
+- name: ERROR_MODULE_FAILURE
+  code: 3103
+  message: failed to invoke module
+  description: Failed to invoke the module in its context.
+  category: JavaScript module loader errors
+- name: ERROR_NO_SMART_COLLECTION
+  code: 4000
+  message: collection is not smart
+  description: The requested collection needs to be smart, but it isn't.
+  category: Enterprise Edition errors
+- name: ERROR_NO_SMART_GRAPH_ATTRIBUTE
+  code: 4001
+  message: smart graph attribute not given
+  description: The given document does not have the SmartGraph attribute set.
+  category: Enterprise Edition errors
+- name: ERROR_CANNOT_DROP_SMART_COLLECTION
+  code: 4002
+  message: cannot drop this smart collection
+  description: This smart collection cannot be dropped, it dictates sharding in the graph.
+  category: Enterprise Edition errors
+- name: ERROR_KEY_MUST_BE_PREFIXED_WITH_SMART_GRAPH_ATTRIBUTE
+  code: 4003
+  message: in smart vertex collections _key must be a string and prefixed with the value of the smart
+    graph attribute
+  description: In a smart vertex collection _key must be prefixed with the value of the SmartGraph attribute.
+  category: Enterprise Edition errors
+- name: ERROR_ILLEGAL_SMART_GRAPH_ATTRIBUTE
+  code: 4004
+  message: attribute cannot be used as smart graph attribute
+  description: The given smartGraph attribute is illegal and cannot be used for sharding. All system attributes
+    are forbidden.
+  category: Enterprise Edition errors
+- name: ERROR_SMART_GRAPH_ATTRIBUTE_MISMATCH
+  code: 4005
+  message: smart graph attribute mismatch
+  description: The SmartGraph attribute of the given collection does not match the SmartGraph attribute
+    of the graph.
+  category: Enterprise Edition errors
+- name: ERROR_INVALID_SMART_JOIN_ATTRIBUTE
+  code: 4006
+  message: invalid smart join attribute declaration
+  description: Will be raised when the smartJoinAttribute declaration is invalid.
+  category: Enterprise Edition errors
+- name: ERROR_KEY_MUST_BE_PREFIXED_WITH_SMART_JOIN_ATTRIBUTE
+  code: 4007
+  message: shard key value must be prefixed with the value of the smart join attribute
+  description: when using smartJoinAttribute for a collection, the shard key value must be prefixed with
+    the value of the SmartJoin attribute.
+  category: Enterprise Edition errors
+- name: ERROR_NO_SMART_JOIN_ATTRIBUTE
+  code: 4008
+  message: smart join attribute not given or invalid
+  description: The given document does not have the required SmartJoin attribute set or it has an invalid
+    value.
+  category: Enterprise Edition errors
+- name: ERROR_CLUSTER_MUST_NOT_CHANGE_SMART_JOIN_ATTRIBUTE
+  code: 4009
+  message: must not change the value of the smartJoinAttribute
+  description: Will be raised if there is an attempt to update the value of the smartJoinAttribute.
+  category: Enterprise Edition errors
+- name: ERROR_INVALID_DISJOINT_SMART_EDGE
+  code: 4010
+  message: non disjoint edge found
+  description: Will be raised if there is an attempt to create an edge between separated graph components.
+  category: Enterprise Edition errors
+- name: ERROR_UNSUPPORTED_CHANGE_IN_SMART_TO_SATELLITE_DISJOINT_EDGE_DIRECTION
+  code: 4011
+  message: Unsupported alternating Smart and Satellite in Disjoint SmartGraph.
+  description: Switching back and forth between Satellite and Smart in Disjoint SmartGraph is not supported
+    within a single AQL statement. Split into multiple statements.
+  category: Enterprise Edition errors
+- name: ERROR_AGENCY_MALFORMED_GOSSIP_MESSAGE
+  code: 20001
+  message: malformed gossip message
+  description: Malformed gossip message.
+  category: Agency errors
+- name: ERROR_AGENCY_MALFORMED_INQUIRE_REQUEST
+  code: 20002
+  message: malformed inquire request
+  description: Malformed inquire request.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_BE_OBJECT
+  code: 20011
+  message: Inform message must be an object.
+  description: The inform message in the Agency must be an object.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_CONTAIN_TERM
+  code: 20012
+  message: Inform message must contain uint parameter 'term'
+  description: The inform message in the Agency must contain a uint parameter 'term'.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_CONTAIN_ID
+  code: 20013
+  message: Inform message must contain string parameter 'id'
+  description: The inform message in the Agency must contain a string parameter 'id'.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_CONTAIN_ACTIVE
+  code: 20014
+  message: Inform message must contain array 'active'
+  description: The inform message in the Agency must contain an array 'active'.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_CONTAIN_POOL
+  code: 20015
+  message: Inform message must contain object 'pool'
+  description: The inform message in the Agency must contain an object 'pool'.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_CONTAIN_MIN_PING
+  code: 20016
+  message: Inform message must contain object 'min ping'
+  description: The inform message in the Agency must contain an object 'min ping'.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_CONTAIN_MAX_PING
+  code: 20017
+  message: Inform message must contain object 'max ping'
+  description: The inform message in the Agency must contain an object 'max ping'.
+  category: Agency errors
+- name: ERROR_AGENCY_INFORM_MUST_CONTAIN_TIMEOUT_MULT
+  code: 20018
+  message: Inform message must contain object 'timeoutMult'
+  description: The inform message in the Agency must contain an object 'timeoutMult'.
+  category: Agency errors
+- name: ERROR_AGENCY_CANNOT_REBUILD_DBS
+  code: 20021
+  message: Cannot rebuild readDB and spearHead
+  description: Will be raised if the readDB or the spearHead cannot be rebuilt from the replicated log.
+  category: Agency errors
+- name: ERROR_AGENCY_MALFORMED_TRANSACTION
+  code: 20030
+  message: malformed agency transaction
+  description: Malformed agency transaction.
+  category: Agency errors
+- name: ERROR_SUPERVISION_GENERAL_FAILURE
+  code: 20501
+  message: general supervision failure
+  description: General supervision failure.
+  category: Supervision errors
+- name: ERROR_QUEUE_FULL
+  code: 21003
+  message: queue is full
+  description: Will be returned if the scheduler queue is full.
+  category: Scheduler errors
+- name: ERROR_QUEUE_TIME_REQUIREMENT_VIOLATED
+  code: 21004
+  message: queue time violated
+  description: Will be returned if a request with a queue time requirement is set and it cannot be fulfilled.
+  category: Scheduler errors
+- name: ERROR_TOO_MANY_DETACHED_THREADS
+  code: 21005
+  message: too many detached scheduler threads
+  description: Will be returned if a scheduler thread tries to detach itself but there are already too
+    many detached scheduler threads.
+  category: Scheduler errors
+- name: ERROR_ACTION_UNFINISHED
+  code: 6003
+  message: maintenance action still processing
+  description: This maintenance action is still processing
+  category: Maintenance errors
+- name: ERROR_HOT_BACKUP_INTERNAL
+  code: 7001
+  message: internal hot backup error
+  description: Failed to create hot backup set
+  category: Backup/Restore errors
+- name: ERROR_HOT_RESTORE_INTERNAL
+  code: 7002
+  message: internal hot restore error
+  description: Failed to restore to hot backup set
+  category: Backup/Restore errors
+- name: ERROR_BACKUP_TOPOLOGY
+  code: 7003
+  message: backup does not match this topology
+  description: The hot backup set cannot be restored on non matching cluster topology
+  category: Backup/Restore errors
+- name: ERROR_NO_SPACE_LEFT_ON_DEVICE
+  code: 7004
+  message: no space left on device
+  description: No space left on device
+  category: Backup/Restore errors
+- name: ERROR_FAILED_TO_UPLOAD_BACKUP
+  code: 7005
+  message: failed to upload hot backup set to remote target
+  description: Failed to upload hot backup set to remote target
+  category: Backup/Restore errors
+- name: ERROR_FAILED_TO_DOWNLOAD_BACKUP
+  code: 7006
+  message: failed to download hot backup set from remote source
+  description: Failed to download hot backup set from remote source
+  category: Backup/Restore errors
+- name: ERROR_NO_SUCH_HOT_BACKUP
+  code: 7007
+  message: no such hot backup set can be found
+  description: Cannot find a hot backup set with this Id
+  category: Backup/Restore errors
+- name: ERROR_REMOTE_REPOSITORY_CONFIG_BAD
+  code: 7008
+  message: remote hotback repository configuration error
+  description: The configuration given for upload or download operation to/from remote hot backup repositories
+    is wrong.
+  category: Backup/Restore errors
+- name: ERROR_LOCAL_LOCK_FAILED
+  code: 7009
+  message: some db servers cannot be reached for transaction locks
+  description: Some of the DB-Servers cannot be reached for transaction locks.
+  category: Backup/Restore errors
+- name: ERROR_LOCAL_LOCK_RETRY
+  code: 7010
+  message: some db servers cannot be reached for transaction locks
+  description: Some of the DB-Servers cannot be reached for transaction locks.
+  category: Backup/Restore errors
+- name: ERROR_HOT_BACKUP_CONFLICT
+  code: 7011
+  message: hot backup conflict
+  description: Conflict of multiple hot backup processes.
+  category: Backup/Restore errors
+- name: ERROR_HOT_BACKUP_DBSERVERS_AWOL
+  code: 7012
+  message: hot backup not all db servers reachable
+  description: One or more DB-Servers could not be reached for hot backup inquiry
+  category: Backup/Restore errors
+- name: ERROR_CLUSTER_COULD_NOT_MODIFY_ANALYZERS_IN_PLAN
+  code: 7021
+  message: analyzers in plan could not be modified
+  description: Plan could not be modified while creating or deleting Analyzers revision
+  category: Plan Analyzers errors
+- name: ERROR_LICENSE_EXPIRED_OR_INVALID
+  code: 9001
+  message: license has expired or is invalid
+  description: The license has expired or is invalid.
+  category: Licensing
+- name: ERROR_LICENSE_SIGNATURE_VERIFICATION
+  code: 9002
+  message: license verification failed
+  description: Verification of license failed.
+  category: Licensing
+- name: ERROR_LICENSE_NON_MATCHING_ID
+  code: 9003
+  message: non-matching license id
+  description: The ID of the license does not match the ID of this instance.
+  category: Licensing
+- name: ERROR_LICENSE_FEATURE_NOT_ENABLED
+  code: 9004
+  message: feature is not enabled by the license
+  description: The installed license does not cover this feature.
+  category: Licensing
+- name: ERROR_LICENSE_RESOURCE_EXHAUSTED
+  code: 9005
+  message: the resource is exhausted
+  description: The installed license does not cover a higher number of this resource.
+  category: Licensing
+- name: ERROR_LICENSE_INVALID
+  code: 9006
+  message: invalid license
+  description: The license does not hold features of an ArangoDB license.
+  category: Licensing
+- name: ERROR_LICENSE_CONFLICT
+  code: 9007
+  message: conflicting license
+  description: The license has one or more inferior features.
+  category: Licensing
+- name: ERROR_LICENSE_VALIDATION_FAILED
+  code: 9008
+  message: failed to validate license signature
+  description: Could not verify the license's signature.
+  category: Licensing

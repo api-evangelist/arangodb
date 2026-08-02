@@ -1,0 +1,226 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+// Author Ewout Prangsma
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.crypto.v1;
+
+option go_package = "github.com/arangodb-managed/apis/crypto/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// CryptoService is the API used to configure various crypto objects.
+service CryptoService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/crypto/v1/api-version"
+        };
+    }
+
+    // Fetch all CA certificates in the project identified by the given context ID.
+    // Required permissions:
+    // - crypto.cacertificate.list on the project identified by the given context ID
+    rpc ListCACertificates(common.v1.ListOptions) returns (CACertificateList) {
+        option (google.api.http) = {
+            get: "/api/crypto/v1/projects/{context_id}/cacertificates"
+        };
+    }
+
+    // Fetch all CA certificates in the project identified by the given project ID
+    // that match the given filter.
+    // Required permissions:
+    // - crypto.cacertificate.list on the project identified by the given context ID
+    rpc ListCACertificatesWithFilter(ListCACertificatesRequest) returns (CACertificateList) {
+        option (google.api.http) = {
+            post: "/api/crypto/v1/projects/{project_id}/cacertificates/list"
+            body: "*"
+        };
+    }
+
+    // Fetch a CA certificate by its id.
+    // Required permissions:
+    // - crypto.cacertificate.get on the CA certificate identified by the given ID
+    rpc GetCACertificate(common.v1.IDOptions) returns (CACertificate) {
+        option (google.api.http) = {
+            get: "/api/crypto/v1/cacertificates/{id}"
+        };
+    }
+
+    // Fetch instructions for installing & unistalling a CA certificate identified by its id
+    // on various platforms.
+    // Required permissions:
+    // - crypto.cacertificate.get on the CA certificate identified by the given ID
+    rpc GetCACertificateInstructions(common.v1.IDOptions) returns (CACertificateInstructions) {
+        option (google.api.http) = {
+            get: "/api/crypto/v1/cacertificates/{id}/instructions"
+        };
+    }
+
+    // Create a new CA certificate
+    // Required permissions:
+    // - crypto.cacertificate.create on the project that owns the CA certificate
+    rpc CreateCACertificate(CACertificate) returns (CACertificate) {
+        option (google.api.http) = {
+            post: "/api/crypto/v1/projects/{project_id}/cacertificates"
+            body: "*"
+        };
+    }
+
+    // Clone a CA certificate identified by given id.
+    // Required permissions:
+    // - crypto.cacertificate.clone on the project that owns the CA certificate identified by the given ID
+    rpc CloneCACertificate(common.v1.IDOptions) returns (CACertificate) {
+        option (google.api.http) = {
+            post: "/api/crypto/v1/cacertificates/{id}/clone"
+        };
+    }
+
+    // Update a CA certificate
+    // Required permissions:
+    // - crypto.cacertificate.update on the CA certificate
+    rpc UpdateCACertificate(CACertificate) returns (CACertificate) {
+        option (google.api.http) = {
+            patch: "/api/crypto/v1/cacertificates/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete a CA certificate
+    // Note that CA certificate are initially only marked for deleted.
+    // Once all the resources that depend on it are removed the CA certificate itself is deleted
+    // and cannot be restored.
+    // Required permissions:
+    // - crypto.cacertificate.delete on the CA certificate
+    rpc DeleteCACertificate(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/crypto/v1/cacertificates/{id}"
+        };
+    }
+
+    // Mark the given CA certificate as default for its containing project.
+    // Required permissions:
+    // - crypto.cacertificate.set-default on the project that owns the certificate.
+    rpc SetDefaultCACertificate(CACertificate) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/crypto/v1/projects/{project_id}/cacertificates/default"
+            body: "*"
+        };
+    }
+}
+
+// A CACertificate is represents a self-signed certificate authority used to sign
+// TLS certificates for deployments & client authentication.
+message CACertificate {   
+    // System identifier of the CA certificate.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value.
+    string url = 2;
+    // Name of the CA certificate
+    string name = 3; 
+    // Description of the CA certificate
+    string description = 4; 
+    // Identifier of the project that owns this CA certificate.
+    // This value cannot be changed after creation.
+    string project_id = 5;
+    // Time from creation of the CA certificate to expiration.
+    // This value cannot be changed after creation.
+    google.protobuf.Duration lifetime = 6;
+    // The creation timestamp of the CA certificate
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the CA certificate
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 8;
+    // The expiration timestamp of the CA certificate
+    // This is a read-only value.
+    google.protobuf.Timestamp expires_at = 9;
+    // A PEM encoded representation of the public key of the CA certificate.
+    // This is a read-only value.
+    string certificate_pem = 10;
+    // Set when this CA certificate is deleted.
+    // This is a read-only value.
+    bool is_deleted = 11;
+    // Set when this CA certificate has expired.
+    // This is a read-only value.
+    bool is_expired = 12;
+    // Set when this CA certificate will expire in the next month.
+    // This is a read-only value.
+    bool will_expire_soon = 13;
+    // Set when this certificate is the default in its project.
+    // This is a read-only value.
+    bool is_default = 14;
+    // When enabled, deployments using this certificate use a well known TLS certificate on the 8529 port.
+    // The self-signed certificates is always hosted on port 18529.
+    bool use_well_known_certificate = 15;
+    // If set, this certificate cannot be deleted.
+    // To delete, first update the with locked set to false.
+    bool locked = 16;
+    // Set when this CA certificate will expire in the next 48 hours.
+    // This is a read-only value.
+    bool rotation_needed = 17;
+    // If set, contains the ID of a CA certificate from which this certificate was cloned.
+    // This is a read-only value.
+    string cloned_from_id = 18;
+}
+
+// List of CACertificates.
+message CACertificateList {
+    repeated CACertificate items = 1;
+}
+
+// Request arguments for ListCACertificatesWithFilter.
+message ListCACertificatesRequest {
+    // Common list options.
+    // Context_id is ignored.
+    common.v1.ListOptions options = 1;
+    // Required ID of project to list certificates for.
+    string project_id = 2;
+    // If set, include only certificates that were cloned from the certificate
+    // with this ID.
+    string cloned_from_id = 10;
+}
+
+// Instructions for installing & uninstalling CA certificates
+message CACertificateInstructions {
+    // Instructions for a specific platform
+    message PlatformInstructions {
+        // Human readable description of platform.
+        // E.g. "MacOS"
+        string platform = 1;
+        // Steps needed to install
+        repeated string install_steps = 2;
+        // Steps needed to uninstall
+        repeated string uninstall_steps = 3;
+    }
+
+    // Per platform instructions for install/uninstall of the CA certificate
+    repeated PlatformInstructions platforms = 1;
+}

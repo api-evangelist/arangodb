@@ -1,0 +1,139 @@
+//
+// DISCLAIMER
+//
+// Copyright 2021 ArangoDB GmbH, Cologne, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+//
+// Author Marcin Swiderski
+//
+
+syntax = "proto3";
+
+package arangodb.cloud.notification.v1;
+
+option go_package = "github.com/arangodb-managed/apis/notification/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// NotificationService is the API used to interact with deployment notifications.
+service NotificationService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/notification/v1/api-version"
+        };
+    }
+
+    // Fetch all notifications related to given deployment.
+    // Required permissions:
+    // - notification.deployment-notification.list on the deployment identified by given deployment_id
+    rpc ListDeploymentNotifications(ListDeploymentNotificationsRequest) returns (NotificationList) {
+        option (google.api.http) = {
+            post: "/api/notification/v1/deployment/{deployment_id}/notifications"
+            body: "*"
+        };
+    }
+
+    // Mark notification related to given deployment as read.
+    // Required permissions:
+    // - notification.deployment-notification.mark-as-read on the deployment associated with the notification identified by notification_id
+    rpc MarkNotificationAsRead(MarkNotificationRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/notification/v1/notifications/{notification_id}/mark/read"
+            body: "*"
+        };
+    }
+
+    // Mark notification related to given deployment as unread.
+    // Required permissions:
+    // - notification.deployment-notification.mark-as-unread on the deployment associated with the notification identified by notification_id
+    rpc MarkNotificationAsUnread(MarkNotificationRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/notification/v1/notifications/{notification_id}/mark/unread"
+            body: "*"
+        };
+    }
+}
+
+// Notification contains all attributes of a notification.
+// All fields in this message are read-only.
+message Notification {
+    // System identifier of the notification
+    string id = 1;
+    // Type of notification.
+    // Will be one of following value: "email", "sms".
+    string type = 2;
+    // The creation timestamp of the prepaid deployment.
+    google.protobuf.Timestamp created_at = 3;
+    // Title of notification.
+    string title = 4;
+    // Recipients of notification.
+    // email addresses, phone numbers etc
+    repeated string recipients = 5;
+    // Content of notification.
+    repeated NotificationContent content = 6;
+
+    // Details about notification read.
+    // All fields in this message are read-only.
+    message ReadAt {
+      // When the notification was marked as read
+      google.protobuf.Timestamp read_at = 1;
+      // Identifier of user who marked message as read
+      string read_by_id = 2;
+    }
+    // If the message is not marked as read this field is empty
+    ReadAt read_at = 7;
+    // If set this message was marked as read
+    bool is_read = 8;
+}
+
+// NotificationContent holds content and it's mime type.
+// All fields in this message are read-only.
+message NotificationContent {
+    // MIME Type of notification.
+    string content_type = 1;
+    // Content of notification.
+    string content = 2;
+}
+// ListDeploymentNotificationsRequest is used to request a list of Notifications for given deployment.
+message ListDeploymentNotificationsRequest {
+    // Identifier of the deployment to get a list of notifications for.
+    string deployment_id = 1;
+    // Common listing options.
+    // context_id is a don't care.
+    common.v1.ListOptions options = 2;
+    // Get only read notifications
+    bool read_only = 3;
+    // Get only unread notifications
+    bool unread_only = 4;
+}
+
+// NotificationList contains a list of Notification items.
+message NotificationList {
+    // Notification items.
+    repeated Notification items = 1;
+}
+
+// MarkNotificationRequest is used to mark notifications for given deployment as Read/Unread
+message MarkNotificationRequest {
+    // Identifier of notification that has to be marked
+    string notification_id = 1;
+}

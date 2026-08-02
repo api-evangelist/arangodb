@@ -1,0 +1,141 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+// Author Ewout Prangsma
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.monitoring.v1;
+
+option go_package = "github.com/arangodb-managed/apis/monitoring/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// MonitoringService is the API used to monitor deployments.
+service MonitoringService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/monitoring/v1/api-version"
+        };
+    }
+
+    // Fetch all logs of the deployment that matches the given request.
+    // Required permissions:
+    // - monitoring.logs.get on the deployment identified by the given deployment ID.
+    rpc GetDeploymentLogs(GetDeploymentLogsRequest) returns (stream DeploymentLogsChunk) {
+        option (google.api.http) = {
+            post: "/api/monitoring/v1/streaming/deployment-logs"
+            body: "*"
+        };
+    }
+
+    // Get the usage metrics for the deployment based on the given request.
+    // Note: Only at most 1 week worth of data may be requested.
+    // Required permissions:
+    // - monitoring.metrics.get on the deployment identified by the given deployment ID.
+    rpc GetDeploymentUsageMetrics(GetDeploymentMetricsRequest) returns (DeploymentMetrics) {
+        option (google.api.http) = {
+            get: "/api/monitoring/v1/metrics"
+        };
+    }
+}
+
+// Request for getting deployment metrics
+message GetDeploymentMetricsRequest {
+    // ID of the deployment for which metrics are being requested.
+    // This is a required field.
+    string deployment_id = 1;
+    // Start time for the query.
+    // Note: maximum allowed range is 1 week.
+    // This is a required field.
+    google.protobuf.Timestamp start_at = 2;
+    // The end time for the query.
+    // Note: maximum allowed range is 1 week.
+    // This is a required field.
+    google.protobuf.Timestamp end_at = 3;
+    // The type of server for which metrics are being requested.
+    // Should be one of the following values:
+    // - Dbserver
+    // - Coordinator
+    // - Single
+    string server_type = 4;
+    // The type of metric being requested.
+    // Should be one of the following values:
+    // - cpu
+    // - memory
+    // - disk
+    string metric_type = 5;
+}
+
+
+// DeploymentMetrics contains the deployment metrics
+message DeploymentMetrics {
+    // Sample defines a single data point.
+    // It contains the value of the sample and the timestamp at which it was captured.
+    message Sample {
+        // Timestamp at which this sample is captured.
+        google.protobuf.Timestamp timestamp = 1;
+        // Value of the given sample.
+        float value = 2;
+    }
+
+    // A timeseries contains a list of samples recorded at different (regular) intervals
+    // for a single database server identified by server_id.
+    message Timeseries {
+        // ID of the server.
+        string server_id = 1;
+        // List of metric samples for the server identified by the server_id.
+        repeated Sample samples = 2;
+    }
+    
+    // Contains a list of timeseries metrics for each server (of type specified in the request).
+    repeated Timeseries metrics = 1;
+}
+
+// GetDeploymentLogsRequest contains request arguments for GetDeploymentLogs.
+message GetDeploymentLogsRequest {
+    // Identifier of the deployment to get the logs from.
+    string deployment_id = 1;
+    // If set, limit logs to servers of this role.
+    string role = 2;
+    // Formatting for log messages.
+    // The possible values are text and json, with default value being text.
+    string format = 3;
+    // If set limits logs to the server with this ID.
+    string server_id = 4;
+
+	// The start time for the query. Defaults to one hour ago.
+    google.protobuf.Timestamp start_at = 100;
+	// The end time for the query. Defaults to now.
+    google.protobuf.Timestamp end_at = 101;
+    // Limit the number of log lines. Defaults to 1000.
+    int32 limit = 102;
+}
+
+message DeploymentLogsChunk {
+    // Chunk of bytes from the logs
+    bytes chunk = 1;
+}

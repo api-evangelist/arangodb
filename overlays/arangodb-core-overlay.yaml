@@ -1,0 +1,108 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the ArangoDB Core API
+  version: 1.0.0
+extends: openapi/arangodb-core-openapi-original.json
+x-generated: '2026-08-02'
+x-method: generated
+x-source: >-
+  Derived from the harvested vendor spec plus the searched artifacts in this repo
+  (authentication/, conventions/, errors/, lifecycle/). Never mutates the original
+  document — the scorer reads the original.
+actions:
+- target: $.info
+  description: Attribution, provenance and repo cross-links for the harvested spec.
+  update:
+    x-apievangelist-provider: arangodb
+    x-apievangelist-harvested: '2026-08-02'
+    x-apievangelist-source: https://raw.githubusercontent.com/arangodb/arangodb/v3.12.10/js/apps/system/_admin/aardvark/APP/api-docs.json
+    x-apievangelist-artifacts:
+      authentication: authentication/arangodb-authentication.yml
+      conventions: conventions/arangodb-conventions.yml
+      errors: errors/arangodb-error-codes.yml
+      problem_types: errors/arangodb-problem-types.yml
+      lifecycle: lifecycle/arangodb-lifecycle.yml
+      data_model: data-model/arangodb-data-model.yml
+      conformance: conformance/arangodb-conformance.yml
+      mcp: mcp/arangodb-mcp.yml
+      tool_crosswalk: mcp/arangodb-tool-crosswalk.yml
+      agentic_access: agentic-access/arangodb-agentic-access.yml
+      skills: skills/_index.yml
+- target: $
+  description: >-
+    Add the servers[] block the vendor document omits, expressed as a templated
+    deployment endpoint. ArangoDB is deployed per instance; on the Arango Managed
+    Platform every deployment gets its own host on *.arangodb.cloud port 8529.
+  update:
+    servers:
+    - url: https://{deployment}.arangodb.cloud:{port}
+      description: Arango Managed Platform deployment endpoint
+      variables:
+        deployment:
+          default: my-deployment
+          description: The deployment host label shown in the AMP dashboard.
+        port:
+          default: '8529'
+          enum: ['8529']
+    - url: http://{host}:{port}
+      description: Self-managed ArangoDB deployment
+      variables:
+        host:
+          default: localhost
+        port:
+          default: '8529'
+- target: $
+  description: >-
+    Declare the security schemes the vendor document omits. The API requires HTTP
+    Basic or a JWT bearer token on every /_api/ and /_admin/ route (see
+    authentication/arangodb-authentication.yml); the published spec declares
+    neither, which is recorded as a non-conformance in
+    conformance/arangodb-conformance.yml.
+  update:
+    components:
+      securitySchemes:
+        basicAuth:
+          type: http
+          scheme: basic
+          description: ArangoDB username and password.
+        bearerJwt:
+          type: http
+          scheme: bearer
+          bearerFormat: JWT
+          description: >-
+            JWT issued by POST /_open/auth (createSessionToken) or signed with the
+            deployment JWT secret.
+    security:
+    - basicAuth: []
+    - bearerJwt: []
+- target: $.info
+  description: Cross-cutting runtime semantics captured in conventions/arangodb-conventions.yml.
+  update:
+    x-apievangelist-conventions:
+      idempotency_key: false
+      concurrency: revision-based optimistic concurrency via If-Match on _rev
+      pagination: AQL cursor (batchSize / hasMore / cursor id)
+      async_header: x-arango-async
+      transaction_header: x-arango-trx-id
+      dirty_read_header: x-arango-allow-dirty-read
+      error_envelope: '{error, code, errorNum, errorMessage}'
+      rfc9457: false
+- target: $.paths['/_db/{database-name}/_api/cursor'].post
+  description: Mark the AQL cursor as the pagination primitive for the whole API.
+  update:
+    x-apievangelist-pagination:
+      style: cursor
+      request_fields: [batchSize, count, ttl, memoryLimit]
+      response_fields: [result, hasMore, id, count]
+      next: PUT /_db/{database-name}/_api/cursor/{cursor-identifier}
+      release: DELETE /_db/{database-name}/_api/cursor/{cursor-identifier}
+- target: $.info
+  description: >-
+    Point at the ArangoDB error registry so a consumer can resolve any errorNum
+    returned by any operation.
+  update:
+    x-apievangelist-error-registry:
+      file: errors/arangodb-error-codes.yml
+      count: 348
+      docs: https://docs.arango.ai/arangodb/stable/develop/error-codes/
+      envelope_field: errorNum

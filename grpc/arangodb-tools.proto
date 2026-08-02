@@ -1,0 +1,77 @@
+//
+// DISCLAIMER
+//
+// Copyright 2020 ArangoDB GmbH, Cologne, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+//
+// Author Gergely Brautigam
+//
+
+syntax = "proto3";
+
+package arangodb.cloud.tools.v1;
+
+option go_package = "github.com/arangodb-managed/apis/tools/v1";
+
+import "google/api/annotations.proto";
+import "common/v1/common.proto";
+
+// ToolsService is the API used by the compatibility check for an ArangoDB Tool.
+service ToolsService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/tools/v1/api-version"
+        };
+    }
+
+    // Get the latest version for a tool.
+    // Required permissions:
+    // - None
+    rpc GetLatestVersion(GetLatestVersionRequest) returns (ToolsVersion) {
+        option (google.api.http) = {
+            get: "/api/tools/v1/latest-version"
+        };
+    }
+}
+
+// Response for GetLatestVersion
+message ToolsVersion {
+    // Semantic versioning format of the latest known version of the tool that is compatible with the current API.
+    string latest_version = 1;
+    // Download url of the latest version for a tool.
+    string download_url = 2;
+    // True if the current list of API-ID+versions is still compatible with current API.
+    bool is_compatible = 3;
+}
+
+// Request for GetLatestVersion
+message GetLatestVersionRequest {
+    // Name of the tool
+    string name = 1;
+    // Version pair for the tool depicting compatibility with a given API.
+    repeated APIVersionPair expected_api_versions = 2;
+}
+
+// The version pair describing the tools compatibility with an API.
+message APIVersionPair {
+    // ID of the api.
+    string api_id = 1;
+    // Expected version of the api.
+    arangodb.cloud.common.v1.Version version = 2;
+}

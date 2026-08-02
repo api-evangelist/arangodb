@@ -1,0 +1,281 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2022-2025 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distribued on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+//
+
+syntax = "proto3";
+
+package arangodb.cloud.notebook.v1;
+
+option go_package = "github.com/arangodb-managed/apis/notebook/v1";
+
+import "common/v1/common.proto";
+import "data/v1/data.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// Notebook service is used to manage notebooks.
+service NotebookService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None (authenticated only)
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/notebook/v1/api-version"
+        };
+    }
+    
+    // Get a Notebook using its ID.
+    // Required permissions:
+    // - notebook.notebook.get on the notebook
+    rpc GetNotebook(common.v1.IDOptions) returns (Notebook) {
+        option (google.api.http) = {
+            get: "/api/notebook/v1/notebook/{id}"        
+        };
+    }
+    
+    // Create a new Notebook by specifying its configuration.
+    // Required permissions:
+    // - notebook.notebook.create on the deployment
+    rpc CreateNotebook(Notebook) returns (Notebook) {
+        option (google.api.http) = {
+            put: "/api/notebook/v1/notebook"
+            body: "*"
+        };
+    }
+    
+    // Delete an existing notebook using its ID.
+    // This initially marks the notebook for deletion. It is deleted from CP once all its child resources are deleted.
+    // Required permissions:
+    // - notebook.notebook.delete on the notebook
+    rpc DeleteNotebook(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete:  "/api/notebook/v1/notebook/{id}"
+        };
+    }
+    
+    // Update an existing notebook. Returns updated Notebook.
+    // Required permissions:
+    // - notebook.notebook.update on the notebook
+    rpc UpdateNotebook(Notebook) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post:  "/api/notebook/v1/notebook/{id}"
+            body: "*"
+        };
+    }
+        
+    // List all notebooks for the deployments identified by the given deployment identifier.
+    // Required permissions:
+    // - notebook.notebook.list on the deployment
+    rpc ListNotebooks(ListNotebooksRequest) returns (NotebookList) {
+        option (google.api.http) = {
+            post:  "/api/notebook/v1/notebooks"
+            body: "*"
+        };
+    }
+    
+    // List all notebook models available in the context of the given deployment.
+    // Required permissions:
+    // - notebook.model.list globally
+    rpc ListNotebookModels(ListNotebookModelsRequest) returns (NotebookModelList) {
+        option (google.api.http) = {
+            post: "/api/notebook/v1/models"
+            body: "*"
+        };
+    }
+
+    // Pauses a running notebook identified by the given id.
+    // Required permissions:
+    // - notebook.notebook.pause on the notebook
+    rpc PauseNotebook(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/notebook/v1/{id}/pause"
+        };
+    }
+    
+    // Resumes a paused notebook identified by the given id.
+    // When ResumeNotebook is invoked on a notebook that has is_paused not set, an PreconditionFailed error is returned.
+    // Required permissions:
+    // - notebook.notebook.resume on the notebook
+    rpc ResumeNotebook(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/notebook/v1/{id}/resume"
+        };
+    }
+}
+
+// List of Notebooks.
+message NotebookList {
+    repeated Notebook items = 1;
+    // Budget for notebooks
+    common.v1.Budget budget = 2;
+}
+
+// Request for listing notebooks.
+message ListNotebooksRequest {
+    // List notebooks for this deployment ID.
+    // This is a required field.
+    string deployment_id = 1;
+    // Optional common list options, the context_id is ignored
+    common.v1.ListOptions options = 10;
+}
+
+// Contains the specification and status of a given notebook instance.
+message Notebook {
+    // ID of the Notebook.
+    // This is a read-only value.
+    string id = 1;
+    // ID of the Deployment this notebook belongs to.
+    // After creation, this value cannot be changed.
+    // This is a required field.
+    string deployment_id = 2;
+    // URL of the Notebook.
+    // This is a read-only value.
+    string url = 3;
+    // Name of the notebook.
+    // This is a required field.
+    string name = 4;
+    // Description of the notebook.
+    // This is an optional field.
+    string description = 5;
+    // Indicates that this notebook is paused. 
+    // Use the notebook.PauseNotebook method to pause, and notebook.ResumeNotebook to resume (unpause).
+    // This is a read-only value.
+    bool is_paused = 6;
+    // The last paused timestamp of the notebook.
+    // This is the timestamp that is_paused is transitioned from unset to set.
+    // This is a read-only value.
+    google.protobuf.Timestamp last_paused_at = 7;
+    // The last resumed timestamp of the notebook.
+    // This is the timestamp that is_paused is transitioned from set to unset.
+    // This is a read-only value.
+    google.protobuf.Timestamp last_resumed_at = 8;
+    // Identifier of the user that created this notebook.
+    // This is a read-only value.
+    string created_by_id = 9;
+    // Time at which this notebook was created.
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 10;
+    // Model specification for the notebook.
+    ModelSpec model = 11;
+    // Set when this notebook is deleted.
+    // This is a read-only value.
+    bool is_deleted = 12;
+    // The deletion timestamp of the deployment
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 13;
+    // If set, the Notebook is created for use along with ArangoML.
+    // This field will be set to `true` if ML services are enabled at the time of creating the notebook.
+    // This is a read-only value.
+    bool ml_enabled = 14;
+    // Status of the notebook.
+    // This is a read-only value.
+    Status status = 100;
+}
+// Model specification for the notebook.
+message ModelSpec {
+    // Type of model being used.
+    // This should refer to the `id` of a `NotebookModel` object.
+    // This is a required field.
+    string notebook_model_id = 1; 
+    // Disk size allocated to the notebook instance (in GiB).
+    // This is a required field.
+    int32 disk_size = 2;
+}
+
+// Specifies the resource configuration for a notebook.
+message NotebookModel {
+    // System identifier of the model.
+    string id = 1;
+    // Human readable name of the model.
+    string name = 2;
+    // CPU units allocated to the notebook.
+    // 1 CPU unit equals 1 physical / virtual CPU.
+    float cpu = 3; 
+    // Memory allocated to the notebook in 'GiB'.
+    int32 memory = 4;
+    // Maximum amount of disk space (in GiB) available to the notebook.
+    int32 max_disk_size = 5;
+    // Minimum amount of disk space (in GiB) available to the notebook.
+    int32 min_disk_size = 6;
+    // GPU units allocated to the notebook.
+    // 1 GPU unit equals 1 physical / virtual GPU.
+    float gpu = 7;
+    // Initial amount of disk space (in GiB) available to the notebook.
+    int32 initial_disk_size = 8;
+}
+
+// List of notebook models.
+message NotebookModelList {
+    repeated NotebookModel items = 1;
+}
+
+// Requet for listing notebook models.
+message ListNotebookModelsRequest {
+    // ID of the deployment that the notebook belongs to.
+    string deployment_id = 1;
+}
+
+// Status of the notebook.
+// Note: all fields in this block are read-only.
+message Status {
+    // Where the notebook is in its lifecycle at any given time.
+    // Should contain only one of the following values:
+    // "Initialising"   - Notebook is initialising.
+    // "Running"        - Notebook is running.
+    // "Hibernating"    - Notebook is moving to a hibernated state.
+    // "Hibernated"     - Notebook has moved to a hibernated state.
+    // "Error"          - Notebook is in an errored state. Additional information can be obtained from `message` field.
+    string phase = 1;
+    // Supporting information about the notebook phase - such as error messages in case of failures.
+    string message = 2;
+    // The timestamp of when the status of the notebook was last updated.
+    google.protobuf.Timestamp last_updated_at = 3;
+    // Endpoint URL used to reach the notebook
+    // This value will be empty during the creation of the notebook.
+    string endpoint = 4;
+    // Endpoint URL used to reach the notebook on default port 443
+    // This value will be empty during the creation of the notebook.
+    // This endpoint is recommended for human-to-notebook connections.
+    string endpoint_default = 5;
+    // Endpoint URL used to reach the notebook with self signed certificate on port 18829
+    // This value will be empty during the creation of the notebook.
+    string endpoint_self_signed = 6;
+    // Resource usage of the notebook.
+    message Usage {
+        // Information about the data volume used to store the data
+        data.v1.DataVolumeInfo data_volume_info = 1;
+        // Last known memory usage in bytes
+        int64 last_memory_usage = 2;
+        // Last known CPU usage in vCPU units
+        float last_cpu_usage = 3;
+        // Last known memory limit in bytes
+        int64 last_memory_limit = 4;
+        // Last known CPU limit in vCPU units
+        float last_cpu_limit = 5; 
+        // Last known GPU usage in GPU units
+        float last_gpu_usage = 6;
+        // Last known GPU limit in GPU units
+        float last_gpu_limit = 7; 
+    }
+    // The timestamp of when this notebook was last reported to be active.
+    google.protobuf.Timestamp last_active_at = 7;
+    // Resource usage of the notebook.
+    Usage usage = 10 [deprecated=true];
+}

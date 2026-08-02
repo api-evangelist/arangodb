@@ -1,0 +1,148 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  npm registry, PyPI, Maven Central, Packagist, pkg.go.dev, NuGet, crates.io and
+  https://docs.arango.ai/ecosystem/drivers/
+docs: https://docs.arango.ai/ecosystem/drivers/
+packages:
+- language: javascript
+  registry: npm
+  name: arangojs
+  version: 10.3.1
+  url: https://www.npmjs.com/package/arangojs
+  source: https://github.com/arangodb/arangojs
+  install: npm install arangojs
+  license: Apache-2.0
+  official: true
+  description: The official ArangoDB JavaScript/TypeScript driver.
+- language: python
+  registry: pypi
+  name: python-arango
+  version: 8.3.3
+  url: https://pypi.org/project/python-arango/
+  source: https://github.com/arangodb/python-arango
+  install: pip install python-arango
+  official: true
+  description: The official ArangoDB Python driver.
+- language: python
+  registry: pypi
+  name: python-arango-async
+  version: 1.2.3
+  url: https://pypi.org/project/python-arango-async/
+  source: https://github.com/arangodb/python-arango-async
+  install: pip install python-arango-async
+  official: true
+  description: The official ArangoDB asynchronous Python driver.
+- language: java
+  registry: maven
+  name: com.arangodb:arangodb-java-driver
+  version: 7.20.0
+  url: https://central.sonatype.com/artifact/com.arangodb/arangodb-java-driver
+  source: https://github.com/arangodb/arangodb-java-driver
+  install: '<dependency><groupId>com.arangodb</groupId><artifactId>arangodb-java-driver</artifactId><version>7.20.0</version></dependency>'
+  official: true
+  description: The official ArangoDB Java driver.
+- language: java
+  registry: maven
+  name: com.arangodb:arangodb-java-driver-shaded
+  version: 7.20.0
+  url: https://central.sonatype.com/artifact/com.arangodb/arangodb-java-driver-shaded
+  source: https://github.com/arangodb/arangodb-java-driver
+  official: true
+  description: Shaded build of the official Java driver, for dependency-conflict avoidance.
+- language: java
+  registry: maven
+  name: com.arangodb:arangodb-spring-data
+  version: 4.6.0
+  url: https://central.sonatype.com/artifact/com.arangodb/arangodb-spring-data
+  source: https://github.com/arangodb/spring-data
+  official: true
+  description: Spring Data ArangoDB.
+- language: java
+  registry: maven
+  name: com.arangodb:arangodb-spring-boot-starter
+  version: 3.4-0
+  url: https://central.sonatype.com/artifact/com.arangodb/arangodb-spring-boot-starter
+  source: https://github.com/arangodb/spring-boot-starter
+  official: true
+  description: Spring Boot starter for ArangoDB.
+- language: go
+  registry: go
+  name: github.com/arangodb/go-driver/v2
+  url: https://pkg.go.dev/github.com/arangodb/go-driver/v2
+  source: https://github.com/arangodb/go-driver
+  install: go get github.com/arangodb/go-driver/v2
+  official: true
+  description: The official ArangoDB Go driver.
+- language: php
+  registry: packagist
+  name: triagens/arangodb
+  url: https://packagist.org/packages/triagens/arangodb
+  source: https://github.com/arangodb/arangodb-php
+  install: composer require triagens/arangodb
+  official: true
+  description: The official ArangoDB PHP ODM/driver.
+- language: javascript
+  registry: npm
+  name: foxx-cli
+  version: 2.1.1
+  url: https://www.npmjs.com/package/foxx-cli
+  source: https://github.com/arangodb/foxx-cli
+  install: npm install --global foxx-cli
+  official: true
+  kind: cli
+  description: Official CLI for managing Foxx microservices on an ArangoDB deployment.
+- language: go
+  registry: github
+  name: oasisctl
+  url: https://github.com/arangodb-managed/oasisctl
+  source: https://github.com/arangodb-managed/oasisctl
+  official: true
+  kind: cli
+  description: Official command-line utility for the Arango Managed Platform (AMP) API.
+- language: go
+  registry: go
+  name: github.com/arangodb-managed/apis
+  url: https://pkg.go.dev/github.com/arangodb-managed/apis
+  source: https://github.com/arangodb-managed/apis
+  install: go get github.com/arangodb-managed/apis
+  official: true
+  description: Generated Go clients for the Arango Managed Platform gRPC API (see grpc/).
+- language: scala
+  registry: maven
+  name: com.arangodb:arangodb-spark-datasource-3.5_2.12
+  version: 1.8.0
+  url: https://central.sonatype.com/artifact/com.arangodb/arangodb-spark-datasource-3.5_2.12
+  source: https://github.com/arangodb/arangodb-spark-datasource
+  official: true
+  description: ArangoDB connector for Apache Spark using the Spark DataSource API.
+- language: python
+  registry: pypi
+  name: nx-arangodb
+  url: https://pypi.org/project/nx-arangodb/
+  source: https://github.com/arangodb/nx-arangodb
+  install: pip install nx-arangodb
+  official: true
+  description: ArangoDB backend for NetworkX.
+community_packages:
+- language: csharp
+  registry: nuget
+  name: ArangoDBNetStandard
+  version: 3.1.0
+  url: https://www.nuget.org/packages/ArangoDBNetStandard
+  authors: ArangoDB Community
+  official: false
+  note: >-
+    Community-maintained .NET driver. ArangoDB deprecated and removed its own
+    C#/.NET driver documentation in 3.11 (see
+    lifecycle/arangodb-lifecycle.yml).
+- language: rust
+  registry: crates.io
+  name: arangors
+  version: 0.6.0
+  url: https://crates.io/crates/arangors
+  official: false
+  note: Community-maintained Rust driver (fMeow/arangors).
+counts:
+  official: 14
+  community: 2

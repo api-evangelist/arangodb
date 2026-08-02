@@ -1,0 +1,75 @@
+generated: '2026-08-02'
+method: searched
+source: https://raw.githubusercontent.com/arangodb/arangodb/v3.12.10/CHANGELOG
+docs: https://docs.arango.ai/arangodb/stable/release-notes/
+scheme: dated per-release CHANGELOG in the source tree, plus curated
+  "What's New" / "API changes" / "Incompatible changes" pages per minor version
+  in the documentation
+current_version: 3.12.10
+current_version_date: '2026-08-01'
+window: 3.12.x line (most recent five patch releases)
+other_changelogs:
+- component: ArangoDB Starter
+  url: https://github.com/arangodb-helper/arangodb/blob/master/CHANGELOG.md
+- component: Foxx CLI
+  url: https://github.com/arangodb/foxx-cli/blob/main/CHANGELOG.md
+- component: kube-arangodb (Kubernetes operator)
+  url: https://github.com/arangodb/kube-arangodb/blob/master/CHANGELOG.md
+entries:
+- version: 3.12.10
+  date: '2026-08-01'
+  breaking: true
+  highlights:
+  - Removed the deprecated replication applier REST API (12 endpoints under
+    /_api/replication) and the arangosh methods that used it; single-server to
+    single-server replication is no longer supported (COR-726/COR-787/COR-792).
+  - Removed the telemetrics API and the arangosh telemetrics client (COR-728).
+  - Added the arangodb_http_response_http_response_code_total{code="<response-code>"}
+    metric (COR-613).
+  - Fixed authorization for /_admin/aardvark routes; added a missing 403 for
+    HTTP_UNAUTHORIZED.
+  - Vector indexes are now always included in dumps (BTS-2421); new
+    --vector-index-build-retry-backoff startup option (BTS-2400).
+- version: 3.12.9
+  date: '2026-04-03'
+  breaking: false
+  highlights:
+  - Fixed a stale errorMessage on vector index creation when training succeeds
+    with inBackground false.
+  - Correct CPU context in coredumps for SIGSEGV/SIGILL.
+  - Dependency bumps (lodash, @xmldom/xmldom); ArangoDB Starter v0.19.19.
+- version: 3.12.8
+  date: '2026-03-05'
+  breaking: false
+  additions:
+  - The server now serves its own OpenAPI document at /_arango/v{N}/openapi.json.
+  highlights:
+  - Fixed parsing of the API version prefix (/_arango/vX evaluated before /_db/<dbname>).
+  - '`null` is now accepted as a valid value for the `roles` attribute in JWT tokens.'
+  - Pick the correct replica during SmartGraph traversal when reading from followers (COR-77).
+- version: 3.12.7
+  date: '2025-12-06'
+  breaking: false
+  highlights:
+  - Fixed a crash when storing the query plan for queries with subqueries in the
+    plan cache (BTS-2268).
+  - Fixed a potential integer overflow in shortest-path estimation.
+  - Dependency and toolchain refreshes (express 4.21.2, rclone rebuild, Starter v0.19.15).
+- version: 3.12.6
+  date: '2025-10-22'
+  breaking: false
+  additions:
+  - Automatic authentication via /_open/auth in the client tools with automatic
+    JWT renewal, governed by --auth.minimal-jwt-expiry-time and
+    --auth.maximal-jwt-expiry-time; needed for platform SSO with client tools.
+  - New --server.jwt-token option for arangosh and the other client tools.
+  highlights:
+  - New Arango logo and colours applied to the web UI (FE-825).
+  - Faster filtered vector-index queries via batched document fetches.
+- version: 3.12.5
+  date: '2025-06-18'
+  breaking: false
+  highlights:
+  - Fixed a memory leak in LogContext and several concurrency detection additions.
+  - arangorestore no longer fails restoring a dump containing a vector index.
+  - Corrupt request URLs now return HTTP 400 instead of closing the connection (BTS-2112).

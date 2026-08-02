@@ -1,0 +1,79 @@
+generated: '2026-08-02'
+method: searched
+source: https://docs.arango.ai/ecosystem/arangodb-mcp-server/
+status: published
+official: true
+server:
+  name: arangodb
+  title: ArangoDB Model Context Protocol (MCP) Server
+  transport: stdio
+  hosted: false
+  distribution:
+    kind: docker
+    image: arangodb/mcp-arangodb
+    url: https://hub.docker.com/r/arangodb/mcp-arangodb
+  note: >-
+    Self-hosted. Arango publishes the MCP server as a Docker image that the agent
+    runtime launches locally and points at an ArangoDB deployment; there is no
+    vendor-hosted remote MCP endpoint, so `tools/list` cannot be introspected
+    anonymously. The tool list and parameters below are transcribed verbatim from
+    the vendor documentation, not from a live tools/list response.
+  scope: >-
+    Purpose-built for safe, read-focused AQL work. Graph/view/index/analyzer
+    management and destructive admin operations (create/delete databases or
+    collections) are deliberately NOT exposed.
+tools:
+- name: get-aql-manual
+  description: Retrieves built-in documentation for AQL syntax and optimization.
+  parameters:
+  - name: manual_name
+    required: true
+    enum: [aql_ref, optimization]
+  use_when: You need reference documentation for writing AQL queries.
+  source_operation: null
+- name: fetch-schemas
+  description: Lists all collections in a database (non-system collections only).
+  parameters:
+  - name: database_name
+    required: false
+    description: Target database. Uses configured default if not specified.
+  use_when: You need to discover what collections exist in your database.
+  source_operation: openapi/arangodb-core-openapi-original.json#listCollections
+- name: read-documents-with-filter
+  description: Samples documents from a collection using simple equality filters.
+  parameters:
+  - name: collection_name
+    required: true
+  - name: filters
+    required: true
+    description: Filter conditions as key-value pairs.
+  - name: limit
+    required: false
+    default: 100
+  - name: skip
+    required: false
+    default: 0
+  use_when: You want to explore document structure or find documents by exact field matches.
+  source_operation: openapi/arangodb-core-openapi-original.json#createAqlQueryCursor
+- name: execute-aql-query
+  description: Executes AQL queries with optional bind variables.
+  parameters:
+  - name: aql_query
+    required: true
+  - name: bind_vars
+    required: false
+  - name: database_name
+    required: false
+  use_when: You need to run complex queries, aggregations, or graph traversals.
+  source_operation: openapi/arangodb-core-openapi-original.json#createAqlQueryCursor
+workflow:
+- Discover — call fetch-schemas() to understand available collections.
+- Explore — use read-documents-with-filter() to see document structures.
+- Reference — call get-aql-manual() if complex query syntax is needed.
+- Execute — run queries with execute-aql-query() using bind variables for safety.
+crosswalk: mcp/arangodb-tool-crosswalk.yml
+x-evidence:
+  fetched: '2026-08-02'
+  url: https://raw.githubusercontent.com/arangodb/docs-hugo/main/site/content/ecosystem/arangodb-mcp-server.md
+  http_status: 200
+  content_type: text/plain

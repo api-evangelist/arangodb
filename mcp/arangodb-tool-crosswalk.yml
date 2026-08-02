@@ -1,0 +1,118 @@
+generated: '2026-08-02'
+method: derived
+source: >-
+  mcp/arangodb-mcp.yml (tool list transcribed from
+  https://docs.arango.ai/ecosystem/arangodb-mcp-server/) bound against
+  openapi/arangodb-core-openapi-original.json (ArangoDB Core API 3.12.10, OpenAPI 3.1.0)
+description: >-
+  Binds every tool exposed by the official ArangoDB MCP server to the OpenAPI
+  operation(s) that back it, so each tool inherits a real input contract from the
+  spec rather than a guessed one. Confidence is set honestly: the MCP server is
+  distributed as a Docker image the agent runtime launches locally, so there is no
+  anonymous tools/list to introspect and the bindings are made by name and
+  documented semantics.
+surfaces:
+  openapi:
+    file: openapi/arangodb-core-openapi-original.json
+    title: ArangoDB Core API
+    version: 3.12.10 (API v0)
+    operations: 254
+    gated: false
+  mcp:
+    server: arangodb/mcp-arangodb
+    transport: stdio (local Docker image)
+    tools_list_gated: true
+    reason: >-
+      No vendor-hosted remote endpoint; tools/list requires launching the image
+      against a live deployment with credentials.
+  graphql:
+    present: false
+crosswalk:
+- tool: fetch-schemas
+  category: discovery
+  rest:
+  - listCollections
+  binding: rest
+  confidence: high
+  note: >-
+    GET /_api/collection. The MCP tool filters to non-system collections, which the
+    REST operation exposes via the `excludeSystem` query parameter.
+- tool: read-documents-with-filter
+  category: read
+  rest:
+  - createAqlQueryCursor
+  binding: rest
+  confidence: medium
+  note: >-
+    No REST "filter documents" operation exists. The tool composes an AQL
+    FOR/FILTER/LIMIT query and submits it to POST /_api/cursor
+    (createAqlQueryCursor); its limit/skip parameters map onto AQL LIMIT, not onto
+    REST pagination parameters.
+- tool: execute-aql-query
+  category: query
+  rest:
+  - createAqlQueryCursor
+  - getNextAqlQueryCursorBatchPut
+  - deleteAqlQueryCursor
+  binding: rest
+  confidence: high
+  note: >-
+    POST /_api/cursor with `query` + `bindVars`; result batches beyond the first
+    are fetched with PUT /_api/cursor/{cursor-identifier} and the cursor is
+    released with DELETE /_api/cursor/{cursor-identifier}.
+mcp_only:
+- tool: get-aql-manual
+  reason: >-
+    Serves AQL reference and optimization documentation bundled inside the MCP
+    server image. There is no ArangoDB REST operation that returns documentation.
+rest_only:
+- capability: Documents CRUD
+  operations: [createDocument, createDocuments, getDocument, getDocuments, getDocumentHeader,
+    replaceDocument, replaceDocuments, updateDocument, updateDocuments, deleteDocument,
+    deleteDocuments]
+  reason: The MCP server is deliberately read-focused; no write tools are exposed.
+- capability: Collection management
+  operations: [createCollection, deleteCollection, renameCollection, truncateCollection,
+    loadCollection, unloadCollection, compactCollection, updateCollectionProperties,
+    getCollection, getCollectionProperties, getCollectionCount, getCollectionFigures,
+    getCollectionChecksum, getCollectionRevision, getCollectionShards, recalculateCollectionCount,
+    loadCollectionIndexes]
+  reason: Destructive/admin operations explicitly excluded from the MCP surface.
+- capability: Named graphs
+  operations: [listGraphs, createGraph, getGraph, deleteGraph, listVertexCollections,
+    addVertexCollection, deleteVertexCollection, listEdgeCollections]
+  reason: Graph management tools explicitly excluded from the MCP surface.
+- capability: Indexes
+  operations: [listIndexes, getIndex, createIndex, createIndexPersistent, createIndexGeo,
+    createIndexTtl, createIndexMdi, createIndexInverted, createIndexFulltext, createIndexVector,
+    deleteIndex]
+  reason: Index management explicitly excluded from the MCP surface.
+- capability: Views and analyzers (ArangoSearch)
+  operations: [listViews, createView, getView, getViewProperties, updateViewProperties,
+    replaceViewProperties, renameView, deleteView, createViewSearchAlias, getViewSearchAlias,
+    getViewPropertiesSearchAlias, updateViewPropertiesSearchAlias, replaceViewPropertiesSearchAlias,
+    renameViewSearchAlias, listAnalyzers, createAnalyzer, getAnalyzer, deleteAnalyzer]
+  reason: View/analyzer management explicitly excluded from the MCP surface.
+- capability: Databases and users
+  operations: [listDatabases, createDatabase, deleteDatabase, getCurrentDatabase, listUserDatabases,
+    listUserAccessibleDatabases, listUsers, createUser, getUser, updateUserData, replaceUserData,
+    deleteUser, getUserDatabasePermissions, setUserDatabasePermissions, deleteUserDatabasePermissions,
+    getUserCollectionPermissions, setUserCollectionPermissions, deleteUserCollectionPermissions]
+  reason: Administrative surface not exposed to agents.
+- capability: Stream and JavaScript transactions
+  operations: [beginStreamTransaction, commitStreamTransaction, abortStreamTransaction,
+    getStreamTransaction, listStreamTransactions, executeJavaScriptTransaction]
+  reason: No transactional tool; MCP calls are single-shot reads.
+- capability: Foxx microservices
+  operations_count: 21
+  reason: Application deployment surface not exposed to agents.
+- capability: Replication, hot backups, cluster and monitoring administration
+  operations_count: 78
+  reason: Operations surface not exposed to agents.
+coverage:
+  tools_named: 4
+  tools_bound_to_rest: 3
+  mcp_only: 1
+  rest_operations_total: 254
+  rest_operations_with_a_tool: 4
+  rest_operation_coverage_pct: 1.6

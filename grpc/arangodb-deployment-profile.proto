@@ -1,0 +1,88 @@
+//
+// DISCLAIMER
+//
+// Copyright 2022 ArangoDB GmbH, Cologne, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+//
+
+syntax = "proto3";
+
+package arangodb.cloud.deploymentprofile.v1;
+
+option go_package = "github.com/arangodb-managed/apis/deployment-profile/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// Deployment Profile service is used to manage Deployment Profiles.
+service DeploymentProfileService {
+  // Get the current API version of this service.
+  // Required permissions:
+  // - None (authenticated only)
+  rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+    option (google.api.http) = {
+      get: "/api/deploymentprofile/v1/api-version"
+    };
+  }
+
+  // List all deployment profiles for the organization identified by the given organization identifier.
+  // Required permissions:
+  // - deploymentprofile.deploymentprofile.list on the organization
+  rpc ListDeploymentProfiles(ListDeploymentProfilesRequest) returns (DeploymentProfileList) {
+    option (google.api.http) = {
+      post:  "/api/deploymentprofile/v1/deploymentprofiles"
+      body: "*"
+    };
+  }
+
+}
+
+// DeploymentProfile represents a single Deployment Profile for an organization.
+message DeploymentProfile {
+  // System identifier of the deployment profile.
+  // This is a read-only value.
+  string id = 1;
+  // URL of the deployment profile resource.
+  // This is a read-only value.
+  string url = 2;
+  // Name of the deployment profile.
+  string name = 3;
+  // Description of the deployment profile.
+  string description = 4;
+  // Organization id of the deployment profile.
+  // This is a read-only value.
+  string organization_id = 5;
+  // The creation timestamp of the deployment profile.
+  // This is a read-only value.
+  google.protobuf.Timestamp created_at = 6;
+}
+
+// Request for listing deployment profiles.
+message ListDeploymentProfilesRequest {
+  // List deployment profiles for this organization ID.
+  // This is a required field.
+  string organization_id = 1;
+  // Optional common list options, the context_id is ignored
+  // This is an optional field.
+  common.v1.ListOptions options = 3;
+}
+
+// List of deployment profiles.
+message DeploymentProfileList {
+  repeated DeploymentProfile items = 1;
+}

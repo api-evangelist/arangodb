@@ -1,0 +1,101 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  https://docs.arango.ai/arangodb/stable/components/tools/,
+  https://docs.arango.ai/amp/oasisctl/ and
+  https://docs.arango.ai/ecosystem/drivers/
+description: >-
+  Arango ships two distinct command-line surfaces: the ArangoDB client tools that
+  ship with the database distribution and talk to a deployment over the HTTP API,
+  and oasisctl, the control-plane CLI for the Arango Managed Platform gRPC API.
+  A third, foxx-cli, manages Foxx microservices and is distributed separately on npm.
+clis:
+- name: ArangoDB client tools
+  docs: https://docs.arango.ai/arangodb/stable/components/tools/
+  install:
+  - method: package
+    detail: Bundled with every ArangoDB server package and Docker image.
+    url: https://arango.ai/downloads/
+  - method: docker
+    detail: docker run -it --rm arangodb/arangodb arangosh --server.endpoint <endpoint>
+  auth:
+    options: [--server.username, --server.password, --server.jwt-token, --server.authentication]
+    note: >-
+      Since 3.12.6 the client tools authenticate automatically via /_open/auth and
+      renew the JWT themselves; --server.jwt-token was added in the same release.
+  commands:
+  - command: arangosh
+    group: shell
+    description: >-
+      Interactive JavaScript shell and scripting host for a deployment; the
+      primary way to run AQL and administrative JavaScript against a server.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangodb-shell/
+  - command: arangodump
+    group: backup
+    description: Dump collections, indexes, views and analyzers to disk, with data
+      masking support for exporting non-production copies.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangodump/
+  - command: arangorestore
+    group: backup
+    description: Restore a dump produced by arangodump into a deployment.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangorestore/
+  - command: arangoimport
+    group: data
+    description: Bulk-import JSON, JSONL, CSV and TSV data into a collection.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangoimport/
+  - command: arangoexport
+    group: data
+    description: Export collections or AQL query results to JSON, JSONL, CSV, TSV,
+      XML or XGMML.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangoexport/
+  - command: arangobackup
+    group: backup
+    description: Drive the Hot Backup API (consistent point-in-time backups) from
+      the command line.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangobackup/
+  - command: arangobench
+    group: diagnostics
+    description: Benchmark and load-generation tool for a deployment.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangobench/
+  - command: arangoinspect
+    group: diagnostics
+    description: Collect deployment configuration and diagnostics for support cases.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangoinspect/
+  - command: arangovpack
+    group: utilities
+    description: Convert between VelocyPack and JSON representations.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangovpack/
+  - command: arangodb (Starter)
+    group: deployment
+    description: >-
+      The ArangoDB Starter — bootstraps single servers, active failover and
+      cluster deployments and wires up TLS/JWT security.
+    docs: https://docs.arango.ai/arangodb/stable/components/tools/arangodb-starter/
+    source: https://github.com/arangodb-helper/arangodb
+- name: oasisctl
+  description: Command-line utility for the Arango Managed Platform (AMP) API.
+  docs: https://docs.arango.ai/amp/oasisctl/
+  source: https://github.com/arangodb-managed/oasisctl
+  getting_started: https://docs.arango.ai/amp/api/get-started/
+  backs: grpc/ (the AMP gRPC/Protobuf API)
+  auth:
+    flow: oasisctl login --key-id <id> --key-secret <secret>
+    result: an access token, typically exported as OASIS_TOKEN
+    key_management: dashboard.arangodb.cloud → My API keys
+  global_flags: ['--format table|json', '--token']
+  verbs: [accept, add, auditlog, backup, clone, create, delete, disable, enable, get,
+    list, lock, pause, rebalance, reject, renew, resume, revoke, rotate, unlock, update,
+    wait]
+  key_flows:
+  - Authenticate — oasisctl login --key-id ... --key-secret ...
+  - Discover — oasisctl list organizations / projects / deployments
+  - Inspect — oasisctl get deployment --deployment-id ...
+  - Provision — oasisctl create deployment ... then oasisctl wait deployment
+  - Protect — oasisctl create backup / create backup-policy / lock deployment
+- name: foxx-cli
+  description: Manage Foxx microservices (install, replace, upgrade, uninstall, run
+    scripts, run tests) on an ArangoDB deployment.
+  docs: https://docs.arango.ai/arangodb/stable/components/tools/foxx-cli/
+  source: https://github.com/arangodb/foxx-cli
+  install: npm install --global foxx-cli
+  package: packages/arangodb-packages.yml

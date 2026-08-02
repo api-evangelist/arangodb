@@ -1,0 +1,202 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+// Author Gergely Brautigam
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.example.v1;
+
+option go_package = "github.com/arangodb-managed/apis/example/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// ExampleDatasetService is the API used to query for example datasets.
+service ExampleDatasetService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/example/v1/api-version"
+        };
+    }
+
+    // Fetch all example datasets.
+    // Required permissions:
+    // - None: Caller must be authenticated.
+    rpc ListExampleDatasets(ListExampleDatasetsRequest) returns (ExampleDatasetList) {
+        option (google.api.http) = {
+            get: "/api/example/v1/exampledataset"
+        };
+    }
+
+    // Fetch an example dataset identified by the given ID.
+    // Required permissions:
+    // - None: Caller must be authenticated.
+    rpc GetExampleDataset(common.v1.IDOptions) returns (ExampleDataset) {
+        option (google.api.http) = {
+            get: "/api/example/v1/exampledataset/{id}"
+        };
+    }
+
+    // Fetch all installations for a specific deployment.
+    // Required permissions:
+    // - example.exampledatasetinstallation.list on the deployment that owns the installation and is identified by the given ID.
+    rpc ListExampleDatasetInstallations(ListExampleDatasetInstallationsRequest) returns (ExampleDatasetInstallationList) {
+        option (google.api.http) = {
+            get: "/api/example/v1/deployment/{deployment_id}/exampledatasetinstallation"
+        };
+    }
+
+    // Fetch an installations identified by the given ID.
+    // Required permissions:
+    // - example.exampledatasetinstallation.get on the installation identified by the given ID.
+    rpc GetExampleDatasetInstallation(common.v1.IDOptions) returns (ExampleDatasetInstallation) {
+        option (google.api.http) = {
+            get: "/api/example/v1/exampledatasetinstallation/{id}"
+        };
+    }
+
+    // Create a new example installation. This represents a request made by the user to create an installation
+    // for a deployment given a specified example dataset.
+    // Required permissions:
+    // -  example.exampledatasetinstallation.create on the deployment that the installation is for and is identified by the given ID.
+    rpc CreateExampleDatasetInstallation(ExampleDatasetInstallation) returns (ExampleDatasetInstallation) {
+        option (google.api.http) = {
+            post: "/api/example/v1/deployment/{deployment_id}/exampledatasetinstallation"
+            body: "*"
+        };
+    }
+
+    // Update an installation.
+    // Required permissions:
+    // -  example.exampledatasetinstallation.update on the installation identified by the given ID.
+    rpc UpdateExampleDatasetInstallation(ExampleDatasetInstallation) returns (ExampleDatasetInstallation) {
+        option (google.api.http) = {
+            patch: "/api/example/v1/exampledatasetinstallation/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete an installation identified by the given ID.
+    // Required permissions:
+    // -  example.exampledatasetinstallation.delete on the installation identified by the given ID.
+    rpc DeleteExampleDatasetInstallation(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/example/v1/exampledatasetinstallation/{id}"
+        };
+    }
+}
+
+// ExampleDataset represents a single example dataaset.
+message ExampleDataset {
+    // System identifier of the example dataset.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource.
+    // This is a read-only value.
+    string url = 2;
+    // Name of the example dataset
+    string name = 3; 
+    // Description of the example dataset
+    string description = 4;
+    // Guide contains description of the example dataset including several example queries.
+    // Content type of guide is markdown.
+    string guide = 6;
+    // The creation timestamp of the example dataset (database object)
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 7;
+}
+
+// ExampleDatasetInstallation represents an installation of a dataset initiated by the user.
+message ExampleDatasetInstallation {
+    // System identifier of the installation.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value.
+    string url = 2;
+    // Identifier of the deployment that owns this installation.
+    // After creation, this value cannot be changed.
+    string deployment_id = 3;
+    // Identifier of the example dataset which will be installed.
+    // After creation, this value cannot be changed.
+    string exampledataset_id = 4;
+    // The creation timestamp of the installation.
+    google.protobuf.Timestamp created_at = 5;
+    // The deletion timestamp of the installation
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 6;
+    // Set when this installation is deleted.
+    // This is a read-only value.
+    bool is_deleted = 7;
+    // Status of the installation.
+    // All members of this field are read-only.
+    message Status {
+        // Name of the database into which this example dataset was installed.
+        string database_name = 1;
+        // The state of the installation.
+        // Will be one of the following: "InProgress|Create|Ready|Failed"
+        string state = 3;
+        // Set when the installation is failed.
+        bool is_failed = 4;
+        // Set when once the installation finished successfully and the dataset is available to be used.
+        bool is_available = 5;
+        // Name of ArangoDB user that was created for this installation. 
+        // Empty when no user is created.
+        string user_name = 6;
+        // URL towards demo resulting from this example installation.
+        string demo_url = 7;
+    }
+    // Status of the actual installation.
+    Status status = 100;
+}
+
+// ListExampleDatasetsRequest provides an extendable list request for listing datasets.
+message ListExampleDatasetsRequest {
+    // Optional common list options, the context_id is ignored.
+    common.v1.ListOptions options = 1;
+    // If set, the result includes all example datasets which are available for the
+    // organization identified by this ID.
+    // If not set, only datasets are returned that are available to all organizations.
+    string organization_id = 2;
+}
+
+// List of example datasets.
+message ExampleDatasetList {
+    repeated ExampleDataset items = 1;
+}
+
+// List of example datasets.
+message ExampleDatasetInstallationList {
+    repeated ExampleDatasetInstallation items = 1;
+}
+
+// Request arguments for ListExampleDatasetInstallations.
+message ListExampleDatasetInstallationsRequest {
+    // Identifier of the deployment to request the installations for.
+    string deployment_id = 1;
+    // Optional common list options, the context_id is ignored.
+    common.v1.ListOptions options = 10;
+}

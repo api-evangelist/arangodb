@@ -1,0 +1,502 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2026 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.usage.v1;
+
+option go_package = "github.com/arangodb-managed/apis/usage/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// UsageService is the API used to fetch usage tracking information.
+service UsageService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/usage/v1/api-version"
+        };
+    }
+
+    // Fetch all UsageItem resources in the organization identified by the given
+    // organization ID that match the given criteria.
+    // Required permissions:
+    // - usage.usageitem.list on the organization identified by the given organization ID
+    rpc ListUsageItems(ListUsageItemsRequest) returns (UsageItemList) {
+        option (google.api.http) = {
+            get: "/api/usage/v1/organization/{organization_id}/usageitems"
+        };
+    }
+}
+
+// A UsageItem message contained usage tracking information for a tracked
+// resource (usually deployment) in a specific time period.
+message UsageItem {   
+    // System identifier of the usage item.
+    string id = 1;
+    // URL of this resource
+    string url = 2;
+    // Kind of usage item.
+    // Examples:
+    // UsageItemKindNetworkSize (NetworkUsageSize), UsageItemKindCPUHour (CPUHour), etc.
+    string kind = 3;
+
+    message Resource {
+        // System identifier of the resource that this usage item covers.
+        string id = 1;
+        // URL of the resource that this usage item covers
+        string url = 2;
+        // Kind of resource that this usage item covers.
+        string kind = 3;
+        // Human readable description of the resource that this usage item covers.
+        string description = 4;
+        // Identifier of the organization that owns the resource that this usage item covers.
+        string organization_id = 5;
+        // @Deprecated - will be removed in OAS-12028
+        // Name of the organization that owns the resource that this usage item covers.
+        string organization_name = 6;
+        // Identifier of the project that owns the resource that this usage item covers.
+        // This field is optional when the kind is AuditLogSize, depending if the audit log is for a deployment (set) or ArangoGraph Insights Platform (empty)
+        string project_id = 7;
+        // @Deprecated - will be removed in OAS-12028
+        // Name of the project that owns the resource that this usage item covers.
+        // This field is optional when the kind is AuditLogSize, depending if the audit log is for a deployment (set) or ArangoGraph Insights Platform (empty)
+        string project_name = 8;
+        // Identifier of the deployment that owns the resource that this usage item covers.
+        // This field is optional when the kind is AuditLogSize, depending if the audit log is for a deployment (set) or ArangoGraph Insights Platform (empty)
+        string deployment_id = 9;
+        // @Deprecated - will be removed in OAS-12028
+        // Name of the deployment that owns the resource that this usage item covers.
+        // This field is optional when the kind is AuditLogSize, depending if the audit log is for a deployment (set) or ArangoGraph Insights Platform (empty)
+        string deployment_name = 10;
+        // Name of the deployment member that owns the resource that this usage item covers.
+        // This field is only set when the usage item is specific for a member of the deployment (e.g. network transfer)
+        string deployment_member_name = 11;
+        // Identifier of the cloud provider that is used to run the deployment.
+        // This field is optional when the kind is AuditLogSize, depending if the audit log is for a deployment (set) or ArangoGraph Insights Platform (empty)
+        string cloud_provider_id = 12;
+        // Identifier of the cloud region that is used to run the deployment.
+        // This field is optional when the kind is AuditLogSize, depending if the audit log is for a deployment (set) or ArangoGraph Insights Platform (empty)
+        string cloud_region_id = 13;
+        // Identifier of the support plan that is attached to the deployment.
+        // This field is not filled-out when the kind is AuditLogSize
+        string support_plan_id = 14;
+        // Model of the deployment
+        // This field is not filled-out when the kind is AuditLogSize
+        string deployment_model = 15;
+        // Identifier of the PrepaidDeployment that this deployment is attached to (if any)
+        string prepaid_deployment_id = 16;
+        // Timestamp when the prepaid_deployment starts (relevant when prepaid_deployment_id is set only)
+        google.protobuf.Timestamp prepaid_deployment_starts_at = 17;
+        // Timestamp when the prepaid_deployment ends (relevant when prepaid_deployment_id is set only)
+        google.protobuf.Timestamp prepaid_deployment_ends_at = 18;
+        // Identifiers of the credit bundles (if any) that were used to pay for this usage item.
+        repeated string credit_bundle_ids = 19;
+    }
+    // Identification of the resource covered by this usage item
+    Resource resource = 4;
+
+    // This usage item covers a time period that starts at this timestamp
+    google.protobuf.Timestamp starts_at = 5;
+    // This usage item covers a time period that ends at this timestamp.
+    // If the usage item has not yet ended, this field is is set to the current time.
+    google.protobuf.Timestamp ends_at = 6;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Set when this usage item has ended.
+    bool has_ended = 7;
+    // Identifier of the tier the organization was using at the start of this usage period.
+    string tier_id = 8;
+    // Identifier of the invoice that includes this usage item.
+    // The usage item must be ended when this field it set.
+    string invoice_id = 9;
+
+    // UsageItem creation time information
+    google.protobuf.Timestamp created_at = 10;
+
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of (computer) resources used by the resource covered by this usage item.
+    message DeploymentSize {
+        // Number of coordinators of the deployment
+        int32 coordinators = 1;
+        // Amount of memory (in GB) allocated for each coordinator.
+        int32 coordinator_memory_size = 2;
+
+        // Number of dbservers of the deployment
+        int32 dbservers = 11;
+        // Amount of memory (in GB) allocated for each dbserver.
+        int32 dbserver_memory_size = 12;
+        // Amount of disk space (in GB) allocated for each dbserver.
+        int32 dbserver_disk_size = 13;
+
+        // Number of agents of the deployment
+        int32 agents = 21;
+        // Amount of memory (in GB) allocated for each agent.
+        int32 agent_memory_size = 22;
+        // Amount of disk space (in GB) allocated for each agent.
+        int32 agent_disk_size = 23;
+
+        // Identifier of the node-size used for this deployment (empty for flexible)
+        string node_size_id = 31;
+
+        // Identifier of disk performance used for this deployment (if any).
+        string disk_performance_id = 32;
+
+        // List of identifiers of addons used by the deployment.
+        repeated string addon_ids = 41;
+
+        // IF true the deployment was in paused state
+        bool is_paused = 42;
+
+        // Number of gateways of the deployment.
+        int32 gateways = 51;
+        // Amount of memory (in GB) allocated for each gateway.
+        float gateway_memory_size = 52;
+    }
+    // Amount of (computer) resources used by the resource covered by this usage item.
+    // This field is only set when the usage item is of kind DeploymentSize.
+    DeploymentSize deployment_size = 101;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of network traffic used by the resource covered by this usage item.
+    message NetworkTransferSize {
+        // The destination (or source) the network traffic going to (or coming from)
+        // Can be 'Internet' or 'InCluster'
+        // An empty string means 'Internet' 
+        string destination = 1;
+        // Total amount of network ingress traffic (in bytes) caused by the use of a deployment.
+        // Destination 'Internet': This is traffic coming from the internet, so excluding inner cluster traffic 
+        // Destination 'InCluster': This is in-cluster traffic only
+        // This is always excluding backup traffic (downloads).
+        int64 total_transfer_ingress_size = 2;
+        // Total amount of network egress traffic (in bytes) caused by the use of a deployment.
+        // Destination 'Internet': This is traffic going to the internet, so excluding inner cluster traffic 
+        // Destination 'InCluster': This is in-cluster traffic only
+        // This is always excluding backup traffic (uploads).
+        int64 total_transfer_egress_size = 3;
+        // Note: In the future we want to split between cross_region_transfer_x and inner_region_transfer_x, 
+        //       the total_transfer_x is the sum of these 2. Inner region can be cross availability zone.
+    }
+    // Amount of network traffic used by the resource covered by this usage item.
+    // This field is only set when the usage item is of kind NetworkTransferSize
+    // (UsageItemKindNetworkTransferSize).
+    NetworkTransferSize network_transfer_size = 102;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of backup related cloud storage used by the resource covered by this usage item.
+    message BackupStorageSize {
+        // Amount of cloud storage (in bytes) used by backups of a deployment.
+        int64 cloud_storage_size = 1;
+        // Purpose of the cloud storage.
+        // Can be 'auditlogs', 'backups', 'platform', etc.
+        string purpose = 2;
+    }
+    // Amount of backup related cloud storage used by the resource covered by this usage item.
+    // This field is only set when the usage item is of kind BackupStorageSize.
+    BackupStorageSize backup_storage_size = 103;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of audit log related resources used by the resource covered by this usage item.
+    message AuditLogSize {
+        // Type of destination.
+        // Possible values are: "cloud", "https-post"
+        string destination_type = 1;
+        // Number of events used by audit log.
+        // This is the value of DestinationCounters.events (of the timespan covered by this usage item).
+        int64 event_count = 11;
+        // Number of bytes used by audit log.
+        // This is the total of DestinationCounters.bytes_succeeded and bytes_failed (of the timespan covered by this usage item)
+        // and depending on the destination type send to the cloud or used as the body of a https post request.
+        int64 event_size = 12;
+        // Number of https post invocations used by audit log.
+        // This is the total of DestinationCounters.https_posts_succeeded and https_posts_failed (of the timespan covered by this usage item).
+        // Set when destination_type is "https-post" only
+        int64 https_post_count = 21;
+       
+    }
+    // Amount of audit log related resources used by the resource covered by this usage item.
+    // This field is only set when the usage item is of kind AuditLogSize.
+    AuditLogSize auditlog_size = 104;
+
+    // @Deprecated - will be removed in OAS-12028
+     // Amount of audit log storage related resources used by the resource covered by this usage item.
+     // When this usage type is used, the audit log destination_type is "cloud".
+     message AuditLogStorageSize {
+        // Amount of cloud storage (in bytes) used by audit log.
+        int64 cloud_storage_size = 1;
+    }
+    // Amount of audit log storage related resources used by the resource covered by this usage item.
+    // This field is only set when the usage item is of kind AuditLogCloudSize.
+    AuditLogStorageSize auditlog_storage_size = 105;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of cloud resources used by a given Notebook.
+    // This field is only set when the usage item is of kind NotebookSize.
+    message NotebookSize {
+        // Amount of CPU units allocated to the notebook.
+        // 1 CPU unit equals 1 physical / virtual CPU.
+        float cpu_size = 1;    
+        
+        // Amount of memory allocated to the notebook (in GiB).
+        int64 memory_size = 2;
+
+        // Size of the disk allocated to the notebook (in GiB).
+        int64 disk_size = 3;
+
+        // If the Notebook is paused (Hibernated phase).
+        bool is_paused = 4;
+        
+        // ID of the type of Notebook that is being used.
+        string notebook_model_id = 5; 
+
+        // Amount of GPU units allocated to the notebook.
+        // 1 GPU unit equals 1 physical / virtual GPU.
+        float gpu_size = 6;   
+    }
+
+    // Amount of cloud resources used by a given Notebook.
+    // This field is only set when the usage item is of kind NotebookSize.
+    NotebookSize notebook_size = 106;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of compute resources used by a given MLServices resource.
+    message MLServicesSize {
+        // Number of training API servers.
+        int32 training_apis = 1;
+        // Amount of memory (in GB) allocated for each training API server.
+        int64 training_api_memory_size = 2;
+        // Amount of CPU units allocated to the training API server.
+        // 1 CPU unit equals 1 physical / virtual CPU.
+        float training_api_cpu_size = 3;
+
+        // Number of prediction API servers.
+        int32 prediction_apis = 4;
+        // Amount of memory (in GB) allocated for each prediction API server.
+        int64 prediction_api_memory_size = 5;
+        // Amount of CPU units allocated to the prediction API server.
+        // 1 CPU unit equals 1 physical / virtual CPU.
+        float prediction_api_cpu_size = 6;
+
+        // Number of projects API servers.
+        int32 projects_apis = 7;
+        // Amount of memory (in GB) allocated for each projects API server.
+        int64 projects_api_memory_size = 8;
+        // Amount of CPU units allocated to the projects API server.
+        // 1 CPU unit equals 1 physical / virtual CPU.
+        float projects_api_cpu_size = 9;
+    }
+
+    // Amount of compute resources used by a given MLServices resource.
+    // This field is only set when the usage item is of kind MLServicesSize.
+    MLServicesSize mlservices_size = 107;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of compute resources used by a ML Job.
+    message MLJobSize {
+        // Amount of memory (in GB) allocated for the job.
+        int32 memory_size = 1;
+        // Amount of CPU units allocated to the job.
+        // 1 CPU unit equals 1 physical / virtual CPU.
+        float cpu_size = 2;
+        // Amount of GPU units allocated to the job.
+        // 1 CPU unit equals 1 physical / virtual GPU.
+        float gpu_size = 3;
+        // ID of the ML job.
+        string job_id = 4;
+        // Type of ML Job (training, prediction, etc.)
+        string job_type = 5;
+    }
+    // Amount of compute resources used by a given ML job.
+    // This field is only set when the usage item is of kind MLJobSize.
+    MLJobSize mljob_size = 108;
+
+    // @Deprecated - will be removed in OAS-12028
+    // Amount of compute resources used by a Graph Analytics Job.
+    message GraphAnalyticsJobSize {
+        // Amount of memory (in GB) allocated for the job.
+        int32 memory_size = 1;
+        // Amount of CPU units allocated to the job.
+        // 1 CPU unit equals 1 physical / virtual CPU.
+        float cpu_size = 2;
+        // Amount of GPU units allocated to the job.
+        // 1 CPU unit equals 1 physical / virtual GPU.
+        float gpu_size = 3;
+        // ID of the ML job.
+        string job_id = 4;
+        // Type of Graph Analytics job.
+        string job_type = 5;
+    }
+    // Amount of compute resources used by a given ML job.
+    // This field is only set when the usage item is of kind MLJobSize.
+    GraphAnalyticsJobSize graphanalyticsjob_size = 109;
+
+    // Billing 2.0 usage fields.
+
+    message CPUHour {
+        // Number of CPU hours allocated/used in this usage period.
+        double cpu_hours = 1;
+    }
+    // This field is only set when the usage item is of kind CPUHour.
+    CPUHour cpu_hour = 120;
+
+    message MemoryHour {
+        // Number of memory GiB hours allocated/used in this usage period.
+        double memory_gib_hours = 1;
+    }
+    // This field is only set when the usage item is of kind MemoryHour.
+    MemoryHour memory_hour = 121;
+
+    message StorageHour {
+        // Number of storage GiB hours allocated/used in this usage period.
+        double storage_gib_hours = 1;
+    }
+    // This field is only set when the usage item is of kind StorageHour.
+    StorageHour storage_hour = 122;
+
+    message StoragePerformanceHour {
+        // Number of storage performance unit-hours allocated/used in this usage period.
+        double storage_performance_unit_hours = 1;
+    }
+    // This field is only set when the usage item is of kind StoragePerformanceHour.
+    StoragePerformanceHour storage_performance_hour = 123;
+
+    message GPUHour {
+        // Number of GPU hours allocated/used in this usage period.
+        double gpu_hours = 1;
+    }
+    // This field is only set when the usage item is of kind GPUHour.
+    GPUHour gpu_hour = 124;
+
+    message NetworkSize {
+        // The destination (or source) the network traffic going to (or coming from).
+        // Can be 'Internet', 'PrivateEndpoint' or 'InCluster'.
+        string destination = 1;
+        // Total amount of network ingress traffic in bytes for the usage period.
+        int64 total_transfer_ingress_size = 2;
+        // Total amount of network egress traffic in bytes for the usage period.
+        int64 total_transfer_egress_size = 3;
+    }
+    // This field is only set when the usage item is of kind NetworkUsageSize
+    // (UsageItemKindNetworkSize).
+    NetworkSize network_size = 125;
+
+    message CloudStorageHour {
+        // Average amount of cloud storage allocated/used during this usage period, in bytes.
+        // This value is derived from the average of the cloud storage usage gauge over the covered time range.
+        int64 cloud_storage_size = 1;
+
+        // Optional human-readable breakdown by storage purpose, for example:
+        // "Backups: 600.00 MiB, Audit Logs: 120.00 MiB".
+        string purpose_breakdown = 2;
+
+        // Billable cloud storage usage during this usage period, in GiB-hours.
+        // This value is derived from cloud_storage_size and the duration of the covered time range (24h by default).
+        double gib_hours = 3;
+    }
+    // This field is only set when the usage item is of kind CloudStorageHour.
+    CloudStorageHour cloud_storage_hour = 126;
+
+    message DeploymentAEU {
+        // Number of deployment AEU-hours allocated/used in this usage period.
+        double deployment_aeu_hours = 1;
+    }
+    // This field is only set when the usage item is of kind DeploymentAEU.
+    DeploymentAEU deployment_aeu = 127;
+
+    message AuditLogRequests {
+        // Number of audit-log HTTPS-POST delivery requests (invocations) in this usage period.
+        int64 count = 1;
+    }
+    // This field is only set when the usage item is of kind AuditLogRequests.
+    AuditLogRequests audit_log_requests = 128;
+
+    message AuditLogData {
+        // Number of bytes delivered as audit-log HTTPS-POST request bodies in this usage period.
+        int64 bytes = 1;
+    }
+    // This field is only set when the usage item is of kind AuditLogData.
+    AuditLogData audit_log_data = 129;
+}
+
+// List of UsageItems.
+message UsageItemList {
+    repeated UsageItem items = 1;
+}
+
+// Request arguments for ListUsageItems
+message ListUsageItemsRequest {
+    // Request usage items for the organization with this id.
+    // This is a required field.
+    string organization_id = 1;
+    // Request usage items that overlaps in time with the time period that starts with this timestamp (inclusive).
+    // This is a required field.
+    google.protobuf.Timestamp from = 2;
+    // Request usage items that overlaps in time with the time period that ends with this timestamp (exclusive).
+    // This is a required field.
+    google.protobuf.Timestamp to = 3;
+    // Sort descending (new to old) on started_at field (default is ascending).
+    bool sort_descending = 4;
+    // Limit to usage items of this kind
+    string kind = 5;
+
+    // Standard list options
+    // This is an optional field.
+    common.v1.ListOptions options = 10;
+    // Limit to usage items for the resource with this URL.
+    // This is an optional field.
+    string resource_url = 11;
+    // Limit to usage items for the resource with this kind.
+    // This is an optional field.
+    string resource_kind = 12;
+    // Limit to usage items for the project with this id.
+    // This is an optional field.
+    string project_id = 13;
+    // Limit to usage items for the deployment with this id.
+    // This is an optional field.
+    string deployment_id = 14;
+    // Limit to usage items for deployments with this node size.
+    // This is an optional field.
+    string node_size_id = 15;
+    // Limit to usage items for deployments in this region.
+    // This is an optional field.
+    string region_id = 16;
+
+    // If set, limit to usage items that have no invoice_id set.
+    bool has_no_invoice_id = 20;
+    // If set, limit to usage items that have an invoice_id set.
+    bool has_invoice_id = 21;
+    // If set, limit to usage items that have the invoice_id set to this specific value.
+    // This is an optional field.
+    string invoice_id = 22;
+    // Request usage items that start at or after given timestamp.
+    // This is an optional field.
+    google.protobuf.Timestamp not_start_before = 23;
+
+    // Limit to usage items for the deployment with this model.
+    repeated string included_tier_ids = 30;
+    // Limit to usage items for the deployment with this model.
+    repeated string excluded_tier_ids = 31;
+}

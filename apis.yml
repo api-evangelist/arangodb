@@ -1,18 +1,102 @@
 aid: arangodb
 name: ArangoDB
-description: 'ArangoDB is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'ArangoDB (now operating as Arango) is the company behind the open-source,
+  graph-native multi-model database of the same name, which unifies graph, document,
+  key/value, vector and full-text search in a single core with one declarative query
+  language, AQL. The database exposes its entire feature surface over a RESTful HTTP
+  API documented with OpenAPI 3.1, and the company also runs the Arango Managed Platform
+  (AMP, formerly ArangoGraph Insights Platform / Oasis) — a managed cloud on AWS, GCP
+  and Azure whose control plane is a gRPC/Protobuf API at api.cloud.arangodb.com with
+  a companion oasisctl CLI. Arango publishes official drivers for JavaScript, Python,
+  Java, Go and PHP, an official Model Context Protocol server for AQL generation, and
+  a Kubernetes operator.'
+image: https://arango.ai/wp-content/uploads/2026/03/arango-home-social-horz-2026.03-compress.png
 url: https://raw.githubusercontent.com/api-evangelist/arangodb/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment-pipeline
 specificationVersion: '0.20'
 created: '2026-08-02'
 modified: '2026-08-02'
 tags:
 - Company
-apis: []
+- Database
+- Graph Database
+- Multi-Model Database
+- NoSQL
+- Vector Search
+- Knowledge Graph
+- Developer Tools
+- Cloud Infrastructure
+- Artificial Intelligence
+apis:
+- aid: arangodb:arangodb-core-api
+  name: ArangoDB Core API
+  description: 'The RESTful HTTP API of the ArangoDB Core database system, version
+    3.12.10 (API v0). 174 paths and 254 operations across 22 tags covering documents,
+    collections, databases, named
+    graphs, indexes, AQL queries and cursors, views and analyzers, transactions, Foxx
+    microservices, users, replication, hot backups, cluster administration and monitoring.
+    Published by ArangoDB as an OpenAPI 3.1.0 document inside the arangodb/arangodb
+    source tree and rendered as the HTTP API reference in the documentation.'
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  x-baseurl-note: ArangoDB is deployed per instance. On the Arango Managed Platform
+    each deployment gets its own endpoint on *.arangodb.cloud (port 8529); self-managed
+    installations expose the same API on their own host.
+  tags:
+  - Database
+  - Graph Database
+  - Documents
+  - AQL
+  - REST
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-core-openapi-original.json
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  - type: Overlay
+    url: overlays/arangodb-core-overlay.yaml
+- aid: arangodb:amp-api
+  name: Arango Managed Platform (AMP) API
+  description: 'The control-plane API of the Arango Managed Platform (formerly ArangoGraph
+    Insights Platform / Oasis) — the managed ArangoDB cloud. It is a gRPC API defined
+    in protocol buffers, covering organizations, projects, deployments, IAM and API
+    keys, backups and backup policies, billing, credits and usage, audit logs, IP allowlists,
+    CA certificates, private endpoints, metrics, monitoring, notebooks, ML services,
+    replication, SCIM provisioning and support plans.'
+  humanURL: https://docs.arango.ai/amp/api/
+  baseURL: https://api.cloud.arangodb.com
+  tags:
+  - Cloud Infrastructure
+  - Managed Database
+  - gRPC
+  - IAM
+  - Billing
+  properties:
+  - type: Protobuf
+    url: grpc/
+  - type: Documentation
+    url: https://docs.arango.ai/amp/api/
+  - type: GettingStarted
+    url: https://docs.arango.ai/amp/api/set-up-a-connection/
+- aid: arangodb:amp-scim-api
+  name: Arango Managed Platform SCIM API
+  description: 'SCIM 2.0 user and group provisioning endpoint for Arango Managed Platform
+    organizations, used to synchronize identities from an external identity provider
+    into an AMP organization. Authenticated with an AMP API key ID and secret over HTTP
+    Basic.'
+  humanURL: https://docs.arango.ai/amp/security-and-access-control/single-sign-on/scim-provisioning/
+  baseURL: https://dashboard.arangodb.cloud/api/scim/v1
+  tags:
+  - SCIM
+  - Identity
+  - Provisioning
+  - Single Sign-On
+  properties:
+  - type: Documentation
+    url: https://docs.arango.ai/amp/security-and-access-control/single-sign-on/scim-provisioning/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +104,69 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://forgeglobal.com/arangodb_stock/
+  url: https://arango.ai/
+- type: DeveloperPortal
+  url: https://arango.ai/developers/
+- type: Documentation
+  url: https://docs.arango.ai/
+- type: APIReference
+  url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- type: GettingStarted
+  url: https://docs.arango.ai/arangodb/stable/get-started/
+- type: Blog
+  url: https://arango.ai/blog/
+- type: GitHubOrganization
+  url: https://github.com/arangodb
+- type: Support
+  url: https://arango.ai/contact-us/
+- type: Pricing
+  url: https://arango.ai/pricing/
+- type: SignUp
+  url: https://dashboard.arangodb.cloud/
+- type: PrivacyPolicy
+  url: https://arango.ai/privacy-policy/
+- type: StatusPage
+  url: https://status.arangodb.cloud/
+- type: Deprecation
+  url: https://docs.arango.ai/arangodb/stable/release-notes/deprecated-and-removed-features/
+- type: ChangeLog
+  url: changelog/arangodb-changelog.yml
+- type: Lifecycle
+  url: lifecycle/arangodb-lifecycle.yml
+- type: Authentication
+  url: authentication/arangodb-authentication.yml
+- type: Conventions
+  url: conventions/arangodb-conventions.yml
+- type: ErrorCatalog
+  url: errors/arangodb-error-codes.yml
+- type: Packages
+  url: packages/arangodb-packages.yml
+- type: SDKs
+  url: packages/arangodb-packages.yml
+- type: CLI
+  url: cli/arangodb-cli.yml
+- type: MCPServer
+  url: mcp/arangodb-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/arangodb-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/arangodb-llms.txt
+- type: WellKnown
+  url: well-known/arangodb-well-known.yml
+- type: Protobuf
+  url: grpc/
+- type: Conformance
+  url: conformance/arangodb-conformance.yml
+- type: DataModel
+  url: data-model/arangodb-data-model.yml
+- type: DomainSecurity
+  url: security/arangodb-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/arangodb-agentic-access.yml
+x-enrichment:
+  date: '2026-08-02'
+  status: enriched
+  artifacts_added: 53
+  pass: local-v1

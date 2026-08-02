@@ -1,0 +1,179 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2022 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+
+syntax = "proto3";
+
+package arangodb.cloud.resourcemanager.v1;
+
+option go_package = "github.com/arangodb-managed/apis/resourcemanager/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// Note: that this API slightly differs from other APIs, because it need to follow the SCIM conversions.
+// Furthermore is on all those API calls (except GetAPIVersion), the authenticated user can be provided via a username/password header, 
+// which need to contain an APIKey / Secret, which need to resolve to a single organization.
+
+// SCIMService is the API used to expose the SCIM Provisioning API for SAML based SSO.
+service SCIMService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None (authenticated only)
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/scim/v1/api-version"
+        };
+    }
+
+    // List the users as per SCIM API requirements
+    // For an organization identifier inferred via API Key
+    // Required permissions:
+    // - scim.user.list on the organization
+    rpc ListUsers(ListUsersRequest) returns (ListUserResponse) {
+        option (google.api.http) = {
+            get: "/api/scim/v1/Users"
+        };
+    }
+
+    // Get the organization member information based on user identifier as per SCIM API requirements
+    // Required permissions:
+    // - scim.user.get on the organization
+    rpc GetUser(common.v1.IDOptions) returns (User) {
+        option (google.api.http) = {
+            get: "/api/scim/v1/Users/{id}"
+        };
+    }
+
+    // Invite the user to an organization
+    // that is inferred from API key
+    // Required permissions:
+    // - scim.user.add on the organization
+    rpc AddUser(User) returns (User) {
+        option (google.api.http) = {
+            post: "/api/scim/v1/Users"
+            body: "*"
+        };
+    }
+
+
+    // Update the user information
+    // Required permissions:
+    // - scim.user.update on the organization
+    rpc UpdateUser(User) returns (User) {
+        option (google.api.http) = {
+            put: "/api/scim/v1/Users/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete the user from an organization
+    // Required permissions:
+    // - scim.user.delete on the organization
+    rpc DeleteUser(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/scim/v1/Users/{id}"
+        };
+    }
+}
+
+// UserName is the schema used for name of user in SCIM API response
+message UserName {
+    // Formatted name string
+    string formatted = 1;
+    // Given name / first name of user
+    string givenName = 2;
+    // Family name / last name of the user
+    string familyName = 3;
+}
+
+// UserResource is the schema used for resource like emails / photos of user in SCIM API response
+message UserResource {
+    // Value of resource example, email address or photo url
+    string value = 1;
+    // If set value is used as the primary source of information
+    bool primary = 2;
+    // Optional value. Sets the type resource example photo
+    string type = 3;
+}
+
+// Metadata is the schema used for meta data of a resource in SCIM API response
+message Metadata {
+    // Identifies type of resource example User / Group
+    string resourceType = 1;
+    // Defines the time at which the resource was created
+    google.protobuf.Timestamp created = 2;
+    // Defines the time at which the resource was updated
+    google.protobuf.Timestamp lastModified = 3;
+}
+
+// User is the schema used for user information in SCIM API response
+message User {
+    // Name of schemas followed in request / response
+    repeated string schemas = 1;
+    // User identifier
+    string id = 2;
+    // Display name of user
+    string displayName = 3;
+    // Nick name of user
+    string nickName = 4;
+    // Language preferred by user
+    string locale = 5;
+    // Name of user
+    UserName name = 6;
+    // Emails of user
+    repeated UserResource emails = 7;
+    // Photos of user
+    repeated UserResource photos = 8;
+    // Meta information of user creation and updation
+    Metadata meta = 9;
+    // External identifier is used to know the ArangoGraph Insights Platform id
+    string externalId = 10;
+    // Check if user is active
+    bool active = 11;
+    // userName attribute of the external system like okta
+    string userName = 12;
+}
+
+// Request params for ListUsers
+message ListUsersRequest {
+    // Pagination offset value
+    int32 startIndex = 1;
+    // Pagination limit value
+    int32 count = 2;
+    // Filters to apply for querying data
+    string filter = 3;
+}
+
+// Response for ListUsers
+message ListUserResponse {
+    // Name of schemas followed in response
+    repeated string schemas = 1;
+    // Total number of results available
+    int32 totalResult = 2;
+    // Pagination offset value
+    int32 startIndex = 3;
+    // Pagination limit value
+    int32 count = 4;
+    // List of users
+    repeated User Resources = 5;
+}

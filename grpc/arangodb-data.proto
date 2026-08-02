@@ -1,0 +1,1510 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2025 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.data.v1;
+
+option go_package = "github.com/arangodb-managed/apis/data/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/api/annotations.proto";
+
+// DataService is the API used to configure data objects.
+service DataService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/data/v1/api-version"
+        };
+    }
+
+    // Fetch all deployments in the project identified by the given context ID.
+    // Required permissions:
+    // - data.deployment.list on the project identified by the given context ID
+    rpc ListDeployments(common.v1.ListOptions) returns (DeploymentList) {
+        option (google.api.http) = {
+            get: "/api/data/v1/projects/{context_id}/deployments"
+        };
+    }
+
+    // Fetch all deployments in the organization identified by the given filter.
+    // Only the deployments with sufficient permissions are returned. 
+    // If the caller has no such permission on any of the deployments (in the organization) an empty list is returned, not an error. 
+    // Required permissions:
+    // - None (authenticated only)
+    // - data.deployment.list on the filtered deployment(s)
+    rpc ListDeploymentsByFilter(ListDeploymentsByFilterRequest) returns (DeploymentList) {
+        option (google.api.http) = {
+            get: "/api/data/v1/organizations/{organization_id}/deployments"
+        };
+    }
+
+    // Fetch a deployment by its id.
+    // Required permissions:
+    // - data.deployment.get on the deployment identified by the given ID
+    rpc GetDeployment(common.v1.IDOptions) returns (Deployment) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deployments/{id}"
+        };
+    }
+
+    // Fetch all updates (spec and/or status) of the deployment that matches the given request.
+    // Required permissions:
+    // - data.deployment.get on the deployment identified by the given ID
+    rpc GetDeploymentUpdates(common.v1.IDOptions) returns (stream Deployment) {
+        option (google.api.http) = {
+            post: "/api/data/v1/streaming/deployment"
+            body: "*"
+        };
+    }
+
+    // Create a new deployment
+    // Required permissions:
+    // - data.deployment.create on the project that owns the deployment
+    // - network.privateendpointservice.create on the project that owns the deployment (if private_endpoint field is set)
+    // Note that deployment.status & deployment.expiration are ignored
+    // in this request.
+    rpc CreateDeployment(Deployment) returns (Deployment) {
+        option (google.api.http) = {
+            post: "/api/data/v1/project/{project_id}/deployments"
+            body: "*"
+        };
+    }
+
+    // Update a deployment
+    // Required permissions:
+    // - data.deployment.update on the deployment
+    // Note that deployment.status & deployment.expiration are ignored
+    // in this request.
+    rpc UpdateDeployment(Deployment) returns (Deployment) {
+        option (google.api.http) = {
+            patch: "/api/data/v1/deployments/{id}"
+            body: "*"
+        };
+    }
+
+    // Update the setting for scheduled root password rotation
+    // Required permissions:
+    // - data.deployment.update-scheduled-root-password-rotation
+    rpc UpdateDeploymentScheduledRootPasswordRotation(UpdateDeploymentScheduledRootPasswordRotationRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            put: "/api/data/v1/deployments/{deployment_id}/scheduled-rootpassword-rotation"
+            body: "*"
+        };
+    }
+
+    // Delete a deployment
+    // Note that deployments are initially only marked for deletion.
+    // Once all their resources are removed the deployment itself is removed.
+    // Required permissions:
+    // - data.deployment.delete on the deployment
+    rpc DeleteDeployment(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/data/v1/deployments/{id}"
+        };
+    }
+
+    // Fetch credentials for accessing deployment by its id.
+    // Required permissions:
+    // - data.deployment.get on the deployment identified by the given ID
+    // - data.deploymentcredentials.get on the deployment identified by the given ID
+    rpc GetDeploymentCredentials(DeploymentCredentialsRequest) returns (DeploymentCredentials) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deploymentcredentials/{deployment_id}"
+        };
+    }
+
+    // Fetch all ArangoDB versions that are available for deployments.
+    // Required permissions:
+    // - None
+    rpc ListVersions(ListVersionsRequest) returns (VersionList) {
+        option (google.api.http) = {
+            get: "/api/data/v1/versions"
+        };
+    }
+
+    // Fetch the default ArangoDB version for new deployment.
+    // Required permissions:
+    // - None
+    rpc GetDefaultVersion(common.v1.Empty) returns (Version) {
+        option (google.api.http) = {
+            get: "/api/data/v1/versions/default"
+        };
+    }
+
+    // Fetch the ArangoDB version by its id (semver).
+    // Required permissions:
+    // - None
+    rpc GetVersion(common.v1.IDOptions) returns (Version) {
+        option (google.api.http) = {
+            get: "/api/data/v1/versions/{id}"
+        };
+    }
+
+    // Fetch the limits for server specifications for deployments
+    // owned by the given projected, created in the given region.
+    // Required permissions:
+    // - data.limits.get on the requested project
+    // - data.deployment.get on the specified deployment (if deployment_id is set)
+    // This method is deprecated and will be remove in the very near future, do not use this method anymore
+    rpc GetServersSpecLimits(ServersSpecLimitsRequest) returns (ServersSpecLimits) {
+        option (google.api.http) = {
+            get: "/api/data/v1/projects/{project_id}/regions/{region_id}/limits"
+        };
+    }
+
+    // Fetch the node sizes available for deployments
+    // owned by the project with given ID, created in the given region with given ID.
+    // If project ID "all" is used, then all node sizes for the region with given
+    // ID are returned.
+    // Required permissions:
+    // - data.nodesize.list on the requested deployment (if deployment ID is set)
+    // - data.nodesize.list on the requested project (if project ID does not equal "all")
+    // - data.nodesize.list on the requested organization (if organization ID is set)
+    // - None if project ID does equals "all"
+    rpc ListNodeSizes(NodeSizesRequest) returns (NodeSizeList) {
+        option (google.api.http) = {
+            get: "/api/data/v1/projects/{project_id}/regions/{region_id}/nodesizes"
+        };
+    }
+
+    // Fetch the models available for deployments owned by the project with given ID.
+    // Required permissions:
+    // - data.deploymentmodel.list on the requested project
+    rpc ListDeploymentModels(ListDeploymentModelsRequest) returns (DeploymentModelList) {
+        option (google.api.http) = {
+            get: "/api/data/v1/projects/{project_id}/deploymentmodels"
+        };
+    }
+
+    // Fetch the platform bundles available for the given organization.
+    // Required permissions:
+    // - data.arangoplatformbundle.list on the requested organization
+    rpc ListArangoPlatformBundles(ListArangoPlatformBundlesRequest) returns (ArangoPlatformBundleList) {
+        option (google.api.http) = {
+            get: "/api/data/v1/organizations/{organization_id}/arangoplatformbundles"
+        };
+    }
+
+    // Fetch the CPU sizes available for deployments owned by the project with given ID.
+    // Required permissions:
+    // - data.cpusize.list on the requested project
+    rpc ListCPUSizes(ListCPUSizesRequest) returns (CPUSizeList) {
+        option (google.api.http) = {
+            get: "/api/data/v1/projects/{project_id}/cpusizes"
+        };
+    }
+
+    
+    // Get the deployment model identified by the provided ID.
+    // Required permissions:
+    // - None (authenticated only)
+    rpc GetDeploymentModel(common.v1.IDOptions) returns (DeploymentModel) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deploymentmodel/{id}"
+        };
+    }
+
+    // Calculate the total size of a deployment with given arguments.
+    // Required permissions:
+    // - none
+    rpc CalculateDeploymentSize(CalculateDeploymentSizeRequest) returns (DeploymentSize) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deployment-size/calculate"
+        };
+    }
+
+    // Recommend a deployment size, for a oneshard or sharded deployments, using the
+    // given input values.
+    // Required permissions:
+    // - none
+    rpc RecommendDeploymentSize(DeploymentSizeRequest) returns (DeploymentSizeRecommendation) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deployment-size/recommend"
+        };
+    }
+
+    // Fetch instructions for connecting drivers to the deployment identified by the given id.
+    // Required permissions:
+    // - data.deployment.get on the deployment identified by the given ID
+    rpc GetConnectDriverInstructions(common.v1.IDOptions) returns (ConnectDriverInstructions) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deployments/{id}/connect-driver-instructions"
+        };
+    }
+
+    // Fetch instructions for importing data into the deployment identified by the given id.
+    // Required permissions:
+    // - data.deployment.get on the deployment identified by the given ID
+    rpc GetImportDataInstructions(common.v1.IDOptions) returns (ImportDataInstructions) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deployments/{id}/import-data-instructions"
+        };
+    }
+
+    // Calculate the price of a deployment of given settings.
+    // Required permissions:
+    // - data.deploymentprice.calculate
+    rpc CalculateDeploymentPrice(DeploymentPriceRequest) returns (DeploymentPrice) {
+        option (google.api.http) = {
+            get: "/api/data/v1/deployment-price/calculate"
+        };
+    }
+
+    // Get the features that will be available to a deployment in the given context.
+    // Required permissions:
+    // - data.deploymentfeatures.get on the project that is given in the request.
+    rpc GetDeploymentFeatures(DeploymentFeaturesRequest) returns (DeploymentFeatures) {
+        option (google.api.http) = {
+            post: "/api/data/v1/deployment-features"
+            body: "*"
+        };
+    }
+
+    // Pauses a deployment indentified by the given ID.
+    // When PauseDeployment is invoked on a deployment that is not allowed to pause or has is_paused set, an PreconditionFailed error is returned.
+    // Required permissions:
+    // - data.deployment.pause on the deployment
+    rpc PauseDeployment(arangodb.cloud.common.v1.IDOptions) returns (arangodb.cloud.common.v1.Empty){
+        option (google.api.http) = {
+            post: "/api/data/v1/deployments/{id}/pause"
+        };
+    }
+
+    // Resumes a paused deployment identified by the given id.
+    // When ResumeDeployment is invoked on a deployment that has is_paused not set, an PreconditionFailed error is returned.
+    // Required permissions:
+    // - data.deployment.resume on the deployment
+    rpc ResumeDeployment(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/data/v1/deployments/{id}/resume"
+        };
+    }
+
+    // Rotate a server for a deployment.
+    // This causes the server to restart after condition are deemed safe for a restart.
+    // Required permissions:
+    // - data.deployment.rotate-server on the deployment
+    rpc RotateDeploymentServer(RotateDeploymentServerRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/data/v1/deployments/{deployment_id}/rotate/{server_id}"
+        };
+    }
+
+    // Create a test database and user for a deployment. Returns the output containing the created
+    // database name, password, username, host and port.
+    // Required permissions:
+    // - data.deployment.create-test-database on the deployment
+    rpc CreateTestDatabase(CreateTestDatabaseRequest) returns (CreateTestDatabaseResponse) {
+        option (google.api.http) = {
+            post: "/api/data/v1/deployments/{deployment_id}/create-test-database"
+        };
+    }
+
+    // RebalanceDeploymentShards rebalances shards for deployment across the DB servers.
+    // Prerelease: This function is not yet available in production.
+    // Required permissions:
+    // - data.deployment.rebalance-shards on the deployment
+    rpc RebalanceDeploymentShards(RebalanceDeploymentShardsRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/data/v1/deployments/{deployment_id}/rebalance-shards"
+        };
+    }
+
+    // Lists disk performances that match all of the given filters.
+    // Required permissions:
+    // - data.diskperformance.list on the deployment (if deployment ID is provided)
+    // - data.diskperformance.list on the organization (if organization ID is provided, but deployment ID is not)
+    // - None, authenticated only (if no deployment ID is provided)
+    rpc ListDiskPerformances(ListDiskPerformancesRequest) returns (DiskPerformanceList) {
+        option (google.api.http) = {
+            post: "/api/data/v1/disk-performances"
+            body: "*"
+        };
+    }
+
+    // Get the disk performance for the requested disk performance ID.
+    // Required permissions:
+    // - None, authenticated only
+    rpc GetDiskPerformance(GetDiskPerformanceRequest) returns (DiskPerformance)  {
+        option (google.api.http) = {
+            post: "/api/data/v1/disk-performance/{disk_performance_id}"
+            body: "*"
+        };
+    }
+
+}
+
+// RotateDeploymentServerRequest request for rotating out servers for a deployment
+message RotateDeploymentServerRequest {
+    // The id of the deployment this server belongs to.
+    string deployment_id = 1;
+    // The id of the server to rotate out.
+    string server_id = 2;
+}
+
+// CreateTestDatabaseResponse will contain the json formatted output of the create operation
+message CreateTestDatabaseResponse {
+    // Name of the created database
+    string db_name = 1;
+    // Username of the created user
+    string username = 2;
+    // Password of the created user
+    string password = 3;
+    // Hostname of the database
+    string hostname = 4;
+    // Port of the database
+    string port = 5;
+}
+
+// Request arguments for CreateTestDatabase
+message CreateTestDatabaseRequest {
+    // The id of the deployment
+    string deployment_id = 1;
+}
+
+// RebalanceDeploymentShardsRequest request for rebalancing shards for a deployment
+message RebalanceDeploymentShardsRequest {
+  // The id of the deployment
+  string deployment_id = 1;
+}
+
+// A Deployment is represents one deployment of an ArangoDB cluster.
+message Deployment {
+    // System identifier of the deployment.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value.
+    string url = 2;
+    // Name of the deployment
+    string name = 3; 
+    // Description of the deployment
+    string description = 4; 
+    // Identifier of the project that owns this deployment.
+    // After creation, this value cannot be changed.
+    string project_id = 5;
+    // Identifier of the region in which the deployment is created.
+    // After creation, this value cannot be changed.
+    string region_id = 6;
+    // The creation timestamp of the deployment
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the deployment
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 8;
+    // Set when this deployment is deleted.
+    // This is a read-only value.
+    bool is_deleted = 9;
+    // Optional identifier of the support plan selected for this deployment.
+    // After creation, this value cannot be changed.
+    // If no support plan identifier is set, the default support plan is used.
+    string support_plan_id = 10;
+    // Identifier of the user who created this deployment.
+    // This is a read-only value.
+    string created_by_id = 11;
+    // This field must be set to the identifier of the current Terms&Conditions 
+    // when creating a deployment.
+    // If the tier of the organization does not require a non-empty Terms&Condition
+    // identifier, this field may be left empty.
+    // This is a read-only value after creation.
+    string accepted_terms_and_conditions_id = 12;
+    // If set, this deployment cannot be deleted.
+    // To delete, first update the with locked set to false.
+    bool locked = 13;
+
+    // Indicates that this deployment is paused.
+    // Use the data.ResumeDeployment method to resume (aka unpause) the deployment.
+    // This is a read-only value.
+    bool is_paused = 20;
+    // The last paused timestamp of the deployment.
+    // This is the timestamp that is_paused is transitioned from unset to set.
+    // This is a read-only value.
+    google.protobuf.Timestamp last_paused_at = 21;
+    // The last resumed  timestamp of the deployment.
+    // This is the timestamp that is_paused is transitioned from set to unset.
+    // This is a read-only value.
+    google.protobuf.Timestamp last_resumed_at = 22;
+    // Identifier of the prepaid deployment that this deployment is attached to (if any).
+    // This is a read-only value.
+    string prepaid_deployment_id = 23;
+    // If set, authentication for Foxx requests is disabled.
+    // Be default this field is not set for new deployments.
+    bool disable_foxx_authentication = 24;
+    // When the prepaid deployments starts (relevant when prepaid_deployment_id is set only)
+    // This is a read-only value
+    google.protobuf.Timestamp prepaid_deployment_starts_at = 25;
+    // When the prepaid deployments ends (relevant when prepaid_deployment_id is set only)
+    // This is a read-only value
+    google.protobuf.Timestamp prepaid_deployment_ends_at = 26;
+    // Whenever deployment can be updated to new values from prepaid deployment
+    // This is a read-only value
+    bool is_prepaid_deployment_update_available = 27;
+
+    // Set if the deployment use a private endpoint.
+    // This is a read-only value after creation.
+    // If set during creation a private endpoint service will be created.
+    bool private_endpoint = 30;
+
+    // ArangoDB version to use for this deployment.
+    // See Version.version.
+    // If you change this value to a higher version,
+    // the deployment will be upgraded.
+    // If you change this value to a lower patch value,
+    // the deployment will be downgraded.
+    // Any attempt to change to a lower minor or major version
+    // is considered an invalid request.
+    // Any attempt to change to a version that is not in the
+    // list of available versions is considered an invalid request.
+    string version = 101;
+
+    // If set, this deployment will be upgraded to the ArangoDB release with the
+    // version as listed in this field.
+    ReplaceVersionBy replace_version_by = 104;
+    // If set, it is recommended to upgrade to the ArangoDB release with the
+    // version as listed in this field.
+    UpgradeVersionRecommendation upgrade_recommendation = 105;
+    // If set, the version used by this deployment is no longer actively supported.
+    // This is a readonly field.
+    bool version_is_end_of_life = 701;
+
+    message CertificateSpec {
+        // Identifier of the CACertificate used to sign TLS certificates for the deployment.
+        // If you change this value after the creation of the deployment a complete
+        // rotation of the deployment is required, which will result in some downtime.
+        string ca_certificate_id = 1;
+        // Zero or more DNS names to include in the TLS certificate of the deployment.
+        repeated string alternate_dns_names = 2;
+    }
+    CertificateSpec certificates = 102;
+
+    message ServersSpec {
+        // Number of coordinators of the deployment
+        // This field is automatically set unless the flexible model is used.
+        int32 coordinators = 1;
+        // Amount of memory (in GB) to allocate for coordinators.
+        // This field is automatically set unless the flexible model is used.
+        int32 coordinator_memory_size = 2;
+        // Custom command line arguments passed to all coordinators.
+        // This field is ignored set unless the flexible model is used.
+        repeated string coordinator_args = 3;
+
+        // Number of dbservers of the deployment
+        // This field is automatically set unless the flexible model is used.
+        int32 dbservers = 11;
+        // Amount of memory (in GB) to allocate for dbservers.
+        // This field is automatically set unless the flexible model is used.
+        int32 dbserver_memory_size = 12;
+        // Amount of disk space (in GB) to allocate for dbservers.
+        // This field is automatically set unless the flexible model is used.
+        int32 dbserver_disk_size = 13;
+        // Custom command line arguments passed to all dbservers.
+        // This field is ignored set unless the flexible model is used.
+        repeated string dbserver_args = 14;
+
+        // The minimum number of dbservers based on the highest replication factor
+        // defined by all databases and all collections.
+        int32 minimum_dbservers_count = 15;
+        // The minimum amount of disk space (in GB) to allocate for dbservers based on the highest usage of all running DB servers.
+        // The nearest size (larger then indicated here) need to be depected if the provider doesn't support all values (See GetServersSpecLimits)
+        int32 minimum_dbserver_disk_size = 16; 
+    }
+    ServersSpec servers = 103;
+
+    // Optional identifier of IP allowlist to use for this deployment.
+    string ipallowlist_id = 109;
+
+    message ModelSpec {
+        // Type of model being used
+        string model = 1;
+        // Size of nodes being used
+        // This field is ignored set in case the flexible model is used.
+        string node_size_id = 2;
+        // Number of nodes being used
+         // This field is ignored set in case the flexible model is used.
+        int32 node_count = 3;
+        // Amount of disk space per node (in GB)
+        // This field is ignored set in case the flexible model is used.
+        int32 node_disk_size = 4;
+        // Type component of the node_size_id (e.g., "A" from "a64").
+        // This is a read-only value.
+        string node_type = 5;
+        // Numeric size component of the node_size_id (e.g., 64 from "a64").
+        // This is a read-only value.
+        int32 node_size = 6;
+    }
+    ModelSpec model = 106;
+
+    // If provided, dataclusterd will use this custom image tag instead of the configured one for a given version.
+    // Further, ImagePullPolicy will be set to Always.
+    // This field can only be set by selected organizations.
+    string custom_image = 107;
+
+    // Optional identifier of IAM provider to use for this deployment.
+    string iamprovider_id = 108;
+
+    // Optional identifier of disk performance to use for this deployment.
+    string disk_performance_id = 120;
+    // If set, the disk performance cannot be updated, due to other reasons than the disk rate limit.
+    // This is a read-only value
+    bool disk_performance_locked = 121;
+    // Disk rate limit is the (fixed) period required to wait before a next disk action can be executed.  
+    // A value of 0 means that there is no rate limit.
+    // If now - (last_disk_performance_updated_at or last_disk_size_updated_at) > disk_rate_limit_period it is not allowed to update
+    // dbserver_disk_size or disk_performance_id.
+    google.protobuf.Duration disk_rate_limit_period = 122;
+    // Timestamp when the last time the disk performance has been updated.
+    // This is a read-only value
+    google.protobuf.Timestamp last_disk_performance_updated_at = 123;
+    // Timestamp when the last time the disk size has been updated.
+    // This is a read-only value
+    google.protobuf.Timestamp last_disk_size_updated_at = 124; 
+    // Disk rate limit active is the active period required to wait before a next disk action can be executed.
+    // The difference between disk_rate_limit_period and this field is that disk_rate_limit_period is a constant value 
+    // (independent) if the rate limit is active, this field will count down, if the field is 0 you can modify.
+    // If this field is set it is not allowed to update dbserver_disk_size or disk_performance_id.
+    // This is a read-only value
+    google.protobuf.Duration disk_rate_limit_active = 125;
+
+    // Status of a single server (of the ArangoDB cluster)
+    message ServerStatus {
+        // ID of the server
+        string id = 1;
+        // Type of server (agent|coordinator|dbserver)
+        string type = 2;
+        // Human readable description of the status of the deployment.
+        string description = 3;
+        // The creation timestamp of the server
+        google.protobuf.Timestamp created_at = 4;
+        // Set once the server is ready
+        bool ready = 5;
+        // Set once the server has been known to be a member of the cluster
+        bool member_of_cluster = 6;
+        // Set if the server is in a failed state
+        // Every server is always in 1 (and only 1) of these states: failed/creating/ok/bad/upgrading/synchronizing.
+        bool failed = 7;
+        // Set if the server is still being created
+        // Every server is always in 1 (and only 1) of these states: failed/creating/ok/bad/upgrading/synchronizing.
+        bool creating = 8;
+        // Set if the server is in the ok state.
+        // Every server is always in 1 (and only 1) of these states: failed/creating/ok/bad/upgrading/synchronizing.
+        bool ok = 9;
+        // Set if the server is in the bad state.
+        // Every server is always in 1 (and only 1) of these states: failed/creating/ok/bad/upgrading/synchronizing.
+        bool bad = 14;
+        // Set if the server is still being upgraded
+        // Every server is always in 1 (and only 1) of these states: failed/creating/ok/bad/upgrading/synchronizing.
+        bool upgrading = 10;
+        // Latest known ArangoDB version used by this server.
+        // Initially this field is empty.
+        string version = 11;
+        // The last started timestamp of the server
+        google.protobuf.Timestamp last_started_at = 12;
+        // If set, a rotation of this server has been requested.
+        bool rotation_pending = 13;
+        // If set, this server reports that it can be deleted.
+        bool can_be_deleted = 15;
+        // If set, this server is leader in its type (currently applies only to agents).
+        bool is_leader = 16;
+        // Set while the member is waiting to synchronize after upgrade or join
+        // (shard sync for DBServers, agency sync for Agents).
+        bool synchronizing = 17;
+        // Information about the data volume used to store the data
+        DataVolumeInfo data_volume_info = 20;
+        // Recent number of restarts
+        int32 recent_restarts = 30;
+        // Last known memory usage in bytes
+        int64 last_memory_usage = 31;
+        // Last known CPU usage in vCPU units
+        float last_cpu_usage = 32;
+        // Last known memory limit in bytes
+        int64 last_memory_limit = 33;
+        // Last known CPU limit in vCPU units
+        float last_cpu_limit = 34;
+    }
+
+    // Status of the deployment
+    // All members of this field are read-only.
+    message Status {
+        // Endpoint URL used to reach the deployment
+        // This value will be empty during the creation of the deployment.
+        // This field always contains the URL of the low port (8529) of the
+        // deployment.
+        // If a certificate with well known certificate is used, this
+        // port is using the well known certificate.
+        // Otherwise this port is using the self-signed certificate.
+        string endpoint = 1;
+        // Human readable description of the status of the deployment.
+        string description = 2;
+        // Set once the deployment has been created.
+        bool created = 3;
+        // Set if the deployment is ready to be used.
+        // If the deployment has downtime (e.g. because of changing a CA certificate)
+        // this will go to false until the downtime is over.
+        bool ready = 4;
+        // Set if the deployment is being upgraded.
+        bool upgrading = 5;
+        // Versions of running servers
+        repeated string server_versions = 6;
+        // Status of individual servers of the deployment
+        repeated ServerStatus servers = 7;
+        // Set if the ready boolean is transitioned to true for the very first time.
+        google.protobuf.Timestamp bootstrapped_at = 8;
+        // Set if bootstrapped_at has a value, otherwise false.
+        bool bootstrapped = 9;
+        // Endpoint URL used to reach the deployment on the port that uses 
+        // the self-signed certificate.
+        // This endpoint is recommended for machine-to-database connections.
+        string endpoint_self_signed = 10;
+        // Endpoint URL used to reach the deployment on default port (443)
+        // This value will be empty during the creation of the deployment.
+        // If a certificate with well known certificate is used, this
+        // port is using the well known certificate.
+        // Otherwise this port is using the self-signed certificate.
+        // This endpoint is recommended for human-to-database connections.
+        string endpoint_default = 11;
+        // If set, this deployment has a private endpoint, however can contain the public endpoint as well.
+        // When switching from a public endpoint to a private endpoint the public endpoint will 
+        // be available for an hour to support seemlessly migration to the private endpoint.
+        bool private_endpoint = 20;
+        // If set, this deployment has a private endpoint only.
+        // When switching from a public endpoint to a private endpoint the public endpoint will 
+        // be available for an hour to support seemlessly migration to the private endpoint.
+        bool private_endpoint_only = 21;
+        // Endpoint URL used to reach the deployment which is configured as a private endpoint.
+        // This field always contains the URL of the low port (8529) of the
+        // deployment.
+        // If a certificate with well known certificate is used, this
+        // port is using the well known certificate, note that the alternate DNS names are not part of this certificate.
+        // Otherwise this port is using the self-signed certificate.
+        // This endpoint is recommended for human-to-database connections.
+        // If no private endpoint is configured this field will be empty.
+        string endpoint_private_endpoint = 22;
+        // Endpoint URL used to reach the deployment on the port that uses 
+        // the self-signed certificate. 
+        // This certificate will contain the specified alternate DNS names as well, 
+        // so a secure TLS connection can be establised.
+        // This endpoint is recommended for machine-to-database connections.
+        // If no private endpoint is configured this field will be empty.
+        string endpoint_private_endpoint_self_signed = 23;
+        // Private Endpoint URL used to reach the deployment on default port (443)
+        // This value will be empty during the creation of the deployment & private endpoint.
+        // this port is using the well known certificate.
+        string endpoint_private_endpoint_default = 24;
+        // The status of backup restore (if applicable).
+        // This field will be set to empty if a new revision of the spec is available
+        BackupRestoreStatus backup_restore_status = 100;
+        // The total size of all backups in the external source (in bytes)
+        int64 total_backup_size_bytes = 101;
+        // Set if there is any backup currently uploading data to the external source
+        bool backup_upload_in_progress = 102;
+        // Set if the deployment is up-to-date and has no pending updates.
+        bool is_up_to_date = 103;
+        // Set if the deployment is in read-only mode.
+        bool read_only = 104;
+    }
+    Status status = 201;
+
+    // The status of backup restore
+    // All members of this message are read-only.
+    message BackupRestoreStatus {
+        // The revision of the used BackupRestoreSpec 
+        int32 revision = 1;
+        // The timestamp of when the backup restore status was updated.
+        google.protobuf.Timestamp last_updated_at = 2;
+        // Set if the deployment is preparing or restoring a backup
+        bool restoring = 10;
+        // Status of the restore backup operation.
+        // Enum of the following values: "<empty>|Preparing|Restoring|Restored|Failed"
+        string status = 11;
+        // Failure reason of the backup restore (if applicable)
+        string failure_reason = 12; 
+    }
+
+    // Detailed size of the deployment
+    // This is a read-only field.
+    DeploymentSize size = 202;
+
+    // Expiration of the deployment.
+    // All members of this message are read-only.
+    message Expiration {
+        // The expiration timestamp of the deployment
+        // If not set, the deployment will not expire.
+        google.protobuf.Timestamp expires_at = 1;
+        // Human readable reason for why the deployment expires (or does not expire).
+        string reason = 2;
+        // The timestamp of when the last "this deployment will expire at" email was
+        // send.
+        // If not set, no such email has been send.
+        google.protobuf.Timestamp last_warning_email_send_at = 3;
+        // List of email addresses to which the last warning email has been send.
+        // Not set when no such email has been send.
+        repeated string last_warning_email_send_to = 4;
+    }
+    Expiration expiration = 301;
+
+    // Information about a backup restore.
+    // All members of this message are read-only. 
+    message BackupRestoreSpec {  
+        // The revision of this BackupRestoreSpec 
+        int32 revision = 1;
+        // The timestamp of when the last revision has been updated.
+        google.protobuf.Timestamp last_updated_at = 2;
+        // Identifier of the user that restored this backup.
+        // This is a read-only value.
+        string restored_by_id = 3;
+        // Identifier of a backup to restore to.
+        string backup_id = 10;
+    }
+    // Information about a backup restore.
+    // If this field is set the deployment will be restored to that backup.
+    // This is a read-only field. To set this field please use the backup service RestoreBackup method.
+    BackupRestoreSpec backup_restore = 401;
+
+    // Recommendations made for deployments using the "oneshard" or "sharded" model.
+    repeated DeploymentSizeRecommendation deployment_recommendations = 501;
+
+    // Set if this deployment is a clone and should be handled differently. After bootstrapping a clone
+    // needs a restore operation.
+    // This is a read-only property
+    bool is_clone = 600;
+    // The ID of the backup to restore this clone deployment from.
+    // This is a read-only property
+    string clone_backup_id = 601;
+
+    // Deployment's notification settings
+    message NotificationSettings {
+      // Email addresses that notifications related to this deployment should be sent to.
+      repeated string email_addresses = 1;
+    }
+    // Deployment's notification settings
+    NotificationSettings notification_settings = 610;
+
+    // Deployment's disk autoscaling settings
+    message DiskAutoSizeSettings {
+        // Maximum allowed disk size that a node can reach (in GB).
+        // [Deprecated] This setting isn't supported anymore.
+        int32 maximum_node_disk_size = 1;
+    }
+    // Deployment's disk autoscaling settings
+    // [Deprecated] This setting isn't supported anymore.
+    //              To increase disk space you need to switch to a larger node-size [e.g. A8 (with 80Gib)--> A16 (with 160 Gib)]
+    DiskAutoSizeSettings disk_auto_size_settings = 611;
+
+    // Determines if root's password scheduled rotation is enabled for the deployment.
+    // This is a readonly field.
+    bool is_scheduled_root_password_rotation_enabled = 612;
+
+    // Time when the last time root password rotated for the deployment.
+    // For the existing deployments, this field is not set until they enable scheduled root password rotation.
+    // For the new deployments, this field will have the same value with deployment's `created_at`. 
+    // This is a readonly field.
+    google.protobuf.Timestamp last_root_password_rotated_at = 613;
+
+    // Optional identifier of the deployment profile for this deployment.
+    // After creation, this value cannot be changed.
+    string deployment_profile_id = 614;
+
+    // Determines if deployment is using platform authentication
+    bool is_platform_authentication_enabled = 615;
+
+    // The (optional) intended use-case for this deployment
+    string intended_use_case = 616;
+
+    // If set to true, drop support for deprecated VST protocol and improve resilience.
+    // Defaults to false.
+    bool drop_vst_support = 617;
+
+    // Defines notifications attached to the Deployment
+    map<string, Notification> notifications = 618;
+
+    // If set to true, arangodb platform is enabled for this deployment
+    // [Deprecated] Use arangodb_platform_bundle instead. See Go helper Deployment.IsPlatformEnabled.
+    bool arangodb_platform_enabled = 619 [deprecated = true];
+
+    // Selects which platform bundle is to be used for this deployment.
+    // Known values: "coredb", "aisuite", "datascience" (see Go constants ArangoDBPlatformBundle*).
+    string arangodb_platform_bundle = 620;
+}
+
+// NodeSize specifies the size constraints of different data nodes.
+message NodeSize {
+    // System identifier of the node size
+    string id = 1;
+    // Human readable name of the node size
+    string name = 2;
+    // Amount of memory (in GB) that is available on this size of node.
+    int32 memory_size = 3;
+    // Minimum amount of disk (in GB) that is available on this size of node.
+    int32 min_disk_size = 4;
+    // Maximum amount of disk (in GB) that is available on this size of node.
+    int32 max_disk_size = 5;
+    // CPU size that is available on this size of node (e.g. standard or high).
+    string cpu_size = 6;
+    // If set, contains list of possible disk sizes (in GB) for the node.
+    // In that case, this field overrides the min_disk_size & max_disk_size fields.
+    repeated int32 disk_sizes = 7;
+}
+
+// List of node sizes.
+message NodeSizeList {
+    repeated NodeSize items = 1;
+}
+
+// Request arguments for ListNodeSizes
+message NodeSizesRequest {
+    // Identifier of project that will own a deployment.
+    string project_id = 1;
+    // Identifier of a region in which a deployment will be created.
+    string region_id = 2;
+    // If set, project_id & region_id will be taken from this deployment.
+    // This also causes the node_size used by this deployment to be included
+    // in the result, if it it would not match for new deployments.
+    string deployment_id = 3;
+    // Identifier of a model of a new deployment will be created.
+    // If set, all node sizes available for this model will be returned,
+    // otherwise only node sizes that have no restrictions on model will be returned.
+    string model = 4;
+    // Optional identifier of organization that will own a deployment.
+    // Ignored if project_id or deployment_id is set.
+    string organization_id = 5;
+    // Optional field to include node sizes that are otherwise restricted
+    // for the specified projectID / organizationID.
+    // By default, the result is restricted based on the organization and project tiers/quotas.
+    // Ignored when project_id is "all" and organization_id is not provided.
+    bool include_restricted = 7;
+}
+
+// DeploymentModel specifies the a specific model of deploying
+// arangodb clusters.
+message DeploymentModel {
+    // System identifier of the model (e.g. oneshard)
+    string id = 1;
+    // Human readable name of the model (e.g. One shard)
+    string name = 2;
+    // Features that are available to deployments of this model type.
+    message Features {
+        // If set, ML is available as a trial only.
+        bool ml_free_trial = 1;
+        // If set, private endpoints are allowed for this deployment model.
+        bool private_endpoints = 2;
+        // If set, metrics endpoint integration is allowed for this deployment model.
+        bool metrics_endpoint = 3;
+        // If set, backups for this deployment model are allowed to be uploaded to the cloud.
+        bool backup_uploads = 4;
+    }
+    Features features = 3;
+    // Limit the time-to-live of deployments created with this model.
+    // Time-to-live (till expiration) is expressed in seconds.
+    // A value of '0' means no expiration.
+    int64 deployment_ttl = 4;
+}
+
+// List of deployment models.
+message DeploymentModelList {
+    repeated DeploymentModel items = 1;
+}
+
+// Request arguments for ListDeploymentModels
+message ListDeploymentModelsRequest {
+    // Identifier of project that will own a deployment.
+    string project_id = 1;
+    // Optional identifier of a deployment, so the current model can be added to the list if needed
+    // This deployment should be inside the provided project
+    string deployment_id = 2;
+}
+
+// ArangoPlatformBundle specifies an available platform bundle.
+message ArangoPlatformBundle {
+    // System identifier of the bundle (e.g. standard)
+    string id = 1;
+    // Human readable name of the bundle (e.g. Standard)
+    string name = 2;
+    // Priority of the bundle, to order the list of bundles.
+    int32 priority = 3;
+    // Description of the bundle.
+    string description = 4;
+}
+
+// List of ArangoPlatformBundles.
+message ArangoPlatformBundleList {
+    repeated ArangoPlatformBundle items = 1;
+}
+
+// Request arguments for ListArangoPlatformBundles.
+message ListArangoPlatformBundlesRequest {
+    // Identifier of organization for which platform bundles are requested.
+    string organization_id = 1;
+
+    // Identifier for the region for which platform bundles are requested.
+    string region_id = 2;
+}
+
+// CPUSize specifies the a specific level of CPU for a node.
+message CPUSize {
+    // System identifier of the size (e.g. standard)
+    string id = 1;
+    // Human readable name of the size (e.g. Standard)
+    string name = 2;
+}
+
+// List of CPU sizes.
+message CPUSizeList {
+    repeated CPUSize items = 1;
+}
+
+// Request arguments for ListCPUSizes
+message ListCPUSizesRequest {
+    // Identifier of project that will own a deployment.
+    string project_id = 1;
+    // Optional identifier of a deployment for which CPU sizes are requested.
+    // If specified, only those CPU sizes are listed, that an existing deployment is allowed to have.
+    // If specified, project_id field is ignored, and instead read from the deployment.
+    string deployment_id = 2;
+}
+
+// Request arguments for GetDeploymentCredentials
+message DeploymentCredentialsRequest {
+    // Identifier of deployment to request credentials for.
+    string deployment_id = 1;
+    // Reason for requesting the credentials
+    string reason = 2;
+}
+
+// Result for GetDeploymentCredentials
+message DeploymentCredentials {
+    // Name of the user for which credentials were asked.
+    // Default to username of root user.
+    string username = 1;
+    // Password of the user for which credentials were asked.
+    string password = 2;
+}
+
+// List of Deployments.
+message DeploymentList {
+    // Actual deployments
+    repeated Deployment items = 1;
+    // Budget for deployments
+    common.v1.Budget budget = 2;
+}
+
+// Version of an ArangoDB release
+message Version {
+    // Version in the format of major.minor.patch
+    // Format details can be found at: https://semver.org/
+    string version = 1;
+    // If set, deployments using this version will be upgraded to the ArangoDB release with the
+    // version as listed in this message.
+    ReplaceVersionBy replace_by = 2;
+    // If set, deployments using this version are recommend to be upgraded to the ArangoDB release with the
+    // version as listed in this message.
+    UpgradeVersionRecommendation upgrade_recommendation = 3;
+    // If set, this version is not longer actively supported.
+    bool is_end_of_life = 4;
+    // ArangoDB version release notes
+    string release_notes_url = 5;
+}
+
+// ReplaceVersionBy holds replacement instructions.
+message ReplaceVersionBy  {
+    // The version of the ArangoDB release that it will be upgraded to.
+    // Version in the format of major.minor.patch
+    // Format details can be found at: https://semver.org/
+    string version = 1;
+    // Human readable reason why this version will be replaced.
+    string reason = 2;
+    // Date when the current version will be replaced automatically with the new version.
+    // If this field isn’t set (or present) it means no automatic update will happen.
+    google.protobuf.Timestamp auto_update_date = 3;
+}
+
+// UpgradeVersionRecommendation holds a recommendation for updating this version.
+message UpgradeVersionRecommendation  {
+    // The version of the ArangoDB release that it it is recommend to upgraded to.
+    // Version in the format of major.minor.patch
+    // Format details can be found at: https://semver.org/
+    string version = 1;
+    // Human readable reason why this version should be upgraded.
+    string reason = 2;
+}
+
+// List of Versions.
+message VersionList {
+    repeated Version items = 1;
+}
+
+// Request arguments for ListVersions.
+message ListVersionsRequest {
+    // Common list options
+    common.v1.ListOptions options = 1;
+    // If set, the result includes all versions for that are available for the
+    // organization identified by this ID.
+    // If not set, only versions are returned that are available to all organizations.
+    string organization_id = 2;
+    // If set, only versions will be returned that are safe to upgrade to from this version.    
+    string current_version = 3;
+}
+
+// Request arguments for ListServersSpecLimits
+message ServersSpecLimitsRequest {
+    // Identifier of project that will own a deployment.
+    string project_id = 1;
+    // Identifier of a region in which a deployment will be created.
+    string region_id = 2;
+    // Optional identifier of a deployment for which compatible server specifications are request.
+    string deployment_id = 3;
+}
+
+// Limits of allowed values for fields of Deployment.ServersSpec.
+message ServersSpecLimits {
+    message Limits {
+        // Minimum value
+        int32 min = 1;
+        // Maximum value
+        int32 max = 2;
+        // Set of allowed values.
+        // If this field is non-empty, only one of these values
+        // is allowed.
+        repeated int32 allowed_values = 3;
+    }
+    // Limits for the number of coordinators of the deployment
+    Limits coordinators = 1;
+    // Possible values for the amount of memory (in GB) to allocate
+    // for coordinators.
+    Limits coordinator_memory_size = 2;
+
+    // Limits for the number of dbservers of the deployment
+    Limits dbservers = 11;
+    // Possible values for the amount of memory (in GB) to allocate
+    // for dbservers.
+    Limits dbserver_memory_size = 12;
+    // Amount of disk space (in GB) to allocate for dbservers.
+    Limits dbserver_disk_size = 13;
+
+    // Possible values for the amount of memory (in GB) to allocate
+    // for pairs of coordinator, dbserver.
+    Limits node_memory_size = 21;
+    // Possible values for the number of nodes.
+    // Value must be min/max (not using allowed_values)
+    Limits node_count = 22;
+}
+
+// Request arguments for CalculateDeploymentSize
+message CalculateDeploymentSizeRequest {
+    // Number of coordinators of the deployment
+    // This field is ignored unless model is "flexible".
+    int32 coordinators = 1;
+    // Amount of memory (in GB) to allocate for each coordinator.
+    // This field is ignored unless model is "flexible".
+    int32 coordinator_memory_size = 2;
+
+    // Number of dbservers of the deployment
+    // This field is ignored unless model is "flexible".
+    int32 dbservers = 11;
+    // Amount of memory (in GB) to allocate for each dbserver.
+    // This field is ignored unless model is "flexible".
+    int32 dbserver_memory_size = 12;
+    // Amount of disk space (in GB) to allocate for each dbserver.
+    // This field is ignored unless model is "flexible".
+    int32 dbserver_disk_size = 13;
+
+    // Type of model being used
+    string model = 21;
+    // Size of nodes being used
+    string node_size_id = 22;
+    // Number of nodes being used
+    int32 node_count = 23;
+    // Amount of disk space per node (in GB)
+    int32 node_disk_size = 34;
+
+    // ID of region in which the deployment will be created.
+    string region_id = 50;
+}
+
+// Result of CalculateDeploymentSize
+message DeploymentSize {
+    // Number of agents
+    int32 agents = 1;
+    // Amount of memory (in GB) to allocate for each agent.
+    int32 agent_memory_size = 2;
+    // Amount of disk space (in GB) to allocate for each agent.
+    int32 agent_disk_size = 3;
+    // Total (combined) amount of memory (in GB) used by all servers (agents, coordinators & dbservers)
+    int32 total_memory_size = 11; 
+    // Total (combined) amount of disk space (in GB) used by all servers (agents & dbservers)
+    int32 total_disk_size = 12; 
+    // Number of coordinators
+    int32 coordinators = 21;
+    // Amount of memory (in GB) to allocate for each coordinator.
+    int32 coordinator_memory_size = 22;
+    // Number of dbservers
+    int32 dbservers = 31;
+    // Amount of memory (in GB) to allocate for each dbserver.
+    int32 dbserver_memory_size = 32;
+    // Amount of disk space (in GB) to allocate for each dbserver.
+    int32 dbserver_disk_size = 33;
+    // Number of gateways
+    int32 gateways = 41;
+    // Amount of memory (in GB) to allocate for each gateway.
+    float gateway_memory_size = 42;
+}
+
+// Request arguments for RecommendDeploymentSize.
+message DeploymentSizeRequest {
+    // Size of entire dataset (on disk) in GB.
+    // Required field.
+    // Must be >= 1.
+    int32 dataset_size = 1;
+    // Primary use case for the database
+    // Possible values:
+    // - GRAPH
+    // - DOCUMENT
+    // - MULTIMODEL
+    // - KEYVALUE
+    string usecase = 2;
+    // Customer preferred model
+    string model = 3;
+    // File format on dataset
+    // Possible values:
+    // - JSON
+    // - CSV
+    string file_format = 4;
+    // Number of documents in the entire dataset (in case of JSON).
+    // Number of rows in the entire dataset (in case of CSV).
+    int64 number_of_documents = 5;
+    // Largest number of columns of the dataset (in case of CSV).
+    int32 number_of_columns = 6;
+    // Percentage of dataset_size that is considered "hot"
+    // Must be >= 0.0 and <= 1.0
+    float working_set_percentage = 7;
+    // Percentage of operations that are READ
+    // Must be >= 0.0 and <= 1.0
+    float access_read_percentage = 8;
+    // Percentage of operations that are CREATE
+    // Must be >= 0.0 and <= 1.0
+    float access_create_percentage = 9;
+    // Percentage of operations that are UPDATE
+    // Must be >= 0.0 and <= 1.0
+    float access_update_percentage = 10;
+    // Increase factor of the dataset_size in 1 year.
+    float growth_rate = 11;
+    // Desired number of replicas.
+    // Must be >= 3 and <= 5
+    int32 replication_factor = 12;
+
+    // Identifier of project to request a recommendation in
+    string project_id = 21;
+    // Identifier of region to request a recommendation in
+    string region_id = 22;
+}
+
+// Response of RecommendDeploymentSize.
+message DeploymentSizeRecommendation {
+    // Request that resulted in this recommendation.
+    DeploymentSizeRequest request = 1;
+    // Time when the recommendation was made.
+    google.protobuf.Timestamp created_at = 2;
+
+    // Amount of memory space per node (in GB) being recommended
+    int32 node_memory_size = 11;
+    // Amount of disk space per node (in GB) being recommended
+    int32 node_disk_size = 12;
+    // Number of nodes being recommended
+    int32 node_count = 13;
+
+    // If set, this recommendation does not fit in
+    // the callers quota.
+    bool exceeds_quota = 21;
+    // If set, this recommendation does not fit in
+    // the ArangoGraph Insights Platform.
+    bool exceeds_platform = 22;
+}
+
+// DataVolumeInfo provides information about a data volume
+message DataVolumeInfo {
+    // The total number of bytes of the data volume.
+    int64 total_bytes = 1;
+    // The number of bytes used on the data volume.
+    int64 used_bytes = 2;
+    // The number of bytes available on the data volume.
+    int64 available_bytes = 3;
+    // The total number of inodes of the data volume.
+    int64 total_inodes = 4;
+    // The number of inodes used on the data volume.
+    int64 used_inodes = 5;
+    // The number of inodes available on the data volume.
+    int64 available_inodes = 6;
+    // When this info has been measused
+    google.protobuf.Timestamp measured_at = 10;
+}
+
+// Instructions for connecting a driver to a deployment
+message ConnectDriverInstructions {
+    // Instructions for a specific driver
+    message DriverInstructions {
+        // Human readable name of the driver.
+        // E.g. "ArangoDB Go driver"
+        string name = 1;
+        // Lines of code
+        repeated string code = 2;
+        // Human readable remarks
+        repeated string remarks = 3;
+        // URL for getting more information on the driver.
+        string driver_url = 4;
+    }
+
+    // Per driver instructions for connecting to a deployment
+    repeated DriverInstructions drivers = 1;
+}
+
+// Instructions for importing data into a deployment
+message ImportDataInstructions {
+    // Lines of code to run arangorestore
+    repeated string import_dump = 2;
+    // Lines of code to run arangoimport with json file format
+    repeated string arango_import_json = 3;
+    // Lines of code to run arangoimport with csv file format
+    repeated string arango_import_csv = 4;
+    // Lines of code to run arangoimport with tsv file format
+    repeated string arango_import_tsv = 5;
+}
+
+// Arguments for requesting a price a deployment of given properties.
+message DeploymentPriceRequest {
+    // Identifier of organization containing the deployment.
+    string organization_id = 1;
+    // Identifier of project containing the deployment.
+    string project_id = 2;
+    // Identifier of the support plan of the deployment.
+    string support_plan_id = 3;
+    // Identifier of the cloud provider of the deployment.
+    string cloud_provider_id = 4;
+    // Identifier of the cloud region of the deployment.
+    string cloud_region_id = 5;
+    // Model of the deployment.
+    string model = 6;
+    // Node size use for deployments
+    string node_size_id = 7;
+    // Number of nodes being used
+    // This field is ignored if model is "flexible".
+    int32 node_count = 8;
+    // Amount of disk space per node (in GB)
+    // This field is ignored if model is "flexible".
+    int32 node_disk_size = 9;
+
+    // Number of coordinators of the deployment
+    // This field is ignored unless model is "flexible".
+    int32 coordinators = 10;
+    // Amount of memory (in GB) to allocate for each coordinator.
+    // This field is ignored unless model is "flexible".
+    int32 coordinator_memory_size = 11;
+
+    // Number of dbservers of the deployment
+    // This field is ignored unless model is "flexible".
+    int32 dbservers = 12;
+    // Amount of memory (in GB) to allocate for each dbserver.
+    // This field is ignored unless model is "flexible".
+    int32 dbserver_memory_size = 13;
+    // Amount of disk space (in GB) to allocate for each dbserver.
+    // This field is ignored unless model is "flexible".
+    int32 dbserver_disk_size = 14;
+    
+    // Identifier of disk performance used for this deployment (if any).
+    string disk_performance_id = 15;
+    
+    // If set, request for prices based on ArangoGraph credits.
+    bool use_credit_pricing = 16;
+
+}
+
+message DeploymentPrice {
+    // Price per hour in given currency for the deployment.
+    float price_per_hour = 1;
+    // Network transfer prices (variable depending on usage)
+    repeated NetworkTransferPrice network_transfer_prices = 2;
+    // Backup prices (variable depending on usage)
+    BackupPrice backup_price = 3;
+    // Identifier of the currency in which the price is specified.
+    string currency_id = 4;
+    // AuditLog prices (variable depending on usage)
+    AuditLogPrice auditlog_price = 5;
+
+    message NetworkTransferPrice {
+        // Price per GB of network transfer into the database
+        float ingress_price_per_gb = 1;
+        // Price per GB of network transfer out of the database
+        float egress_price_per_gb = 2;
+        // Description of this price
+        string description = 3;
+    }
+
+    message BackupPrice {
+        // Price per GB/hour of uploaded backup storage
+        float price_per_gb_per_hour = 1;
+    }
+
+    message AuditLogPrice {
+        // Price per GB/hour of audit logs in cloud storage (destination=cloud)
+        float price_per_gb_per_hour = 1;
+        // Price per 1.000 HTTPS Post invocations (destination=https-post)
+        float https_post_invocation_price_per_1000 = 2;
+        // Price per GB HTTPS Post body size (destination=https-post)
+        float https_post_body_size_price_per_gb = 3;
+    }
+}
+
+// Features that are available to new deployments in a given context.
+message DeploymentFeatures {
+    // Is the use of an IAM provider available?
+    bool iamprovider = 1;
+    // Is the use of the pause feature available?
+    bool pause = 2;
+    // Is the use of the ML features available?
+    bool ml = 3;
+    // Is the use of monitoring feature available?
+    bool monitoring = 4;
+}
+
+// Request arguments for GetDeploymentFeatures
+message DeploymentFeaturesRequest {
+    // Identifier of project that will own a deployment.
+    string project_id = 1;
+    // Identifier of a region in which a deployment will be created.
+    string region_id = 2;
+    // Model of the intended deployment.
+    string model = 3;
+    // Node size use for the intended deployments
+    string node_size_id = 4;
+}
+
+// Request arguments for UpdateDeploymentScheduledRootPasswordRotation
+message UpdateDeploymentScheduledRootPasswordRotationRequest {
+    // Identifier of the deloyment.
+    string deployment_id = 1;
+    // Whether scheduled root password rotation should be enabled or not.
+    bool enabled = 2;
+}
+
+// ListDiskPerformancesRequest is used as request in ListAllDiskPerformances
+message ListDiskPerformancesRequest {
+    // Identifier of the region (e.g. 'aks-westeurope').
+    // This field is ignored when a deployment_id is provided, otherwise required. 
+    string region_id = 1;
+    // Identifier of the node size (e.g. 'A16').
+    // This field is ignored when a deployment_id is provided, otherwise required. 
+    string node_size_id = 2;
+    // Amount of disk space (in GB) to allocate for each dbserver.
+    // This field is ignored when a deployment_id is provided, otherwise required. 
+    int32 dbserver_disk_size = 3;
+    // Optional identifier of the organization for which the disk performances need to be listed.
+    // If specified, only those disk performances are listed that the organization is allowed to use
+    // for a deployment of a given node_size_id.
+    // This field is ignored when a deployment_id is provided.
+    string organization_id = 4;
+    // Identifier of the deloyment, used to fill-out the region, node-size and disk-size.
+    string deployment_id = 10;
+}
+
+// GetDiskPerformanceRequest is used as request in GetDiskPerformance
+message GetDiskPerformanceRequest {
+    // disk performance identifier (e.g. 'DP30')
+    string disk_performance_id = 1;
+    // Identifier of the region (e.g. 'aks-westeurope').
+    string region_id = 2;
+}
+
+// List of DiskPerformances.
+message DiskPerformanceList {
+    repeated DiskPerformance items = 1;
+}
+
+// DiskPerformance provides information on a specific disk performance option.
+// All fields in this message are read-only values.
+message DiskPerformance {
+    // System identifier of the disk-performance.
+    string id = 1;
+    // Name of the disk-performance.
+    string name = 2; 
+    // Description of the disk-performance.
+    string description = 3;  
+    // If set, this is the default disk performance (inside the requested region).
+    bool is_default = 4;
+}
+
+// NotificationSeverity keeps possible severities for notifications
+enum NotificationSeverity {
+    // Defines Info level Notification Severity
+    NOTIFICATION_SEVERITY_INFO = 0;
+
+    // Defines Warning level Notification Severity
+    NOTIFICATION_SEVERITY_WARNING = 1;
+
+    // Defines Critical level Notification Severity
+    NOTIFICATION_SEVERITY_CRITICAL = 2;
+}
+
+// Define the Notification details
+message Notification {
+    // String representation of the Notification
+    string notification = 1;
+
+    // Notification Severity
+    NotificationSeverity severity = 2;
+
+    // The timestamp of when the notification has been created.
+    google.protobuf.Timestamp created_at = 3;
+
+    // The timestamp of when the notification has been updated.
+    google.protobuf.Timestamp updated_at = 4;
+
+    // The timestamp of when the notification expires.
+    google.protobuf.Timestamp expires_at = 5;
+}
+
+// Request arguments for ListDeploymentsByFilter.
+message ListDeploymentsByFilterRequest {
+    // Identifier of the organization to request the deployments for.
+    string organization_id = 1;
+    // Return only deployments created in this project.
+    // This is an optional field.
+    string project_id = 2;
+    // Return only deployments created in this region.
+    // This is an optional field.
+    string region_id = 3;
+    // Return only deployments with an expiration date after this timestamp.
+    // This will exclude deployments that have no expiration date.
+    // This is an optional field.
+    google.protobuf.Timestamp expires_after = 10;
+     // Return only deployments with an expiration date before this timestamp.
+    // This will exclude deployments that have no expiration date.
+    // This is an optional field.
+    google.protobuf.Timestamp expires_before = 11;
+    // Return only deployments that do not expire.
+    bool does_not_expire = 12;
+    // Optional common list options, the context_id is ignored
+    common.v1.ListOptions options = 100;
+}
+

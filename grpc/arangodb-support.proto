@@ -1,0 +1,193 @@
+//
+// DISCLAIMER
+//
+// Copyright 2020-2023 ArangoDB GmbH, Cologne, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+//
+
+syntax = "proto3";
+
+package arangodb.cloud.support.v1;
+
+option go_package = "github.com/arangodb-managed/apis/support/v1";
+
+import "common/v1/common.proto";
+
+import "google/api/annotations.proto";
+
+// SupportService is the API used to query for support.
+service SupportService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/support/v1/api-version"
+        };
+    }
+
+    // Fetch all support plans that are supported by the ArangoDB cloud.
+    // Required permissions:
+    // - None
+    rpc ListPlans(ListPlansRequest) returns (PlanList) {
+        option (google.api.http) = {
+            get: "/api/support/v1/plans"
+        };
+    }
+    
+    // Fetch a support plan by its id.
+    // Required permissions:
+    // - None
+    rpc GetPlan(common.v1.IDOptions) returns (Plan) {
+        option (google.api.http) = {
+            get: "/api/support/v1/plans/{id}"
+        };
+    }
+
+    // Fetch all FAQ groups.
+    // Required permissions:
+    // - None
+    rpc ListFaqGroups(common.v1.ListOptions) returns (FaqGroupList) {
+        option (google.api.http) = {
+            get: "/api/support/v1/faqgroups"
+        };
+    }
+
+    // Fetch all FAQ group entries of the FAQ group identified by the given context ID.
+    // Required permissions:
+    // - None
+    rpc ListFaqGroupEntries(common.v1.ListOptions) returns (FaqGroupEntryList) {
+        option (google.api.http) = {
+            get: "/api/support/v1/faqgroups/{context_id}/entries"
+        };
+    }
+
+    // Submit a support request.
+    // Required permissions:
+    // - resourcemanager.organization.get (if organization id is set)
+    // - resourcemanager.project.get (if project id is set)
+    // - data.deployment.get (if deployment id is set)
+    // - None (if no ids are set)
+    rpc CreateSupportRequest(SupportRequest) returns (SupportRequest) {
+        option (google.api.http) = {
+            post: "/api/support/v1/supportrequests"
+            body: "*"
+        };
+    }
+}
+
+// SupportRequest contains information about the request
+message SupportRequest {
+    // ID of the request
+    // This is a read-only field
+    string id = 1;
+    // Name of the user who submitted the support request
+    // This is a required field
+    string user_name = 2;
+    // User ID is only provided if the user submitting the request has authenticated
+    // This is an optional field
+    string user_id = 3;
+    // Email address of the user if applicable submitting the request
+    string email_address = 4;
+    // Optional identifier of the organization that is the subject of the support request
+    string organization_id = 5;
+    // Optional identifier of the project that is the subject of the support request
+    string project_id = 6;
+    // Optional identifier of the deployment that is the subject of the support request
+    string deployment_id = 7;
+    // Desciption which will contain the details provided by the submitter
+    string description = 8;
+    // Severity of the request. Can be one of the following: (low|normal|high|critical)
+    string severity = 9;
+    // Optional title which will contain the summary provided by the submitter (max 100 characters)
+    // If not provided a title will be extracted from the description.
+    string title = 10;
+}
+
+// Plan represents a specific support plan such as Bronze, Silver or Gold.
+message Plan {
+    // System identifier of the plan.
+    string id = 1;
+    // Name of the plan.
+    string name = 2; 
+    // If set, this plan is the default support plan.
+    bool is_default = 3;
+    // Human readable description of the plan
+    string description = 4;
+    // If set, this plan is shown, but not selectable.
+    bool is_unavailable = 5;
+    // SLA times to first response for various situations.
+    // When this plan is unavailable, this field is optional.
+    ResponseTimes first_response_times = 6;
+    // Support hours applicable to the SLA.
+    // Possible values are "business" and "24x7".
+    string support_hours = 7;
+}
+
+// Response for various categories on situations.
+// All values are in minutes.
+// A value of 0 means "best effort".
+message ResponseTimes {
+    // Response time for operation-impeding Error in a production environment.
+    int32 critical = 1;
+    // Response time for operation-limiting error.
+    int32 high = 2;
+    // Response time for minor error.
+    int32 normal = 3;
+    // Response time for usage question.
+    int32 low = 4;
+}
+
+// List of plans.
+message PlanList {
+    repeated Plan items = 1;
+}
+
+// Arguments for a ListPlans request
+message ListPlansRequest {
+    // Common list options
+    common.v1.ListOptions options = 1;
+    // If set, list plans as they are available for the organization identified by this ID.
+    string organization_id = 2;
+    // If set, list plans as they are available for the deployment model identified by this field.
+    string model = 3;
+}
+
+// FaqGroup contains groups of faq entries
+message FaqGroup {
+    // ID of the FAQ Group
+    string id = 1;
+    // Name of the FAQ Group
+    string name = 2;
+}
+
+// List of faq groups.
+message FaqGroupList {
+    repeated FaqGroup items = 1;
+}
+
+// FaqGroupEntry contains entries for a group
+message FaqGroupEntry {
+    // The question of this entry
+    string question = 1;
+    // The answer to the question in this entry
+    string answer = 2;
+}
+
+// List of faq group entries.
+message FaqGroupEntryList {
+    repeated FaqGroupEntry items = 1;
+}

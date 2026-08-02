@@ -1,0 +1,169 @@
+generated: '2026-08-02'
+method: derived
+source: >-
+  openapi/arangodb-core-openapi-original.json (path structure, path parameters and
+  request/response bodies), cross-checked against
+  https://docs.arango.ai/arangodb/stable/concepts/data-structure/
+description: >-
+  The entity graph of the ArangoDB Core API. The spec declares no
+  `components.schemas`, so relationships are derived from the path hierarchy and
+  the identifier parameters each operation takes rather than from $ref links.
+  ArangoDB's own data model is itself a graph: documents live in collections,
+  collections live in databases, edge collections connect document collections,
+  and named graphs are declared sets of edge definitions over them.
+identifier_conventions:
+  document_key: _key — unique within a collection, client- or server-assigned
+  document_id: _id — "<collection>/<key>", unique within a database
+  document_revision: _rev — changes on every write; the ETag / If-Match value
+  edge_endpoints: [_from, _to]
+  note: >-
+    `_id` is the universal cross-collection reference: an edge's `_from`/`_to`
+    are `_id` values, and AQL traversals start from an `_id`.
+entities:
+- name: Database
+  path: /_db/{database-name}
+  operations: [listDatabases, createDatabase, deleteDatabase, getCurrentDatabase, listUserDatabases,
+    listUserAccessibleDatabases]
+  note: Every other operation in the API is scoped by {database-name}.
+- name: Collection
+  path: /_db/{database-name}/_api/collection/{collection-name}
+  kinds: [document (type 2), edge (type 3)]
+  operations: [listCollections, createCollection, getCollection, getCollectionProperties,
+    updateCollectionProperties, renameCollection, truncateCollection, deleteCollection,
+    getCollectionCount, getCollectionFigures, getCollectionChecksum, getCollectionRevision,
+    getCollectionShards, loadCollection, unloadCollection, compactCollection, recalculateCollectionCount,
+    loadCollectionIndexes]
+- name: Document
+  path: /_db/{database-name}/_api/document/{collection}/{key}
+  operations: [getDocument, getDocuments, getDocumentHeader, createDocument, createDocuments,
+    replaceDocument, replaceDocuments, updateDocument, updateDocuments, deleteDocument,
+    deleteDocuments]
+- name: Edge
+  path: /_db/{database-name}/_api/edges/{collection-id}
+  operations: [getVertexEdges]
+  note: An edge is a document in an edge collection carrying _from and _to.
+- name: Index
+  path: /_db/{database-name}/_api/index
+  types: [persistent, geo, ttl, mdi, inverted, fulltext, vector]
+  operations: [listIndexes, getIndex, createIndex, createIndexPersistent, createIndexGeo,
+    createIndexTtl, createIndexMdi, createIndexInverted, createIndexFulltext, createIndexVector,
+    deleteIndex]
+- name: Graph
+  path: /_db/{database-name}/_api/gharial/{graph}
+  operations: [listGraphs, createGraph, getGraph, deleteGraph, listVertexCollections,
+    addVertexCollection, deleteVertexCollection, listEdgeCollections]
+- name: View
+  path: /_db/{database-name}/_api/view/{view-name}
+  types: [arangosearch, search-alias]
+  operations: [listViews, createView, getView, getViewProperties, updateViewProperties,
+    replaceViewProperties, renameView, deleteView, createViewSearchAlias, getViewSearchAlias,
+    getViewPropertiesSearchAlias, updateViewPropertiesSearchAlias, replaceViewPropertiesSearchAlias,
+    renameViewSearchAlias]
+- name: Analyzer
+  path: /_db/{database-name}/_api/analyzer/{analyzer-name}
+  operations: [listAnalyzers, createAnalyzer, getAnalyzer, deleteAnalyzer]
+- name: Cursor
+  path: /_db/{database-name}/_api/cursor/{cursor-identifier}
+  operations: [createAqlQueryCursor, getNextAqlQueryCursorBatch, getNextAqlQueryCursorBatchPut,
+    getPreviousAqlQueryCursorBatch, deleteAqlQueryCursor]
+  note: The pagination primitive for every AQL result set.
+- name: StreamTransaction
+  path: /_db/{database-name}/_api/transaction/{transaction-id}
+  operations: [beginStreamTransaction, getStreamTransaction, listStreamTransactions,
+    commitStreamTransaction, abortStreamTransaction]
+  note: Correlated onto document/query operations with the x-arango-trx-id header.
+- name: User
+  path: /_db/{database-name}/_api/user/{user}
+  operations: [listUsers, createUser, getUser, updateUserData, replaceUserData, deleteUser]
+- name: UserPermission
+  path: /_db/{database-name}/_api/user/{user}/database/{dbname}/{collection}
+  operations: [getUserDatabasePermissions, setUserDatabasePermissions, deleteUserDatabasePermissions,
+    getUserCollectionPermissions, setUserCollectionPermissions, deleteUserCollectionPermissions]
+- name: FoxxService
+  path: /_db/{database-name}/_api/foxx
+  operations_count: 21
+  note: Mounted JavaScript microservices; addressed by their `mount` query parameter.
+- name: AsyncJob
+  path: /_db/{database-name}/_api/job/{job-id}
+  operations: [getJob, getJobResult, cancelJob, deleteJob]
+- name: Task
+  path: /_db/{database-name}/_api/tasks/{id}
+  operations: [listTasks, getTask, createTask, createTaskWithId, deleteTask]
+- name: HotBackup
+  path: /_admin/backup
+  operations: [createBackup, listBackups, restoreBackup, deleteBackup, uploadBackup,
+    downloadBackup]
+relationships:
+- from: Database
+  to: Collection
+  kind: has_many
+  via: '{database-name} path parameter'
+- from: Database
+  to: Graph
+  kind: has_many
+  via: '{database-name} path parameter'
+- from: Database
+  to: View
+  kind: has_many
+  via: '{database-name} path parameter'
+- from: Database
+  to: Analyzer
+  kind: has_many
+  via: '{database-name} path parameter'
+- from: Collection
+  to: Document
+  kind: has_many
+  via: '{collection} path parameter; document _id is "<collection>/<key>"'
+- from: Collection
+  to: Index
+  kind: has_many
+  via: collection query parameter on listIndexes/createIndex
+- from: Edge
+  to: Document
+  kind: belongs_to
+  via: _from
+- from: Edge
+  to: Document
+  kind: belongs_to
+  via: _to
+- from: Graph
+  to: Collection
+  kind: has_many
+  via: edgeDefinitions[].collection / .from / .to
+- from: Graph
+  to: Collection
+  kind: has_many
+  via: orphanCollections[]
+- from: View
+  to: Collection
+  kind: has_many
+  via: links (arangosearch) / indexes[].collection (search-alias)
+- from: View
+  to: Analyzer
+  kind: has_many
+  via: links.<collection>.analyzers[]
+- from: Cursor
+  to: Document
+  kind: has_many
+  via: result[] batch of an AQL query
+- from: StreamTransaction
+  to: Collection
+  kind: has_many
+  via: collections.read / .write / .exclusive
+- from: User
+  to: UserPermission
+  kind: has_many
+  via: '{user} path parameter'
+- from: UserPermission
+  to: Database
+  kind: belongs_to
+  via: '{dbname} path parameter'
+- from: UserPermission
+  to: Collection
+  kind: belongs_to
+  via: '{collection} path parameter'
+- from: AsyncJob
+  to: '*'
+  kind: has_one
+  via: 'x-arango-async: store on any operation'
+render: null

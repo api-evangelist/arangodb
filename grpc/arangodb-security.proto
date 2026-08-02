@@ -1,0 +1,349 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2022 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.security.v1;
+
+option go_package = "github.com/arangodb-managed/apis/security/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// SecurityService is the API used to access security entities.
+service SecurityService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/security/v1/api-version"
+        };
+    }
+
+    // Fetch all IP allowlists that belong to the project identified by the given
+    // context ID.
+    // Required permissions:
+    // - security.ipallowlist.list on the project identified by the given context ID.
+    rpc ListIPAllowlists(common.v1.ListOptions) returns (IPAllowlistList) {
+        option (google.api.http) = {
+            get: "/api/security/v1/projects/{context_id}/ipallowlists"
+        };
+    }
+    
+    // Fetch an IP allowlist by its id.
+    // Required permissions:
+    // - security.ipallowlist.get on the IP allowlist
+    rpc GetIPAllowlist(common.v1.IDOptions) returns (IPAllowlist) {
+        option (google.api.http) = {
+            get: "/api/security/v1/ipallowlists/{id}"
+        };
+    }
+
+    // Create a new IP allowlist
+    // Required permissions:
+    // - security.ipallowlist.create on the project that owns the IP allowlist.
+    rpc CreateIPAllowlist(IPAllowlist) returns (IPAllowlist) {
+        option (google.api.http) = {
+            post: "/api/security/v1/project/{project_id}/ipallowlists"
+            body: "*"
+        };
+    }
+
+    // Update an IP allowlist
+    // Required permissions:
+    // - security.ipallowlist.update on the IP allowlist
+    rpc UpdateIPAllowlist(IPAllowlist) returns (IPAllowlist) {
+        option (google.api.http) = {
+            patch: "/api/security/v1/ipallowlists/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete an IP allowlist.
+    // Note that IP allowlists are initially only marked for deletion.
+    // Once all their dependent deployments are removed, the allowlist is removed.
+    // Required permissions:
+    // - security.ipallowlist.delete on the IP allowlist
+    rpc DeleteIPAllowlist(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/security/v1/ipallowlists/{id}"
+        };
+    }
+
+    // Fetch all IAM providers that belong to the project identified by the given
+    // context ID.
+    // Required permissions:
+    // - security.iamprovider.list on the project identified by the given context ID.
+    rpc ListIAMProviders(common.v1.ListOptions) returns (IAMProviderList) {
+        option (google.api.http) = {
+            get: "/api/security/v1/projects/{context_id}/iamproviders"
+        };
+    }
+    
+    // Fetch an IAM provider by its id.
+    // Required permissions:
+    // - security.iamprovider.get on the IAM provider
+    rpc GetIAMProvider(common.v1.IDOptions) returns (IAMProvider) {
+        option (google.api.http) = {
+            get: "/api/security/v1/iamproviders/{id}"
+        };
+    }
+
+    // Create a new IAM provider
+    // Required permissions:
+    // - security.iamprovider.create on the project that owns the IAM provider.
+    rpc CreateIAMProvider(IAMProvider) returns (IAMProvider) {
+        option (google.api.http) = {
+            post: "/api/security/v1/project/{project_id}/iamproviders"
+            body: "*"
+        };
+    }
+
+    // Update an IAM provider
+    // Required permissions:
+    // - security.iamprovider.update on the IAM provider
+    rpc UpdateIAMProvider(IAMProvider) returns (IAMProvider) {
+        option (google.api.http) = {
+            patch: "/api/security/v1/iamproviders/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete an IAM provider.
+    // Note that IAM providers are initially only marked for deletion.
+    // Once all their dependent deployments are removed, the provider is removed.
+    // Required permissions:
+    // - security.iamprovider.delete on the IP whitelist
+    rpc DeleteIAMProvider(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/security/v1/iamproviders/{id}"
+        };
+    }
+
+    // Mark the given IAM provider as default for its containing project.
+    // Required permissions:
+    // - security.iamprovider.set-default on the project that owns the provider.
+    rpc SetDefaultIAMProvider(IAMProvider) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/security/v1/projects/{project_id}/iamproviders/default"
+            body: "*"
+        };
+    }
+}
+
+// IPAllowlist represents a list of CIDR ranges from which a deployment is accessible.
+message IPAllowlist {
+    // System identifier of the allowlist.
+    // This is a read-only value.
+    string id = 1;
+    // URL of the allowlist.
+    // This is a read-only value.
+    string url = 2;
+    // Name of the allowlist.
+    string name = 3; 
+    // Description of the allowlist.
+    string description = 4; 
+    // Identifier of the project that contains this allowlist.
+    string project_id = 5;
+    // List of CIDR ranges.
+    // Values must follow format as defined in RFC 4632 and RFC 4291.
+    repeated string cidr_ranges = 6;
+    // The creation timestamp of this allowlist.
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the allowlist
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 8;
+    // Set when this allowlist is deleted.
+    // This is a read-only value.
+    bool is_deleted = 9;
+    // Identifier of the user who created this allowlist.
+    // This is a read-only value.
+    string created_by_id = 10;
+    // If set, this allow list cannot be deleted.
+    // To delete, first update the with locked set to false.
+    bool locked = 11;
+    // The list of warnings which are related to the IP allow list.
+    // This is a read-only value.
+    repeated string warnings = 12;
+    // If set, a few additional IP addresses are added to allow for remote 
+    // connectivity inspection of the deployment by the ArangoGraph Insights Platform.
+    bool remote_inspection_allowed = 13;
+}
+
+// List of IP allowlists.
+message IPAllowlistList {
+    repeated IPAllowlist items = 1;
+}
+
+// IAMProvider provides configuration for a custom Identity & Access management provider
+// for deployments.
+message IAMProvider {
+    // System identifier of the provider.
+    // This is a read-only value.
+    string id = 1;
+    // URL of the provider.
+    // This is a read-only value.
+    string url = 2;
+    // Name of the provider.
+    string name = 3; 
+    // Description of the provider.
+    string description = 4; 
+    // Identifier of the project that contains this provider.
+    string project_id = 5;
+    // Type of provider
+    string type = 6;
+    // The creation timestamp of this provider.
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the provider
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 8;
+    // Set when this provider is deleted.
+    // This is a read-only value.
+    bool is_deleted = 9;
+    // Identifier of the user who created this provider.
+    // This is a read-only value.
+    string created_by_id = 10;
+    // Set when this provider is the default in its project.
+    // This is a read-only value.
+    bool is_default = 11;
+    // If set, this IAM provider cannot be deleted.
+    // To delete, first update the with locked set to false.
+    bool locked = 12;
+
+    // LDAP provider specific settings
+    message LDAPSettings {
+        // Hostname or IP address of the server
+        string server = 1;
+        // Port number of the server (defaults to 389)
+        int32 port = 2;
+        // Base distinguished name under which the search takes place 
+        string base_distinguished_name = 3;
+        // distinguished name for a read-only LDAP user to which ArangoDB can bind to search the LDAP server
+        string bind_distinguished_name = 4;
+        // Password name for a read-only LDAP user to which ArangoDB can bind to search the LDAP server.
+        // This is a set-only field. During get/list requests, this field will be empty.
+        string bind_password = 5;
+        // Refresh rate in seconds (defaults to 300)
+        int32 refresh_rate = 6;
+
+        // PEM encoded version of the CA certificate used by the LDAP server.
+        string tls_ca_certificate_pem = 10;
+
+        // If set, calls into the underlying LDAP library are serialized. 
+        // This option can be used to work around thread-unsafe LDAP library functionality.
+        bool serialized = 20;
+        // Timeout (in seconds) used when waiting to enter the LDAP library call serialization lock. 
+        // This is only meaningful when serialized has been set to true.
+        int32 serialize_timeout_sec = 21;
+        // Number of retries to attempt a connection to the LDAP server. 
+        // Setting this to values greater than zero will make ArangoDB retry to contact the
+        // LDAP server in case no connection can be made initially.
+        int32 retries = 22;
+        // If set, the LDAP library will implicitly restart connections.
+        bool restart = 23;
+        // If set, the LDAP library will implicitly chase referrals.
+        bool referrals = 24;
+        // Timeout value (in seconds) for synchronous LDAP API calls (a value of 0 means default timeout).
+        int32 timeout_sec = 25;
+        // Timeout value (in seconds) after which network operations following the initial 
+        // connection return in case of no activity (a value of 0 means default timeout).
+        int32 network_timeout_sec = 26;
+        // If set, the LDAP library will connect asynchronously.
+        bool async_connect = 27;
+
+        // Simple authentication settings.
+        //
+        // In the “simple” method the LDAP bind user is derived from the ArangoDB user
+        // name by prepending the value of the prefix option and by appending the value
+        // of the suffix option. 
+        // For example, an ArangoDB user “alice” would be mapped to the
+        // distinguished name uid=alice,dc=arangodb,dc=com to perform the LDAP bind and authentication, 
+        // if prefix is set to uid= and suffix is set to ,dc=arangodb,dc=com.
+
+        // Prefix for simple authentication
+        string prefix = 100;
+        // Suffix for simple authentication
+        string suffix = 101;
+
+        // Search authentication settings.
+        //
+        // The search authentication method is used if at least one of the two options
+        // prefix and suffix is empty or not specified.
+        // ArangoDB uses the LDAP user credentials given by the bind_distinguished_name and
+        // bind_password to perform a search for LDAP users.
+
+        // LDAP search scope with possible values "base" (just search the base distinguished name),
+        // "sub" (recursive search under the base distinguished name) or 
+        // "one" (search the base’s immediate children) (default: "sub").
+        string search_scope = 200;
+        // LDAP filter expression which limits the set of LDAP users being considered 
+        // (default: "objectClass=*"" which means all objects).
+        string search_filter = 201;
+        // Specifies the attribute in the user objects which is used to match the ArangoDB user name (default: "uid").
+        string search_attribute = 202;
+
+        // After authentication, the next step is to derive authorization information 
+        // from the authenticated LDAP user. In order to fetch the roles and thereby the
+        // access rights for a user we again have two possible options and need to pick one
+        // of them. We can combine each authentication method with each role method. 
+        // In any case a user can have no role or more than one. 
+        // If a user has no role the user will not get any access to ArangoDB at all.
+        // If a user has multiple roles with different rights then the rights will be
+        // combined and the strongest right will win. 
+
+        // If set, this field specifies the name of the attribute used to fetch the roles of a user.
+        string roles_attribute_name = 300;
+        // If set, then the string {USER} in the value of this field is replaced with the distinguished 
+        // name of the authenticated LDAP user and the resulting search expression is used to
+        // match distinguished names of LDAP objects representing roles of that user.
+        string roles_search = 301;
+
+        // Role transformations and filters
+        //
+        // For both of the above authorization methods there are further configuration 
+        // options to tune the role lookup.
+
+        // Regular expression that is used to filter roles.
+        // Only roles that match the regular expression are used.
+        string roles_include = 400;
+        // Regular expression that is used to filter roles.
+        // Only roles that do not match the regular expression are used.
+        string roles_exclude = 401;
+        // A regular expression in the format of a replacement text (/re/text/).
+        // This regular expression is applied to the role name found.
+        // This is especially useful in the roles-search variant to extract the real role name out of the dn value.
+        string roles_transformation = 402;
+        // Name of role associated with the superuser.
+        // Any user belonging to this role gains superuser status.
+        // This role is checked after applying the roles_transformation expression.
+        string super_user_role = 403;
+    }
+    LDAPSettings ldap_settings = 101;
+}
+
+// List of IAM providers.
+message IAMProviderList {
+    repeated IAMProvider items = 1;
+}

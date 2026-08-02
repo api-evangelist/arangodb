@@ -1,0 +1,693 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2026 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.billing.v1;
+
+option go_package = "github.com/arangodb-managed/apis/billing/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// BillingService is the API used to fetch billing information.
+service BillingService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/api-version"
+        };
+    }
+
+    // Fetch the billing specific flags for the organization identified by the given ID.
+    // Required permissions:
+    // - billing.organization.get
+    rpc GetOrganizationBillingFlags(common.v1.IDOptions) returns (OrganizationBillingFlags) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{id}/billing-flags"
+        };
+    }
+
+    // Fetch all Invoice resources for the organization identified by the given
+    // organization ID that match the given criteria.
+    // Required permissions:
+    // - billing.invoice.list on the organization identified by the given organization ID
+    rpc ListInvoices(ListInvoicesRequest) returns (InvoiceList) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{organization_id}/invoices"
+        };
+    }
+
+    // Fetch a specific Invoice identified by the given ID.
+    // Required permissions:
+    // - billing.invoice.get on the organization that owns the invoice
+    //   with given ID.
+    rpc GetInvoice(common.v1.IDOptions) returns (Invoice) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/invoices/{id}"
+        };
+    }
+
+    // Fetch a preliminary Invoice identified by the given organization ID.
+    // The preliminary invoice contains all costs from the last invoice (if any, otherwise the creation date of the organization) until last night (midnight UTC).
+    // Required permissions:
+    // - billing.invoice.get-preliminary on the organization identified by the given organization ID
+    rpc GetPreliminaryInvoice(GetPreliminaryInvoiceRequest) returns (Invoice) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/invoices/{organization_id}/preliminary"
+        };
+    }
+
+    // Fetch a specific Invoice identified by the given ID as PDF document.
+    // Required permissions:
+    // - billing.invoice.get on the organization that owns the invoice
+    //   with given ID.
+    rpc GetInvoicePDF(common.v1.IDOptions) returns (PDFDocument) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/invoices/{id}/pdf"
+        };
+    }
+
+    // Fetch all EverestInvoice resources (new billing system) for the
+    // organization identified by the given organization ID.
+    // Required permissions:
+    // - billing.invoice.list on the organization identified by the given organization ID
+    rpc ListEverestInvoices(ListEverestInvoicesRequest) returns (EverestInvoiceList) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{organization_id}/everest-invoices"
+        };
+    }
+
+    // Fetch a specific EverestInvoice identified by the given invoice UUID.
+    // Required permissions:
+    // - billing.invoice.get on the organization that owns the invoice.
+    rpc GetEverestInvoice(common.v1.IDOptions) returns (EverestInvoice) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/everest-invoices/{id}"
+        };
+    }
+
+    // Fetch all payment providers that are usable for the organization identified
+    // by the given context ID.
+    // Required permissions:
+    // - billing.paymentprovider.list on the organization identified by the given context ID
+    rpc ListPaymentProviders(ListPaymentProvidersRequest) returns (PaymentProviderList) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{organization_id}/paymentproviders"
+        };
+    }
+
+    // Fetch a specific payment provider identified by the given ID.
+    // Required permissions:
+    // - None
+    rpc GetPaymentProvider(common.v1.IDOptions) returns (PaymentProvider) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/paymentproviders/{id}"
+        };
+    }
+
+    // Fetch all payment methods that are configured for the organization identified
+    // by the given context ID.
+    // Required permissions:
+    // - billing.paymentmethod.list on the organization identified by the given context ID
+    rpc ListPaymentMethods(ListPaymentMethodsRequest) returns (PaymentMethodList) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{organization_id}/paymentmethods"
+        };
+    }
+
+    // Fetch a specific payment method identified by the given ID.
+    // Required permissions:
+    // - billing.paymentmethod.get on the organization that owns the payment method
+    //   which is identified by the given ID
+    rpc GetPaymentMethod(common.v1.IDOptions) returns (PaymentMethod) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/paymentmethods/{id}"
+        };
+    }
+
+    // Prepare the payment provider for creating a new payment method.
+    // Required permissions:
+    // - billing.paymentmethod.create on the organization that owns future payment method.
+    rpc PreparePaymentMethod(PreparePaymentMethodRequest) returns (PreparedPaymentMethod) {
+        option (google.api.http) = {
+            post: "/api/billing/v1/paymentproviders/{provider_id}/prepare"
+            body: "*"
+        };
+    }
+
+    // Create a new payment method.
+    // Required permissions:
+    // - billing.paymentmethod.create on the organization that owns the given payment method.
+    rpc CreatePaymentMethod(CreatePaymentMethodRequest) returns (PaymentMethod) {
+        option (google.api.http) = {
+            post: "/api/billing/v1/paymentmethods"
+            body: "*"
+        };
+    }
+
+    // Update a specific payment method.
+    // Note that only name, description & valid period are updated.
+    // Required permissions:
+    // - billing.paymentmethod.update on the organization that owns the given payment method.
+    rpc UpdatePaymentMethod(PaymentMethod) returns (PaymentMethod) {
+        option (google.api.http) = {
+            put: "/api/billing/v1/paymentmethods/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete a specific payment method identified by the given ID.
+    // Required permissions:
+    // - billing.paymentmethod.delete on the organization that owns the given payment method
+    //   which is identified by the given ID.
+    rpc DeletePaymentMethod(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/billing/v1/paymentmethods/{id}"
+        };
+    }
+
+    // Fetch the default PaymentMethod for an organization identified by the given ID.
+    // Required permissions:
+    // - billing.paymentmethod.get-default on the organization that is identified by the given ID
+    rpc GetDefaultPaymentMethod(common.v1.IDOptions) returns (PaymentMethod) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{id}/default-paymentmethod"
+        };
+    }
+
+    // Update the default PaymentMethod for an organization identified by the
+    // given organization ID, to the payment method identified by the given payment method ID.
+    // Required permissions:
+    // - billing.paymentmethod.set-default on the organization identified by the given organization ID
+    rpc SetDefaultPaymentMethod(SetDefaultPaymentMethodRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            put: "/api/billing/v1/organization/{organization_id}/default-paymentmethod"
+            body: "*"
+        };
+    }
+
+    // Fetch the billing configuration of an organization identified by the given ID.
+    // Required permissions:
+    // - billing.config.get on the organization that is identified by the given ID
+    rpc GetBillingConfig(common.v1.IDOptions) returns (BillingConfig) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{id}/config"
+        };
+    }
+
+    // Update the billing configuration for an organization identified by the
+    // given organization ID.
+    // Required permissions:
+    // - billing.config.set on the organization identified by the given organization ID
+    rpc SetBillingConfig(SetBillingConfigRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            put: "/api/billing/v1/organization/{organization_id}/config"
+            body: "*"
+        };
+    }
+
+    // Get available credits for an organization identified by organization_id
+    // Required permissions:
+    // - billing.credits.get_available on the organization identified by the given organization ID
+    rpc GetAvailableCredits(GetAvailableCreditsRequest) returns (AvailableCredits) {
+        option (google.api.http) = {
+            get: "/api/billing/v1/organization/{organization_id}/credits"
+        };
+    }
+}
+
+
+
+// An Invoice message describes a transaction for usage of ArangoGraph Insights Platform.
+message Invoice {   
+    // System identifier of the invoice.
+    string id = 1;
+    // URL of this resource
+    string url = 2;
+    // Identifier of the organization that is responsible for the payment of this invoice.
+    string organization_id = 3;
+    // Name of the organization that is responsible for the payment of this invoice.
+    string organization_name = 4;
+    // Identifier of the legal entity that is the sender of this invoice.
+    string entity_id = 5;
+    // Name of the legal entity that is the sender of this invoice.
+    string entity_name = 6;
+    // Invoice number (used by accounting)
+    string invoice_number = 7;
+
+    // The creation date of the invoice
+    google.protobuf.Timestamp created_at = 10;
+    // If set, this invoice must be manually verified 
+    // before payment can be initiated.
+    bool requires_manual_verification = 11;
+    // The last update date of the invoice.
+    // This applies to 'specification' only and doesn't apply to status or payments changes.
+    google.protobuf.Timestamp last_updated_at = 12;
+    // The list of email addresses that this invoice (and payments related to this invoice) will be send to.
+    repeated string email_addresses = 13;
+    // If set, this invoice is generated for an organization that is configured to use purchase orders.
+    bool purchase_order_based = 14;
+    
+    // The version of the invoice-builder who created the invoice.
+    string invoice_builder_version = 20;
+
+    // A single item of the invoice
+    message Item {
+        // Identifiers of the UsageItems that this item covers.
+        repeated string usageitem_ids = 4;
+        // Amount of money (ex VAT) for this item
+        float amount = 2;
+        // Human readable description of this item
+        string description = 3;
+        // If set, this invoice item is already prepaid
+        bool is_prepaid = 5;
+        // If set, this invoice item is already prepaid in credits.
+        bool is_prepaid_credits = 6;
+    }
+    // All items of the invoice
+    repeated Item items = 100;
+
+    // Currency for all amounts
+    string currency_id = 110;
+    
+    // Sum all amount for all items (excluding VAT and sales tax)
+    float total_amount_excl_taxes = 111;
+    
+    // VAT amount for all items (applicable for Entity GmbH)
+    float total_vat = 112;
+    // If set, the VAT reverse charge rule is applied for this invoice.
+    bool vat_reverse_charge = 114;
+    // The VAT percentage used 
+    float vat_percentage_used = 115;
+
+    // Sales tax amount for all items (applicable for Entity Inc.)
+    float total_sales_tax = 116;
+    // The sales tax percentage used 
+    float sales_tax_percentage_used = 117;
+
+    // Sum of total_amount_excl_taxes + total_vat + total_sales_tax.
+    // This is the amount that the customer will be charged for.
+    float total_amount_incl_taxes = 113;
+   
+    // Status of the invoice
+    message Status {
+        // If set, this invoice is still being processed.
+        bool is_pending = 1;
+        // If set, a successful payment has been made for this invoice.
+        bool is_completed = 2;
+        // If set, all payment attempts for this invoice have been rejected.
+        bool is_rejected = 3;
+        // If set, this invoice has been verified manually.
+        bool is_verified = 4;
+        // If set, this payment needs to be rebuild (by the invoice-builder service).
+        // If set, is_completed & is_rejected must be false.
+        bool needs_rebuild = 5;
+        // The timestamp of succesfull completion of the payment.
+        // This field equals the completed_at field of the last payment if
+        // that payment succeeded, nil otherwise.
+        google.protobuf.Timestamp completed_at = 10;
+        // The timestamp of rejected completion of the payment.
+        // This field equals the rejected_at field of the last payment if
+        // that payment failed, nil otherwise.
+        google.protobuf.Timestamp rejected_at = 11;
+        // Human readable reason for the completion.
+        string completion_reason = 12;
+        // Human readable reason for the rejection.
+        string rejection_reason = 13;
+        // Identifier of user who completed this invoice.
+        string completed_by = 14;
+        // Identifier of user who rejected this invoice.
+        string rejected_by = 15;
+    }
+    Status status = 200;
+
+    // Payment (attempt) of the invoice
+    message Payment {
+        // The timestamp of the start of the payment attempt.
+        google.protobuf.Timestamp created_at = 1;
+        // Identifier of the payment provider that is used for this payment.
+        string payment_provider_id = 2;
+        // Identifier of this payment (created by payment provider)
+        string payment_id = 3;
+        // Identifier of the payment method that is used for this payment.
+        string payment_method_id = 4;
+        // If set, this payment is still being processed.
+        bool is_pending = 10;
+        // If set, this payment has been payed for succesfully.
+        bool is_completed = 11;
+        // If set, this payment has been rejected.
+        bool is_rejected = 12;
+        // The timestamp of succesfull completion of the payment.
+        google.protobuf.Timestamp completed_at = 20;
+        // The timestamp of rejected completion of the payment.
+        google.protobuf.Timestamp rejected_at = 21;
+        // Human readable reason for the rejection.
+        string rejection_reason = 22;
+        // If the currency of the payment method differs from the currency of the 
+        // invoice, the amount is converted from the currency of the invoice
+        // to the currency of the payment method.
+        // If such a converted was needed, this field is set to the currency
+        // of the payment method.
+        string converted_currency_id = 30;
+        // If the converted_currency_id is non-empty, this field it set to the
+        // the amount (in converted currency) that the customer is charged for.
+        // This is the total_amount_incl_taxes converted into the payment 
+        // method currency.
+        float converted_amount = 31;
+        // Amount in the invoice currency that was paid with this payment
+        // If it's 0, it is assumed that this is a full amount of the invoice
+        float amount = 32;
+    }
+    // All payment attempts for this invoice, ordered by created_at.
+    repeated Payment payments = 201;
+}
+
+// List of Invoices.
+message InvoiceList {
+    repeated Invoice items = 1;
+}
+
+// Request arguments for ListInvoices
+message ListInvoicesRequest {
+    // Request invoices for the organization with this id.
+    // This is a required field.
+    string organization_id = 1;
+    // Request invoices that are created at or after this timestamp.
+    // This is an optional field.
+    google.protobuf.Timestamp from = 2;
+    // Request invoices that are created before this timestamp.
+    // This is an optional field.
+    google.protobuf.Timestamp to = 3;
+
+    // Standard list options
+    // This is an optional field.
+    common.v1.ListOptions options = 10;
+
+    // Whether or not to include the usage item IDs on every Invoice_Item in the returned Invoices.
+    // This is an optional field; usage item IDs are not included by default.
+    bool include_usageitem_ids = 20;
+}
+
+// EverestInvoicePaymentState describes how far an Everest (new billing) invoice is settled.
+enum EverestInvoicePaymentState {
+    // Not set.
+    EVEREST_INVOICE_PAYMENT_STATE_UNSPECIFIED = 0;
+    // No payments or credits applied yet.
+    EVEREST_INVOICE_PAYMENT_STATE_UNPAID = 1;
+    // Some payments or credits applied, but an amount is still due.
+    EVEREST_INVOICE_PAYMENT_STATE_PARTIALLY_PAID = 2;
+    // Fully settled by payments.
+    EVEREST_INVOICE_PAYMENT_STATE_PAID_IN_FULL = 3;
+    // Fully settled by credit notes.
+    EVEREST_INVOICE_PAYMENT_STATE_CREDITED_IN_FULL = 4;
+}
+
+// EverestInvoiceAmount is a currency-tagged decimal amount.
+message EverestInvoiceAmount {
+    // Decimal amount, e.g. "1234.56".
+    string amount = 1;
+    // ISO currency code, e.g. "USD".
+    string currency = 2;
+}
+
+// EverestInvoice is an invoice created by the new (Everest based) billing
+// system. Unlike Invoice, it carries no verification/payment workflow —
+// payment collection is handled by the billing provider.
+message EverestInvoice {
+    // UUID of the invoice (use as id in GetEverestInvoice / PDF download).
+    string invoice_uuid = 1;
+    // Identifier of the organization owning the invoice.
+    string organization_id = 2;
+    // Human readable invoice number.
+    string invoice_number = 3;
+
+    // Issue date.
+    google.protobuf.Timestamp invoice_date = 10;
+    // Payment due date. The invoice becomes overdue at the end of the due day.
+    google.protobuf.Timestamp due_date = 11;
+
+    // Gross total including tax.
+    EverestInvoiceAmount total_amount = 20;
+    // Outstanding balance.
+    EverestInvoiceAmount total_amount_due = 21;
+    // Sum of payments applied.
+    EverestInvoiceAmount payments_applied = 22;
+    // Sum of credit notes applied.
+    EverestInvoiceAmount total_credited = 23;
+    // Total tax.
+    EverestInvoiceAmount total_tax = 24;
+
+    // Settlement state.
+    EverestInvoicePaymentState payment_state = 30;
+    // Set when the invoice is not settled and its due day has passed.
+    bool is_overdue = 31;
+}
+
+// List of EverestInvoice items.
+message EverestInvoiceList {
+    repeated EverestInvoice items = 1;
+}
+
+// Request arguments for ListEverestInvoices
+message ListEverestInvoicesRequest {
+    // Request invoices for the organization with this id.
+    // This is a required field.
+    string organization_id = 1;
+    // Standard list options
+    common.v1.ListOptions options = 10;
+}
+
+// Request argument for GetPreliminaryInvoice
+message GetPreliminaryInvoiceRequest {
+    // Identifier of the organization 
+    // This is a required field.
+    string organization_id = 1;
+}
+
+// Payment providers are services that handle payments.
+message PaymentProvider {
+    // System identifier of this payment provider.
+    string id = 1;
+    // Name of the payment provider
+    string name = 2;
+    // Description of the payment provider
+    string description = 3;
+    // Type of payment method supported by this provider
+    string type = 4;
+}
+
+// List of Payment providers
+message PaymentProviderList {
+    repeated PaymentProvider items = 1;
+}
+
+// Request arguments for PreparePaymentMethod.
+message PreparePaymentMethodRequest {
+    // ID of the provider to prepare
+    string provider_id = 1;
+    // ID of the organization that will own the future payment method
+    string organization_id = 2;
+    // Currency for the future payment payment method
+    string currency_id = 3;
+}
+
+// Response data for PreparePaymentMethod.
+message PreparedPaymentMethod {
+    // ID of the provider of the future payment method
+    string provider_id = 1;
+    // ID of the organization that will own the future payment method
+    string organization_id = 2;
+    // Currency for this payment method
+    string currency_id = 3;
+    // Token (semantics depends on payment provider)
+    string token = 11;
+    // URL of custom script to load to create the payment method
+    string script_url = 12;
+    // Signature used to verify the consistency of the data in this message.
+    string signature = 101;
+}
+
+// Request arguments for CreatePaymentMethod
+message CreatePaymentMethodRequest {
+    // The result of PreparePaymentMethod.
+    PreparedPaymentMethod prepared_payment_method = 1;
+    // First name of owner of payment method
+    string first_name = 2;
+    // Last name of owner of payment method
+    string last_name = 3;
+    // Country of issuing of the payment method
+    string issuing_country = 4;
+}
+
+// Request arguments for ListPaymentProviders
+message ListPaymentProvidersRequest {
+    // Identifier of the organization for which payment providers are requested.
+    string organization_id = 1;
+    // Optional common list options. (Context ID is ignored)
+    common.v1.ListOptions options = 2;
+    // If set to true, also return include internal payment providers, for whom users can't create payment methods.
+    bool include_internal = 3;
+}
+
+// Payment methods are specific methods for paying at a specific payment provider
+// such as a specific credit card.
+message PaymentMethod {
+    // System identifier of this payment method.
+    string id = 1;
+    // Name of the payment method
+    string name = 2;
+    // Description of the payment method
+    string description = 3;
+    // Identifier of the payment provider used for this payment method
+    // This is a read-only field.
+    string payment_provider_id = 4;
+    // Identifier of the organization that owns this payment method
+    // This is a read-only field.
+    string organization_id = 5;
+    // Creation timestamp of this payment method
+    // This is a read-only field.
+    google.protobuf.Timestamp created_at = 10;
+    // Deletion timestamp of this payment method
+    // This is a read-only field.
+    google.protobuf.Timestamp deleted_at = 11;
+    // Set if the payment method is deleted.
+    // This is a read-only field.
+    bool is_deleted = 12;
+    // If set, this timestamp specifies when the payment method is no longer valid.
+    // If not set, there is no (known) end date for this payment method.
+    google.protobuf.Timestamp valid_until = 13;
+    // Token for this payment method, provided by the payment provider.
+    // This is a read-only field.
+    string token = 14;
+    // Type of payment method 
+    string type = 15;
+    // If set, this payment method is the default for its organization.
+    // This is a read-only field.
+    bool is_default = 16;
+    // Currency for invoices using this payment method
+    string currency_id = 17;
+    // Country of issuing of the payment method
+    string issuing_country = 18;
+
+    // Information of the creditcard.
+    // Only set when type == "creditcard"
+    message CreditCardInfo {
+        // Last 4 digits of the CC number.
+        string last_digits = 1;
+        // Type of creditcard
+        string card_type = 2;
+    }
+    CreditCardInfo credit_card_info = 101;
+}
+
+// List of Payment methods
+message PaymentMethodList {
+    repeated PaymentMethod items = 1;
+}
+
+// Request arguments for ListPaymentMethods
+message ListPaymentMethodsRequest {
+    // Identifier of the organization for which payment methods are requested.
+    string organization_id = 1;
+    // Optional common list options. (Context ID is ignored)
+    common.v1.ListOptions options = 2;
+}
+
+// Request argument for SetDefaultPaymentMethod
+message SetDefaultPaymentMethodRequest {
+    // Identifier of the organization for which the default payment method will be set.
+    string organization_id = 1;
+    // Identifier of the new default payment method for the organization.
+    string payment_method_id = 2;
+}
+
+// Address of organization
+message Address {
+    // Address lines
+    repeated string address = 1;
+    // ZIP code (if any)
+    string zipcode = 2;
+    // City
+    string city = 3;
+    // State
+    // For US, this must be an ISO 3166-2 2-letter state code
+    // See https://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations
+    string state = 4;
+    // Country code
+    string country_code = 5;
+}
+
+// Billing specific organization flags
+message OrganizationBillingFlags {
+    // If set, this organization is allowed to list invoices.
+    bool is_allowed_to_list_invoices = 1;
+    // If set, this organization is allowed to create/list/update payment methods.
+    bool is_allowed_to_access_payment_methods = 2;
+}
+
+// Billing configuration for an organization
+message BillingConfig {
+    // Address of the organization
+    Address address = 1;
+    // EU VAT number of the organization (if any)
+    string vat_number = 2;
+    // Email address(es) to send emails related to billing (mostly invoices) to.
+    repeated string email_addresses = 3;
+    // US sales tax number of the organization (if any)
+    string us_tax_number = 4;
+    // Legal name of the organization
+    string company_legal_name = 5;
+}
+
+// Request arguments for SetBillingConfig.
+message SetBillingConfigRequest {
+    // Identifier of the organization for which billing address is to be set.
+    string organization_id = 1;
+    // Billing configuration to set.
+    BillingConfig config = 2;
+}
+
+message PDFDocument {
+    // Content of the document
+    bytes content = 1;
+    // Filename of the document
+    string filename = 2;
+}
+
+message GetAvailableCreditsRequest {
+    string organization_id = 1;
+}
+
+message AvailableCredits {
+    // information abou Credit in a given currency
+    message CreditCurrencyAmount {
+        // amount of credit
+        float amount = 1;
+        // identifier of the currency for this credit
+        string currency_id = 2;
+    }
+    // contains information about credits in different currencies
+    repeated CreditCurrencyAmount credits = 1;
+}

@@ -1,0 +1,130 @@
+generated: '2026-08-02'
+method: derived
+source: >-
+  openapi/arangodb-core-openapi-original.json, grpc/*.proto, and the Arango
+  documentation (general request handling, authentication, SCIM provisioning)
+description: >-
+  Which cross-cutting and industry standards the Arango API surface conforms to.
+  Derived from the harvested specs and confirmed against the documentation. A
+  `conforms: false` entry with no evidence is an honest negative, not a gap we
+  filled in.
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: >-
+    ArangoDB publishes its Core HTTP API as an OpenAPI 3.1.0 document
+    (js/apps/system/_admin/aardvark/APP/api-docs.json in arangodb/arangodb);
+    since 3.12.8 the running server also serves it at /_arango/v{N}/openapi.json.
+    174 paths, 254 operations, 22 tags, unique operationIds on every operation.
+- id: openapi-security-schemes
+  conforms: false
+  evidence: >-
+    The published document declares no components.securitySchemes and no
+    top-level `security`, even though the API requires HTTP Basic or JWT bearer.
+    Auth is documented only in prose. See authentication/arangodb-authentication.yml.
+- id: openapi-components-reuse
+  conforms: false
+  evidence: >-
+    The document has no `components` object at all; every schema is declared
+    inline per operation, so there is no $ref reuse and no shared error schema.
+- id: openapi-servers
+  conforms: false
+  evidence: >-
+    No `servers[]` array is declared. ArangoDB is deployed per instance, so the
+    base URL is deployment-specific, but the omission means the spec is not
+    directly executable without editing.
+- id: grpc
+  conforms: true
+  evidence: >-
+    The Arango Managed Platform control plane is a gRPC API with 28 first-party
+    proto3 service definitions published at github.com/arangodb-managed/apis
+    (harvested to grpc/).
+- id: protobuf-3
+  conforms: true
+  evidence: All harvested AMP definitions are proto3 with google.api.http annotations.
+- id: scim-2.0
+  conforms: true
+  evidence: >-
+    AMP exposes SCIM 2.0 user/group provisioning at
+    https://dashboard.arangodb.cloud/api/scim/v1 for organizations with SSO
+    enabled; grpc/arangodb-scim.proto defines the backing service.
+- id: saml-2.0
+  conforms: true
+  evidence: >-
+    Single sign-on for AMP organizations is documented via SAML 2.0 identity
+    providers.
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No OAuth 2.0 authorization server, no /.well-known/oauth-authorization-server
+    on any Arango host. Authentication is HTTP Basic + JWT (Core) and API-key
+    exchange for a bearer token (AMP).
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration on any probed host.
+- id: jwt-rfc7519
+  conforms: true
+  evidence: >-
+    POST /_open/auth (createSessionToken) issues JSON Web Tokens; the deployment
+    JWT secret can also sign superuser tokens. Expiry bounds are configurable via
+    --auth.minimal-jwt-expiry-time / --auth.maximal-jwt-expiry-time.
+- id: http-basic-rfc7617
+  conforms: true
+  evidence: Authorization Basic is a documented and supported scheme on the Core API and SCIM API.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors are application/json with ArangoDB's own {error, code, errorNum,
+    errorMessage} envelope, not application/problem+json. See
+    errors/arangodb-problem-types.yml.
+- id: rfc5789-http-patch
+  conforms: true
+  evidence: PATCH is documented as supported and used for partial document updates.
+- id: rfc7540-http2
+  conforms: true
+  evidence: >-
+    HTTP/2 is supported via h2c upgrade, prior knowledge, and TLS ALPN, per the
+    general request handling documentation.
+- id: http-conditional-requests-rfc9110
+  conforms: true
+  evidence: >-
+    If-Match / If-None-Match against the document `_rev` with 412 and 304
+    responses; 15 operations declare a 412 and 4 declare a 304.
+- id: idempotency-key
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header or equivalent replay contract is published. See
+    conventions/arangodb-conventions.yml.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    No Sunset or Deprecation response headers; removals are announced in the
+    release notes. See lifecycle/arangodb-lifecycle.yml.
+- id: openmetrics-prometheus
+  conforms: true
+  evidence: >-
+    GET /_admin/metrics/v2 (getMetricsV2) exposes Prometheus-format metrics;
+    Arango also publishes Grafana dashboards at github.com/arangodb/dashboards.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document and no webhook or event-stream product surface was found
+    for either the Core API or AMP.
+- id: json-api
+  conforms: false
+  evidence: Plain application/json resource representations; no JSON:API envelope.
+- id: odata
+  conforms: false
+- id: fhir
+  conforms: false
+- id: fapi
+  conforms: false
+- id: psd2
+  conforms: false
+compliance_program:
+  published: false
+  note: >-
+    No trust center, no named certifications (SOC 2 / ISO 27001 / PCI DSS /
+    HIPAA / FedRAMP) and no /.well-known/security.txt were found on any Arango
+    host, so no `Compliance` or `TrustCenter` pointer is emitted. Probed
+    2026-08-02 with 0-working/probe-security-programs.py: vdp=none, trust=none.

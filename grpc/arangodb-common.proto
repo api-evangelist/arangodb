@@ -1,0 +1,81 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+// Author Ewout Prangsma
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.common.v1;
+
+option go_package = "github.com/arangodb-managed/apis/common/v1";
+
+// Empty message
+message Empty {}
+
+// Options for a list request.
+message ListOptions {
+    // Maximum number of items to return.
+    // If not specified, a default number items are returned.
+    // Unless specified otherwise, the default number is DefaultPageSize.
+    int32 page_size = 1;
+    // Page to start with (defaults to 0).
+    int64 page = 2;
+    // Identifier of the resource in which the list request is made.
+    string context_id = 3;
+}
+
+// Options for a get-by-id request
+message IDOptions {
+    // System identifier of the object to fetch.
+    string id = 1;
+}
+
+// Options for a get-by-url request
+message URLOptions {
+    // URL of the resource to fetch.
+    string url = 1;
+}
+
+// Response for single boolean.
+message YesOrNo {
+    bool result = 1;
+}
+
+// Budget for resources of a specific kind
+message Budget {
+    // How many resources of the specific kind are in use
+    int64 used = 1;
+    // How many resources of the specific kind are still available.
+    // Note a value above 0 does not mean that the caller has permission to add those resources.
+    int64 available = 2;
+    // If set, there is no limit to the number of resources of a specific kind that can be created.
+    // If set, available is 0.
+    bool unlimited = 3;
+}
+
+// Semantic version number.
+message Version {
+    // Major version (increasing may break APIs)
+    int32 major = 1;
+    // Minor version (increased for new features)
+    int32 minor = 2;
+    // Patch version (increased for fixed)
+    int32 patch = 3;
+}

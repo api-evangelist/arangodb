@@ -1,0 +1,42 @@
+generated: '2026-08-02'
+method: generated
+source: >-
+  openapi/arangodb-core-openapi-original.json (ArangoDB Core API 3.12.10), grounded
+  in conventions/arangodb-conventions.yml, authentication/arangodb-authentication.yml
+  and errors/arangodb-error-codes.yml
+note: >-
+  Arango publishes no AGENTS.md or first-party skill files; these are API
+  Evangelist-authored operating instructions. Every operationId referenced in a
+  skill was verified to exist verbatim in the harvested spec.
+api: openapi/arangodb-core-openapi-original.json
+skills:
+- file: arangodb-run-aql-query.md
+  name: Run an AQL query against ArangoDB and page the whole result set
+  api: openapi/arangodb-core-openapi-original.json
+  operations: [createSessionToken, createAqlQueryCursor, getNextAqlQueryCursorBatchPut,
+    deleteAqlQueryCursor, parseAqlQuery, explainAqlQuery]
+- file: arangodb-write-documents-safely.md
+  name: Create and update ArangoDB documents safely
+  api: openapi/arangodb-core-openapi-original.json
+  operations: [createCollection, createDocument, createDocuments, getDocument, getDocumentHeader,
+    updateDocument, replaceDocument, deleteDocument, beginStreamTransaction, commitStreamTransaction,
+    abortStreamTransaction]
+- file: arangodb-build-a-named-graph.md
+  name: Build a named graph and traverse it
+  api: openapi/arangodb-core-openapi-original.json
+  operations: [createCollection, createGraph, listGraphs, getGraph, listVertexCollections,
+    addVertexCollection, listEdgeCollections, createDocuments, getVertexEdges, createAqlQueryCursor,
+    deleteGraph]
+- file: arangodb-search-and-vector-index.md
+  name: Index a collection for search and vector similarity
+  api: openapi/arangodb-core-openapi-original.json
+  operations: [listIndexes, getIndex, createIndexPersistent, createIndexInverted, createIndexVector,
+    deleteIndex, createAnalyzer, listAnalyzers, createView, getViewProperties, updateViewProperties,
+    createViewSearchAlias, createAqlQueryCursor]
+- file: arangodb-provision-database-and-access.md
+  name: Provision an ArangoDB database and grant least-privilege access
+  api: openapi/arangodb-core-openapi-original.json
+  operations: [listDatabases, createDatabase, getCurrentDatabase, createUser, getUser,
+    listUsers, setUserDatabasePermissions, getUserDatabasePermissions, setUserCollectionPermissions,
+    getUserCollectionPermissions, deleteUserDatabasePermissions, listUserAccessibleDatabases,
+    deleteDatabase]

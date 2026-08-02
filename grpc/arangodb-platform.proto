@@ -1,0 +1,150 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2023 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.platform.v1;
+
+option go_package = "github.com/arangodb-managed/apis/platform/v1";
+
+import "common/v1/common.proto";
+
+import "google/api/annotations.proto";
+
+// PlatformService is the API used to query for cloud provider & regional info.
+service PlatformService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/platform/v1/api-version"
+        };
+    }
+
+    // Fetch all providers that are supported by the ArangoDB cloud.
+    // Required permissions:
+    // - None
+    rpc ListProviders(ListProvidersRequest) returns (ProviderList) {
+        option (google.api.http) = {
+            get: "/api/platform/v1/providers"
+        };
+    }
+    
+    // Fetch a provider by its id.
+    // Required permissions:
+    // - None
+    rpc GetProvider(common.v1.IDOptions) returns (Provider) {
+        option (google.api.http) = {
+            get: "/api/platform/v1/providers/{id}"
+        };
+    }
+
+    // Fetch all regions provided by the provided identified by the given context ID.
+    // If the given context identifier contains a valid organization ID,
+    // the result includes all regions for that organization.
+    // Otherwise only regions are returned that are available to all organizations.
+    // Required permissions:
+    // - None
+    rpc ListRegions(ListRegionsRequest) returns (RegionList) {
+        option (google.api.http) = {
+            get: "/api/platform/v1/providers/{provider_id}/regions"
+        };
+    }
+
+    // Fetch a region by its id.
+    // Required permissions:
+    // - None
+    rpc GetRegion(common.v1.IDOptions) returns (Region) {
+        option (google.api.http) = {
+            get: "/api/platform/v1/regions/{id}"
+        };
+    }
+}
+
+// Provider represents a specific cloud provider such as AWS or GCP.
+message Provider {
+    // System identifier of the provider.
+    string id = 1;
+    // Name of the provider
+    string name = 2; 
+    // If set, this provider has not be released as generally available.
+    bool prerelease = 3;
+}
+
+// List of providers.
+message ProviderList {
+    repeated Provider items = 1;
+}
+
+// Request arguments for ListProviders
+message ListProvidersRequest {
+    // Common list options
+    common.v1.ListOptions options = 1;
+    // If set, the result includes all providers for that are available for the
+    // organization identified by this ID.
+    // If not set, only providers are returned that are available to all organizations.
+    string organization_id = 2;
+}
+
+// Region represents a geographical region in which deployments are run.
+message Region {
+    // System identifier of the region.
+    string id = 1;
+    // Identifier of the provider that hosts this region.    
+    string provider_id = 2;
+    // Location of the region
+    string location = 3;
+    // Is this region available for creating new deployments?
+    bool available = 4;
+    // If set, this region is low on stock.
+    // Creating a deployment may not be possible.
+    bool low_stock = 5;
+    // If set, this region is out of stock.
+    // Creating a deployment is currently not possible.
+    bool out_of_stock = 6;
+    // If set, this region has not be released as generally available.
+    bool prerelease = 7;
+    // If set, this region support ML services.
+    bool ml_supported = 8;
+    // sets the sales priority of this region higher number is higher priority
+    int32 priority = 9;
+}
+
+// List of regions.
+message RegionList {
+    repeated Region items = 1;
+}
+
+// Request arguments for ListRegions
+message ListRegionsRequest {
+    // Common list options
+    common.v1.ListOptions options = 1;
+    // Required identifier of the provider to list regions for.
+    string provider_id = 2;
+    // If set, the result includes all regions for that are available for the
+    // organization identified by this ID.
+    // If not set, only regions are returned that are available to all organizations.
+    string organization_id = 3;
+    // If set, the result includes only those regions where the specified deployment model
+    // is supported.
+    // This is an optional field.
+    string model_id = 4;
+}

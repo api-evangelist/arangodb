@@ -1,0 +1,52 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2023 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.dashboard.v1;
+
+option go_package = "github.com/arangodb-managed/apis/dashboard/v1";
+
+import "common/v1/common.proto";
+
+import "google/api/annotations.proto";
+
+// DashboardService is the API used for the dashboard.
+service DashboardService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None (authenticated only)
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/dashboard/v1/api-version"
+        };
+    }
+
+    // Get the runtime version of this service.
+    // This is the same info as we expose on window.VERSION and can be used to see if the latest version is loaded in the browser.
+    // Required permissions:
+    // - None (authenticated only)
+    rpc GetVersion(arangodb.cloud.common.v1.Empty) returns (arangodb.cloud.common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/dashboard/v1/version"
+        };
+    }
+
+}

@@ -1,0 +1,204 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2021 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+// Author Ewout Prangsma
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.metrics.v1;
+
+option go_package = "github.com/arangodb-managed/apis/metrics/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// MetricsService is the API used to configure various metrics objects.
+// Prerelease: This Service is not yet available in production
+service MetricsService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/metrics/v1/api-version"
+        };
+    }
+
+    // Fetch all metrics token in the deployment identified by the given deployment ID.
+    // Required permissions:
+    // - metrics.token.list on the deployment identified by the given deployment ID
+    rpc ListTokens(ListTokensRequest) returns (TokenList) {
+        option (google.api.http) = {
+            get: "/api/metrics/v1/deployments/{deployment_id}/tokens"
+        };
+    }
+
+    // Fetch a metrics token by its id.
+    // Required permissions:
+    // - metrics.token.get on the token identified by the given ID
+    rpc GetToken(common.v1.IDOptions) returns (Token) {
+        option (google.api.http) = {
+            get: "/api/metrics/v1/tokens/{id}"
+        };
+    }
+
+    // Create a new metrics token.
+    // Required permissions:
+    // - metrics.token.create on the deployment that owns the token
+    rpc CreateToken(Token) returns (Token) {
+        option (google.api.http) = {
+            post: "/api/metrics/v1/deployments/{deployment_id}/tokens"
+            body: "*"
+        };
+    }
+
+    // Update a metrics token.
+    // Note that you can only change the metadata (name & description) of the 
+    // token.
+    // Required permissions:
+    // - metrics.token.update on the token
+    rpc UpdateToken(Token) returns (Token) {
+        option (google.api.http) = {
+            patch: "/api/metrics/v1/tokens/{id}"
+            body: "*"
+        };
+    }
+
+    // Revoke a metrics token.
+    // Once a token is revoked, it can no longer be used for authentication.
+    // Required permissions:
+    // - metrics.token.revoke on the token
+    rpc RevokeToken(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/metrics/v1/tokens/{id}/revoke"
+        };
+    }
+
+    // Delete a metrics token.
+    // Note that token are initially only marked for deleted.
+    // Once all the resources that depend on it are removed the token itself is deleted
+    // and cannot be restored.
+    // Required permissions:
+    // - metrics.token.delete on the token
+    rpc DeleteToken(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/metrics/v1/tokens/{id}"
+        };
+    }
+
+    // Fetch the endpoint to use for getting metrics for a deployment with given id.
+    // Required permissions:
+    // - metrics.endpoint.get on the deployment identified by the given ID
+    rpc GetMetricsEndpoint(GetMetricsEndpointRequest) returns (MetricsEndpoint) {
+        option (google.api.http) = {
+            get: "/api/metrics/v1/endpoints/{deployment_id}"
+        };
+    }
+}
+
+// A Token is represents an access token used to authenticate requests for metrics.
+message Token {   
+    // System identifier of the token.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value.
+    string url = 2;
+    // Name of the token
+    string name = 3; 
+    // Description of the token
+    string description = 4; 
+    // Identifier of the deployment that owns this token.
+    // This value cannot be changed after creation.
+    string deployment_id = 5;
+    // Time from creation of the token to expiration.
+    // This value cannot be changed after creation.
+    // If no value is set, a default value of 90 days is used.
+    google.protobuf.Duration lifetime = 6;
+    // The creation timestamp of the token.
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the token.
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 8;
+    // The expiration timestamp of the token.
+    // This is a read-only value.
+    google.protobuf.Timestamp expires_at = 9;
+    // The bearer token used for authentication.
+    // This is a read-only value that is only given directly after
+    // creation of the token. In all other calls, this field
+    // will be empty.
+    string token = 10;
+    // Set when this token is deleted.
+    // This is a read-only value.
+    bool is_deleted = 11;
+    // Set when this token has expired.
+    // This is a read-only value.
+    bool is_expired = 12;
+    // Set when this token will expire in the next month.
+    // This is a read-only value.
+    bool will_expire_soon = 13;
+    // Set when this token is revoked.
+    // This is a read-only value.
+    bool is_revoked = 14;
+}
+
+// List of Tokens.
+message TokenList {
+    repeated Token items = 1;
+}
+
+// Request arguments for ListTokens.
+message ListTokensRequest {
+    // Common list options.
+    // Context_id is ignored.
+    common.v1.ListOptions options = 1;
+    // Required ID of deployment to list tokens for.
+    string deployment_id = 2;
+    // If set, do not return revoked tokens.
+    bool exclude_revoked = 3;
+    // If set, do not return expired tokens.
+    bool exclude_expired = 4;
+    // If set, do not return deleted (marked for deletion) tokens.
+    bool exclude_deleted = 5;
+}
+
+// Request arguments for GetMetricsEndpoint
+message GetMetricsEndpointRequest {
+    // ID of the deployment to get the endpoint for.
+    string deployment_id = 1;
+}
+
+// Response for GetMetricsEndpoint
+message MetricsEndpoint {
+    // Endpoint (url) to get metrics from.
+    // If no valid metrics tokens are configured this field is empty.
+    string endpoint = 1;
+    // Endpoint URL used to reach the metrics server with self signed certificate on port 18829
+    // If no valid metrics tokens are configured this field is empty.
+    string endpoint_self_signed = 2;
+    // Endpoint URL used to reach the metrics server on default port 443
+    // If no valid metrics tokens are configured this field is empty.
+    // This endpoint is recommended for human-to-metrics-server connections.
+    string endpoint_default = 3;
+}

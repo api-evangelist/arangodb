@@ -1,0 +1,747 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2021 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+// Author Ewout Prangsma
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.iam.v1;
+
+option go_package = "github.com/arangodb-managed/apis/iam/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/api/annotations.proto";
+
+// IAMService is the API used to configure IAM objects.
+service IAMService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/api-version"
+        };
+    }
+
+    // Fetch all available information of the currently authenticated user.
+    // Required permissions:
+    // - None
+    rpc GetThisUser(common.v1.Empty) returns (User) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/self/user"
+        };
+    }
+
+    // Fetch all available information of the user identified by the given ID.
+    // Required permissions:
+    // - resourcemanager.organization.get on one of the organizations that the requested user and authenticated user are both a member of
+    rpc GetUser(common.v1.IDOptions) returns (User) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/users/{id}"
+        };
+    }
+
+    // Update a user
+    // Required permissions:
+    // - None if the given user is the authenticated user.
+    // or
+    // - resourcemanager.organization.get on one of the organizations that the requested user and authenticated user are both a member of and
+    // - iam.user.update on organization on one of the organizations that the requested user and authenticated user are both a member of
+    rpc UpdateUser(User) returns (User) {
+        option (google.api.http) = {
+            patch: "/api/iam/v1/users/{id}"
+            body: "*"
+        };
+    }
+
+    // Verify the mobile phone number of a user, by provided the unique
+    // code that was send to the number.
+    // If the code is valid an empty result is returned, otherwise an InvalidArgument error is returned.
+    // The authenticated user is always the subject of this request.
+    // Required permissions:
+    // - None (since the subject is always the authenticated user).
+    rpc VerifyUserMobilePhone(VerifyUserMobilePhoneRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/user-mobile-phone/verify"
+            body: "*"
+        };
+    }
+
+    // Resend a verification code to the mobile phone number listed for the
+    // authenticated user.
+    // Required permissions:
+    // - None (since the subject is always the authenticated user).
+    rpc ResendUserMobilePhoneVerification(common.v1.Empty) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/user-mobile-phone/resend"
+            body: "*"
+        };
+    }
+
+    // Fetch all groups of the organization identified by the given context ID.
+    // Required permissions:
+    // - iam.group.list on organization identified by given context ID.
+    rpc ListGroups(common.v1.ListOptions) returns (GroupList) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/organizations/{context_id}/groups"
+        };
+    }
+    
+    // Fetch a group by its id.
+    // Required permissions:
+    // - iam.group.get on organization that owns the group
+    rpc GetGroup(common.v1.IDOptions) returns (Group) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/groups/{id}"
+        };
+    }
+
+    // Create a group
+    // Required permissions:
+    // - iam.group.create on organization that owns the group
+    rpc CreateGroup(Group) returns (Group) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/organizations/{organization_id}/groups"
+            body: "*"
+        };
+    }
+
+    // Update a group
+    // Required permissions:
+    // - iam.group.update on organization that owns the group
+    rpc UpdateGroup(Group) returns (Group) {
+        option (google.api.http) = {
+            patch: "/api/iam/v1/groups/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete a group
+    // Required permissions:
+    // - iam.group.delete on organization that owns the group
+    rpc DeleteGroup(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/iam/v1/groups/{id}"
+        };
+    }
+
+    // List of members of the group identified by the given context ID.
+    // Required permissions:
+    // - iam.group.get on organization that owns the group
+    rpc ListGroupMembers(common.v1.ListOptions) returns (GroupMemberList) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/groups/{context_id}/members"
+        };
+    }
+
+    // Add one or more members to the group identified by given ID.
+    // Required permissions:
+    // - iam.group.update on organization that owns the group
+    rpc AddGroupMembers(GroupMembersRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/groups/{group_id}/members"
+            body: "*"
+        };
+    }
+
+    // Remove one or more members from the group identified by given ID.
+    // Required permissions:
+    // - iam.group.update on organization that owns the group
+    rpc DeleteGroupMembers(GroupMembersRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/iam/v1/groups/{group_id}/members"
+            body: "*"
+        };
+    }
+
+    // Is the user identified by the given user ID a member of the group identified by the given group ID.
+    // Required permissions:
+    // - iam.group.get on organization that owns the group, unless the requested user is identical to the authenticated user.
+    // Note that if the identified group does not exist, no is returned.
+    rpc IsMemberOfGroup(IsMemberOfGroupRequest) returns (common.v1.YesOrNo) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/groups/{group_id}/members/{user_id}"
+        };
+    }
+
+    // Fetch all roles in the organization identified by the given context ID.
+    // Required permissions:
+    // - iam.role.list on organization identified by given context ID.
+    rpc ListRoles(common.v1.ListOptions) returns (RoleList) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/organizations/{context_id}/roles"
+        };
+    }
+
+    // Fetch a role by its id.
+    // Required permissions:
+    // - iam.role.get on organization that owns the role
+    rpc GetRole(common.v1.IDOptions) returns (Role) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/roles/{id}"
+        };
+    }
+
+    // Create a custom role
+    // Required permissions:
+    // - iam.role.create on organization that owns the role
+    rpc CreateRole(Role) returns (Role) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/organizations/{organization_id}/roles"
+            body: "*"
+        };
+    }
+
+    // Update a custom role
+    // Required permissions:
+    // - iam.role.update on organization that owns the role
+    rpc UpdateRole(Role) returns (Role) {
+        option (google.api.http) = {
+            patch: "/api/iam/v1/roles/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete a custom role
+    // Required permissions:
+    // - iam.role.delete on organization that owns the role
+    rpc DeleteRole(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/iam/v1/roles/{id}"
+        };
+    }
+    
+    // Get the policy for a resource identified by given URL.
+    // Required permissions:
+    // - iam.policy.get on resource identified by the url
+    rpc GetPolicy(common.v1.URLOptions) returns (Policy) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/policies"
+        };
+    }
+
+    // Get the policies based on given filters.
+    // Required permissions:
+    // - iam.policy.get on resource identified by the url
+    rpc GetPolicyByFilter(GetPolicyByFilterRequest) returns (Policy) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/policies-by-filter"
+        };
+    }
+
+    // Add one or more RoleBindings to the policy of a resource identified by given URL.
+    // Required permissions:
+    // - iam.policy.update on resource identified by the url
+    rpc AddRoleBindings(RoleBindingsRequest) returns (Policy) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/policies/bindings"
+            body: "*"
+        };
+    }
+
+    // Remove one or more RoleBindings from the policy of a resource identified by given URL.
+    // Required permissions:
+    // - iam.policy.update on resource identified by the url
+    rpc DeleteRoleBindings(RoleBindingsRequest) returns (Policy) {
+        option (google.api.http) = {
+            delete: "/api/iam/v1/policies/bindings"
+            body: "*"
+        };
+    }
+
+    // Return the list of permissions that are available to the currently authenticated
+    // used for actions on the resource identified by the given URL.
+    // Required permissions:
+    // - None
+    rpc GetEffectivePermissions(common.v1.URLOptions) returns (PermissionList) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/policies/effective-permissions"
+        };
+    }
+
+    // Return the lists of permissions that are available to the currently authenticated
+    // used for actions on the resources identified by the given URLs.
+    // This method can replace multiple GetEffectivePermissions calls into a single roundtrip.
+    // Required permissions:
+    // - None
+    rpc GetMultipleEffectivePermissions(GetMultipleEffectivePermissionsRequest) returns (MultiplePermissionLists) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/policies/effective-permissions-multiple"
+            body: "*"
+        };
+    }
+
+    // Does the authenticated user have all of the requested permissions for the resource
+    // identified by the given URL?
+    // Required permissions:
+    // - None
+    rpc HasPermissions(HasPermissionsRequest) returns (common.v1.YesOrNo) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/policies/permissions"
+        };
+    }
+
+    // List all known permissions.
+    // Required permissions:
+    // - None
+    rpc ListPermissions(common.v1.Empty) returns (PermissionList) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/permissions"
+        };
+    }
+
+    // Fetch all API keys owned by the authenticated caller.
+    // Required permissions:
+    // - None
+    rpc ListAPIKeys(common.v1.ListOptions) returns (APIKeyList) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/apikeys"
+        };
+    }
+
+    // Fetch an API key by its id.
+    // The API key must be owned by the authenticated caller.
+    // Required permissions:
+    // - None
+    rpc GetAPIKey(common.v1.IDOptions) returns (APIKey) {
+        option (google.api.http) = {
+            get: "/api/iam/v1/apikeys/{id}"
+        };
+    }
+
+    // Create a new API key.
+    // The API key will be owned by the authenticated caller.
+    // Required permissions:
+    // - None
+    rpc CreateAPIKey(CreateAPIKeyRequest) returns (APIKeySecret) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/apikeys"
+            body: "*"
+        };
+    }
+
+    // Ensure that the expiration date of the API key identified by given ID
+    // is either in the past or set to now.
+    // The API key must be owned by the authenticated caller.
+    // Required permissions:
+    // - None
+    rpc RevokeAPIKey(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/apikeys/{id}/revoke"
+        };
+    }
+
+    // Delete the API key identified by given ID
+    // The API key must be owned by the authenticated caller.
+    // Required permissions:
+    // - None
+    rpc DeleteAPIKey(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/iam/v1/apikeys/{id}"
+        };
+    }
+
+    // Authenticate using an API key.
+    // If authentication succeeds, this function returns a bearer token.
+    // That token must be used to authenticate all other API requests.
+    // If the given API key identifier is invalid or expired, or an incorrect secret 
+    // is given, this function will return an unauthenticated error.
+    // Required permissions:
+    // - None
+    rpc AuthenticateAPIKey(AuthenticateAPIKeyRequest) returns (AuthenticateAPIKeyResponse) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/apikeys/{id}/authenticate"
+        };
+    }
+
+    // Renew a non-expired API key authentication token.
+    // This allows to extend the lifetime of a token created by AuthenticateAPIKey.
+    // If the given token is invalid or expired, or the underlying API key is expired
+    // this function will return an unauthenticated error.
+    // Required permissions:
+    // - None
+    rpc RenewAPIKeyToken(RenewAPIKeyTokenRequest) returns (RenewAPIKeyTokenResponse) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/tokens/{token}/renew"
+        };
+    }
+
+    // Revoke an API key authentication token.
+    // This function will return a non-error response, even if the given token
+    // is invalid or already expired.
+    // Required permissions:
+    // - None
+    rpc RevokeAPIKeyToken(RevokeAPIKeyTokenRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/iam/v1/tokens/{token}/revoke"
+        };
+    }
+}
+
+// User represents an actual person.
+message User {
+    // Identifier of the user.
+    // This is a read-only value.
+    string id = 1;
+    // Primary email address of the user.
+    // All emails send to this user will use this address.
+    // This is a read-only value.
+    string email = 2;
+    // Name of the user.
+    // This may be empty if not filled out by the user.
+    string name = 3;
+    // Given name of the user.
+    // This may be empty if not filled out by the user.
+    string given_name = 4;
+    // Family name of the user.
+    // This may be empty if not filled out by the user.
+    string family_name = 5;
+    // The creation timestamp of the user.
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 6;
+    // Additional email addresses of the user.
+    // This will be filled in when the authentication provided
+    // knows multiple email addresses for the user.
+    // This is a read-only value.
+    repeated string additional_emails = 7;
+    // Mobile phone number of the user.
+    // This value must be unique globally.
+    //
+    // This field will not be filled, unless:
+    // - The currently authenticated user is this user
+    // - The currently authenticated user has `iam.user.get-personal-data` permission 
+    //   on the organization that user is a member of.
+    // 
+    // This value can only be changed to a non-empty value.
+    // If changed, the new number has to be verified again.
+    string mobile_phone = 8;
+    // Set when the mobile phone number has been successfully verified.
+    // This is a read-only value.
+    bool mobile_phone_verified = 9;
+    // Company name of the user
+    // This may be empty if not filled out by the user.
+    string company_name = 10;
+    // If set, this user is denied access to the dashboard.
+    // This is a read-only value.
+    bool dashboard_access_denied = 11;
+    // If set, this field describes the reason why this user is denied access to the dashboard.
+    // This is a read-only value.
+    string dashboard_access_denied_reason = 12;
+    // If set, this user is currently being authenticated using an API key (identified by this ID)
+    string apikey_id = 13;
+    // If set, contains Slack name of this user in the arangodb-community slack.
+    string slack_name = 14;
+    // The timestamp of the last login of the user.
+    // This is a read-only value.
+    google.protobuf.Timestamp last_login_at = 15;
+    // If set, contains IP address from which the user last logged in.
+    string last_ip = 16;
+    // Defines if a user's mobile phone number needs verification based on email root domain address.
+    bool mobile_phone_needs_verification = 17;
+    // If set, this user belongs to an educational institute.
+    bool has_educational_status = 18;
+    // Defines the role of user at educational institute.
+    // Possible values are student | teacher | other
+    string educational_role = 19;
+    // Defines the user's experience with graph
+    string experience = 20;
+    // Defines other DBs that the user has used
+    repeated string other_dbs = 21;
+    // Defines if the user has opted out of enhanced troubleshooting
+    bool disable_enhanced_troubleshooting = 22;
+}
+
+// Request arguments for VerifyUserMobilePhone
+message VerifyUserMobilePhoneRequest {
+    // Code that was send to the mobile phone number.
+    string code = 1;
+}
+
+// Group of user accounts.
+message Group {
+    // System identifier of the group.
+    // This is a read-only value.
+    string id = 1;
+    // Identifier of the organization that owns this group.
+    string organization_id = 2;
+    // Name of the group
+    string name = 3; 
+    // Description of the group
+    string description = 4; 
+    // The creation timestamp of the group
+    google.protobuf.Timestamp created_at = 5;
+    // The deletion timestamp of the group
+    google.protobuf.Timestamp deleted_at = 6;
+    // Set when this organization is deleted.
+    // This is a read-only value.
+    bool is_deleted = 7;
+    // URL of this resource
+    // This is a read-only value and cannot be initialized.
+    string url = 8;
+    // Set if this group is virtual and managed by the system.
+    // This is a read-only value.
+    bool is_virtual = 9;
+    // If set, new users are automatically added to this group.
+    // If there are multiple default groups, new users are added to all of them.
+    bool is_default = 10;
+}
+
+// List of groups.
+message GroupList {
+    repeated Group items = 1;
+}
+
+// Request arguments for IsMemberOfGroup.
+message IsMemberOfGroupRequest {
+    // Identifier of the user
+    string user_id = 1;
+    // Identifier of the group
+    string group_id = 2;
+}
+
+// List of group members (user ID's)
+message GroupMemberList {
+    // List of ID's of users that are member of the group.
+    repeated string items = 1;
+    // List of users that are member of the group.
+    repeated User users = 2;
+}
+
+// Request arguments for Add/DeleteGroupMembers.
+message GroupMembersRequest {
+    // ID of the group to add/remove members to/from.
+    string group_id = 1;
+    // ID's of users to add/remove to/from the group.
+    repeated string user_ids = 2;    
+}
+
+// Request arguments for GetMultipleEffectivePermissions
+message GetMultipleEffectivePermissionsRequest {
+    // URLs of the resources to fetch.
+    repeated string urls = 1;
+}
+
+// Multiple Lists of permissions.
+message MultiplePermissionLists {
+    repeated PermissionList items = 1;
+}
+
+// List of permissions.
+message PermissionList {
+    // The permissions
+    repeated string items = 1;
+    // URL of the resource (filled out when GetMultipleEffectivePermissions was called).
+    string url = 2;
+}
+
+// Request arguments for HasPermissionsRequest.
+message HasPermissionsRequest {
+    // URL of the resource to query permissions for.
+    string url = 1;
+    // The list of permissions that are required.
+    repeated string permissions = 2;
+}
+
+// A role is a list of permissions.
+// Roles can be bound to resources for members.
+message Role {   
+    // System identifier of the role.
+    // This is a read-only value.
+    string id = 1;
+    // Identifier of the organization that owns this role.
+    // This value is undefined for predefined roles.
+    string organization_id = 2;
+    // Name of the role
+    string name = 3; 
+    // Description of the role
+    string description = 4; 
+    // Permissions to grant when this role is bound.
+    repeated string permissions = 5;
+    // Set if this role is predefined.
+    // This is a read-only value.
+    bool is_predefined = 6;
+    // The creation timestamp of the role
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the role
+    google.protobuf.Timestamp deleted_at = 8;
+    // Set when this organization is deleted.
+    // This is a read-only value.
+    bool is_deleted = 9;
+    // URL of this resource
+    // This is a read-only value and cannot be initialized.
+    string url = 10;
+}
+
+// List of roles.
+message RoleList {
+    repeated Role items = 1;
+}
+
+// RoleBinding binds a Role to a member.
+message RoleBinding {
+    // System identifier of the role-binding.
+    // This is a read-only value.
+    string id = 1;
+    // Identifier of the member to bind a role to.
+    // Member ID is formatted as:
+    // - user:<user_id>
+    // - group:<group_id>
+    string member_id = 2;
+    // Identifier of the Role to grant to member
+    string role_id = 3;
+    // If set, this this role-binding cannot be deleted  
+    // This is a read-only value.
+    bool delete_not_allowed = 4;
+}
+
+// Request arguments for GetPolicyByFilter
+message GetPolicyByFilterRequest {
+    // URL of the resource to which this policy applies.
+    // This field is required.
+    string resource_url = 1;
+    // common listing options (context field is ignored)
+    // used for pagination
+    common.v1.ListOptions options = 2;
+    // Filter role bindings based on member identifier
+    // Member ID is formatted as:
+    // - user:<user_id>
+    // - group:<group_id> 
+    // This field is optional.
+    string member_id = 3;
+    // Filter based on role identifier
+    // This field is optional.
+    string role_id = 4; 
+}
+
+// Policy bindings members to roles for access to a resource.
+message Policy {
+    // URL of the resource to which this policy applies.
+    string resource_url = 1;
+    // Role bindings to apply to the resource.
+    repeated RoleBinding bindings = 2;
+}
+
+// Request arguments for Add/DeleteRoleBindings.
+message RoleBindingsRequest {
+    // URL of the resource to add/remove policy binding to/from.
+    string resource_url = 1;
+    // Role bindings to add/remove to the policy.
+    repeated RoleBinding bindings = 2;    
+}
+
+// API Keys are authentication "keys" intended to be used for scripting.
+message APIKey {
+    // Identifier of this key
+    string id = 1;
+    // URL of this key.
+    string url = 2;
+    // User represented by this key
+    string user_id = 3;
+    // If set, this key only grants access to this organization.
+    string organization_id = 4;
+    // If set, this key only grants access to read-only API's (List..., Get...)
+    bool is_readonly = 5;
+    // The creation timestamp of the key
+    google.protobuf.Timestamp created_at = 6;
+    // The expiration timestamp of the key
+    google.protobuf.Timestamp expires_at = 7;
+    // Set when this key is expired.
+    bool is_expired = 8;
+    // The revocation timestamp of the key (if any)
+    google.protobuf.Timestamp revoked_at = 9;
+    // Set when this key is explicitly revoked.
+    bool is_revoked = 10;
+}
+
+// List of APIKey's
+message APIKeyList {
+    repeated APIKey items = 1;
+}
+
+// Request arguments for CreateAPIKey.
+message CreateAPIKeyRequest {
+    // If set, the created key only grants access to this organization.
+    string organization_id = 1;
+    // If set, the created key only grants access to read-only API's (List..., Get...).
+    // If not set, the created key grants access to all API's (that the user has access to).
+    bool readonly = 2;
+    // Duration between now and the expiration date of the created key.
+    // A value of 0 means that the API key will not expire.
+    // You can still use RevokeAPIKey to revoke such API keys.
+    google.protobuf.Duration time_to_live = 3;
+}
+
+// API key secrets are used once to inform the users of the secret
+// for an API key.
+message APIKeySecret {
+    // ID of the API key
+    string id = 1;
+    // Secret of the API key
+    string secret = 2;
+}
+
+// Request arguments for AuthenticateAPIKey
+message AuthenticateAPIKeyRequest {
+    // API key id
+    string id = 1;
+    // Secret of the API key
+    string secret = 2;
+    // Life time of the token.
+    // If set, then this TTL is used reduce the default TTL 
+    // of an authentication token. It cannot be used to increase the default
+    // lifetime of a token.
+    google.protobuf.Duration time_to_live = 3;
+}
+
+// Response for AuthenticateAPIKey
+message AuthenticateAPIKeyResponse {
+    // Bearer token 
+    string token = 1;
+    // Actual life time of the token.
+    google.protobuf.Duration time_to_live = 2;
+}
+
+// Request arguments for RenewAPIKeyToken.
+message RenewAPIKeyTokenRequest {
+    // Bearer token 
+    string token = 1;
+    // Extended life time of the token.
+    // By default, a renewed token will have a default lifetime from the moment
+    // of the renew call.
+    // If this field is set, then this TTL is used reduce the default TTL 
+    // of the renewed token. It cannot be used to increase the default
+    // lifetime of the renewed token.
+    google.protobuf.Duration time_to_live = 2;
+}
+
+// Response for RenewAPIKeyToken.
+message RenewAPIKeyTokenResponse {
+    // Actual life time of the token.
+    google.protobuf.Duration time_to_live = 1;
+}
+
+// Request arguments for RevokeAPIKeyToken.
+message RevokeAPIKeyTokenRequest {
+    // Bearer token 
+    string token = 1;
+}

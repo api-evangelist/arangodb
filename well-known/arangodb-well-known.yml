@@ -1,0 +1,103 @@
+generated: '2026-08-02'
+method: probed
+source: live GET of /.well-known/* on every apis.yml host
+note: >-
+  arangodb.com and university.arangodb.com answer HTTP 200 with the WordPress
+  marketing page for every /.well-known/* path (SPA/CMS catch-all), so those 200s
+  are recorded as false positives and NOT treated as discovery documents. No real
+  well-known document was found on any Arango host. The one machine-readable
+  discovery surface Arango does publish at a conventional path is /llms.txt on the
+  marketing host (captured verbatim in llms/arangodb-llms.txt) and, since 3.12.8,
+  the server itself serves its OpenAPI at /_arango/v<N>/openapi.json on each
+  deployment.
+hosts:
+- host: https://arango.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 200
+    file: ../llms/arangodb-llms.txt
+    content_type: text/plain
+- host: https://docs.arango.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://api.cloud.arangodb.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://dashboard.arangodb.cloud
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://arangodb.com
+  note: >-
+    Legacy marketing domain; redirects to arango.ai in a browser but the origin
+    answers 200 with an HTML page for every path probed. All 200s below are
+    catch-all HTML, not discovery documents.
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    valid: false
+    reason: text/html catch-all
+  - path: /.well-known/agent-card.json
+    status: 200
+    valid: false
+    reason: text/html catch-all
+  - path: /.well-known/agent.json
+    status: 200
+    valid: false
+    reason: text/html catch-all
+security_txt: null
+agent_card: null

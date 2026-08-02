@@ -1,0 +1,777 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020-2023 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.resourcemanager.v1;
+
+option go_package = "github.com/arangodb-managed/apis/resourcemanager/v1";
+
+import "common/v1/common.proto";
+import "iam/v1/iam.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// ResourceManagerService is the API used to configure basic resource objects.
+service ResourceManagerService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/api-version"
+        };
+    }
+
+    // Fetch all organizations that the authenticated user is a member of.
+    // Required permissions:
+    // - None
+    rpc ListOrganizations(common.v1.ListOptions) returns (OrganizationList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/self/organizations"
+        };
+    }
+
+    // Fetch an organization by its id.
+    // The authenticated user must be a member of the organization.
+    // Required permissions:
+    // - None
+    rpc GetOrganization(common.v1.IDOptions) returns (Organization) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/organizations/{id}"
+        };
+    }
+
+    // Create a new organization
+    // Required permissions:
+    // - None
+    rpc CreateOrganization(Organization) returns (Organization) {
+        option (google.api.http) = {
+            post: "/api/resourcemanager/v1/organizations"
+            body: "*"
+        };
+    }
+
+    // Update an organization
+    // Required permissions:
+    // - resourcemanager.organization.update on the organization
+    rpc UpdateOrganization(Organization) returns (Organization) {
+        option (google.api.http) = {
+            patch: "/api/resourcemanager/v1/organizations/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete an organization
+    // Note that organization are never really removed.
+    // Instead their is_deleted field is set to true.
+    // Required permissions:
+    // - resourcemanager.organization.delete on the organization
+    rpc DeleteOrganization(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/resourcemanager/v1/organizations/{id}"
+        };
+    }
+
+    // Get a list of members of the organization identified by the given context ID.
+    // Required permissions:
+    // - resourcemanager.organization.get on the organization
+    rpc ListOrganizationMembers(common.v1.ListOptions) returns (MemberList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/organizations/{context_id}/members"
+        };
+    }
+
+    // Add one or more members to an organization.
+    // If there are members (in the request arguments) that are already member of the
+    // organization an AlreadyExists error is returned.
+    // Required permissions:
+    // - resourcemanager.organization.update on the organization
+    rpc AddOrganizationMembers(OrganizationMembersRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/resourcemanager/v1/organizations/{organization_id}/members"
+            body: "*"
+        };
+    }
+
+    // Update the ownership flag of one or more members of an organization.
+    // If there are members (in the request arguments) that are not yet member of
+    // the organization, an InvalidArgument error is returned.
+    // If the request would result in the last owner no longer being an owner,
+    // an InvalidArgument error is returned.
+    // Required permissions:
+    // - resourcemanager.organization.update on the organization
+    rpc UpdateOrganizationMembers(OrganizationMembersRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            patch: "/api/resourcemanager/v1/organizations/{organization_id}/members"
+            body: "*"
+        };
+    }
+
+    // Remove one or more members from an organization.
+    // If the request would result in the last owner being removed as member 
+    // of the organization, an InvalidArgument error is returned.
+    // Required permissions:
+    // - resourcemanager.organization.update on the organization
+    rpc DeleteOrganizationMembers(OrganizationMembersRequest) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/resourcemanager/v1/organizations/{organization_id}/members"
+            body: "*"
+        };
+    }
+
+    // Is the user identified by the given user ID a member
+    // of the organization identified by the given organization ID.
+    // Required permissions:
+    // - resourcemanager.organization.get on the organization, unless the requested user is identical to the authenticated user.
+    // Note that if the identified user or organization does not exist, no is returned.
+    rpc IsMemberOfOrganization(IsMemberOfOrganizationRequest) returns (IsMemberOfOrganizationResponse) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/organizations/{organization_id}/members/{user_id}"
+        };
+    }
+
+    // Get a list of quota values for the organization identified by the given context ID.
+    // If a quota is not specified on organization level, a (potentially tier specific) default
+    // value is returned.
+    // Required permissions:
+    // - resourcemanager.organization.get on the organization
+    rpc ListOrganizationQuotas(ListQuotasRequest) returns (QuotaList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/organizations/{options.context_id}/quotas"
+        };
+    }
+
+    // Fetch all projects in the organization identified by the given context ID.
+    // The authenticated user must be a member of the organization identifier by the given context ID.
+    // Required permissions:
+    // - resourcemanager.project.list on the organization identified by the given context ID
+    rpc ListProjects(common.v1.ListOptions) returns (ProjectList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/organizations/{context_id}/projects"
+        };
+    }
+
+    // Fetch a project by its id.
+    // The authenticated user must be a member of the organization that owns the project.
+    // Required permissions:
+    // - resourcemanager.project.get on the project identified by the given ID
+    rpc GetProject(common.v1.IDOptions) returns (Project) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/projects/{id}"
+        };
+    }
+
+    // Create a new project
+    // The authenticated user must be a member of the organization that owns the project.
+    // Required permissions:
+    // - resourcemanager.project.create on the organization that owns the project
+    rpc CreateProject(Project) returns (Project) {
+        option (google.api.http) = {
+            post: "/api/resourcemanager/v1/organizations/{organization_id}/projects"
+            body: "*"
+        };
+    }
+
+    // Update a project
+    // The authenticated user must be a member of the organization that owns the project.
+    // Required permissions:
+    // - resourcemanager.project.update on the project
+    rpc UpdateProject(Project) returns (Project) {
+        option (google.api.http) = {
+            patch: "/api/resourcemanager/v1/projects/{id}"
+            body: "*"
+        };
+    }
+
+    // Delete a project
+    // Note that project are initially only marked for deleted.
+    // Once all their resources are removed the project itself is deleted
+    // and cannot be restored.
+    // The authenticated user must be a member of the organization that owns the project.
+    // Required permissions:
+    // - resourcemanager.project.delete on the project
+    rpc DeleteProject(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/resourcemanager/v1/projects/{id}"
+        };
+    }
+
+    // Get a list of quota values for the project identified by the given context ID.
+    // If a quota is not specified on project level, a value from organization level
+    // is returned.
+    // Required permissions:
+    // - resourcemanager.project.get on the project
+    rpc ListProjectQuotas(ListQuotasRequest) returns (QuotaList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/projects/{options.context_id}/quotas"
+        };
+    }
+
+    // Fetch all events in the organization identified by the given context ID.
+    // The authenticated user must be a member of the organization identifier by the given context ID.
+    // Required permissions:
+    // - resourcemanager.event.list on the organization identified by the given context ID
+    // Note that this method uses a POST method because the list options contains a repeated field.
+    rpc ListEvents(ListEventOptions) returns (EventList) {
+        option (google.api.http) = {
+            post: "/api/resourcemanager/v1/organizations/{options.context_id}/events"
+            body: "*"
+        };
+    }
+
+    // Fetch all organization invites in the organization identified by the given context ID.
+    // The authenticated user must be a member of the organization identifier by the given context ID.
+    // Required permissions:
+    // - resourcemanager.organization-invite.list on the invite.
+    rpc ListOrganizationInvites(common.v1.ListOptions) returns (OrganizationInviteList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/organizations/{context_id}/organization-invites"
+        };
+    }
+
+    // Fetch all organization invites for the email address of the authenticated user.
+    // Required permissions:
+    // - None
+    rpc ListMyOrganizationInvites(common.v1.ListOptions) returns (OrganizationInviteList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/self/organization-invites"
+        };
+    }
+
+    // Fetch an organization invite by its id.
+    // The authenticated user must be a member of the organization that the invite is for.
+    // Required permissions:
+    // - resourcemanager.organization-invite.get on the invite.
+    rpc GetOrganizationInvite(common.v1.IDOptions) returns (OrganizationInvite) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/organization-invites/{id}"
+        };
+    }
+
+    // Create a new organization invite.
+    // The authenticated user must be a member of the organization that the invite is for.
+    // Required permissions:
+    // - resourcemanager.organization-invite.create on the organization that the invite is for.
+    rpc CreateOrganizationInvite(OrganizationInvite) returns (OrganizationInvite) {
+        option (google.api.http) = {
+            post: "/api/resourcemanager/v1/organizations/{organization_id}/organization-invites"
+            body: "*"
+        };
+    }
+
+    // Delete an organization invite
+    // The authenticated user must be a member of the organization that the invite is for.
+    // Required permissions:
+    // - resourcemanager.organization-invite.delete on the invite
+    rpc DeleteOrganizationInvite(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            delete: "/api/resourcemanager/v1/organization-invites/{id}"
+        };
+    }
+
+    // Accept an organization invite
+    // The authenticated user's email address must match the email address specified in
+    // the invite.
+    // Required permissions:
+    // - None
+    rpc AcceptOrganizationInvite(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/resourcemanager/v1/organization-invites/{id}/accept"
+        };
+    }
+
+    // Reject an organization invite
+    // The authenticated user's email address must match the email address specified in
+    // the invite.
+    // Required permissions:
+    // - None
+    rpc RejectOrganizationInvite(common.v1.IDOptions) returns (common.v1.Empty) {
+        option (google.api.http) = {
+            post: "/api/resourcemanager/v1/organization-invites/{id}/reject"
+        };
+    }
+
+    // Fetch descriptions for all quota kinds know by the platform.
+    // Required permissions:
+    // - None
+    rpc ListQuotaDescriptions(common.v1.ListOptions) returns (QuotaDescriptionList) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/quotas/descriptions"
+        };
+    }
+
+    // Fetch a specific version of the Terms & Conditions.
+    // Required permissions:
+    // - None
+    rpc GetTermsAndConditions(common.v1.IDOptions) returns (TermsAndConditions) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/termsandconditions/{id}"
+        };
+    }
+
+    // Fetch the current version of the Terms & Conditions for the organization
+    // identified by the given (optional) ID.
+    // Required permissions:
+    // - None If ID is empty.
+    // - resourcemanager.organization.get If ID is not empty.
+    rpc GetCurrentTermsAndConditions(common.v1.IDOptions) returns (TermsAndConditions) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/current-termsandconditions"
+        };
+    }
+
+    // Fetch a specific version of the Data Processing Addendum.
+    // Required permissions:
+    // - None
+    rpc GetDataProcessingAddendum(common.v1.IDOptions) returns (DataProcessingAddendum) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/dpa/{id}"
+        };
+    }
+
+    // Fetch the current version of the Data Processing Addendum for the organization
+    // identified by the given (optional) ID.
+    // Required permissions:
+    // - None If ID is empty.
+    // - resourcemanager.organization.get If ID is not empty.
+    rpc GetCurrentDataProcessingAddendum(common.v1.IDOptions) returns (DataProcessingAddendum) {
+        option (google.api.http) = {
+            get: "/api/resourcemanager/v1/current-dpa"
+        };
+    }
+}
+
+// An Organization is represents a real world organization such as a company.
+message Organization {   
+    // System identifier of the organization.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value and cannot be initialized.
+    string url = 2;
+    // Name of the organization
+    string name = 3; 
+    // Description of the organization
+    string description = 4; 
+    // Set when this organization is deleted.
+    // This is a read-only value.
+    bool is_deleted = 5;
+    // The creation timestamp of the organization
+    google.protobuf.Timestamp created_at = 6;
+    // The deletion timestamp of the organization
+    google.protobuf.Timestamp deleted_at = 7;
+    // Tier used for this organization.
+    // This is a read-only value and cannot be initialized.
+    Tier tier = 8;
+    // Total number of deployments created in this organization throughout
+    // its entire lifetime per tier-id.
+    // map: tier-id -> count
+    // This is a read-only value.
+    map<string, int32> total_deployments = 9;
+    // If set, all projects in this organization are allowed to use deployments using the flexible model.
+    // This is a read-only value.
+    bool is_flexible_deployments_enabled = 10;
+    // If set, this organization is allowed to use custom images for ArangoDB deployments.
+    // This is a read-only value.
+    bool is_allowed_to_use_custom_images = 11;
+    // If set, this organization is allowed to use IAMProviders on their deployments.
+    // This is a read-only value.
+    bool is_allowed_to_use_iamproviders = 12;
+    // If set, this organization cannot be deleted.
+    // To delete, first update the with locked set to false.
+    bool locked = 13;
+    // If set, this organization cannot create deployments without prepaid deployments.
+    // This is a read-only value.
+    bool requires_prepaid_deployments = 14;
+    // If set, configures which authentication providers can/cannot be used for this organization.
+    // If not set, all providers are enabled by default.
+    AuthenticationProviders authentication_providers = 15;
+    // If set, configure restrictions on the email domains used by user accounts to access this organization.
+    // If not set, there is no restriction of domains for user accounts.
+    DomainRestrictions email_domain_restrictions = 16;
+    // If set, this organization is allowed to manage IAM identities (like users) via SCIM 
+    // This is a read-only value.
+    bool is_allowed_to_use_scim = 17;
+    // Defines notifications attached to the Organization
+    map<string, Notification> notifications = 18;
+}
+
+// List of organizations.
+message OrganizationList {
+    // Actual organizations
+    repeated Organization items = 1;
+    // Budget for organizations (owned by the caller)
+    common.v1.Budget budget = 2;
+}
+
+// Specify which authentication providers are allowed for use 
+// in a specific Organization.
+// For each field applies:
+// - If set, users can access the organization when using that authentication provider.
+// - If not set, users will be denied access to the organizatin when using that authentication provider.
+message AuthenticationProviders {
+    // Control access to the organization for users using then username/password authentication provider.
+    bool enable_username_password = 1;
+    // Control access to the organization for users using then Google authentication provider.
+    bool enable_google = 2;
+    // Control access to the organization for users using then Github authentication provider.
+    bool enable_github = 3;
+    // Control access to the organization for users using then Microsoft authentication provider.
+    bool enable_microsoft = 4;
+    // Control access to the organization for users using then SSO authentication provider.
+    bool enable_sso = 5;
+}
+
+// Specify restrictions related to email domain names of user accounts that are allowed to
+// access resources of a specific Organization.
+message DomainRestrictions {
+    // If this list is non-empty, only users that have an email address in one
+    // of the given domains will be granted access to the resources in the Organization.
+    repeated string allowed_domains = 1;
+}
+
+// Tier of an organization.
+message Tier {
+    // Identifier of the tier.
+    // This is a read-only value and cannot be initialized.
+    string id = 1;
+    // Human readable name of the tier.
+    // This is a read-only value and cannot be initialized.
+    string name = 2;
+    // If set the tier has support plans.
+    // This is a read-only value and cannot be initialized.
+    bool has_support_plans = 3;
+    // If set the tier has backup uploads.
+    // This is a read-only value and cannot be initialized.
+    bool has_backup_uploads = 4;
+    // If set, the tier requires that new deployments accept the 
+    // current terms & conditions.
+    // This is a read-only value and cannot be initialized.
+    bool requires_terms_and_conditions = 5;
+    // If set, this tier allows the user of support severity high.
+    bool has_support_severity_high = 6;
+    // If set, this tier allows the user of support severity critical.
+    bool has_support_severity_critical = 7;
+    // If set, this tier has the auditlog feature.
+    // This is a read-only value and cannot be initialized.
+    bool has_auditlog_feature = 8;
+    // If set, this tier supports the auditlog destination 'cloud'.
+    // This fields is only relevant if has_auditlog_feature is set.
+    // This is a read-only value and cannot be initialized.
+    bool has_auditlog_destination_cloud = 9;
+    // If set, this tier supports the auditlog destination 'https-post'.
+    // This fields is only relevant if has_auditlog_feature is set.
+    // This is a read-only value and cannot be initialized.
+    bool has_auditlog_destination_https_post = 10;
+    // If set, this tier supports private endpoints.
+    // This is a read-only value and cannot be initialized.
+    bool has_private_endpoints = 11;
+    // If set the tier has multi region backup uploads.
+    // This is a read-only value and cannot be initialized.
+    bool has_multi_region_backup_uploads = 12;
+}
+
+// Member of an organization.
+// A member is always a user.
+message Member {
+    // Identifier of the user
+    string user_id = 1;
+    // Set if this user is owner of the organization
+    bool owner = 2;
+    // The user.
+    iam.v1.User user = 3;
+}
+
+// List of Members.
+message MemberList {
+    repeated Member items = 1;
+    // Budget for members
+    common.v1.Budget budget = 2;
+}
+
+// Request arguments for IsMemberOfOrganization.
+message IsMemberOfOrganizationRequest {
+    // Identifier of the user
+    string user_id = 1;
+    // Identifier of the organization
+    string organization_id = 2;
+}
+
+// Response for IsMemberOfOrganization.
+message IsMemberOfOrganizationResponse {
+    // Set if the requested user is a member of the requested organization.
+    bool member = 1;
+    // Set if the requested user is an owner of the requested organization.
+    bool owner = 2;
+}
+
+// Request arguments for Add/DeleteOrganizationMembers.
+message OrganizationMembersRequest {
+    // Identifier of the organization to add/remove a user from
+    string organization_id = 1;
+    // Users to add/remove.
+    // For every user, an owner flag is provided as well.
+    // If you add an existing user, the owner flag or the add request
+    // will overwrite the value of the existing owner flag.
+    MemberList members = 2;
+}
+
+// A Project is represents a unit within an organization such as a department.
+message Project {   
+    // System identifier of the project.
+    // This is a read-only value.
+    // It can be set when creating the project.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value and cannot be initialized.
+    string url = 2;
+    // Name of the project
+    string name = 3; 
+    // Description of the project
+    string description = 4; 
+    // Identifier of the organization that owns this project.
+    // This is a read-only value.
+    string organization_id = 5;
+    // Set when this project is deleted
+    bool is_deleted = 6;
+    // The creation timestamp of the project
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the project
+    google.protobuf.Timestamp deleted_at = 8;
+    // If set, this project is allowed to use deployments using the flexible model.
+    bool is_flexible_deployments_enabled = 9;
+    // If set, this project cannot be deleted.
+    // To delete, first update the with locked set to false.
+    bool locked = 10;
+}
+
+// List of Projects.
+message ProjectList {
+    // Resulting projects
+    repeated Project items = 1;
+    // Budget for projects
+    common.v1.Budget budget = 2;
+}
+
+// An Event represents something that happened to an organization
+// in the ArangoDB Managed service.
+message Event {   
+    // System identifier of the event.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value and cannot be initialized.
+    string url = 2;
+    // Identifier of the organization that owns this event.
+    // This is a read-only value.
+    string organization_id = 3;
+    // Identifier of the subject of this event.
+    // This is a read-only value.
+    // If the subject of this event is an organization,
+    // this value is a duplicate of organization_id.
+    string subject_id = 4;
+    // Type of the event.
+    string type = 5;
+    // Payload of the event.
+    // The fields used in the payload are specific
+    // to the type of event.
+    map<string, string> payload = 6;
+    // The creation timestamp of the event
+    google.protobuf.Timestamp created_at = 7;
+    // URL of the subject of this event.
+    // This is a read-only value.
+    string subject_url = 8;
+    // If set, this event is not persisted.
+    // This is a read-only value.
+    bool volatile = 9;
+    // Identifier of the user that has created this event.
+    // This is a read-only value that can be empty.
+    string created_by_id = 10;
+    // Optional human readable reason for the event.
+    // This is a read-only value that can be empty.
+    string reason = 11;
+    // If set, this event reflects only a status update of an entity.
+    // This is a read-only value.
+    bool status_only = 12;
+    // The application/tool which created this event.
+    // This information is collected by inspecting headers: 
+    // First the x-arango-graph-user-agent will be tried, if this isn't set, the first service name from oasis-trace will be used, otherwise an empty string.
+    // This is a read-only value that can be empty.
+    string created_with = 13;
+}
+
+// List of Events.
+message EventList {
+    repeated Event items = 1;
+}
+
+// Options for ListEvents
+message ListEventOptions {
+    // Standard list options
+    common.v1.ListOptions options = 1;
+    // If set, filter on the subject_id of event
+    repeated string subject_ids = 2;
+    // If set, filter on the type of event
+    repeated string types = 3;
+    // If set, filter of events created after this timestamp
+    google.protobuf.Timestamp created_after = 4;
+    // If set, filter of events created before this timestamp
+    google.protobuf.Timestamp created_before = 5;
+    // Sort descending (new to old) on created_at field (default is ascending).
+    bool sort_descending = 6;
+}
+
+// An OrganizationInvite represents an invite for a human to join an
+// organization.
+message OrganizationInvite {   
+    // System identifier of the invite.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value and cannot be initialized.
+    string url = 2;
+    // Identifier of the organization that the human is invited to join.
+    // This is a read-only value.
+    string organization_id = 3;
+    // Email address of the human who is invited.
+    string email = 4;
+    // If set, the invitee accepted the invite.
+    // This is a read-only value.
+    bool accepted = 5;
+    // If set, the invitee rejected the invite.
+    // This is a read-only value.
+    bool rejected = 6;
+    // The creation timestamp of the invite
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 7;
+    // The acceptance timestamp of the invite
+    // This is a read-only value.
+    google.protobuf.Timestamp accepted_at = 8;
+    // The rejection timestamp of the invite
+    // This is a read-only value.
+    google.protobuf.Timestamp rejected_at = 9;
+    // Identifier of the user that accepted or rejected this invite.
+    // This is a read-only value.
+    string user_id = 10;
+    // Identifier of the user that created this invite.
+    string created_by_id = 11;
+    // Identifier of the organization that the human is invited to join.
+    // This is a read-only value.
+    string organization_name = 12;
+    // Name of the user that created this invite.
+    // This is a read-only value.
+    string created_by_name = 13;
+}
+
+// List of OrganizationInvites.
+message OrganizationInviteList {
+    repeated OrganizationInvite items = 1;
+}
+
+// Description of a kind of quota's
+message QuotaDescription {
+    // Kind of the quota
+    string kind = 1;
+    // Human readable description
+    string description = 2;
+    // If set, this kind of quota is valid at organization level
+    bool for_organizations = 3;
+    // If set, this kind of quota is valid at project level
+    bool for_projects = 4;
+}
+
+// List of QuotaDescription's
+message QuotaDescriptionList {
+    repeated QuotaDescription items = 1;
+}
+
+// Quota limit
+message Quota {
+    // Kind of quota
+    string kind = 1;
+    // Human readable description of the quota
+    string description = 2;
+    // Current limit of the quota.
+    // A value of 0 means unlimited.
+    int64 limit = 3;
+}
+
+// List of Quota's
+message QuotaList {
+    repeated Quota items = 1;
+}
+
+// Request arguments for ListXyzQuotas
+message ListQuotasRequest {
+    // Common list options
+    common.v1.ListOptions options = 1;
+    // If set, limit the returned list of quota's to these kinds.
+    repeated string kinds = 2;
+}
+
+message TermsAndConditions {
+    // Identifier of this version of the terms & conditions
+    string id = 1;
+    // Content of terms & conditions in markdown format
+    string content = 2;
+    // Creation date of this version of the terms & conditions.
+    google.protobuf.Timestamp created_at = 3;
+}
+
+message DataProcessingAddendum {
+    // Identifier of this version of the DPA
+    string id = 1;
+    // Content of DPA in markdown format
+    string content = 2;
+    // Creation date of this version of the DPA.
+    google.protobuf.Timestamp created_at = 3;
+}
+
+// NotificationSeverity keeps possible severities for notifications
+enum NotificationSeverity {
+    // Defines Info level Notification Severity
+    NOTIFICATION_SEVERITY_INFO = 0;
+
+    // Defines Warning level Notification Severity
+    NOTIFICATION_SEVERITY_WARNING = 1;
+
+    // Defines Critical level Notification Severity
+    NOTIFICATION_SEVERITY_CRITICAL = 2;
+}
+
+// Define the Notification details
+message Notification {
+    // String representation of the Notification
+    string notification = 1;
+
+    // Notification Severity
+    NotificationSeverity severity = 2;
+
+    // The timestamp of when the notification has been created.
+    google.protobuf.Timestamp created_at = 3;
+
+    // The timestamp of when the notification has been updated.
+    google.protobuf.Timestamp updated_at = 4;
+
+    // The timestamp of when the notification expires.
+    google.protobuf.Timestamp expires_at = 5;
+}

@@ -1,0 +1,99 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2020 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+// Author Ewout Prangsma
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.currency.v1;
+
+option go_package = "github.com/arangodb-managed/apis/currency/v1";
+
+import "common/v1/common.proto";
+
+import "google/api/annotations.proto";
+
+// CurrencyService is the API used to query for supported currencies.
+service CurrencyService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/currency/v1/api-version"
+        };
+    }
+
+    // Fetch all providers that are supported by the ArangoDB cloud.
+    // Required permissions:
+    // - None
+    rpc ListCurrencies(common.v1.ListOptions) returns (CurrencyList) {
+        option (google.api.http) = {
+            get: "/api/currency/v1/currencies"
+        };
+    }
+    
+    // Fetch a currency by its id.
+    // Required permissions:
+    // - None
+    rpc GetCurrency(common.v1.IDOptions) returns (Currency) {
+        option (google.api.http) = {
+            get: "/api/currency/v1/currencies/{id}"
+        };
+    }
+
+    // Fetch the default currency for a given (optional) organization.
+    // Required permissions:
+    // - resourcemanager.organization.get On the organization identified by given id.
+    // - None In case no organization identifier was given.
+    rpc GetDefaultCurrency(GetDefaultCurrencyRequest) returns (Currency) {
+        option (google.api.http) = {
+            get: "/api/currency/v1/default-currency"
+        };
+    }
+}
+
+// Currency represents a specific monetary currency.
+message Currency {
+    // System identifier of the currency.
+    // E.g. "eur" or "usd"
+    string id = 1;
+    // Human readable name of the currency
+    // E.g. "US Dollar"
+    string name = 2;
+    // Human readable sign for the currency.
+    // E.g. "$"
+    string sign = 3;
+    // ISO 4217 currency code.
+    // E.g. "USD"
+    string iso4217_code = 4;
+}
+
+// List of currencies.
+message CurrencyList {
+    repeated Currency items = 1;
+}
+
+// Request arguments for GetDefaultCurrency.
+message GetDefaultCurrencyRequest {
+    // Optional identifier for the organization to request the default
+    // currency for.
+    string organization_id = 1;
+}

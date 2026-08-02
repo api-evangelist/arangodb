@@ -1,0 +1,319 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2023-2026 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.credits.v1;
+
+option go_package = "github.com/arangodb-managed/apis/credits/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// CreditsService is the API used for managing credits.
+service CreditsService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None (authenticated only)
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/credit/v1/api-version"
+        };
+    }
+
+    // List credit bundles for an organization based on the provided request.
+    // Required permissions:
+    // - credit.creditbundle.list on the organization identified by the given organization ID
+    rpc ListCreditBundles(ListCreditBundlesRequest) returns (CreditBundlesList) {
+        option (google.api.http) = {
+            get: "/api/credit/v1/{organization_id}/creditbundles"
+        };
+    }
+
+    // List credit bundle usages for an organization based on the provided request.
+    // Required permissions:
+    // - credit.creditbundleusage.list on the organization identified by the given organization ID.
+    rpc ListCreditBundlesUsage(ListCreditBundleUsageRequest) returns (CreditBundleUsageList) {
+        option (google.api.http) = {
+            get: "/api/credit/v1/{organization_id}/creditbundleusages"
+        };
+    };
+
+    // List the credit reports for the organization identified by the given
+    // organization ID that match the given criteria.
+    // Required permissions:
+    // - credit.creditusagereport.list on the organization identified by the given organization ID
+    rpc ListCreditUsageReports(ListCreditUsageReportsRequest) returns (CreditUsageReportList) {
+        option (google.api.http) = {
+            get: "/api/credit/v1/{organization_id}/creditusagereports"
+        };
+    }
+
+    // Get a credit usage report identified by the given ID.
+    // Required permissions:
+    // - credit.creditusagereport.get on the organization that owns the report.
+    rpc GetCreditUsageReport(common.v1.IDOptions) returns (CreditUsageReport) {
+        option (google.api.http) = {
+            get: "/api/credit/v1/creditusagereport/{id}"
+        };
+    };
+
+    // Get a credit usage report identified by the given ID, as a PDF document.
+    // The server sends the PDF over a stream once rendered.
+    // The stream is closed after the PDF is sent.
+    // Required permissions:
+    // - credit.creditusagereport.get on the organization that owns the report.
+    rpc GetCreditUsageReportPDF(common.v1.IDOptions) returns (stream PDFDocument) {
+        option (google.api.http) = {
+            post: "/api/credit/v1/creditusagereport/{id}/pdf"
+            body: "*"
+        };
+    };
+
+    // Get credit usage projection for an organization identified by the given organization ID.
+    // This will return a projected credit usage for each month in the future, until the credits run out.
+    // Required permissions:
+    // - credit.creditbundleusageprojection.get on the organization identified by the given organization ID.
+    rpc GetCreditBundleUsageProjection(GetCreditBundleUsageProjectionRequest) returns (CreditBundleUsageProjection) {
+        option (google.api.http) = {
+            get: "/api/credit/v1/{organization_id}/creditbundleusages/projection"
+        };
+    };
+
+    // Get the total amount of credit debt accrued by an organization identified by the ID.
+    // An organization starts accumulating debt from the moment it runs out of credits.
+    // The debt is paid off upon purchasing additional credit bundles.
+    // Note: debt usage is allowed only for a limited period of time, after which the organization's deployments are paused.
+    // Required permissions:
+    // - credit.creditdebt.get on the organization identified by the given organization ID.
+    rpc GetOrganizationCreditDebt(common.v1.IDOptions) returns (CreditDebt) {
+        option (google.api.http) = {
+            get: "/api/credit/v1/{id}/creditdebt"
+        };
+    };
+}
+
+// CreditDebt contains the details regarding an organization's credit debt.
+message CreditDebt {
+    // ID of the organization in debt.
+    string organization_id = 1;
+    // Amount of debt currently accrued by the specified organization.
+    // Zero means no debt.
+    float amount = 2;
+    // Timestamp at which this organization first ran out of credits (and went into debt).
+    // Not set if there is no debt.
+    google.protobuf.Timestamp created_at = 3;
+}
+
+
+// CreditBundleUsageProjection contains a series of monthly credit usage projections.
+message CreditBundleUsageProjection {
+    message Projection {
+        // Usage value projected for the month in the provided timestamp.
+        float value = 1;
+        // Timestamp (month) for which the given usage value is projected.
+        google.protobuf.Timestamp timestamp = 2;
+    }
+    // List of credit usage projections.
+    repeated Projection projections = 1;
+}
+
+// Request for GetCreditBundleUsageProjection rpc.
+message GetCreditBundleUsageProjectionRequest {
+    // Identifier of the organization for which a credit usage projection is requested.
+    string organization_id = 1;
+
+    // Maximum number of projections to return.
+    // This is an optional field.
+    // If unspecified, defaults to 3.
+    int32 projections_limit = 2;
+}
+
+message CreditUsageReportList {
+    // List of credit usage reports.
+    repeated CreditUsageReport items = 1;
+}
+
+// Request for ListCreditUsageReports rpc.
+message ListCreditUsageReportsRequest {
+    // Identifier of the organization for which credit reports are listed.
+    string organization_id = 1;
+    // Request reports that are created at or after this timestamp.
+    // This is an optional field.
+    google.protobuf.Timestamp from = 2;
+    // Request reports that are created before this timestamp.
+    // This is an optional field.
+    google.protobuf.Timestamp to = 3;
+    // Common list options
+    // context_id is ignored.
+    common.v1.ListOptions options = 20;
+}
+
+// CreditUsageReport describes the monthly credit usage for a given organization.
+message CreditUsageReport {
+    // System identifier of the report.
+    string id = 1;
+    // URL of this resource
+    string url = 2;
+    // ID of the organization to which this report belongs.
+    string organization_id = 3;
+    // Amount of credits consumed between the interval in this report (between starts_at and ends_at).
+    float amount = 4;
+    // Credit balance at the start of the month.
+    float opening_balance = 5;
+    // Credit balance at the end of the month.
+    float closing_balance = 6;
+    // Date at which this report was created.
+    // This report will contain the monthly usage of the month specified in this timestamp.
+    google.protobuf.Timestamp created_at = 7;
+    
+    message Item {
+        // Identifiers of the Credit usages that this item covers.
+        repeated string creditusage_ids = 1;
+        // Amount of credits for this item.
+        float amount = 2;
+        // Human readable description of this item
+        string description = 3;
+    }
+    // List of items in this credit usage report.
+    repeated Item items = 100;
+
+    // Status of the report.
+    message Status {
+        // If set, the items in this report are complete for the month specified in `created_at`.
+        // No more items will be added to this report once this field is set.
+        bool is_complete = 1;
+    }
+    // Status of the report.
+    Status status = 200;
+}
+
+// PDFDocument contains the PDF representation of a CreditUsageReport.
+message PDFDocument {
+    // The contents of the PDF.
+    // This is a read-only field.
+    bytes contents = 1;
+    // Name of the PDF file.
+    // This is a ready-only field.
+    string filename = 2;
+}
+
+
+// Request for listing credit bundle usages.
+message ListCreditBundleUsageRequest {
+    // The organization this credit bundle belongs to.
+    // This is a required field.
+    string organization_id = 1;
+    // If set, list the usage for the specified credit bundle only.
+    // By default, returns the usage for all credit bundles in this organization.
+    // This is an optional field.
+    string credit_bundle_id = 2;
+    // The date from which credit usage should be listed.
+    // If unspecified, defaults to the date 7 days before `ends_at`.
+    // This is an optional field.
+    google.protobuf.Timestamp starts_at = 3;
+    // The date until which credit usage should be listed.
+    // If unspecified, defaults to the current date (at the time of calling the API).
+    // This is an optional field.
+    google.protobuf.Timestamp ends_at = 4;
+    // If set, list the usage for the specified usage item only.
+    // This is an optional field.
+    string usage_item_id = 5;
+    // Common list options
+    // context_id is ignored.
+    common.v1.ListOptions options = 20;
+}
+
+// Request for listing credit bundles
+message ListCreditBundlesRequest {
+    // ID of the organization for which credit bundles are listed.
+    // This is a required field.
+    string organization_id = 1;
+    // If set, exclude expired bundles.
+    bool exclude_expired = 2;
+}
+
+// List of credit bundles
+message CreditBundlesList {
+    repeated CreditBundle items = 1;
+}
+
+message CreditBundle {
+    // ID of the credit bundle.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this credit bundle.
+    // This is a read-only value.
+    string url = 2;
+    // The organization this credit bundle belongs to.
+    // This is a read-only value.
+    string organization_id = 4;
+    // The number of credits purchased in this bundle.
+    // This is a read-only value.
+    float credits_purchased = 5;
+    // The total price of these credits.
+    // This is a read-only value.
+    float total_price = 6;
+    // Currency used for total_price.
+    // This is a read-only value.
+    string currency = 7;
+    // The number of credits remaining in this bundle.
+    // This is a read-only value.
+    float credits_remaining = 8;
+    // The date at which this bundle was purchased.
+    // This is a read-only value.
+    google.protobuf.Timestamp purchased_at = 9;
+    // The date from which this bundle is valid.
+    // This is a read-only value.
+    google.protobuf.Timestamp valid_from = 10;
+    // The date until which this bundle is valid.
+    // This is a read-only value.
+    google.protobuf.Timestamp valid_until = 11;
+    // Timestamp of when this credit bundle was last used.
+    google.protobuf.Timestamp last_used_at = 12;
+    // The total amount of debt deducted from this bundle.
+    float debt_cleared = 13;
+}
+
+// Usage of credit bundle.
+// All fields are read-only.
+message CreditBundleUsage {
+    // Unique identifier of this credit bundle usage.
+    string id = 1;
+    // ID of the usage item this credit bundle usage corresponds to.
+    string usage_item_id = 2;
+    // ID of the credit bundle from which credit was used.
+    string credit_bundle_id = 3;
+    // ID of the organization this credit bundle (and usage) belongs to.
+    string organization_id = 4;
+    // Amount of credits used from the specified credit_bundle_id.
+    float usage = 5;
+    // Amount of credits remaining after this usage.
+    float remaining = 6;
+    // Timestamp at which this credit usage was created.
+    google.protobuf.Timestamp created_at = 7;
+}
+
+// List of CreditBundleUsages.
+message CreditBundleUsageList {
+    repeated CreditBundleUsage items = 1;
+}

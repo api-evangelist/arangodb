@@ -1,0 +1,215 @@
+//
+// DISCLAIMER
+//
+// Copyright 2021 ArangoDB GmbH, Cologne, Germany
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+//
+// Author Marcin Swiderski
+// Author Ewout Prangsma
+//
+
+syntax = "proto3";
+
+package arangodb.cloud.prepaid.v1;
+
+option go_package = "github.com/arangodb-managed/apis/prepaid/v1";
+
+import "common/v1/common.proto";
+import "data/v1/data.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// PrepaidService is the API used to configure prepaid objects.
+service PrepaidService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/prepaid/v1/api-version"
+        };
+    }
+
+    // Fetch all prepaid deployments for organization.
+    // Required permissions:
+    // - prepaid.prepaiddeployment.list on the organization identified by given organization ID
+    rpc ListPrepaidDeployments(ListPrepaidDeploymentsRequest) returns (PrepaidDeploymentList) {
+        option (google.api.http) = {
+            post: "/api/prepaid/v1/organizations/{organization_id}/prepaiddeployments"
+        };
+    }
+
+    // Fetch a deployment by its id.
+    // Required permissions:
+    // - prepaid.prepaiddeployment.get on the deployment identified by the given ID
+    rpc GetPrepaidDeployment(common.v1.IDOptions) returns (PrepaidDeployment) {
+        option (google.api.http) = {
+            get: "/api/prepaid/v1/prepaiddeployments/{id}"
+        };
+    }
+
+    // Creates a new deployment from a prepaid deployment and attached the newly created deployment to the prepaid deployment.
+    // Required permissions:
+    // - data.deployment.create on the project in which the deployment is going to be created
+    // - prepaid.prepaiddeployment.get on the deployment identified by the given prepaid_deployment_id
+    rpc CreateDeployment(CreateDeploymentRequest) returns (data.v1.Deployment) {
+        option (google.api.http) = {
+            post: "/api/prepaid/v1/prepaiddeployments/{prepaid_deployment_id}/deployment/create"
+            body: "*"
+        };
+    }
+
+    // Update the deployment by prepaid deployment's id
+    // Required permissions:
+    // - data.deployment.update on the deployment attached to the prepaid deployment
+    // - prepaid.prepaiddeployment.get on the deployment identified by the given prepaid_deployment_id
+    rpc UpdateDeployment(UpdateDeploymentRequest) returns (data.v1.Deployment) {
+        option (google.api.http) = {
+            post: "/api/prepaid/v1/prepaiddeployments/{prepaid_deployment_id}/deployment/update"
+            body: "*"
+        };
+    }
+
+    // Creates a cloned deployment from a backup and attaches it to the prepaid deployment. This takes the deployment specification from the prepaid deployment, which must match the specification mentioned in the backup.
+    // Required permissions:
+    // - prepaid.prepaiddeployment.get on the prepaid deployment identified by the given prepaid_deployment_id
+    // - replication.deployment.clone-from-backup
+    rpc CloneDeploymentFromBackup(CloneFromBackupRequest) returns (data.v1.Deployment) {
+        option (google.api.http) = {
+            post: "/api/prepaid/v1/prepaiddeployments/{prepaid_deployment_id}/deployment/clone"
+            body: "*"
+        };
+    }
+}
+
+
+//  A PrepaidDeployment contains all attributes of a future deployment that is already paid for.
+message PrepaidDeployment {
+    // System identifier of the prepaid deployment.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource
+    // This is a read-only value.
+    string url = 2;
+    // The name of prepaid deployment, not related to created deployment
+    string name = 3;
+    // An optional description for prepaid deployment, not related to created deployment
+    string description = 4;
+    // Identifier of an organization that owns this prepaid deployment
+    string organization_id = 5;
+    // Identifier of the region in which a deployment is going to be created.
+    string region_id = 6;
+    // The creation timestamp of the prepaid deployment
+    google.protobuf.Timestamp created_at = 7;
+    // The deletion timestamp of the prepaid deployment
+    google.protobuf.Timestamp deleted_at = 8;
+    // Set when this deployment is deleted.
+    bool is_deleted = 9;
+    // Start of the period for which the PrepaidDeployment was purchased
+    google.protobuf.Timestamp starts_at = 10;
+    // End of the period for which the PrepaidDeployment was purchased
+    google.protobuf.Timestamp ends_at = 11;
+    // Set when current time is betweeen starts_at and ends_at
+    // This is a read-only value
+    bool is_active = 12;
+    // Identifier of the support plan selected for this prepaid deployment.
+    string support_plan_id = 13;
+    // Model specification for created deployment
+    data.v1.Deployment.ModelSpec model = 102;
+    // Identifies the addons that will be used on the deployment
+    repeated string addons = 103;
+    // Optional identifier of disk performance to use for this deployment.
+    string disk_performance_id = 104;
+
+    // Status of the prepaid deployment
+    // All members of this field are read-only.
+    message Status {
+        // id of created deployment
+        // if there is no deployment associated with this prepaid deployment it's empty
+        string deployment_id = 1;
+        // timestamp when the deployment was created for or attached to PrepaidDeployment
+        google.protobuf.Timestamp attached_at = 2;
+        // timestamp when the deployment was detached from PrepaidDeployment
+        google.protobuf.Timestamp detached_at = 3;
+        // url of the given deployment
+        string deployment_url = 4;
+        // timestamp of the last warning email
+        google.protobuf.Timestamp last_warning_email_send_at = 5;
+    }
+    Status status = 201;
+}
+
+// PrepaidDeploymentList contains a list of PrepaidDeployment items
+message PrepaidDeploymentList {
+    // prepaid deployment items
+    repeated PrepaidDeployment items = 1;
+}
+
+// ListPrepaidDeploymentsRequest is used to request a list of PrepaidDeployments for
+// organization with given organization_id
+message ListPrepaidDeploymentsRequest {
+    // identifier of the organization to get a list of prepaid deployments for
+    string organization_id = 1;
+    // common listing options
+    common.v1.ListOptions options = 10;
+}
+
+// UpdateDeploymentRequest is used to update deployment attached to PrepaidDeployment
+// with give prepaid_deployment_id
+message UpdateDeploymentRequest {
+    // Identifier of prepaid deployment
+    string prepaid_deployment_id = 1;
+}
+
+// CloneFromBackupRequest is used to create a new deployment based on PrepaidDeployment
+// with prepaid_deployment_id and restore data from Backup with given backup_id
+message CloneFromBackupRequest {
+    // Identifier of prepaid deployment
+    string prepaid_deployment_id = 1;
+    // Identifier of the backup to restore from
+    // Backup specification has to match prepaid_deployment specification in order to succeed
+    string backup_id = 2;
+}
+
+// CreateDeploymentRequest is used to create a new deployment based on PrepaidDeployment
+// with given prepaid_deployment_id and attach it to this PrepaidDeployment
+message CreateDeploymentRequest {
+    // Identifier of prepaid deployment to use as a specification and attach the newly created Deployment to
+    string prepaid_deployment_id = 1;
+    // Identifier of the project that owns the newly created deployment.
+    string project_id = 2;
+    // Optional identifier of IP allowlist to use for this deployment.
+    string ipallowlist_id = 3;
+    // ArangoDB version to use for this deployment.
+    string version = 4;
+    message CertificateSpec {
+        // Identifier of the CACertificate used to sign TLS certificates for the deployment.
+        // If you change this value after the creation of the deployment a complete
+        // rotation of the deployment is required, which will result in some downtime.
+        string ca_certificate_id = 1;
+        // Zero or more DNS names to include in the TLS certificate of the deployment.
+        repeated string alternate_dns_names = 2;
+    }
+    CertificateSpec certificates = 5;
+    // This field must be set to the identifier of the current Terms&Conditions 
+    // when creating a deployment from a prepaid deployment.
+    // If the tier of the organization does not require a non-empty Terms&Condition
+    // identifier, this field may be left empty.
+    string accepted_terms_and_conditions_id = 6;
+    // Determines if deployment is using platform authentication
+    bool is_platform_authentication_enabled = 7;
+}

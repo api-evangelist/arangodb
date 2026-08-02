@@ -1,0 +1,185 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2023-2025 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.ml.v1;
+
+option go_package = "github.com/arangodb-managed/apis/ml/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// MLService is the API used to configure ArangoML on ArangoGraph Insights Platform.
+service MLService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/ml/v1/api-version"
+        };
+    }
+    
+    // Get an existing MLServices resource for a given deployment (specified by the id). 
+    // Required permissions:
+    // - ml.mlservices.get
+    rpc GetMLServices(common.v1.IDOptions) returns (MLServices) {
+        option (google.api.http) = {
+            get: "/api/ml/v1/mlservices/{id}"
+        };
+    }
+
+    // Update an existing MLServices resource. If it does not exist, this will create a new one.
+    // Pass the desired updated state of MLServices to this call.
+    // Required permissions:
+    // - ml.mlservices.update
+    rpc UpdateMLServices(MLServices) returns (MLServices) {
+        option (google.api.http) = {
+            put: "/api/ml/v1/mlservices/{deployment_id}"
+            body: "*"
+        };
+    }
+    
+    // List the available size configurations for MLServices.
+    // Note that the returned size specifications are applied for ML Jobs.
+    // Required permissions:
+    // - ml.mlservicessize.list on the deployment (if deployment_id is provided)
+    // - None, authenticated only
+    rpc ListMLServicesSizes(ListMLServicesSizesRequest) returns (MLServicesSizeList) {
+        option (google.api.http) = {
+            get: "/api/ml/v1/sizes"
+        };
+    };
+}
+
+// List of MLServicesSize.
+message MLServicesSizeList {
+    // Items in this list.
+    repeated MLServicesSize items = 1;
+}
+
+message ListMLServicesSizesRequest {
+    // Optional ID of the Deployment for which sizes are being requested.
+    // If set, the response will exclude any sizes that are unavailable for the specified deployment model.
+    string deployment_id = 1;
+}
+
+// MLServicesSize represents the resources allocated for MLServices.
+// Note that the specified configuration is applied for the ML jobs.
+message MLServicesSize {
+    // Identifier of the size configuration.
+    string size_id = 1;
+    // If set, this is the default size when unspecified in MLServices.
+    bool is_default = 2;
+    // Amount of CPU allocated (in vCPU units)
+    float cpu = 3;
+    // Amount of Memory allocated (in GB)
+    int32 memory = 4;
+    // Amount of GPUs allocated
+    float gpu = 5;
+}
+
+// MLServices is a single resource which represents the state and configuration
+// of ML Services (ArangoGraphML) for a deployment specified by deployment_id.
+message MLServices {
+    // Identifier of the deployment for this MLServices resource.
+    // This is a ready-only value.
+    string deployment_id = 1;
+    // Set to true if ML services are enabled for this deployment.
+    bool enabled = 2;
+    // Size to use for the ML Jobs.
+    // Use `ListMLServicesSizes` to get a list of available sizes.
+    // If unspecified, the MLServiceSize marked as `is_default` is used.
+    // This is an optional field.
+    string size = 3;
+    // The creation timestamp of the MLServices.
+    // This also serves as a timestamp of when MLServices were first enabled.
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 4;
+    // Status of the MLServices.
+    // This is a read-only value.
+    Status status = 100;
+}
+
+// Status of the MLServices.
+// Note: All fields are read-only.
+message Status {
+    // Overall status of where the MLServices resource is in its lifecycle at a given time.
+    // It will contain only one of the following values:
+    // "Bootstrapping"  - ArangoDB Deployment is being bootstrapped with the required databases, schemas and data.
+    // "Initialising"   - The services needed for ArangoGraphML are being installed.
+    // "Running"        - ArangoGraphML is setup and running correctly.
+    // "Error"          - Indicates that there was an error with setting up ArangoGraphML. Check `message` field for additional info.
+    // "Hibernated"     - Indicates that ArangoGraphML and all its associated services are hibernated.
+    string phase = 1;
+    // Supporting information about the phase of MLServices (such as error messages in case of failures).
+    string message = 2;
+    // The timestamp of when this status was last updated.
+    google.protobuf.Timestamp last_updated_at = 3;
+
+    // Status of each ArangoGraphML components/services.
+    repeated ServiceStatus services = 4;
+
+    // Total number of hours ML Jobs have run for this Deployment.
+    float hours_used = 5 [deprecated=true];
+
+    // Total number of runtime hours allowed for ML Jobs for this Deployment.
+    // Set to 0 if unlimited (i.e, no restriction).
+    float hours_allowed = 6 [deprecated=true];
+
+    // Timestamp after which MLServices are no longer usable.
+    // This is set during trial use.
+    // If unset, no expiry.
+    google.protobuf.Timestamp expires_at = 7;
+    
+    // Timestamp of when MLServices were last enabled for this deployment.
+    google.protobuf.Timestamp last_enabled_at = 8;
+}
+
+// Status of a single ArangoGraphML component.
+message ServiceStatus {
+    // Type of service.
+    // Should be one of: [training|prediction|projects]
+    string type = 1;
+    // Set to true if the service is available.
+    // Every service is always in ONLY ONE of the following states: (available|failed)
+    bool available = 2;
+    // Set to true if the service is in a failed state.
+    // Every service is always in ONLY ONE of the following states: (available|failed)
+    bool failed = 3;
+    // Resource usage for this service.
+    message Usage {
+        // Last known memory usage in bytes
+        int64 last_memory_usage = 1;
+        // Last known CPU usage in vCPU units
+        float last_cpu_usage = 2;
+        // Last known memory limit in bytes
+        int64 last_memory_limit = 3;
+        // Last known CPU limit in vCPU units
+        float last_cpu_limit = 4;
+    }
+    // Resource usage information for this service.
+    Usage usage = 4 [deprecated=true];
+    // Number of replicas running for this service.
+    int32 replicas = 5;
+}

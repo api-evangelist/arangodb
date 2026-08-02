@@ -1,0 +1,102 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  https://docs.arango.ai/arangodb/stable/develop/http-api/authentication/ and
+  https://docs.arango.ai/amp/api/get-started/
+docs: https://docs.arango.ai/arangodb/stable/develop/http-api/authentication/
+note: >-
+  The published ArangoDB Core OpenAPI 3.1.0 document declares no
+  components.securitySchemes, so the mechanical derive pass returns nothing. This
+  profile is therefore SEARCHED from the documentation and the /_open/auth
+  operation in the spec, not derived. That gap is a real defect in the vendor
+  spec and is recorded in conformance/arangodb-conformance.yml.
+summary:
+  types: [http, apiKey]
+  http_schemes: [basic, bearer]
+  bearer_formats: [JWT]
+  api_key_in: [header]
+  oauth2_flows: []
+  openid_connect: false
+apis:
+- api: ArangoDB Core API
+  spec: openapi/arangodb-core-openapi-original.json
+  spec_declares_security_schemes: false
+  schemes:
+  - name: basicAuth
+    type: http
+    scheme: basic
+    in: header
+    parameter: Authorization
+    description: >-
+      Base64-encoded ArangoDB username and password. The default `root` user has
+      access to every database; other users are granted per-database and
+      per-collection permissions.
+  - name: bearerJwt
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    in: header
+    parameter: Authorization
+    description: >-
+      JSON Web Token, obtained either from user credentials via POST /_open/auth
+      (operationId createSessionToken) or signed with the deployment's JWT
+      secret for superuser access.
+    token_endpoint: POST /_open/auth
+    token_operation: createSessionToken
+    since_notes: >-
+      3.12.6 added automatic authentication via /_open/auth to the client tools
+      plus automatic JWT renewal, with --auth.minimal-jwt-expiry-time and
+      --auth.maximal-jwt-expiry-time controlling token lifetime. 3.12.8 made
+      `null` a valid value for the `roles` claim.
+  server_options:
+  - option: --server.authentication
+    default: true
+    description: Require HTTP authentication for incoming requests.
+  - option: --server.authentication-system-only
+    default: true
+    description: >-
+      When true, only the internal database APIs (/_api/, /_admin/) require
+      authentication; custom Foxx services do not.
+  challenge:
+    status: 401
+    header: Www-Authenticate
+    suppress_with: 'X-Omit-Www-Authenticate (any value)'
+  authorization_model:
+    kind: user permissions
+    levels: [database, collection]
+    grades: [rw, ro, none]
+    admin_operations: [getUserDatabasePermissions, setUserDatabasePermissions, deleteUserDatabasePermissions,
+      getUserCollectionPermissions, setUserCollectionPermissions, deleteUserCollectionPermissions]
+- api: Arango Managed Platform (AMP) API
+  spec: grpc/arangodb-iam.proto
+  schemes:
+  - name: ampApiKey
+    type: apiKey
+    in: header
+    parameter: authorization
+    description: >-
+      An AMP API key (key ID + secret) is exchanged for a short-lived access token
+      via the IAM service RPC AuthenticateAPIKey; the token is then sent as a
+      standard gRPC bearer credential on every call.
+    token_exchange_rpc: iam.v1.IAMService/AuthenticateAPIKey
+    key_options: [scope to one organization or all, expiration in hours, read-only]
+  docs: https://docs.arango.ai/amp/api/get-started/
+- api: Arango Managed Platform SCIM API
+  schemes:
+  - name: scimBasic
+    type: http
+    scheme: basic
+    in: header
+    parameter: Authorization
+    description: AMP API key ID as the username and the API key secret as the password.
+  docs: https://docs.arango.ai/amp/security-and-access-control/single-sign-on/scim-provisioning/
+single_sign_on:
+  supported: true
+  scope: Arango Managed Platform organizations
+  protocols: [SAML 2.0, SCIM 2.0 provisioning]
+  docs: https://docs.arango.ai/amp/security-and-access-control/single-sign-on/
+scopes: null
+scopes_note: >-
+  No OAuth 2.0 surface is published for either the Core API or the AMP API, so
+  there is no scope catalogue to capture. Authorization is expressed as ArangoDB
+  user permissions (Core) and as AMP roles/role-bindings/policies (AMP).

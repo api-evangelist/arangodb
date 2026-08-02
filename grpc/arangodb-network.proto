@@ -1,0 +1,284 @@
+// 
+// DISCLAIMER
+// 
+// Copyright 2021-2022 ArangoDB GmbH, Cologne, Germany
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// 
+// Copyright holder is ArangoDB GmbH, Cologne, Germany
+// 
+
+syntax = "proto3";
+
+package arangodb.cloud.network.v1;
+
+option go_package = "github.com/arangodb-managed/apis/network/v1";
+
+import "common/v1/common.proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+// NetworkService is the API used to manage the network for a deployment.
+service NetworkService {
+    // Get the current API version of this service.
+    // Required permissions:
+    // - None
+    rpc GetAPIVersion(common.v1.Empty) returns (common.v1.Version) {
+        option (google.api.http) = {
+            get: "/api/network/v1/api-version"
+        };
+    }
+
+    // Checks if the private endpoint service feature is enabled and available.
+    // Required permissions:
+    // - network.privateendpointservice.get-feature on the deployment that is identified by the given deployment ID (if specified).
+    // - network.privateendpointservice.get-feature on the organization that is identified by the given organization ID (if specified).
+    // - None, authenticated only (if only the region ID is specified).
+    rpc IsPrivateEndpointServiceFeatureAvailable(IsPrivateEndpointServiceFeatureAvailableRequest) returns (IsPrivateEndpointServiceFeatureAvailableResult) {
+        option (google.api.http) = {
+            post: "/api/network/v1/privateendpointservice/feature"
+        };
+    }
+
+    // Fetch a private endpoint service by its ID.
+    // Required permissions:
+    // - network.privateendpointservice.get on the private endpoint service.
+    rpc GetPrivateEndpointService(arangodb.cloud.common.v1.IDOptions) returns (PrivateEndpointService) {
+        option (google.api.http) = {
+            get: "/api/network/v1/privateendpointservice/{id}"
+        };
+    }
+
+    // Fetch a private endpoint service by the deployment ID.
+    // Required permissions:
+    // - network.privateendpointservice.get-by-deployment-id on the deployment that owns the private endpoint service.
+    rpc GetPrivateEndpointServiceByDeploymentID(arangodb.cloud.common.v1.IDOptions) returns (PrivateEndpointService) {
+        option (google.api.http) = {
+            get: "/api/network/v1/deployment/{id}/privateendpointservice"
+        };
+    }
+
+    // Create a new private endpoint service.
+    // Required permissions:
+    // - network.privateendpointservice.create on the deployment that owns the private endpoint service.
+    rpc CreatePrivateEndpointService(PrivateEndpointService) returns (PrivateEndpointService) {
+        option (google.api.http) = {
+            post: "/api/network/v1/deployment/{deployment_id}/privateendpointservice"
+            body: "*"
+        };
+    }
+
+    // Update the private endpoint service.
+    // Required permissions:
+    // - network.privateendpointservice.update on the private endpoint service. 
+    rpc UpdatePrivateEndpointService(PrivateEndpointService) returns (arangodb.cloud.common.v1.Empty) {
+        option (google.api.http) = {
+            patch: "/api/network/v1/privateendpointservice/{id}"
+            body: "*"
+        };
+    }
+}
+
+// IsPrivateEndpointServiceFeatureAvailableRequest specifies the request parameters for the IsPrivateEndpointServiceFeatureAvailable method.
+// At least 1 of the fields should contain a value.
+message IsPrivateEndpointServiceFeatureAvailableRequest {
+    // Identifier of the deployment (optional)
+    string deployment_id = 1;
+    // Identifier of the organization (optional)
+    // This field is ignored if a deployment_id is specified
+    string organization_id = 2;
+    // Identifier of the region (optional)
+    // This field is ignored if a deployment_id is specified
+    string region_id = 3;
+}
+
+// IsPrivateEndpointServiceFeatureAvailableResult specifies if the private endpoint service is enabled and available.
+// If it is not available it contains a message why not.
+message IsPrivateEndpointServiceFeatureAvailableResult {
+    // Set if the feature is enabled and available.
+    bool available = 1;
+    // Message why the feature is not available.
+    string message = 2;
+}
+
+// PrivateEndpointService represents the service part of the private endpoint 
+message PrivateEndpointService {
+    // System identifier of the private endpoint service.
+    // This is a read-only value.
+    string id = 1;
+    // URL of this resource.
+    // This is a read-only value.
+    string url = 2;
+    // Name of the private endpoint service.
+    string name = 3; 
+    // Description of the private endpoint service.
+    string description = 4; 
+    // The creation timestamp of the private endpoint service 
+    // This is a read-only value.
+    google.protobuf.Timestamp created_at = 5;
+    // The deletion timestamp of the private endpoint service 
+    // This is a read-only value.
+    google.protobuf.Timestamp deleted_at = 6;
+    // Set when this private endpoint service is deleted.
+    // This is a read-only value.
+    bool is_deleted = 7;
+
+    // Identifier of the deployment
+    // After creation, this value cannot be changed.
+    string deployment_id = 10;
+    // Zero or more DNS names to include in the Self Signed TLS certificate of the deployment.
+    // This name should be resolvable in the private network (vNET/VPC) and can be used to connect 
+    // to the private endpoint to establish a SSL connection (where the name will be used during the handshake).
+    repeated string alternate_dns_names = 11;
+
+    // If set, private DNS zone integration is enabled for this private endpoint service.
+    // For GCP this bool is immutable, so can only be set during the creation.
+    bool enable_private_dns = 12;
+
+    // Specific AKS setting.
+    message Aks {
+        // The subscription IDs of the client side, needed to auto-approve private endpoint connections.
+        // After a private endpoint connection has been made this field cannot be modified anymore.
+        repeated string client_subscription_ids = 1;
+    }
+    // Specific AKS setting.
+    Aks aks = 20;
+
+    // Specific AWS principal setting.
+    message AwsPrincipals {
+        // 12 digit AWS Account Identifier.
+        // When both user_names and role_names are not provided all principals can be used to setup the private endpoint (account principal).
+        string account_id = 1;
+        // Optional user names (when at least one user name is provided the specified IAM user(s)) are able to setup the private endpoint.
+        // It is allowed to specify both users and roles
+        repeated string user_names = 2;
+        // Optional role names (when at least one role name is provided the specified IAM role(s)) are able to setup the private endpoint.
+        // It is allowed to specify both users and roles
+        repeated string role_names = 3;
+    }
+
+    // Specific AWS setting.
+    message Aws {
+        // The AWS principals of the client side, needed to auto-approve private endpoint connections.
+        // After a private endpoint connection has been made this field cannot be modified anymore.
+        repeated AwsPrincipals aws_principals = 1;
+    }
+    // Specific AWS setting.
+    Aws aws = 30;
+
+    // Specific GCP setting.
+    message Gcp {
+        // The projects of the client side, needed to auto-approve private endpoint connections.
+        // After a private endpoint connection has been made this field cannot be modified anymore.
+        repeated string projects = 1;
+    }
+    // Specific GCP setting.
+    Gcp gcp = 40; 
+
+    // Specific AKS private endpoint connection status fields.
+    message AksPrivateEndpointConnectionStatus {
+        // The name of the private endpoint connection
+        string name = 1;
+        // The description of the private endpoint connection
+        string description = 2;
+        // The state of the private endpoint connection
+        string state = 3;
+        // The private endpoint identifier
+        string id = 4;
+    }
+
+    // Specific AKS status fields. 
+    // All fields are read-only.
+    message AksStatus {
+        // The alias generated by the Azure private link service needed by the client to setup the private endpoint.
+        string alias = 1;
+        // The status of the private endpoint connections.
+        repeated AksPrivateEndpointConnectionStatus private_endpoint_connections = 2;
+    }
+
+     // Specific AWS private endpoint connection status fields.
+     message AwsPrivateEndpointConnectionStatus {
+        // The owner of the private endpoint connection
+        string owner = 1;
+        // The creation date the private endpoint connection
+        google.protobuf.Timestamp created_at = 2;
+        // The state of the private endpoint connection
+        string state = 3;
+        // The private endpoint identifier
+        string id = 4;
+    }
+
+    // Specific AWS status fields. 
+    // All fields are read-only.
+    message AwsStatus {
+        // The service name generated by the AWS VPC endpoint service needed by the client to setup the VPC endpoint.
+        string service_name = 1;
+        // The availability zones information needed to setup the VPC endpoint.
+        repeated string availability_zones = 2;
+        // The status of the private endpoint connections.
+        repeated AwsPrivateEndpointConnectionStatus private_endpoint_connections = 3;
+    }
+
+    // Specific GCP private endpoint connection status fields.
+    message GcpPrivateEndpointConnectionStatus {
+        // The name of the private endpoint connection
+        string name = 1;
+        // The state of the private endpoint connection
+        string state = 2;
+        // The private endpoint identifier
+        string id = 3;
+    }
+
+    // Specific GCP status fields. 
+    // All fields are read-only.
+    message GcpStatus {
+        // The service attachment generated by the Google private service connect needed by the client to setup the private endpoint.
+        string service_attachment = 1;
+        // The status of the private endpoint connections.
+        repeated GcpPrivateEndpointConnectionStatus private_endpoint_connections = 2;
+    }
+
+    // Status of the private endpoint service.
+    // All fields are read-only.
+    message Status {
+        // Set when the private endpoint service is ready.
+        bool ready = 1;
+        // The timestamp the ready flag has been set.
+        google.protobuf.Timestamp ready_at = 2;
+        // Set if this private endpoint service needs attention.
+        bool needs_attention = 10;
+        // Free text message describing the status.
+        string message = 11;
+        // The private DNS status of the private endpoint service.
+        string private_dns_status = 12;
+        // The timestamp the private DNS status has been set.
+        google.protobuf.Timestamp private_dns_ready_at = 13;
+
+        // Specific AKS status fields.
+        // All fields are read-only.
+        AksStatus aks = 20;
+
+        // Specific AWS status fields.
+        // All fields are read-only.
+        AwsStatus aws = 30;
+
+        // Specific GCP status fields.
+        // All fields are read-only.
+        GcpStatus gcp = 40;
+    }
+    // Status of the private endpoint service.
+    // All fields are read-only.
+    Status status = 100;
+}
+

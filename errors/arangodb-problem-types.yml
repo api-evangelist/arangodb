@@ -1,0 +1,236 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/arangodb-core-openapi-original.json
+format: arangodb-errornum
+rfc9457: false
+note: ArangoDB does not use RFC 9457 application/problem+json. Every error reply is application/json carrying
+  {error, code, errorNum, errorMessage}. The numeric errorNum is the stable machine-readable identifier
+  — see errors/arangodb-error-codes.yml for the full 348-entry registry. This file is the HTTP-status-level
+  view derived from the 4xx/5xx responses declared in the OpenAPI.
+error_registry: errors/arangodb-error-codes.yml
+problems:
+- status: 400
+  title: Bad request
+  occurrences: 124
+  common_descriptions:
+  - The request is malformed.
+  - The `collection-name` parameter is missing.
+  - The request body does not contain a valid JSON representation
+  - The `view-name` path parameter is missing or invalid.
+  example_operations:
+  - createBackup
+  - deleteBackup
+  - downloadBackup
+  - listBackups
+  - restoreBackup
+  - uploadBackup
+  - setClusterMaintenance
+  - getDbserverMaintenance
+  - setDbserverMaintenance
+  - getClusterStatistics
+- status: 401
+  title: Unauthorized
+  occurrences: 35
+  common_descriptions:
+  - Returned if you have *No access* database access level to the `_system`
+  - The request is not authenticated correctly (e.g. wrong credentials, inactive user account).
+  - Returned if authentication is enabled and the user does not have at
+  - The user account has insufficient permissions for the selected database.
+  example_operations:
+  - downloadBackup
+  - uploadBackup
+  - compactAllDatabases
+  - listAccessTokens
+  - createAccessToken
+  - deleteAccessToken
+  - getEffectiveStartupOptions
+  - getAvailableStartupOptions
+  - listCrashDumps
+  - deleteCrashDump
+- status: 403
+  title: Forbidden
+  occurrences: 68
+  common_descriptions:
+  - Returned if your user has insufficient rights.
+  - Returned if you have *No access* server access level.
+  - If the error code is `1004`, the specified write concern for the
+  - The user's access level for the `_system` database is too low.
+  example_operations:
+  - getClusterStatistics
+  - getLog
+  - getLogEntries
+  - resetLogLevel
+  - getLogLevel
+  - setLogLevel
+  - getStructuredLog
+  - setStructuredLog
+  - rotateEncryptionAtRestKey
+  - reloadServerJwtSecrets
+- status: 404
+  title: Not found
+  occurrences: 116
+  common_descriptions:
+  - A collection called `collection-name` could not be found.
+  - A View called `view-name` could not be found.
+  - 'Returned in the following cases:'
+  - The collection cannot be found.
+  example_operations:
+  - deleteBackup
+  - downloadBackup
+  - listBackups
+  - uploadBackup
+  - rotateEncryptionAtRestKey
+  - listAccessTokens
+  - createAccessToken
+  - deleteAccessToken
+  - getSupportInfo
+  - deleteDatabase
+- status: 405
+  title: Method not allowed
+  occurrences: 35
+  common_descriptions:
+  - is returned when an invalid HTTP method is used.
+  - Returned if the HTTP method is not `GET`.
+  - If the list command is invoked with any HTTP
+  - The server will respond with *HTTP 405* if an unsupported HTTP method is used.
+  example_operations:
+  - listBackups
+  - setLogLevel
+  - getStructuredLog
+  - setStructuredLog
+  - getEffectiveStartupOptions
+  - getAvailableStartupOptions
+  - listEndpoints
+  - getPublicStartupOptions
+  - executeBatchRequest
+  - createAqlQueryCursor
+- status: 408
+  title: Request timeout
+  occurrences: 1
+  common_descriptions:
+  - If the operation cannot obtain a global transaction lock
+  example_operations:
+  - createBackup
+- status: 409
+  title: Conflict
+  occurrences: 13
+  common_descriptions:
+  - 'There are two possible reasons for this error:'
+  - A View called `name` already exists.
+  - Duplicate access token `name`.
+  - is returned if a database with the specified name already exists.
+  example_operations:
+  - createAccessToken
+  - createDatabase
+  - deleteAnalyzer
+  - createDocument
+  - deleteDocument
+  - updateDocument
+  - replaceDocument
+  - createGraph
+  - importData
+  - createTaskWithId
+- status: 410
+  title: Gone
+  occurrences: 27
+  common_descriptions:
+  - This error occurs if you try to run this operation as part of a
+  - A server which processes the query or the leader of a shard which is
+  - A server which processes the query or the leader of a shard which is used
+  - The server responds with *HTTP 410* if a server which processes the query
+  example_operations:
+  - getCollectionCount
+  - truncateCollection
+  - createAqlQueryCursor
+  - getNextAqlQueryCursorBatch
+  - getNextAqlQueryCursorBatchPut
+  - getPreviousAqlQueryCursorBatch
+  - deleteDocuments
+  - updateDocuments
+  - createDocument
+  - replaceDocuments
+- status: 412
+  title: Precondition failed
+  occurrences: 15
+  common_descriptions:
+  - The `If-Match` header has been specified but the stored document's
+  - An `If-Match` header is specified and the found
+  - if the request was sent to an Agent node
+  - if the request was sent to an Agency node
+  example_operations:
+  - getDbserverMaintenance
+  - setDbserverMaintenance
+  - deleteDocument
+  - getDocument
+  - getDocumentHeader
+  - updateDocument
+  - replaceDocument
+  - deleteEdge
+  - getEdge
+  - updateEdge
+- status: 500
+  title: Internal server error
+  occurrences: 25
+  common_descriptions:
+  - is returned if an error occurred while assembling the response.
+  - is returned if the logger state could not be determined.
+  - Is returned when the server is not running in cluster mode.
+  - The `complete` option is enabled and the input is invalid,
+  example_operations:
+  - getServerId
+  - importData
+  - getReplicationApplierConfig
+  - updateReplicationApplierConfig
+  - startReplicationApplier
+  - getReplicationApplierState
+  - stopReplicationApplier
+  - getReplicationClusterInventory
+  - getReplicationDump
+  - getReplicationInventory
+- status: 501
+  title: Not implemented
+  occurrences: 19
+  common_descriptions:
+  - is returned when this operation is called on a Coordinator in a cluster deployment.
+  - is returned if called on a collection which doesn't support sync-by-revision
+  - The method has not been called on a Coordinator or single server.
+  - The method has been called on a single server.
+  example_operations:
+  - setClusterMaintenance
+  - listClusterEndpoints
+  - setLicense
+  - getRecentApiCalls
+  - getRecentAqlQueries
+  - getResponsibleShard
+  - getCollectionShards
+  - getReplicationLoggerFirstTick
+  - getReplicationLoggerFollow
+  - getReplicationLoggerTickRanges
+- status: 503
+  title: Service unavailable
+  occurrences: 16
+  common_descriptions:
+  - The system is temporarily not available. This can be a system
+  - The crash handler feature is not ready or has been disabled via the
+  - A server which processes the query or the leader of a shard which is used
+  - HTTP 503 will be returned during startup and shutdown, and in case
+  example_operations:
+  - getServerAvailability
+  - listCrashDumps
+  - deleteCrashDump
+  - getCrashDump
+  - createAqlQueryCursor
+  - getNextAqlQueryCursorBatch
+  - getNextAqlQueryCursorBatchPut
+  - getPreviousAqlQueryCursorBatch
+  - deleteDocuments
+  - updateDocuments
+- status: 504
+  title: Gateway timeout
+  occurrences: 3
+  common_descriptions:
+  - if the request timed out while enabling the maintenance mode
+  example_operations:
+  - setClusterMaintenance
+  - getDbserverMaintenance
+  - setDbserverMaintenance

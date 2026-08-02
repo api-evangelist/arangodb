@@ -1,0 +1,139 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  https://docs.arango.ai/arangodb/stable/develop/http-api/general-request-handling/
+  and https://docs.arango.ai/arangodb/stable/develop/http-api/authentication/,
+  cross-checked against openapi/arangodb-core-openapi-original.json
+docs: https://docs.arango.ai/arangodb/stable/develop/http-api/general-request-handling/
+api: openapi/arangodb-core-openapi-original.json
+protocol:
+  http_versions: [HTTP/1.1, HTTP/2]
+  http2_upgrade:
+  - 'Upgrade: h2c + HTTP2-Settings on cleartext connections (RFC 7540 §3)'
+  - HTTP/2 with prior knowledge on cleartext connections (RFC 7540 §3.4)
+  - ALPN with the h2 identifier on TLS connections
+  methods: [GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS]
+  patch_rfc: RFC 5789
+  content_length_required: true
+  chunked_request_bodies_supported: false
+  media_types: [application/json, application/x-velocypack]
+  velocypack: https://github.com/arangodb/velocypack
+  keep_alive: true
+  keep_alive_option: --http.keep-alive-timeout
+authentication:
+  profile: authentication/arangodb-authentication.yml
+  styles: [HTTP Basic, JWT bearer]
+  header: Authorization
+  challenge_header: Www-Authenticate
+  suppress_challenge_header: 'X-Omit-Www-Authenticate (any value)'
+  unauthenticated_status: 401
+  note: >-
+    OPTIONS requests are always answered, even unauthenticated, so that CORS
+    preflight works.
+url_structure:
+  database_scoped: true
+  pattern: /_db/{database-name}/_api/{resource}
+  default_database: _system
+  admin_prefix: /_admin
+  system_prefix: /_api
+  note: >-
+    Every core operation in the OpenAPI is scoped by a {database-name} path
+    parameter; omitting the /_db/{name} prefix implicitly targets _system.
+idempotency:
+  idempotency_key_header: null
+  supported: false
+  note: >-
+    ArangoDB publishes no Idempotency-Key contract. Safe retry is instead built on
+    HTTP semantics plus optimistic concurrency control — see conditional_requests
+    below. Do not treat a retried POST /_api/document as deduplicated; use a
+    client-supplied `_key` so the retry fails with 409 (unique constraint violated)
+    rather than creating a duplicate.
+  safe_retry_patterns:
+  - Supply an explicit `_key` on document creation so a duplicate insert returns
+    HTTP 409 / errorNum 1210 instead of creating a second document.
+  - Use If-Match with the document `_rev` on replace/update/delete so a stale retry
+    returns HTTP 412 (precondition failed) instead of clobbering a newer write.
+conditional_requests:
+  etag_source: document `_rev` (also returned as the Etag response header)
+  request_headers: [If-Match, If-None-Match]
+  query_parameter: ignoreRevs
+  statuses:
+    precondition_failed: 412
+    not_modified: 304
+  note: Revision-based optimistic concurrency control; 15 operations declare a 412.
+pagination:
+  style: server-side cursor
+  create: POST /_db/{database-name}/_api/cursor (createAqlQueryCursor)
+  next_batch: PUT /_db/{database-name}/_api/cursor/{cursor-identifier} (getNextAqlQueryCursorBatchPut)
+  previous_batch: POST /_db/{database-name}/_api/cursor/{cursor-identifier}/{batch-identifier} (getPreviousAqlQueryCursorBatch)
+  release: DELETE /_db/{database-name}/_api/cursor/{cursor-identifier} (deleteAqlQueryCursor)
+  request_fields: [batchSize, count, ttl, memoryLimit, options.stream]
+  response_fields: [result, hasMore, id, count, cached, extra.stats]
+  in_query_pagination: 'AQL LIMIT offset, count'
+  note: >-
+    There is no offset/limit convention on the REST resources themselves; batching
+    is a property of the AQL cursor.
+async_execution:
+  fire_and_forget:
+    header: 'x-arango-async: true'
+    response: 202 Accepted
+    queue_full_response: 503 Service Unavailable
+    queue_size_option: --server.maximal-queue-size
+    durable: false
+  store_result:
+    header: 'x-arango-async: store'
+    retrieval_api: /_api/job
+    operations: [getJob, getJobResult, cancelJob, deleteJob]
+transactions:
+  stream_transactions:
+    begin: beginStreamTransaction
+    commit: commitStreamTransaction
+    abort: abortStreamTransaction
+    correlation_header: x-arango-trx-id
+  javascript_transactions: executeJavaScriptTransaction
+read_routing:
+  dirty_reads_header: x-arango-allow-dirty-read
+  note: >-
+    Opt in to reading from followers in a cluster; declared on 30+ read
+    operations in the spec.
+batching:
+  endpoint: POST /_api/batch (executeBatchRequest)
+  media_type: multipart/form-data
+  status: legacy — prefer HTTP/2 multiplexing or async jobs
+error_envelope:
+  media_type: application/json
+  shape: '{"error": true, "code": <http-status>, "errorNum": <arangodb-error>, "errorMessage": "<text>"}'
+  stable_identifier: errorNum
+  catalog: errors/arangodb-error-codes.yml
+  problem_types: errors/arangodb-problem-types.yml
+  rfc9457: false
+versioning:
+  scheme: server version + API version prefix
+  server_version_endpoint: GET /_api/version (getVersion)
+  api_version_prefix: /_arango/v{N}
+  current_api_version: v0
+  spec_endpoint: /_arango/v{N}/openapi.json
+  spec_endpoint_since: 3.12.8
+  lifecycle: lifecycle/arangodb-lifecycle.yml
+  note: >-
+    The OpenAPI info.version reads "3.12.10 (API v0)" — the API version is carried
+    separately from the product version.
+rate_limits:
+  published: false
+  note: >-
+    ArangoDB is deployed per instance rather than as a metered multi-tenant API, so
+    no per-caller rate limits are published for the Core API. Back-pressure is
+    surfaced as HTTP 503 when the server request queue is full.
+cors:
+  supported: true
+  note: OPTIONS preflight is answered without authentication.
+observability:
+  metrics: GET /_admin/metrics/v2 (getMetricsV2 — Prometheus text format)
+  statistics: GET /_admin/statistics (getStatistics)
+  logs: GET /_admin/log/entries (getLogEntries)
+  response_code_metric: arangodb_http_response_http_response_code_total{code="<response-code>"}
+cross_links:
+  authentication: authentication/arangodb-authentication.yml
+  errors: errors/arangodb-error-codes.yml
+  lifecycle: lifecycle/arangodb-lifecycle.yml
+  data_model: data-model/arangodb-data-model.yml
