@@ -31,41 +31,14 @@ tags:
 - Cloud Infrastructure
 - Artificial Intelligence
 apis:
-- aid: arangodb:arangodb-core-api
-  name: ArangoDB Core API
-  description: 'The RESTful HTTP API of the ArangoDB Core database system, version
-    3.12.10 (API v0). 174 paths and 254 operations across 22 tags covering documents,
-    collections, databases, named
-    graphs, indexes, AQL queries and cursors, views and analyzers, transactions, Foxx
-    microservices, users, replication, hot backups, cluster administration and monitoring.
-    Published by ArangoDB as an OpenAPI 3.1.0 document inside the arangodb/arangodb
-    source tree and rendered as the HTTP API reference in the documentation.'
-  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
-  baseURL: https://{deployment-id}.arangodb.cloud:8529
-  x-baseurl-note: ArangoDB is deployed per instance. On the Arango Managed Platform
-    each deployment gets its own endpoint on *.arangodb.cloud (port 8529); self-managed
-    installations expose the same API on their own host.
-  tags:
-  - Database
-  - Graph Database
-  - Documents
-  - AQL
-  - REST
-  properties:
-  - type: OpenAPI
-    url: openapi/arangodb-core-openapi-original.json
-  - type: Documentation
-    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
-  - type: Overlay
-    url: overlays/arangodb-core-overlay.yaml
 - aid: arangodb:amp-api
   name: Arango Managed Platform (AMP) API
-  description: 'The control-plane API of the Arango Managed Platform (formerly ArangoGraph
-    Insights Platform / Oasis) — the managed ArangoDB cloud. It is a gRPC API defined
-    in protocol buffers, covering organizations, projects, deployments, IAM and API
-    keys, backups and backup policies, billing, credits and usage, audit logs, IP allowlists,
-    CA certificates, private endpoints, metrics, monitoring, notebooks, ML services,
-    replication, SCIM provisioning and support plans.'
+  description: >-
+    The control-plane API of the Arango Managed Platform (formerly ArangoGraph Insights Platform / Oasis)
+    — the managed ArangoDB cloud. It is a gRPC API defined in protocol buffers, covering organizations,
+    projects, deployments, IAM and API keys, backups and backup policies, billing, credits and usage,
+    audit logs, IP allowlists, CA certificates, private endpoints, metrics, monitoring, notebooks, ML
+    services, replication, SCIM provisioning and support plans.
   humanURL: https://docs.arango.ai/amp/api/
   baseURL: https://api.cloud.arangodb.com
   tags:
@@ -83,10 +56,10 @@ apis:
     url: https://docs.arango.ai/amp/api/set-up-a-connection/
 - aid: arangodb:amp-scim-api
   name: Arango Managed Platform SCIM API
-  description: 'SCIM 2.0 user and group provisioning endpoint for Arango Managed Platform
-    organizations, used to synchronize identities from an external identity provider
-    into an AMP organization. Authenticated with an AMP API key ID and secret over HTTP
-    Basic.'
+  description: >-
+    SCIM 2.0 user and group provisioning endpoint for Arango Managed Platform organizations, used to synchronize
+    identities from an external identity provider into an AMP organization. Authenticated with an AMP
+    API key ID and secret over HTTP Basic.
   humanURL: https://docs.arango.ai/amp/security-and-access-control/single-sign-on/scim-provisioning/
   baseURL: https://dashboard.arangodb.cloud/api/scim/v1
   tags:
@@ -97,12 +70,278 @@ apis:
   properties:
   - type: Documentation
     url: https://docs.arango.ai/amp/security-and-access-control/single-sign-on/scim-provisioning/
+- aid: arangodb:arangodb-administration-api
+  name: ArangoDB Administration API
+  description: Get server information, manage licenses, shut down nodes, and more
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Administration
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-administration-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-analyzers-api
+  name: ArangoDB Analyzers API
+  description: Manage Analyzers for transforming data
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Analyzers
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-analyzers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-authentication-api
+  name: ArangoDB Authentication API
+  description: Manage session tokens and JWT secrets
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-authentication-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-batch-requests-api
+  name: ArangoDB Batch Requests API
+  description: Run multiple operations using a single request
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Batch Requests
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-batch-requests-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-cluster-api
+  name: ArangoDB Cluster API
+  description: Get information, monitor, and administrate cluster deployments
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Cluster
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-cluster-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-collections-api
+  name: ArangoDB Collections API
+  description: Manage collections for organizing documents
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Collections
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-collections-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-databases-api
+  name: ArangoDB Databases API
+  description: Manage databases for organizing collections
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Databases
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-databases-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-documents-api
+  name: ArangoDB Documents API
+  description: Perform CRUD operations on JSON-based records
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Documents
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-documents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-foxx-api
+  name: ArangoDB Foxx API
+  description: Manage microservices written in JavaScript
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Foxx
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-foxx-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-graphs-api
+  name: ArangoDB Graphs API
+  description: Manage named graphs and query edges
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Graphs
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-graphs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-hot-backups-api
+  name: ArangoDB Hot Backups API
+  description: Manage incremental data backups
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Hot Backups
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-hot-backups-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-import-api
+  name: ArangoDB Import API
+  description: Load JSON data in bulk
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Import
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-import-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-indexes-api
+  name: ArangoDB Indexes API
+  description: Improve the performance of queries
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Indexes
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-indexes-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-jobs-api
+  name: ArangoDB Jobs API
+  description: Execute requests asynchronously
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Jobs
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-jobs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-monitoring-api
+  name: ArangoDB Monitoring API
+  description: Access logs, statistics, and metrics
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Monitoring
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-monitoring-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-queries-api
+  name: ArangoDB Queries API
+  description: Run, process, and manage AQL queries
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Queries
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-queries-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-replication-api
+  name: ArangoDB Replication API
+  description: Control data replication for deployments
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Replication
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-replication-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-security-api
+  name: ArangoDB Security API
+  description: Configure audit logging, encryption at rest and encryption in transit
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Security
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-security-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-tasks-api
+  name: ArangoDB Tasks API
+  description: Set up JavaScript code to run periodically or timed
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Tasks
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-tasks-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-transactions-api
+  name: ArangoDB Transactions API
+  description: Execute JavaScript and Stream Transactions
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-transactions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-users-api
+  name: ArangoDB Users API
+  description: Manage ArangoDB user accounts
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-users-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
+- aid: arangodb:arangodb-views-api
+  name: ArangoDB Views API
+  description: Manage Views to use ArangoSearch for information retrieval
+  humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
+  baseURL: https://{deployment-id}.arangodb.cloud:8529
+  tags:
+  - Views
+  properties:
+  - type: OpenAPI
+    url: openapi/arangodb-views-api-openapi.yml
+  - type: Documentation
+    url: https://docs.arango.ai/arangodb/stable/develop/http-api/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/arangodb-core-overlay.yaml
 - type: Website
   url: https://arango.ai/
 - type: DeveloperPortal
