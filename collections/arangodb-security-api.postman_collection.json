@@ -1,0 +1,343 @@
+{
+  "item": [
+    {
+      "id": "88105d07-9183-4275-bdfd-34f67c01aecb",
+      "name": "Security",
+      "description": {
+        "content": "Configure audit logging, encryption at rest and encryption in transit",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "dd00a5f6-79e1-4709-af08-6b8bd456cb5e",
+          "name": "Rotate the encryption at rest key",
+          "request": {
+            "name": "Rotate the encryption at rest key",
+            "description": {
+              "content": "Change the user-supplied encryption at rest key by sending a request without\npayload to this endpoint. The file supplied via `--rocksdb.encryption-keyfolder`\nwill be reloaded and the internal encryption key will be re-encrypted with the\nnew user key.\n\nThis is a protected API and can only be executed with superuser rights.\nThis API is not available on Coordinator nodes.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "server",
+                "encryption"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1b22ecfd-559c-4202-8ea2-bc9e0c67fdfe",
+              "name": "This API will return HTTP 200 if everything is ok\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "encryption"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "772dcef5-42a2-4c06-b525-b1efb41ab4aa",
+              "name": "This API will return HTTP 403 FORBIDDEN if it is not called with\nsuperuser rights.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "encryption"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "244ae33f-19e4-4312-ac3d-aea44ad8bc3b",
+              "name": "This API will return HTTP 404 in case encryption key rotation is disabled.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "encryption"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "acacf6ac-3c34-413d-a674-3eec782de902",
+          "name": "Reload the TLS data",
+          "request": {
+            "name": "Reload the TLS data",
+            "description": {
+              "content": "This API call triggers a reload of all the TLS data (server key, client-auth CA)\nand then returns a summary. The JSON response is exactly as in the corresponding\nGET request.\n\nThis is a protected API and can only be executed with superuser rights.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "server",
+                "tls"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0fabaf15-2a39-4c4a-b065-8ff40a12cfe6",
+              "name": "This API will return HTTP 200 if everything is ok\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "tls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5d177b25-45a9-470f-a8a1-e3282453cfb8",
+              "name": "This API will return HTTP 403 Forbidden if it is not called with\nsuperuser rights.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "tls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1656494c-1596-4763-9765-2f908e2930db",
+          "name": "Get the TLS data",
+          "request": {
+            "name": "Get the TLS data",
+            "description": {
+              "content": "Return a summary of the TLS data. The JSON response will contain a field\n`result` with the following components:\n\n  - `keyfile`: Information about the key file.\n  - `clientCA`: Information about the Certificate Authority (CA) for\n    client certificate verification.\n\nIf server name indication (SNI) is used and multiple key files are\nconfigured for different server names, then there is an additional\nattribute `SNI`, which contains for each configured server name\nthe corresponding information about the key file for that server name.\n\nIn all cases the value of the attribute will be a JSON object, which\nhas a subset of the following attributes (whatever is appropriate):\n\n  - `sha256`: The value is a string with the SHA256 of the whole input\n    file.\n  - `certificates`: The value is a JSON array with the public\n    certificates in the chain in the file.\n  - `privateKeySha256`: In cases where there is a private key (`keyfile`\n    but not `clientCA`), this field is present and contains a\n    JSON string with the SHA256 of the private key.\n\nThis API requires authentication.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "server",
+                "tls"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8b309ce7-36a1-44b4-bc46-40c7e35aa229",
+              "name": "This API will return HTTP 200 if everything is ok\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "server",
+                    "tls"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "f72997f9-4933-4e26-9474-d63c734dbbad",
+    "name": "ArangoDB Core Security API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Configure audit logging, encryption at rest and encryption in transit\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

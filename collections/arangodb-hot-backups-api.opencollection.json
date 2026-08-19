@@ -1,0 +1,108 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Hot Backups API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Hot Backups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/backup/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a consistent local backup \"as soon as possible\", very much\nlike a snapshot in time, with a given label. The ambiguity in the\nphrase \"as soon as possible\" refers to the next window during which a\nglobal write lock across all databases can be obtained in order to\nguarantee consistency. Note that the backup at first resides on the\nsame machine and hard drive as the original data. Make sure to upload\nit to a remote site for an actual backup.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/backup/delete",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Delete a specific local backup identified by the given `id`.\n"
+        },
+        {
+          "info": {
+            "name": "Download a backup from a remote repository",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/backup/download",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Download a specific local backup from a remote repository, or query\nprogress on a previously scheduled download operation, or abort\na running download operation.\n"
+        },
+        {
+          "info": {
+            "name": "List all backups",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/backup/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Lists all locally found backups.\n"
+        },
+        {
+          "info": {
+            "name": "Restore a backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/backup/restore",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Restores a consistent local backup from a\nsnapshot in time, with a given id. The backup snapshot must reside on\nthe ArangoDB service locally.\n"
+        },
+        {
+          "info": {
+            "name": "Upload a backup to a remote repository",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/backup/upload",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Upload a specific local backup to a remote repository, or query\nprogress on a previously scheduled upload operation, or abort\na running upload operation.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

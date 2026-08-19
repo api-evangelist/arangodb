@@ -1,0 +1,1716 @@
+{
+  "item": [
+    {
+      "id": "edbf4fd4-7e7a-4584-a43e-0b0371bb557a",
+      "name": "Cluster",
+      "description": {
+        "content": "Get information, monitor, and administrate cluster deployments",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5449fdbf-cf56-4bcb-9415-613bdfc78abb",
+          "name": "Get the cluster health",
+          "request": {
+            "name": "Get the cluster health",
+            "description": {
+              "content": "Queries the health of the cluster as assessed by the supervision (Agency) for\nmonitoring purposes. The response is a JSON object, containing the standard\n`code`, `error`, `errorNum`, and `errorMessage` fields as appropriate.\nThe endpoint-specific fields are as follows:\n\n- `ClusterId`: A UUID string identifying the cluster\n- `Health`: An object containing a descriptive sub-object for each node in the cluster.\n  - `<nodeID>`: Each entry in `Health` will be keyed by the node ID and contain the following attributes:\n    - `Endpoint`: A string representing the network endpoint of the server.\n    - `Role`: The role the server plays. Possible values are `\"AGENT\"`, `\"COORDINATOR\"`, and `\"DBSERVER\"`.\n    - `CanBeDeleted`: Boolean representing whether the node can safely be removed from the cluster.\n    - `Version`: Version String of ArangoDB used by that node.\n    - `Engine`: Storage Engine used by that node.\n    - `Status`: A string indicating the health of the node as assessed by the supervision (Agency). This should be considered primary source of truth for Coordinator and DB-Servers node health. If the node is responding normally to requests, it is `\"GOOD\"`. If it has missed one heartbeat, it is `\"BAD\"`. If it has been declared failed by the supervision, which occurs after missing heartbeats for about 15 seconds, it will be marked `\"FAILED\"`.\n\n    Additionally it will also have the following attributes for:\n\n    **Coordinators** and **DB-Servers**\n    - `SyncStatus`: The last sync status reported by the node. This value is primarily used to determine the value of `Status`. Possible values include `\"UNKNOWN\"`, `\"UNDEFINED\"`, `\"STARTUP\"`, `\"STOPPING\"`, `\"STOPPED\"`, `\"SERVING\"`, `\"SHUTDOWN\"`.\n    - `LastAckedTime`: ISO 8601 timestamp specifying the last heartbeat received.\n    - `ShortName`: A string representing the shortname of the server, e.g. `\"Coordinator0001\"`.\n    - `Timestamp`: ISO 8601 timestamp specifying the last heartbeat received. (deprecated)\n    - `Host`: An optional string, specifying the host machine if known.\n    - `SyncTime`: ISO 8601 timestamp of the last sync time reported by the node.\n\n    **Coordinators** only\n    - `AdvertisedEndpoint`: A string representing the advertised endpoint, if set. (e.g. external IP address or load balancer, optional)\n\n    **Agents**\n    - `Leader`: ID of the Agent this node regards as leader.\n    - `Leading`: Whether this Agent is the leader (true) or not (false).\n    - `LastAckedTime`: Time since last `acked` in seconds.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0e6bc9ad-add1-4820-8ac3-0bfceb6a5aad",
+              "name": "is returned when everything went well.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "22f11079-88f3-4e91-bba2-6892573201ab",
+          "name": "Set the cluster maintenance mode",
+          "request": {
+            "name": "Set the cluster maintenance mode",
+            "description": {
+              "content": "Enable or disable the cluster supervision (Agency) maintenance mode.\n\nThis endpoint allows you to temporarily enable the supervision maintenance mode.\nPlease be aware that no automatic failovers of any kind will take place\nwhile the maintenance mode is enabled. The cluster supervision reactivates\nitself automatically at some point after disabling it.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "maintenance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<string>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "887d3454-e7c6-4b2d-8e37-6f26d84d5156",
+              "name": "is returned when everything went well.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "on",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "017619fc-3fd3-4194-bfc3-7147a1e1017d",
+              "name": "if the request contained an invalid body\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "on",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "27735a2a-84be-47c1-8cb7-80938f26e3d2",
+              "name": "if the request was sent to a node other than a Coordinator or single-server\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "on",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ba3542ab-6f04-4d55-b396-be74d739101f",
+              "name": "if the request timed out while enabling the maintenance mode\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "on",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7610bc3e-e2ea-4267-adf5-7c9877c5372b",
+          "name": "Get the maintenance status of a DB-Server",
+          "request": {
+            "name": "Get the maintenance status of a DB-Server",
+            "description": {
+              "content": "Check whether the specified DB-Server is in maintenance mode and until when.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "maintenance",
+                ":DB-Server-ID"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "DB-Server-ID",
+                  "description": "(Required) The ID of a DB-Server.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "073ef56f-8094-4db7-9111-327a76a64adb",
+              "name": "The request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": {\n    \"Mode\": \"string\",\n    \"Until\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aaa5b8bc-e3e6-496a-86af-e7c71f5c4f98",
+              "name": "if the request contained an invalid body\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5c20b077-1928-4785-afd8-3b99d540eb9e",
+              "name": "if the request was sent to an Agent node\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bcb05e5a-bdd6-448a-80df-4b9a6c9853db",
+              "name": "if the request timed out while enabling the maintenance mode\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a1ea9547-23a2-49a6-a03f-5ce031b36076",
+          "name": "Set the maintenance status of a DB-Server",
+          "request": {
+            "name": "Set the maintenance status of a DB-Server",
+            "description": {
+              "content": "Enable or disable the maintenance mode of a DB-Server.\n\nFor rolling upgrades or rolling restarts, DB-Servers can be put into\nmaintenance mode, so that no attempts are made to re-distribute the data in a\ncluster for such planned events. DB-Servers in maintenance mode are not\nconsidered viable failover targets because they are likely restarted soon.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "maintenance",
+                ":DB-Server-ID"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "DB-Server-ID",
+                  "description": "(Required) The ID of a DB-Server.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"<string>\",\n  \"timeout\": 3600\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2927417d-fc68-48a1-b236-0e1f6b8a3af4",
+              "name": "The request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mode\": \"<string>\",\n  \"timeout\": 3600\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 2008\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe7d3099-7da7-45d5-91c5-b8dfd1dc8541",
+              "name": "if the request contained an invalid body\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mode\": \"<string>\",\n  \"timeout\": 3600\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c0f9d827-cd92-4067-ad4d-a90d06f69d20",
+              "name": "if the request was sent to an Agency node\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mode\": \"<string>\",\n  \"timeout\": 3600\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Precondition Failed",
+              "code": 412,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ec3c9218-2e2c-49e8-a5e2-3b7577ce5e2d",
+              "name": "if the request timed out while enabling the maintenance mode\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "maintenance",
+                    ":DB-Server-ID"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "DB-Server-ID",
+                      "description": "(Required) The ID of a DB-Server.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mode\": \"<string>\",\n  \"timeout\": 3600\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Gateway Timeout",
+              "code": 504,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "657f082f-ad63-432a-9ed3-462f420a523f",
+          "name": "Get the current cluster imbalance",
+          "request": {
+            "name": "Get the current cluster imbalance",
+            "description": {
+              "content": "Computes the current cluster imbalance and returns the result.\nIt additionally shows the amount of ongoing and pending move shard operations.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "rebalance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e5a4effd-ceb3-45b8-8b43-f14026ac4d0a",
+              "name": "This API returns HTTP 200.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "rebalance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 200,\n  \"error\": false,\n  \"result\": {\n    \"leader\": {\n      \"weightUsed\": [\n        5135,\n        2817\n      ],\n      \"targetWeight\": [\n        4564,\n        8109\n      ],\n      \"numberShards\": [\n        1533,\n        3511\n      ],\n      \"leaderDupl\": [\n        4755,\n        1755\n      ],\n      \"totalWeight\": 925,\n      \"imbalance\": 7358,\n      \"totalShards\": 9293\n    },\n    \"shards\": {\n      \"sizeUsed\": [\n        472,\n        4361\n      ],\n      \"targetSize\": [\n        2720,\n        4524\n      ],\n      \"numberShards\": [\n        593,\n        2917\n      ],\n      \"totalUsed\": 763,\n      \"totalShards\": 4100,\n      \"totalShardsFromSystemCollections\": 619,\n      \"imbalance\": 9275\n    }\n  },\n  \"pendingMoveShards\": 5591.205217756789,\n  \"todoMoveShards\": 3953.764042203567\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5c14e999-ffc5-44c5-a553-599b400e721a",
+          "name": "Compute a set of move shard operations to improve balance",
+          "request": {
+            "name": "Compute a set of move shard operations to improve balance",
+            "description": {
+              "content": "Compute a set of move shard operations to improve balance.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "rebalance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<number>\",\n  \"excludeSystemCollections\": false,\n  \"leaderChanges\": true,\n  \"maximumNumberOfMoves\": 1000,\n  \"moveFollowers\": false,\n  \"moveLeaders\": false,\n  \"piFactor\": 256000000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6c0638db-fb79-46fe-bae7-a9028107c68f",
+              "name": "This API returns HTTP 200.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "rebalance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"version\": \"<number>\",\n  \"excludeSystemCollections\": false,\n  \"leaderChanges\": true,\n  \"maximumNumberOfMoves\": 1000,\n  \"moveFollowers\": false,\n  \"moveLeaders\": false,\n  \"piFactor\": 256000000\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 200,\n  \"error\": false,\n  \"result\": {\n    \"imbalanceBefore\": {\n      \"leader\": {\n        \"weightUsed\": [\n          5848,\n          138\n        ],\n        \"targetWeight\": [\n          5416,\n          1538\n        ],\n        \"numberShards\": [\n          7558,\n          6184\n        ],\n        \"leaderDupl\": [\n          1075,\n          8728\n        ],\n        \"totalWeight\": 9729,\n        \"imbalance\": 821,\n        \"totalShards\": 7642\n      },\n      \"shards\": {\n        \"sizeUsed\": [\n          4271,\n          616\n        ],\n        \"targetSize\": [\n          8626,\n          4748\n        ],\n        \"numberShards\": [\n          7401,\n          4134\n        ],\n        \"totalUsed\": 9508,\n        \"totalShards\": 7603,\n        \"totalShardsFromSystemCollections\": 7369,\n        \"imbalance\": 7226\n      }\n    },\n    \"imbalanceAfter\": {\n      \"leader\": {\n        \"weightUsed\": [\n          5240,\n          9101\n        ],\n        \"targetWeight\": [\n          1837,\n          4338\n        ],\n        \"numberShards\": [\n          3903,\n          4580\n        ],\n        \"leaderDupl\": [\n          5433,\n          6169\n        ],\n        \"totalWeight\": 1414,\n        \"imbalance\": 1912,\n        \"totalShards\": 5334\n      },\n      \"shards\": {\n        \"sizeUsed\": [\n          5974,\n          820\n        ],\n        \"targetSize\": [\n          5960,\n          8763\n        ],\n        \"numberShards\": [\n          7831,\n          5848\n        ],\n        \"totalUsed\": 1111,\n        \"totalShards\": 6529,\n        \"totalShardsFromSystemCollections\": 3639,\n        \"imbalance\": 775\n      }\n    },\n    \"moves\": [\n      {\n        \"from\": \"string\",\n        \"to\": \"string\",\n        \"shard\": \"string\",\n        \"collection\": 961.9090052170476,\n        \"isLeader\": false\n      },\n      {\n        \"from\": \"string\",\n        \"to\": \"string\",\n        \"shard\": \"string\",\n        \"collection\": 7368.4597808382805,\n        \"isLeader\": true\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "52b6db3e-2747-4811-84a7-e63fda21cdac",
+          "name": "Compute and execute a set of move shard operations to improve balance",
+          "request": {
+            "name": "Compute and execute a set of move shard operations to improve balance",
+            "description": {
+              "content": "Compute a set of move shard operations to improve balance.\nThese moves are then immediately executed.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "rebalance"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<number>\",\n  \"excludeSystemCollections\": false,\n  \"leaderChanges\": true,\n  \"maximumNumberOfMoves\": 1000,\n  \"moveFollowers\": false,\n  \"moveLeaders\": false,\n  \"piFactor\": 256000000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7a69e73f-4310-4f53-9d77-cb143ac129f3",
+              "name": "This API returns HTTP 200.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "rebalance"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"version\": \"<number>\",\n  \"excludeSystemCollections\": false,\n  \"leaderChanges\": true,\n  \"maximumNumberOfMoves\": 1000,\n  \"moveFollowers\": false,\n  \"moveLeaders\": false,\n  \"piFactor\": 256000000\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 200,\n  \"error\": false,\n  \"result\": {\n    \"imbalanceBefore\": {\n      \"leader\": {\n        \"weightUsed\": [\n          4059,\n          264\n        ],\n        \"targetWeight\": [\n          4239,\n          5237\n        ],\n        \"numberShards\": [\n          1260,\n          6910\n        ],\n        \"leaderDupl\": [\n          94,\n          8415\n        ],\n        \"totalWeight\": 5042,\n        \"imbalance\": 5494,\n        \"totalShards\": 2056\n      },\n      \"shards\": {\n        \"sizeUsed\": [\n          3081,\n          4058\n        ],\n        \"targetSize\": [\n          3669,\n          6032\n        ],\n        \"numberShards\": [\n          4752,\n          1639\n        ],\n        \"totalUsed\": 6088,\n        \"totalShards\": 9055,\n        \"totalShardsFromSystemCollections\": 298,\n        \"imbalance\": 1642\n      }\n    },\n    \"imbalanceAfter\": {\n      \"leader\": {\n        \"weightUsed\": [\n          4525,\n          7501\n        ],\n        \"targetWeight\": [\n          6016,\n          3939\n        ],\n        \"numberShards\": [\n          2780,\n          9565\n        ],\n        \"leaderDupl\": [\n          4563,\n          3255\n        ],\n        \"totalWeight\": 6002,\n        \"imbalance\": 7215,\n        \"totalShards\": 8155\n      },\n      \"shards\": {\n        \"sizeUsed\": [\n          7124,\n          1526\n        ],\n        \"targetSize\": [\n          746,\n          4326\n        ],\n        \"numberShards\": [\n          4623,\n          4374\n        ],\n        \"totalUsed\": 2303,\n        \"totalShards\": 7798,\n        \"totalShardsFromSystemCollections\": 2224,\n        \"imbalance\": 7616\n      }\n    },\n    \"moves\": [\n      {\n        \"from\": \"string\",\n        \"to\": \"string\",\n        \"shard\": \"string\",\n        \"collection\": 7521.008017522454,\n        \"isLeader\": false\n      },\n      {\n        \"from\": \"string\",\n        \"to\": \"string\",\n        \"shard\": \"string\",\n        \"collection\": 8387.022028491354,\n        \"isLeader\": false\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1f002559-f93f-44bf-b065-e8a66cb6ccae",
+          "name": "Execute a set of move shard operations",
+          "request": {
+            "name": "Execute a set of move shard operations",
+            "description": {
+              "content": "Execute the given set of move shard operations. You can use the\n`POST /_admin/cluster/rebalance` endpoint to calculate these operations to improve\nthe balance of shards, leader shards, and follower shards.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "rebalance",
+                "execute"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<number>\",\n  \"moves\": [\n    {\n      \"from\": \"<string>\",\n      \"to\": \"<string>\",\n      \"shard\": \"<string>\",\n      \"collection\": \"<number>\",\n      \"isLeader\": \"<boolean>\"\n    },\n    {\n      \"from\": \"<string>\",\n      \"to\": \"<string>\",\n      \"shard\": \"<string>\",\n      \"collection\": \"<number>\",\n      \"isLeader\": \"<boolean>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "022f7fd1-8401-4055-95ac-e88ee4488ee4",
+              "name": "This API returns HTTP 200 if no operations are provided.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "rebalance",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"version\": \"<number>\",\n  \"moves\": [\n    {\n      \"from\": \"<string>\",\n      \"to\": \"<string>\",\n      \"shard\": \"<string>\",\n      \"collection\": \"<number>\",\n      \"isLeader\": \"<boolean>\"\n    },\n    {\n      \"from\": \"<string>\",\n      \"to\": \"<string>\",\n      \"shard\": \"<string>\",\n      \"collection\": \"<number>\",\n      \"isLeader\": \"<boolean>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c231fef4-1615-4d4f-894c-912b00ceb943",
+              "name": "This API returns HTTP 202 if the operations have been accepted and scheduled for execution.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "rebalance",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"version\": \"<number>\",\n  \"moves\": [\n    {\n      \"from\": \"<string>\",\n      \"to\": \"<string>\",\n      \"shard\": \"<string>\",\n      \"collection\": \"<number>\",\n      \"isLeader\": \"<boolean>\"\n    },\n    {\n      \"from\": \"<string>\",\n      \"to\": \"<string>\",\n      \"shard\": \"<string>\",\n      \"collection\": \"<number>\",\n      \"isLeader\": \"<boolean>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b82d68e2-af0e-409d-9502-6b0abdefc5a1",
+          "name": "Get the statistics of a DB-Server",
+          "request": {
+            "name": "Get the statistics of a DB-Server",
+            "description": {
+              "content": "> **WARNING:**\nThis endpoint is deprecated and removed in ArangoDB v4.0.\nUse `GET /_admin/metrics` instead, which provides the data exposed by\nthis API and a lot more.\n\n\nQueries the statistics of the given DB-Server\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "statistics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "DBserver",
+                  "value": "<string>",
+                  "description": "(Required) The ID of a DB-Server.\n"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ea2a0d2f-f699-4295-b71e-91168e5ae1dd",
+              "name": "is returned when everything went well.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "DBserver",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "54d0eff1-99de-44de-a757-fe3d4d774626",
+              "name": "The `DBserver` parameter was not specified or is not the ID of a DB-Server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "DBserver",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a49c9abf-c9b8-453a-9149-ed7e08d10506",
+              "name": "The specified server is not a DB-Server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "statistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "DBserver",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8cb7a800-41e3-4413-bdef-41304d3496bf",
+          "name": "Reserve globally unique IDs",
+          "request": {
+            "name": "Reserve globally unique IDs",
+            "description": {
+              "content": "Reserve or skip globally unique identifiers that are used as automatically\ngenerated document keys when using the `traditional` or `padded` key generators.\n\nEither the `number` or the `minimum` query parameter needs to be specified.\n\n> **WARNING:**\nOnly use this endpoint to resolve issues with the key generation,\nin particular of cluster deployments created with v3.12.5-2 or older.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "cluster",
+                "uniqId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "number",
+                  "value": "<integer>",
+                  "description": "Reserve as many globally unique IDs as specified.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "minimum",
+                  "value": "<integer>",
+                  "description": "Make sure that globally unique IDs used in the future will always be\nat least as large as the specified value.\n\nCoordinators and DB-Servers will use these larger IDs only after a restart.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d4cb137d-e695-4ff1-9da5-b69f423eba2a",
+              "name": "Successfully reserved/skipped the globally unique IDs.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "uniqId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "number",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minimum",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 200,\n  \"error\": true,\n  \"smallest\": \"string\",\n  \"largest\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "125d73a4-8f4f-48c0-a0fa-63e986072d94",
+              "name": "Either the `number` or the `minimum` query parameter must be provided.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "cluster",
+                    "uniqId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "number",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minimum",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 4372,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c93d7d1c-a8a5-45b4-8172-4aa5c41f9e05",
+          "name": "Get the server ID",
+          "request": {
+            "name": "Get the server ID",
+            "description": {
+              "content": "Returns the ID of a server in a cluster. The request will fail if the\nserver is not running in cluster mode.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "server",
+                "id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "205e0a3f-1730-4c23-a391-3b8a406029d2",
+              "name": "Is returned when the server is running in cluster mode.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "dbe5af06-baa8-48fc-b5e8-bf1d3ff7b89c",
+              "name": "Is returned when the server is not running in cluster mode.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d16f5a58-ff2e-4c2f-94d2-6e714fb0b316",
+          "name": "Get the server role",
+          "request": {
+            "name": "Get the server role",
+            "description": {
+              "content": "Returns the role of a server in a cluster.\nThe server role is returned in the `role` attribute of the result.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "server",
+                "role"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5cee26df-a82e-4312-adf5-e0cbe1c4ac57",
+              "name": "Is returned in all cases.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "role"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"errorNum\": 6162,\n  \"role\": \"AGENT\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7b4f842a-1da0-45ab-bec2-1bde56e66550",
+          "name": "List all Coordinator endpoints",
+          "request": {
+            "name": "List all Coordinator endpoints",
+            "description": {
+              "content": "Returns an object with an attribute `endpoints`, which contains an\narray of objects, which each have the attribute `endpoint`, whose value\nis a string with the endpoint description. There is an entry for each\nCoordinator in the cluster. This method only works on Coordinators in\ncluster mode. In case of an error the `error` attribute is set to\n`true`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_api",
+                "cluster",
+                "endpoints"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3a3e4e0d-9d1e-463f-85bc-498c815ddd5f",
+              "name": "is returned when everything went well.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_api",
+                    "cluster",
+                    "endpoints"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 200,\n  \"endpoints\": [\n    {\n      \"endpoint\": \"string\"\n    },\n    {\n      \"endpoint\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f0a4bc76-ef2c-4bbc-a8dd-dde4cb59db4e",
+              "name": "server is not a Coordinator or method was not GET.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_api",
+                    "cluster",
+                    "endpoints"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "152de5af-e202-4cc1-b045-0050a8b962e5",
+    "name": "ArangoDB Core Cluster API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Get information, monitor, and administrate cluster deployments\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

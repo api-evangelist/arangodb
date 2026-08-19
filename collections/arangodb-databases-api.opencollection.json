@@ -1,0 +1,101 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Databases API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Databases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all databases",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/_system/_api/database"
+          },
+          "docs": "Retrieves the list of all existing databases\n\n> **INFO:**\nRetrieving the list of databases is only possible from within the `_system` database.\n"
+        },
+        {
+          "info": {
+            "name": "Create a database",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/_system/_api/database",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new database.\n\nThe response is a JSON object with the attribute `result` set to `true`.\n\n> **INFO:**\nCreating a new database is only possible from within the `_system` database.\n"
+        },
+        {
+          "info": {
+            "name": "Drop a database",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/_system/_api/database/:database-name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the database\n"
+              }
+            ]
+          },
+          "docs": "Drops the database along with all data stored in it.\n\n> **INFO:**\nDropping a database is only possible from within the `_system` database.\nThe `_system` database itself cannot be dropped.\n"
+        },
+        {
+          "info": {
+            "name": "Get information about the current database",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/database/current",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves the properties of the current database\n\nThe response is a JSON object with the following attributes:\n\n- `name`: the name of the current database\n- `id`: the id of the current database\n- `path`: the filesystem path of the current database\n- `isSystem`: whether or not the current database is the `_system` database\n- `sharding`: the default sharding method for collections created in this database\n- `replicationFactor`: the default replication factor for collections in this database\n- `wri"
+        },
+        {
+          "info": {
+            "name": "List the accessible databases",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/database/user",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves the list of all databases the current user can access without\nspecifying a different username or password.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,4584 @@
+{
+  "item": [
+    {
+      "id": "51fc8bdb-8ebc-4437-a9da-d05af84a09b9",
+      "name": "Collections",
+      "description": {
+        "content": "Manage collections for organizing documents",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "13b8b276-8333-4506-9258-d7c9015049da",
+          "name": "List all collections",
+          "request": {
+            "name": "List all collections",
+            "description": {
+              "content": "Returns basic information for all collections in the current database,\noptionally excluding system collections.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "excludeSystem",
+                  "value": "false",
+                  "description": "Whether system collections should be excluded from the result.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "93282f1e-fbcc-42e9-8e98-56ca9119e241",
+              "name": "The list of collections.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "excludeSystem",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": [\n    {\n      \"id\": \"string\",\n      \"name\": \"coll\",\n      \"status\": 3,\n      \"type\": 2,\n      \"isSystem\": false,\n      \"globallyUniqueId\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"name\": \"coll\",\n      \"status\": 3,\n      \"type\": 2,\n      \"isSystem\": false,\n      \"globallyUniqueId\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "64a7907c-649c-4f23-b943-8c9e9b39ee53",
+          "name": "Create a collection",
+          "request": {
+            "name": "Create a collection",
+            "description": {
+              "content": "Creates a new collection with a given name. The request must contain an\nobject with the following attributes.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "waitForSyncReplication",
+                  "value": "true",
+                  "description": "The default is `true`, which means the server only reports success back to the\nclient when all replicas have created the collection. Set it to `false` if you want\nfaster server responses and don't care about full replication.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "enforceReplicationFactor",
+                  "value": "true",
+                  "description": "The default is `true`, which means the server checks if there are enough replicas\navailable at creation time and bail out otherwise. Set it to `false` to disable\nthis extra check.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"cacheEnabled\": false,\n  \"computedValues\": [\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"distributeShardsLike\": \"\",\n  \"isDisjoint\": \"<boolean>\",\n  \"isSmart\": \"<boolean>\",\n  \"isSystem\": false,\n  \"keyOptions\": {\n    \"allowUserKeys\": true,\n    \"increment\": 1,\n    \"offset\": 0,\n    \"type\": \"traditional\"\n  },\n  \"numberOfShards\": 1,\n  \"replicationFactor\": \"<integer>\",\n  \"schema\": {\n    \"rule\": \"<object>\",\n    \"level\": \"strict\",\n    \"message\": \"<string>\"\n  },\n  \"shardKeys\": [\n    \"_key\"\n  ],\n  \"shardingStrategy\": \"<string>\",\n  \"smartGraphAttribute\": \"<string>\",\n  \"smartJoinAttribute\": \"<string>\",\n  \"type\": 2,\n  \"waitForSync\": false,\n  \"writeConcern\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3dc1c819-a5ec-47b6-9df8-b314b5b4e5f0",
+              "name": "The collection has been created.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "waitForSyncReplication",
+                      "value": "true"
+                    },
+                    {
+                      "key": "enforceReplicationFactor",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"cacheEnabled\": false,\n  \"computedValues\": [\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"distributeShardsLike\": \"\",\n  \"isDisjoint\": \"<boolean>\",\n  \"isSmart\": \"<boolean>\",\n  \"isSystem\": false,\n  \"keyOptions\": {\n    \"allowUserKeys\": true,\n    \"increment\": 1,\n    \"offset\": 0,\n    \"type\": \"traditional\"\n  },\n  \"numberOfShards\": 1,\n  \"replicationFactor\": \"<integer>\",\n  \"schema\": {\n    \"rule\": \"<object>\",\n    \"level\": \"strict\",\n    \"message\": \"<string>\"\n  },\n  \"shardKeys\": [\n    \"_key\"\n  ],\n  \"shardingStrategy\": \"<string>\",\n  \"smartGraphAttribute\": \"<string>\",\n  \"smartJoinAttribute\": \"<string>\",\n  \"type\": 2,\n  \"waitForSync\": false,\n  \"writeConcern\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"string\",\n  \"type\": 3321,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": true,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": true,\n  \"keyOptions\": {\n    \"type\": \"autoincrement\",\n    \"allowUserKeys\": true,\n    \"increment\": 7767,\n    \"lastValue\": 3953,\n    \"offset\": 3106\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": true,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": true,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    }\n  ],\n  \"cacheEnabled\": false,\n  \"syncByRevision\": true,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": true,\n  \"isSmart\": false,\n  \"numberOfShards\": 4644,\n  \"replicationFactor\": 4363,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"enterprise-compat\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 291\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a243a241-bde9-48f2-8a07-e9f890d16dab",
+              "name": "The `name` or another required attribute is missing or an attribute\nhas an invalid value.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "waitForSyncReplication",
+                      "value": "true"
+                    },
+                    {
+                      "key": "enforceReplicationFactor",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"cacheEnabled\": false,\n  \"computedValues\": [\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"distributeShardsLike\": \"\",\n  \"isDisjoint\": \"<boolean>\",\n  \"isSmart\": \"<boolean>\",\n  \"isSystem\": false,\n  \"keyOptions\": {\n    \"allowUserKeys\": true,\n    \"increment\": 1,\n    \"offset\": 0,\n    \"type\": \"traditional\"\n  },\n  \"numberOfShards\": 1,\n  \"replicationFactor\": \"<integer>\",\n  \"schema\": {\n    \"rule\": \"<object>\",\n    \"level\": \"strict\",\n    \"message\": \"<string>\"\n  },\n  \"shardKeys\": [\n    \"_key\"\n  ],\n  \"shardingStrategy\": \"<string>\",\n  \"smartGraphAttribute\": \"<string>\",\n  \"smartJoinAttribute\": \"<string>\",\n  \"type\": 2,\n  \"waitForSync\": false,\n  \"writeConcern\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8a0cef59-e0c4-42a4-9275-7ea70e76eb5a",
+          "name": "Drop a collection",
+          "request": {
+            "name": "Drop a collection",
+            "description": {
+              "content": "Delete the collection identified by `collection-name` and all its documents.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "isSystem",
+                  "value": "false",
+                  "description": "Whether the collection to drop is a system collection. This parameter\nmust be set to `true` in order to drop a system collection.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection to drop.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fa59d72c-e0cc-4fa0-b6f7-e493f8c443f1",
+              "name": "Dropping the collection has been successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "isSystem",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection to drop.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a27abfa1-ff4a-4003-9f4f-8512ffbb64ae",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "isSystem",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection to drop.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "27fc55ad-5a1c-4808-83e0-3eaa78e6ace6",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "isSystem",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection to drop.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "383a0bd0-0671-4de7-a92a-9762320f0be2",
+          "name": "Get the collection information",
+          "request": {
+            "name": "Get the collection information",
+            "description": {
+              "content": "Returns the basic information about a specific collection.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "27dce112-202c-4c08-80d5-5de47dc4d81c",
+              "name": "The basic information about a collection.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"id\": \"string\",\n  \"name\": \"coll\",\n  \"status\": 3,\n  \"type\": 2,\n  \"isSystem\": false,\n  \"globallyUniqueId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "16ab8ed3-f713-4026-b792-cfe649b16376",
+              "name": "The specified collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 404,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 1203\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fafdc2a0-90c3-4058-8623-75acf218048c",
+          "name": "Get the collection checksum",
+          "request": {
+            "name": "Get the collection checksum",
+            "description": {
+              "content": "Calculates a checksum of the meta-data (keys and optionally revision ids) and\noptionally the document data in the collection.\n\nThe checksum can be used to compare if two collections on different ArangoDB\ninstances contain the same contents. The current revision of the collection is\nreturned too so one can make sure the checksums are calculated for the same\nstate of data.\n\nBy default, the checksum is only calculated on the `_key` system attribute\nof the documents contained in the collection. For edge collections, the system\nattributes `_from` and `_to` are also included in the calculation.\n\nBy setting the optional query parameter `withRevisions` to `true`, then revision\nIDs (`_rev` system attributes) are included in the checksumming.\n\nBy providing the optional query parameter `withData` with a value of `true`,\nthe user-defined document attributes are included in the calculation, too.\n\n> **INFO:**\nIncluding user-defined attributes will make the checksumming slower.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "checksum"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "withRevisions",
+                  "value": "false",
+                  "description": "Whether to include document revision ids in the checksum calculation.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "withData",
+                  "value": "false",
+                  "description": "Whether to include document body data in the checksum calculation.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a9718896-b9ea-428b-b1ff-4d86ebc93c04",
+              "name": "The basic information about the collection but additionally the\ncollection `checksum` and `revision`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "checksum"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "withRevisions",
+                      "value": "false"
+                    },
+                    {
+                      "key": "withData",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"checksum\": {},\n  \"revision\": {},\n  \"error\": false,\n  \"code\": 200,\n  \"id\": \"string\",\n  \"name\": \"coll\",\n  \"status\": 3,\n  \"type\": 2,\n  \"isSystem\": false,\n  \"globallyUniqueId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "319c6bb0-b85c-4575-9835-3787e886f926",
+              "name": "If the `collection-name` placeholder is missing, then a *HTTP 400* is\nreturned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "checksum"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "withRevisions",
+                      "value": "false"
+                    },
+                    {
+                      "key": "withData",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c84600a0-e0a5-4446-b964-fcd06327bd15",
+              "name": "If the collection is unknown, then a *HTTP 404*\nis returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "checksum"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "withRevisions",
+                      "value": "false"
+                    },
+                    {
+                      "key": "withData",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fa01eb45-1efc-4f47-8643-44ae8338e1c8",
+          "name": "Compact a collection",
+          "request": {
+            "name": "Compact a collection",
+            "description": {
+              "content": "Compacts the data of a collection in order to reclaim disk space.\nThe operation will compact the document and index data by rewriting the\nunderlying .sst files and only keeping the relevant entries.\n\nUnder normal circumstances, running a compact operation is not necessary, as\nthe collection data will eventually get compacted anyway. However, in some\nsituations, e.g. after running lots of update/replace or remove operations,\nthe disk data for a collection may contain a lot of outdated data for which the\nspace shall be reclaimed. In this case the compaction operation can be used.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "compact"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) Name of the collection to compact\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e59a3aa1-9731-47d8-91b9-07b39104a653",
+              "name": "The compaction has been started successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "compact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) Name of the collection to compact\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"coll\",\n  \"type\": 2,\n  \"isSystem\": false,\n  \"status\": 3,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3f9d58f7-3d05-4ba4-ab02-37f4090a01bd",
+              "name": "If the request was not authenticated as a user with sufficient rights.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "compact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) Name of the collection to compact\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 5179,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "219edd81-61ff-42aa-a28c-dacacc20e52c",
+          "name": "Get the document count of a collection",
+          "request": {
+            "name": "Get the document count of a collection",
+            "description": {
+              "content": "Get the number of documents in a collection.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "count"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                "key": "x-arango-trx-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9ff5a055-4025-4d78-8ff5-7b89e3d17f99",
+              "name": "All properties of the collection but additionally the document `count`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "count"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 748,\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"string\",\n  \"type\": 2962,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": false,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": true,\n  \"keyOptions\": {\n    \"type\": \"traditional\",\n    \"allowUserKeys\": true,\n    \"increment\": 7512,\n    \"lastValue\": 1163,\n    \"offset\": 1599\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": true,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": false\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    }\n  ],\n  \"cacheEnabled\": true,\n  \"syncByRevision\": true,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": false,\n  \"isSmart\": false,\n  \"numberOfShards\": 6387,\n  \"replicationFactor\": 3495,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"hash\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 5502\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7f5a98ea-7b49-43fa-a4c8-0823fe09987a",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "count"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b5cd6ab5-d8d7-4322-9f2b-ecfa7b3789af",
+              "name": "The collection cannot be found.\n\nThis error also occurs if you try to run this operation as part of a\nStream Transaction but the transaction ID specified in the\n`x-arango-trx-id` header is unknown to the server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "count"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1b3a972e-2e9d-4188-bbc2-0f19defa91a5",
+              "name": "This error occurs if you try to run this operation as part of a\nStream Transaction that has just been canceled or timed out.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "count"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Gone",
+              "code": 410,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b1cd3f9d-565c-4eaa-ab6f-c0df9ed3b083",
+          "name": "Get the collection statistics",
+          "request": {
+            "name": "Get the collection statistics",
+            "description": {
+              "content": "Get the number of documents and additional statistical information\nabout the collection.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "figures"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "details",
+                  "value": "false",
+                  "description": "Setting `details` to `true` will return extended storage engine-specific\ndetails to the figures. The details are intended for debugging ArangoDB itself\nand their format is subject to change. By default, `details` is set to `false`,\nso no details are returned and the behavior is identical to previous versions\nof ArangoDB.\nPlease note that requesting `details` may cause additional load and thus have\nan impact on performance.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d6e7508b-7883-4d33-814c-e76d138c698c",
+              "name": "All properties of the collection but additionally the document `count`\nand collection `figures`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "figures"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"count\": 2850,\n  \"figures\": {\n    \"indexes\": {\n      \"count\": 3282,\n      \"size\": 4574\n    },\n    \"cacheInUse\": false,\n    \"cacheLifeTimeHitRate\": 2749.588484785114,\n    \"cacheSize\": 4588,\n    \"cacheUsage\": 2802,\n    \"cacheWindowedHitRate\": 1842.5460902662671,\n    \"documentsSize\": 4351,\n    \"engine\": {\n      \"documents\": 4631,\n      \"indexes\": [\n        {\n          \"count\": 8025,\n          \"id\": 9193,\n          \"type\": \"string\"\n        },\n        {\n          \"count\": 7364,\n          \"id\": 4688,\n          \"type\": \"string\"\n        }\n      ]\n    }\n  },\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"string\",\n  \"type\": 2992,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": true,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": true,\n  \"keyOptions\": {\n    \"type\": \"traditional\",\n    \"allowUserKeys\": true,\n    \"increment\": 2190,\n    \"lastValue\": 1173,\n    \"offset\": 306\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"cacheEnabled\": false,\n  \"syncByRevision\": false,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": false,\n  \"isSmart\": true,\n  \"numberOfShards\": 9773,\n  \"replicationFactor\": 1721,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"enterprise-hex-smart-vertex\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 444\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9aafb46f-9f72-45d6-8b2d-04ba8d023425",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "figures"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "efe009ac-9839-454b-a2cf-4001dec1b655",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "figures"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9406276d-b241-4092-a797-f14315277922",
+          "name": "Load a collection",
+          "request": {
+            "name": "Load a collection",
+            "description": {
+              "content": "> **WARNING:**\nThe load function is deprecated from version 3.8.0 onwards and is a no-op\nfrom version 3.9.0 onwards. It should no longer be used and is removed\nin ArangoDB v4.0.\n\n\nSince ArangoDB version 3.9.0 this API does nothing. Previously, it used to\nload a collection into memory.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "load"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "48319eb1-5d56-4514-a412-708434ce2083",
+              "name": "Returns the basic collection properties for compatibility reasons.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "load"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"coll\",\n  \"type\": 2,\n  \"isSystem\": false,\n  \"status\": 3,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"count\": 943\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec8d9140-a864-403b-aa56-1c41c1bbf274",
+              "name": "The `collection-name` parameter or the `name` attribute is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "load"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "14312010-0dd6-4764-b57b-4ad618467750",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "load"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f5e87451-bbf7-460f-989b-6965823b0197",
+          "name": "Load collection indexes into memory",
+          "request": {
+            "name": "Load collection indexes into memory",
+            "description": {
+              "content": "You can call this endpoint to try to cache this collection's index entries in\nthe main memory. Index lookups served from the memory cache can be much faster\nthan lookups not stored in the cache, resulting in a performance boost.\n\nThe endpoint iterates over suitable indexes of the collection and stores the\nindexed values (not the entire document data) in memory. This is implemented for\nedge indexes only.\n\nThe endpoint returns as soon as the index warmup has been scheduled. The index\nwarmup may still be ongoing in the background, even after the return value has\nalready been sent. As all suitable indexes are scanned, it may cause significant\nI/O activity and background load.\n\nThis feature honors memory limits. If the indexes you want to load are smaller\nthan your memory limit, this feature guarantees that most index values are\ncached. If the index is greater than your memory limit, this feature fills\nup values up to this limit. You cannot control which indexes of the collection\nshould have priority over others.\n\nIt is guaranteed that the in-memory cache data is consistent with the stored\nindex data at all times.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "loadIndexesIntoMemory"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "956279c7-15a5-4ff7-9343-5bfceec31cc3",
+              "name": "The index loading has been scheduled for all suitable indexes.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "loadIndexesIntoMemory"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c3d48659-d2d0-4827-9b48-70dc237f8411",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "loadIndexesIntoMemory"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c3f88be-807c-4c6e-8060-29c222fd8b1f",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "loadIndexesIntoMemory"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d529d39a-3140-4954-8fcb-560d3509c03f",
+          "name": "Get the properties of a collection",
+          "request": {
+            "name": "Get the properties of a collection",
+            "description": {
+              "content": "Returns all properties of the specified collection.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d48c8ddc-20f3-4883-b950-9d4482661826",
+              "name": "All the collection properties.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"string\",\n  \"type\": 7752,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": false,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": false,\n  \"keyOptions\": {\n    \"type\": \"padded\",\n    \"allowUserKeys\": true,\n    \"increment\": 4219,\n    \"lastValue\": 3014,\n    \"offset\": 94\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    }\n  ],\n  \"cacheEnabled\": false,\n  \"syncByRevision\": true,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": true,\n  \"isSmart\": false,\n  \"numberOfShards\": 4515,\n  \"replicationFactor\": 9524,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"enterprise-compat\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 6495\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8e7b7f0-b016-4bc2-88d7-7d21e56f3805",
+              "name": "The `name` attribute is missing or has an invalid value.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9bc870c2-10fc-449e-b4d0-640577e50ab2",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a7636308-ecc7-4351-ac26-cbf4730baf72",
+          "name": "Change the properties of a collection",
+          "request": {
+            "name": "Change the properties of a collection",
+            "description": {
+              "content": "Changes the properties of a collection. Only the provided attributes are\nupdated. Collection properties **cannot be changed** once a collection is\ncreated except for the listed properties, as well as the collection name via\nthe rename endpoint (but not in clusters).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cacheEnabled\": \"<boolean>\",\n  \"computedValues\": [\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"replicationFactor\": \"<integer>\",\n  \"schema\": {\n    \"rule\": \"<object>\",\n    \"level\": \"strict\",\n    \"message\": \"<string>\"\n  },\n  \"waitForSync\": \"<boolean>\",\n  \"writeConcern\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fda734b9-57af-44ee-ae57-8fbc0be1ae30",
+              "name": "The collection has been updated successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cacheEnabled\": \"<boolean>\",\n  \"computedValues\": [\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"replicationFactor\": \"<integer>\",\n  \"schema\": {\n    \"rule\": \"<object>\",\n    \"level\": \"strict\",\n    \"message\": \"<string>\"\n  },\n  \"waitForSync\": \"<boolean>\",\n  \"writeConcern\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"string\",\n  \"type\": 7752,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": false,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": false,\n  \"keyOptions\": {\n    \"type\": \"padded\",\n    \"allowUserKeys\": true,\n    \"increment\": 4219,\n    \"lastValue\": 3014,\n    \"offset\": 94\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    }\n  ],\n  \"cacheEnabled\": false,\n  \"syncByRevision\": true,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": true,\n  \"isSmart\": false,\n  \"numberOfShards\": 4515,\n  \"replicationFactor\": 9524,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"enterprise-compat\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 6495\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1fea3fe1-ad43-4ac4-b1da-0ea26ab8c26d",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cacheEnabled\": \"<boolean>\",\n  \"computedValues\": [\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"replicationFactor\": \"<integer>\",\n  \"schema\": {\n    \"rule\": \"<object>\",\n    \"level\": \"strict\",\n    \"message\": \"<string>\"\n  },\n  \"waitForSync\": \"<boolean>\",\n  \"writeConcern\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7972891a-9700-4fa8-be8e-f5bfcc057eae",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cacheEnabled\": \"<boolean>\",\n  \"computedValues\": [\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"<string>\",\n      \"expression\": \"<string>\",\n      \"overwrite\": \"<boolean>\",\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"replicationFactor\": \"<integer>\",\n  \"schema\": {\n    \"rule\": \"<object>\",\n    \"level\": \"strict\",\n    \"message\": \"<string>\"\n  },\n  \"waitForSync\": \"<boolean>\",\n  \"writeConcern\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c82c9af8-6b3d-4cb7-a594-85b6adec956c",
+          "name": "Recalculate the document count of a collection",
+          "request": {
+            "name": "Recalculate the document count of a collection",
+            "description": {
+              "content": "Recalculates the document count of a collection, if it ever becomes inconsistent.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "recalculateCount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "46d95e13-298b-4820-b403-2f07e620c2b0",
+              "name": "The document count has been recalculated successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "recalculateCount"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": true,\n  \"count\": 864\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96af915e-08aa-43ab-96d5-16421ca171b5",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "recalculateCount"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85469960-f211-48f8-8d40-25583228f5c2",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "recalculateCount"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bfdb5153-391a-4f67-abec-47ad00a982bc",
+          "name": "Rename a collection",
+          "request": {
+            "name": "Rename a collection",
+            "description": {
+              "content": "Renames a collection.\n\n> **INFO:**\nRenaming collections is not supported in cluster deployments.\n\n\nIf renaming the collection succeeds, then the collection is also renamed in\nall graph definitions inside the `_graphs` collection in the current database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "rename"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection to rename.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "72ca882f-a127-40b3-a45e-0ab74e096cb2",
+              "name": "The collection has been renamed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "rename"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection to rename.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"coll\",\n  \"type\": 2,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": false,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": false,\n  \"keyOptions\": {\n    \"type\": \"padded\",\n    \"allowUserKeys\": false,\n    \"increment\": 6137,\n    \"lastValue\": 387,\n    \"offset\": 7947\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": true,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": false\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": false\n    }\n  ],\n  \"cacheEnabled\": false,\n  \"syncByRevision\": false,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": true,\n  \"isSmart\": false,\n  \"numberOfShards\": 8930,\n  \"replicationFactor\": 164,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"enterprise-hex-smart-vertex\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 6999\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1951c6fa-bb5a-4fc2-8ac3-13b765094736",
+              "name": "The `collection-name` parameter or the `name` attribute is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "rename"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection to rename.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9e64646f-bf22-40c8-8a80-b4dba71db9ed",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "rename"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection to rename.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d7d0e954-12c1-493f-a7b0-11dbb784c935",
+          "name": "Get the responsible shard for a document",
+          "request": {
+            "name": "Get the responsible shard for a document",
+            "description": {
+              "content": "Returns the ID of the shard that is responsible for the given document\n(if the document exists) or that would be responsible if such document\nexisted.\n\nThe request must body must contain a JSON document with at least the\ncollection's shard key attributes set to some values.\n\nThe response is a JSON object with a `shardId` attribute, which will\ncontain the ID of the responsible shard.\n\n> **INFO:**\nThis method is only available in cluster deployments on Coordinators.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "responsibleShard"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2a79b78b-f065-4a19-bf68-d7206e6187ae",
+              "name": "Returns the ID of the responsible shard.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "responsibleShard"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"shardId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "20746483-4e26-4790-8025-412940699dbe",
+              "name": "The `collection-name` parameter is missing or not all of the\ncollection's shard key attributes are present in the input document.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "responsibleShard"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3dfc28e8-cc10-4abe-8e39-d5729f4555e7",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "responsibleShard"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bcfb81b3-c0b6-446e-821b-6b416393f453",
+              "name": "The method has been called on a single server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "responsibleShard"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 501,\n  \"errorNum\": 7662,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "64ee44c3-09f1-47cf-9aaa-19d659204c15",
+          "name": "Get the collection revision ID",
+          "request": {
+            "name": "Get the collection revision ID",
+            "description": {
+              "content": "The response contains the collection's latest used revision ID.\nThe revision ID is a server-generated string that clients can use to\ncheck whether data in a collection has changed since the last revision check.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "revision"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e8e4ea6a-1211-423c-ae68-2d5e95e0b450",
+              "name": "All collection properties but additionally the `revision` of the collection.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "revision"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"revision\": \"string\",\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"string\",\n  \"type\": 8321,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": true,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": true,\n  \"keyOptions\": {\n    \"type\": \"traditional\",\n    \"allowUserKeys\": true,\n    \"increment\": 8106,\n    \"lastValue\": 9042,\n    \"offset\": 2101\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": true,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": false\n    }\n  ],\n  \"cacheEnabled\": false,\n  \"syncByRevision\": true,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": false,\n  \"isSmart\": true,\n  \"numberOfShards\": 4511,\n  \"replicationFactor\": 8689,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"enterprise-hex-smart-vertex\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 4540\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "649b8bb4-d6a8-42de-8851-e12e69f84fce",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "revision"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ab121765-2a4a-4151-b453-9577e4a410da",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "revision"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d8a63608-ea58-46d1-97c6-46199c59c8ec",
+          "name": "Get the shard IDs of a collection",
+          "request": {
+            "name": "Get the shard IDs of a collection",
+            "description": {
+              "content": "The response contains a list of the collection's shard IDs.\n\nIf the `details` parameter is set to `true`, it returns an object instead\nof a list, with the shard IDs as object attribute keys, and an array with\nthe responsible servers for each shard mapped to them as attribute values.\nThe first element of each array is the leader shard.\n\n> **INFO:**\nThis method is only available in cluster deployments on Coordinators.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "shards"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "details",
+                  "value": "false",
+                  "description": "If set to true, the return value also contains the responsible servers for the collections' shards.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9ef3f2eb-3825-4180-a3ab-16bdc4a3b633",
+              "name": "All collection properties but additionally the `shards` of the collection.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "shards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shards\": {},\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"string\",\n  \"type\": 9783,\n  \"status\": 3,\n  \"statusString\": \"loaded\",\n  \"isSystem\": false,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"waitForSync\": true,\n  \"keyOptions\": {\n    \"type\": \"traditional\",\n    \"allowUserKeys\": true,\n    \"increment\": 8183,\n    \"lastValue\": 7255,\n    \"offset\": 6216\n  },\n  \"schema\": {\n    \"rule\": {},\n    \"level\": \"strict\",\n    \"message\": \"string\",\n    \"type\": \"string\"\n  },\n  \"computedValues\": [\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": false,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": true,\n      \"keepNull\": true\n    },\n    {\n      \"name\": \"string\",\n      \"expression\": \"string\",\n      \"overwrite\": true,\n      \"computeOn\": [\n        \"insert\",\n        \"update\",\n        \"replace\"\n      ],\n      \"failOnWarning\": false,\n      \"keepNull\": true\n    }\n  ],\n  \"cacheEnabled\": false,\n  \"syncByRevision\": true,\n  \"distributeShardsLike\": \"string\",\n  \"isDisjoint\": false,\n  \"isSmart\": true,\n  \"numberOfShards\": 9991,\n  \"replicationFactor\": 7525,\n  \"shardKeys\": [\n    \"string\",\n    \"string\"\n  ],\n  \"shardingStrategy\": \"enterprise-hex-smart-vertex\",\n  \"smartGraphAttribute\": \"string\",\n  \"smartJoinAttribute\": \"string\",\n  \"writeConcern\": 9111\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25c10bba-5d5c-4e4c-b77e-981e05030097",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "shards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28bdfd08-b15d-4657-ad29-a5c6b6afb093",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "shards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e4e049e7-5a81-4656-9c40-6e9e3d01a2a5",
+              "name": "The method has been called on a single server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "shards"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 501,\n  \"errorNum\": 7662,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0685f3a4-91e1-4ae4-942a-6b211b21c22b",
+          "name": "Truncate a collection",
+          "request": {
+            "name": "Truncate a collection",
+            "description": {
+              "content": "Removes all documents from the collection, but leaves the indexes intact.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "truncate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "waitForSync",
+                  "value": "false",
+                  "description": "If set to `true`, the data is synchronized to disk before returning from the\ntruncate operation.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "compact",
+                  "value": "true",
+                  "description": "If set to `true`, the storage engine is told to start a compaction\nin order to free up disk space. This can be resource intensive. If the only\nintention is to start over with an empty collection, specify `false`.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                "key": "x-arango-trx-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e170641e-c5ad-4d79-9f11-6b3b1803a758",
+              "name": "Truncating the collection was successful.\nReturns the basic information about the collection.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "truncate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "compact",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "741bc246-4896-4730-b341-61f8815b837c",
+              "name": "The `collection-name` parameter is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "truncate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "compact",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9388669c-36a3-4291-8634-4e508f082ba5",
+              "name": "The collection cannot be found.\n\nThis error also occurs if you try to run this operation as part of a\nStream Transaction but the transaction ID specified in the\n`x-arango-trx-id` header is unknown to the server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "truncate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "compact",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d487259-f19f-47d7-bb90-04f402e4ed25",
+              "name": "This error occurs if you try to run this operation as part of a\nStream Transaction that has just been canceled or timed out.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "truncate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "compact",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Gone",
+              "code": 410,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 410,\n  \"errorNum\": 972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4e98fbdf-31fa-4137-acd6-86db5ef02cfd",
+          "name": "Unload a collection",
+          "request": {
+            "name": "Unload a collection",
+            "description": {
+              "content": "> **WARNING:**\nThe unload function is deprecated from version 3.8.0 onwards and is a no-op\nfrom version 3.9.0 onwards. It should no longer be used and is removed\nin ArangoDB v4.0.\n\n\nSince ArangoDB version 3.9.0 this API does nothing. Previously it used to\nunload a collection from memory, while preserving all documents.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "collection",
+                ":collection-name",
+                "unload"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection-name",
+                  "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "db434527-ca29-47c0-9680-879e64af2353",
+              "name": "Returns the basic collection properties for compatibility reasons.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "unload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"coll\",\n  \"type\": 2,\n  \"isSystem\": false,\n  \"status\": 3,\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b757aaf-ae49-4862-9206-0b25336bff71",
+              "name": "The `collection-name` parameter or the `name` attribute is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "unload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 2972,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "73554a7e-9757-4142-abea-e05ef9781731",
+              "name": "A collection called `collection-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "collection",
+                    ":collection-name",
+                    "unload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection-name",
+                      "description": "(Required) The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 2576,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "77718218-0e77-4de0-bf9c-1a315fa3886d",
+          "name": "Get the available key generators",
+          "request": {
+            "name": "Get the available key generators",
+            "description": {
+              "content": "Returns the available key generators for collections.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "key-generators"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "97eb02b1-31f5-4f12-ab1a-1331863f168d",
+              "name": "An object that contains a list of the available generators for document keys.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "key-generators"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"keyGenerators\": [\n    \"traditional\",\n    \"autoincrement\",\n    \"uuid\",\n    \"padded\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "8c262181-a7bf-4071-97dc-653d238c3563",
+    "name": "ArangoDB Core Collections API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Manage collections for organizing documents\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

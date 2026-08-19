@@ -1,0 +1,139 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Tasks API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tasks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all tasks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/tasks",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Fetches all existing tasks on the server.\n"
+        },
+        {
+          "info": {
+            "name": "Create a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/tasks",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new task with a generated identifier.\n"
+        },
+        {
+          "info": {
+            "name": "Get a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/tasks/:id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The id of the task to fetch.\n"
+              }
+            ]
+          },
+          "docs": "fetches one existing task on the server specified by `id`\n"
+        },
+        {
+          "info": {
+            "name": "Create a task with ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/tasks/:id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The id of the task to create\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Registers a new task with the specified ID.\n\nNot compatible with load balancers.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/tasks/:id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has administrate access\nto this database.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The id of the task to delete.\n"
+              }
+            ]
+          },
+          "docs": "Deletes the task identified by `id` on the server.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,219 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Cluster API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cluster",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the cluster health",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/cluster/health"
+          },
+          "docs": "Queries the health of the cluster as assessed by the supervision (Agency) for\nmonitoring purposes. The response is a JSON object, containing the standard\n`code`, `error`, `errorNum`, and `errorMessage` fields as appropriate.\nThe endpoint-specific fields are as follows:\n\n- `ClusterId`: A UUID string identifying the cluster\n- `Health`: An object containing a descriptive sub-object for each node in the cluster.\n  - `<nodeID>`: Each entry in `Health` will be keyed by the node ID and contain the foll"
+        },
+        {
+          "info": {
+            "name": "Set the cluster maintenance mode",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_admin/cluster/maintenance",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Enable or disable the cluster supervision (Agency) maintenance mode.\n\nThis endpoint allows you to temporarily enable the supervision maintenance mode.\nPlease be aware that no automatic failovers of any kind will take place\nwhile the maintenance mode is enabled. The cluster supervision reactivates\nitself automatically at some point after disabling it.\n"
+        },
+        {
+          "info": {
+            "name": "Get the maintenance status of a DB-Server",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/cluster/maintenance/:DB-Server-ID",
+            "params": [
+              {
+                "name": "DB-Server-ID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a DB-Server.\n"
+              }
+            ]
+          },
+          "docs": "Check whether the specified DB-Server is in maintenance mode and until when.\n"
+        },
+        {
+          "info": {
+            "name": "Set the maintenance status of a DB-Server",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_admin/cluster/maintenance/:DB-Server-ID",
+            "params": [
+              {
+                "name": "DB-Server-ID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of a DB-Server.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Enable or disable the maintenance mode of a DB-Server.\n\nFor rolling upgrades or rolling restarts, DB-Servers can be put into\nmaintenance mode, so that no attempts are made to re-distribute the data in a\ncluster for such planned events. DB-Servers in maintenance mode are not\nconsidered viable failover targets because they are likely restarted soon.\n"
+        },
+        {
+          "info": {
+            "name": "Get the current cluster imbalance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/cluster/rebalance"
+          },
+          "docs": "Computes the current cluster imbalance and returns the result.\nIt additionally shows the amount of ongoing and pending move shard operations.\n"
+        },
+        {
+          "info": {
+            "name": "Compute a set of move shard operations to improve balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/cluster/rebalance",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Compute a set of move shard operations to improve balance.\n"
+        },
+        {
+          "info": {
+            "name": "Compute and execute a set of move shard operations to improve balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_admin/cluster/rebalance",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Compute a set of move shard operations to improve balance.\nThese moves are then immediately executed.\n"
+        },
+        {
+          "info": {
+            "name": "Execute a set of move shard operations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/cluster/rebalance/execute",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute the given set of move shard operations. You can use the\n`POST /_admin/cluster/rebalance` endpoint to calculate these operations to improve\nthe balance of shards, leader shards, and follower shards.\n"
+        },
+        {
+          "info": {
+            "name": "Get the statistics of a DB-Server",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/cluster/statistics",
+            "params": [
+              {
+                "name": "DBserver",
+                "value": "",
+                "type": "query",
+                "description": "The ID of a DB-Server.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis endpoint is deprecated and removed in ArangoDB v4.0.\nUse `GET /_admin/metrics` instead, which provides the data exposed by\nthis API and a lot more.\n\n\nQueries the statistics of the given DB-Server\n"
+        },
+        {
+          "info": {
+            "name": "Reserve globally unique IDs",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_admin/cluster/uniqId",
+            "params": [
+              {
+                "name": "number",
+                "value": "",
+                "type": "query",
+                "description": "Reserve as many globally unique IDs as specified.\n"
+              },
+              {
+                "name": "minimum",
+                "value": "",
+                "type": "query",
+                "description": "Make sure that globally unique IDs used in the future will always be\nat least as large as the specified value.\n\nCoordinators and DB-Servers will use these larger IDs only after a restart.\n"
+              }
+            ]
+          },
+          "docs": "Reserve or skip globally unique identifiers that are used as automatically\ngenerated document keys when using the `traditional` or `padded` key generators.\n\nEither the `number` or the `minimum` query parameter needs to be specified.\n\n> **WARNING:**\nOnly use this endpoint to resolve issues with the key generation,\nin particular of cluster deployments created with v3.12.5-2 or older.\n"
+        },
+        {
+          "info": {
+            "name": "Get the server ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/server/id"
+          },
+          "docs": "Returns the ID of a server in a cluster. The request will fail if the\nserver is not running in cluster mode.\n"
+        },
+        {
+          "info": {
+            "name": "Get the server role",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/server/role"
+          },
+          "docs": "Returns the role of a server in a cluster.\nThe server role is returned in the `role` attribute of the result.\n"
+        },
+        {
+          "info": {
+            "name": "List all Coordinator endpoints",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_api/cluster/endpoints"
+          },
+          "docs": "Returns an object with an attribute `endpoints`, which contains an\narray of objects, which each have the attribute `endpoint`, whose value\nis a string with the endpoint description. There is an entry for each\nCoordinator in the cluster. This method only works on Coordinators in\ncluster mode. In case of an error the `error` attribute is set to\n`true`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

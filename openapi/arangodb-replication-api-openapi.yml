@@ -1,0 +1,2056 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Replication API
+  version: 3.12.10 (API v0)
+  description: Control data replication for deployments
+tags:
+- description: Control data replication for deployments
+  name: Replication
+paths:
+  /_db/{database-name}/_api/replication/applier-config:
+    get:
+      description: "Returns the configuration of the replication applier.\n\nThe body of the response is a JSON object with the configuration. The\nfollowing attributes may be present in the configuration:\n\n- `endpoint`: the logger server to connect to (e.g. \"tcp://192.168.173.13:8529\").\n\n- `database`: the name of the database to connect to (e.g. \"_system\").\n\n- `username`: an optional ArangoDB username to use when connecting to the endpoint.\n\n- `password`: the password to use when connecting to the endpoint.\n\n- `maxConnectRetries`: the maximum number of connection attempts the applier\n  will make in a row. If the applier cannot establish a connection to the\n  endpoint in this number of attempts, it will stop itself.\n\n- `connectTimeout`: the timeout (in seconds) when attempting to connect to the\n  endpoint. This value is used for each connection attempt.\n\n- `requestTimeout`: the timeout (in seconds) for individual requests to the endpoint.\n\n- `chunkSize`: the requested maximum size for log transfer packets that\n  is used when the endpoint is contacted.\n\n- `autoStart`: whether or not to auto-start the replication applier on\n  (next and following) server starts\n\n- `adaptivePolling`: whether or not the replication applier will use\n  adaptive polling.\n\n- `includeSystem`: whether or not system collection operations will be applied\n\n- `autoResync`: whether or not the follower should perform a full automatic\n  resynchronization with the leader in case the leader cannot serve log data\n  requested by the follower, or when the replication is started and no tick\n  value\n  can be found.\n\n- `autoResyncRetries`: number of resynchronization retries that will be performed\n  in a row when automatic resynchronization is enabled and kicks in. Setting this\n  to `0` will effectively disable `autoResync`. Setting it to some other value\n  will limit the number of retries that are performed. This helps preventing endless\n  retries in case resynchronizations always fail.\n\n- `initialSyncMaxWaitTime`: the maximum wait time (in seconds) that the initial\n  synchronization will wait for a response from the leader when fetching initial\n  collection data.\n  This wait time can be used to control after what time the initial synchronization\n  will give up waiting for a response and fail. This value is relevant even\n  for continuous replication when `autoResync` is set to `true` because this\n  may re-start the initial synchronization when the leader cannot provide\n  log data the follower requires.\n  This value will be ignored if set to `0`.\n\n- `connectionRetryWaitTime`: the time (in seconds) that the applier will\n  intentionally idle before it retries connecting to the leader in case of\n  connection problems.\n  This value will be ignored if set to `0`.\n\n- `idleMinWaitTime`: the minimum wait time (in seconds) that the applier will\n  intentionally idle before fetching more log data from the leader in case\n  the leader has already sent all its log data. This wait time can be used\n  to control the frequency with which the replication applier sends HTTP log\n  fetch requests to the leader in case there is no write activity on the leader.\n  This value will be ignored if set to `0`.\n\n- `idleMaxWaitTime`: the maximum wait time (in seconds) that the applier will\n  intentionally idle before fetching more log data from the leader in case the\n  leader has already sent all its log data and there have been previous log\n  fetch attempts that resulted in no more log data. This wait time can be used\n  to control the maximum frequency with which the replication applier sends HTTP\n  log fetch requests to the leader in case there is no write activity on the\n  leader for longer periods. This configuration value will only be used if the\n  option `adaptivePolling` is set to `true`.\n  This value will be ignored if set to `0`.\n\n- `requireFromPresent`: if set to `true`, then the replication applier will check\n  at start whether the start tick from which it starts or resumes replication is\n  still present on the leader. If not, then there would be data loss. If\n  `requireFromPresent` is `true`, the replication applier will abort with an\n  appropriate error message. If set to `false`, then the replication applier will\n  still start, and ignore the data loss.\n\n- `verbose`: if set to `true`, then a log line will be emitted for all operations\n  performed by the replication applier. This should be used for debugging\n  replication\n  problems only.\n\n- `restrictType`: the configuration for `restrictCollections`\n\n- `restrictCollections`: the optional array of collections to include or exclude,\n  based on the setting of `restrictType`\n"
+      operationId: getReplicationApplierConfig
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, returns the configuration of the global replication applier for all
+
+          databases. If set to `false`, returns the configuration of the replication applier in the
+
+          selected database.
+
+          '
+        in: query
+        name: global
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Get the replication applier configuration
+      tags:
+      - Replication
+    put:
+      description: 'Sets the configuration of the replication applier. The configuration can
+
+        only be changed while the applier is not running. The updated configuration
+
+        will be saved immediately but only become active with the next start of the
+
+        applier.
+
+
+        In case of success, the body of the response is a JSON object with the updated
+
+        configuration.
+
+        '
+      operationId: updateReplicationApplierConfig
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, adjusts the configuration of the global replication applier for all
+
+          databases. If set to `false`, adjusts the configuration of the replication applier in the
+
+          selected database.
+
+          '
+        in: query
+        name: global
+        required: false
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                adaptivePolling:
+                  description: 'if set to `true`, the replication applier will fall
+
+                    to sleep for an increasingly long period in case the logger server at the
+
+                    endpoint does not have any more replication events to apply. Using
+
+                    adaptive polling is thus useful to reduce the amount of work for both the
+
+                    applier and the logger server for cases when there are only infrequent
+
+                    changes. The downside is that when using adaptive polling, it might take
+
+                    longer for the replication applier to detect that there are new replication
+
+                    events on the logger server.
+
+
+                    Setting `adaptivePolling` to false will make the replication applier
+
+                    contact the logger server in a constant interval, regardless of whether
+
+                    the logger server provides updates frequently or seldom.
+
+                    '
+                  type: boolean
+                autoResync:
+                  description: 'whether or not the follower should perform a full automatic resynchronization
+
+                    with the leader in case the leader cannot serve log data requested by the
+
+                    follower, or when the replication is started and no tick value can be found.
+
+                    '
+                  type: boolean
+                autoResyncRetries:
+                  description: 'number of resynchronization retries that will be performed in a row when
+
+                    automatic resynchronization is enabled and kicks in. Setting this to `0`
+
+                    will
+
+                    effectively disable `autoResync`. Setting it to some other value will limit
+
+                    the number of retries that are performed. This helps preventing endless
+
+                    retries
+
+                    in case resynchronizations always fail.
+
+                    '
+                  type: integer
+                autoStart:
+                  description: 'whether or not to auto-start the replication applier on
+
+                    (next and following) server starts
+
+                    '
+                  type: boolean
+                chunkSize:
+                  description: 'the requested maximum size for log transfer packets that
+
+                    is used when the endpoint is contacted.
+
+                    '
+                  type: integer
+                connectTimeout:
+                  description: 'the timeout (in seconds) when attempting to connect to the
+
+                    endpoint. This value is used for each connection attempt.
+
+                    '
+                  type: integer
+                connectionRetryWaitTime:
+                  description: 'the time (in seconds) that the applier will intentionally idle before
+
+                    it retries connecting to the leader in case of connection problems.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                database:
+                  description: 'the name of the database on the endpoint. If not specified, defaults to the current local database name.
+
+                    '
+                  type: string
+                endpoint:
+                  description: 'the logger server to connect to (e.g. "tcp://192.168.173.13:8529"). The endpoint must be specified.
+
+                    '
+                  type: string
+                idleMaxWaitTime:
+                  description: 'the maximum wait time (in seconds) that the applier will intentionally idle
+
+                    before fetching more log data from the leader in case the leader has
+
+                    already sent all its log data and there have been previous log fetch attempts
+
+                    that resulted in no more log data. This wait time can be used to control the
+
+                    maximum frequency with which the replication applier sends HTTP log fetch
+
+                    requests to the leader in case there is no write activity on the leader for
+
+                    longer periods. This configuration value will only be used if the option
+
+                    `adaptivePolling` is set to `true`.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                idleMinWaitTime:
+                  description: 'the minimum wait time (in seconds) that the applier will intentionally idle
+
+                    before fetching more log data from the leader in case the leader has
+
+                    already sent all its log data. This wait time can be used to control the
+
+                    frequency with which the replication applier sends HTTP log fetch requests
+
+                    to the leader in case there is no write activity on the leader.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                includeSystem:
+                  description: 'whether or not system collection operations will be applied
+
+                    '
+                  type: boolean
+                initialSyncMaxWaitTime:
+                  description: 'the maximum wait time (in seconds) that the initial synchronization will
+
+                    wait for a response from the leader when fetching initial collection data.
+
+                    This wait time can be used to control after what time the initial
+
+                    synchronization
+
+                    will give up waiting for a response and fail. This value is relevant even
+
+                    for continuous replication when `autoResync` is set to `true` because this
+
+                    may re-start the initial synchronization when the leader cannot provide
+
+                    log data the follower requires.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                maxConnectRetries:
+                  description: 'the maximum number of connection attempts the applier
+
+                    will make in a row. If the applier cannot establish a connection to the
+
+                    endpoint in this number of attempts, it will stop itself.
+
+                    '
+                  type: integer
+                password:
+                  description: 'the password to use when connecting to the endpoint.
+
+                    '
+                  type: string
+                requestTimeout:
+                  description: 'the timeout (in seconds) for individual requests to the endpoint.
+
+                    '
+                  type: integer
+                requireFromPresent:
+                  description: 'if set to `true`, then the replication applier will check
+
+                    at start whether the start tick from which it starts or resumes replication is
+
+                    still present on the leader. If not, then there would be data loss. If
+
+                    `requireFromPresent` is `true`, the replication applier will abort with an
+
+                    appropriate error message. If set to `false`, then the replication applier will
+
+                    still start, and ignore the data loss.
+
+                    '
+                  type: boolean
+                restrictCollections:
+                  description: 'the array of collections to include or exclude,
+
+                    based on the setting of `restrictType`
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                restrictType:
+                  description: 'the configuration for `restrictCollections`; Has to be either `include` or `exclude`
+
+                    '
+                  type: string
+                username:
+                  description: 'an optional ArangoDB username to use when connecting to the endpoint.
+
+                    '
+                  type: string
+                verbose:
+                  description: 'if set to `true`, then a log line will be emitted for all operations
+
+                    performed by the replication applier. This should be used for debugging replication
+
+                    problems only.
+
+                    '
+                  type: boolean
+              required:
+              - endpoint
+              - database
+              - password
+              - maxConnectRetries
+              - connectTimeout
+              - requestTimeout
+              - chunkSize
+              - autoStart
+              - adaptivePolling
+              - includeSystem
+              - requireFromPresent
+              - verbose
+              - restrictType
+              type: object
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '400':
+          description: 'is returned if the configuration is incomplete or malformed, or if the
+
+            replication applier is currently running.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Update the replication applier configuration
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/applier-start:
+    put:
+      description: 'Starts the replication applier. This will return immediately if the
+
+        replication applier is already running.
+
+
+        If the replication applier is not already running, the applier configuration
+
+        will be checked, and if it is complete, the applier will be started in a
+
+        background thread. This means that even if the applier will encounter any
+
+        errors while running, they will not be reported in the response to this
+
+        method.
+
+
+        To detect replication applier errors after the applier was started, use the
+
+        `/_api/replication/applier-state` API instead.
+
+        '
+      operationId: startReplicationApplier
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, starts the global replication applier for all
+
+          databases. If set to `false`, starts the replication applier in the
+
+          selected database.
+
+          '
+        in: query
+        name: global
+        required: false
+        schema:
+          type: boolean
+      - description: 'The remote `lastLogTick` value from which to start applying. If not specified,
+
+          the last saved tick from the previous applier run is used. If there is no
+
+          previous applier state saved, the applier will start at the beginning of the
+
+          logger server''s log.
+
+          '
+        in: query
+        name: from
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '400':
+          description: 'is returned if the replication applier is not fully configured or the
+
+            configuration is invalid.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Start the replication applier
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/applier-state:
+    get:
+      description: "Returns the state of the replication applier, regardless of whether the\napplier is currently running or not.\n\nThe response is a JSON object with the following attributes:\n\n- `state`: a JSON object with the following sub-attributes:\n\n  - `running`: whether or not the applier is active and running\n\n  - `lastAppliedContinuousTick`: the last tick value from the continuous\n    replication log the applier has applied.\n\n  - `lastProcessedContinuousTick`: the last tick value from the continuous\n    replication log the applier has processed.\n\n    Regularly, the last applied and last processed tick values should be\n    identical. For transactional operations, the replication applier will first\n    process incoming log events before applying them, so the processed tick\n    value might be higher than the applied tick value. This will be the case\n    until the applier encounters the *transaction commit* log event for the\n    transaction.\n\n  - `lastAvailableContinuousTick`: the last tick value the remote server can\n    provide, for all databases.\n\n  - `ticksBehind`: this attribute will be present only if the applier is currently\n    running. It will provide the number of log ticks between what the applier\n    has applied/seen and the last log tick value provided by the remote server.\n    If this value is zero, then both servers are in sync. If this is non-zero,\n    then the remote server has additional data that the applier has not yet\n    fetched and processed, or the remote server may have more data that is not\n    applicable to the applier.\n\n    Client applications can use it to determine approximately how far the applier\n    is behind the remote server, and can periodically check if the value is\n    increasing (applier is falling behind) or decreasing (applier is catching up).\n\n    Please note that as the remote server will only keep one last log tick value\n    for all of its databases, but replication may be restricted to just certain\n    databases on the applier, this value is more meaningful when the global applier\n    is used.\n    Additionally, the last log tick provided by the remote server may increase\n    due to writes into system collections that are not replicated due to replication\n    configuration. So the reported value may exaggerate the reality a bit for\n    some scenarios.\n\n  - `time`: the time on the applier server.\n\n  - `totalRequests`: the total number of requests the applier has made to the\n    endpoint.\n\n  - `totalFailedConnects`: the total number of failed connection attempts the\n    applier has made.\n\n  - `totalEvents`: the total number of log events the applier has processed.\n\n  - `totalOperationsExcluded`: the total number of log events excluded because\n    of `restrictCollections`.\n\n  - `progress`: a JSON object with details about the replication applier progress.\n    It contains the following sub-attributes if there is progress to report:\n\n    - `message`: a textual description of the progress\n\n    - `time`: the date and time the progress was logged\n\n    - `failedConnects`: the current number of failed connection attempts\n\n  - `lastError`: a JSON object with details about the last error that happened on\n    the applier. It contains the following sub-attributes if there was an error:\n\n    - `errorNum`: a numerical error code\n\n    - `errorMessage`: a textual error description\n\n    - `time`: the date and time the error occurred\n\n    In case no error has occurred, `lastError` will be empty.\n\n- `server`: a JSON object with the following sub-attributes:\n\n  - `version`: the applier server's version\n\n  - `serverId`: the applier server's id\n\n- `endpoint`: the endpoint the applier is connected to (if applier is\n  active) or will connect to (if applier is currently inactive)\n\n- `database`: the name of the database the applier is connected to (if applier is\n  active) or will connect to (if applier is currently inactive)\n\nPlease note that all \"tick\" values returned do not have a specific unit. Tick\nvalues are only meaningful when compared to each other. Higher tick values mean\n\"later in time\" than lower tick values.\n"
+      operationId: getReplicationApplierState
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, returns the state of the global replication applier for all
+
+          databases. If set to `false`, returns the state of the replication applier in the
+
+          selected database.
+
+          '
+        in: query
+        name: global
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Get the replication applier state
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/applier-stop:
+    put:
+      description: 'Stops the replication applier. This will return immediately if the
+
+        replication applier is not running.
+
+        '
+      operationId: stopReplicationApplier
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, stops the global replication applier for all
+
+          databases. If set to `false`, stops the replication applier in the
+
+          selected database.
+
+          '
+        in: query
+        name: global
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Stop the replication applier
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/batch:
+    post:
+      description: "> **INFO:**\nThis is an internally used endpoint.\n\n\nCreates a new dump batch and returns the batch's id.\n\nThe response is a JSON object with the following attributes:\n\n- `id`: the id of the batch\n- `lastTick`: snapshot tick value using when creating the batch\n- `state`: additional leader state information (only present if the\n  `state` URL parameter was set to `true` in the request)\n\n> **INFO:**\nOn a Coordinator, this request must have a `DBserver`\nquery parameter which must be an ID of a DB-Server.\nThe very same request is forwarded synchronously to that DB-Server.\nIt is an error if this attribute is not bound in the Coordinator case.\n"
+      operationId: createReplicationBatch
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Setting `state` to `true` makes the response also contain
+
+          a `state` attribute with information about the leader state.
+
+          This is used only internally during the replication process
+
+          and should not be used by client applications.
+
+          '
+        in: query
+        name: state
+        required: false
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                ttl:
+                  description: 'The time-to-live for the new batch (in seconds).
+
+                    '
+                  type: number
+              required:
+              - ttl
+              type: object
+      responses:
+        '200':
+          description: 'is returned if the batch was created successfully.
+
+            '
+        '400':
+          description: 'is returned if the TTL value is invalid or if the `DBserver` attribute
+
+            is not specified or illegal on a Coordinator.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+      summary: Create a new dump batch
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/batch/{id}:
+    delete:
+      description: '> **INFO:**
+
+        This is an internally used endpoint.
+
+
+
+        Deletes the existing dump batch, allowing compaction and cleanup to resume.
+
+
+        > **INFO:**
+
+        On a Coordinator, this request must have a `DBserver`
+
+        query parameter which must be an ID of a DB-Server.
+
+        The very same request is forwarded synchronously to that DB-Server.
+
+        It is an error if this attribute is not bound in the Coordinator case.
+
+        '
+      operationId: deleteReplicationBatch
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the batch.
+
+          '
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: 'is returned if the batch was deleted successfully.
+
+            '
+        '400':
+          description: 'is returned if the batch was not found.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+      summary: Delete an existing dump batch
+      tags:
+      - Replication
+    put:
+      description: '> **INFO:**
+
+        This is an internally used endpoint.
+
+
+
+        Extends the time-to-live (TTL) of an existing dump batch, using the batch''s ID and
+
+        the provided TTL value.
+
+
+        If the batch''s TTL can be extended successfully, the response is empty.
+
+
+        > **INFO:**
+
+        On a Coordinator, this request must have a `DBserver`
+
+        query parameter which must be an ID of a DB-Server.
+
+        The very same request is forwarded synchronously to that DB-Server.
+
+        It is an error if this attribute is not bound in the Coordinator case.
+
+        '
+      operationId: extendReplicationBatch
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the batch.
+
+          '
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                ttl:
+                  description: 'The time-to-live for the new batch (in seconds)
+
+                    '
+                  type: number
+              required:
+              - ttl
+              type: object
+      responses:
+        '204':
+          description: 'is returned if the batch''s ttl was extended successfully.
+
+            '
+        '400':
+          description: 'is returned if the ttl value is invalid or the batch was not found.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+      summary: Extend the TTL of a dump batch
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/clusterInventory:
+    get:
+      description: 'Returns the array of collections and indexes available on the cluster.
+
+
+        The response will be an array of JSON objects, one for each collection.
+
+        Each collection contains exactly two keys, `parameters` and `indexes`.
+
+        This information comes from `Plan/Collections/{DB-Name}/*` in the Agency,
+
+        just that the `indexes` attribute there is relocated to adjust it to
+
+        the data format of arangodump.
+
+        '
+      operationId: getReplicationClusterInventory
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Include system collections in the result.
+
+          '
+        in: query
+        name: includeSystem
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Get the cluster collections and indexes
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/dump:
+    get:
+      description: "Returns the data from a collection for the requested range.\n\nThe `chunkSize` query parameter can be used to control the size of the result.\nIt must be specified in bytes. The `chunkSize` value will only be honored\napproximately. Otherwise a too low `chunkSize` value could cause the server\nto not be able to put just one entry into the result and return it.\nTherefore, the `chunkSize` value will only be consulted after an entry has\nbeen written into the result. If the result size is then greater than\n`chunkSize`, the server will respond with as many entries as there are\nin the response already. If the result size is still less than `chunkSize`,\nthe server will try to return more data if there's more data left to return.\n\nIf `chunkSize` is not specified, some server-side default value will be used.\n\nThe `Content-Type` of the result is `application/x-arango-dump`. This is an\neasy-to-process format, with all entries going onto separate lines in the\nresponse body.\n\nEach line itself is a JSON object, with at least the following attributes:\n\n- `tick`: the operation's tick attribute\n\n- `key`: the key of the document/edge or the key used in the deletion operation\n\n- `rev`: the revision id of the document/edge or the deletion operation\n\n- `data`: the actual document/edge data for types 2300 and 2301. The full\n  document/edge data will be returned even for updates.\n\n- `type`: the type of entry. Possible values for `type` are:\n\n  - 2300: document insertion/update\n\n  - 2301: edge insertion/update\n\n  - 2302: document/edge deletion\n\n> **INFO:**\nThere will be no distinction between inserts and updates when calling this method.\n"
+      operationId: getReplicationDump
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name or id of the collection to dump.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      - description: 'Approximate maximum size of the returned result.
+
+          '
+        in: query
+        name: chunkSize
+        required: false
+        schema:
+          type: number
+      - description: 'The id of the snapshot to use
+
+          '
+        in: query
+        name: batchId
+        required: true
+        schema:
+          type: number
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully and data was returned. The header
+
+            `x-arango-replication-lastincluded` is set to the tick of the last document returned.
+
+            '
+        '204':
+          description: 'is returned if the request was executed successfully, but there was no content available.
+
+            The header `x-arango-replication-lastincluded` is `0` in this case.
+
+            '
+        '404':
+          description: 'is returned when the collection could not be found.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Get a replication dump
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/inventory:
+    get:
+      description: "Returns the array of collections and their indexes, and the array of Views available. These\narrays can be used by replication clients to initiate an initial synchronization with the\nserver.\nThe response will contain all collections, their indexes and views in the requested database\nif `global` is not set, and all collections, indexes and views in all databases if `global`\nis set.\nIn case `global` is not set, it is possible to restrict the response to a single collection\nby setting the `collection` parameter. In this case the response will contain only information\nabout the requested collection in the `collections` array, and no information about views\n(i.e. the `views` response attribute will be an empty array).\n\nThe response will contain a JSON object with the `collections`, `views`, `state` and\n`tick` attributes.\n\n`collections` is an array of collections with the following sub-attributes:\n\n- `parameters`: the collection properties\n\n- `indexes`: an array of the indexes of the collection. Primary indexes and edge indexes\n   are not included in this array.\n\nThe `state` attribute contains the current state of the replication logger. It\ncontains the following sub-attributes:\n\n- `running`: whether or not the replication logger is currently active. Note:\n  since ArangoDB 2.2, the value will always be `true`\n\n- `lastLogTick`: the value of the last tick the replication logger has written\n\n- `time`: the current time on the server\n\n`views` is an array of available views.\n\nReplication clients should note the `lastLogTick` value returned. They can then\nfetch collections' data using the dump method up to the value of lastLogTick, and\nquery the continuous replication log for log events after this tick value.\n\nTo create a full copy of the collections on the server, a replication client\ncan execute these steps:\n\n- call the `/inventory` API method. This returns the `lastLogTick` value and the\n  array of collections and indexes from the server.\n\n- for each collection returned by `/inventory`, create the collection locally and\n  call `/dump` to stream the collection data to the client, up to the value of\n  `lastLogTick`.\n  After that, the client can create the indexes on the collections as they were\n  reported by `/inventory`.\n\nIf the clients wants to continuously stream replication log events from the logger\nserver, the following additional steps need to be carried out:\n\n- the client should call `/_api/wal/tail` initially to fetch the first batch of\n  replication events that were logged after the client's call to `/inventory`.\n\n  The call to `/_api/wal/tail` should use a `from` parameter with the value of the\n  `lastLogTick` as reported by `/inventory`. The call to `/_api/wal/tail` will\n  return the `x-arango-replication-lastincluded` header which will contain the\n  last tick value included in the response.\n\n- the client can then continuously call `/_api/wal/tail` to incrementally fetch new\n  replication events that occurred after the last transfer.\n\n  Calls should use a `from` parameter with the value of the `x-arango-replication-lastincluded`\n  header of the previous response. If there are no more replication events, the\n  response will be empty and clients can go to sleep for a while and try again\n  later.\n\n> **INFO:**\nOn a Coordinator, this request must have a `DBserver`\nquery parameter which must be an ID of a DB-Server.\nThe very same request is forwarded synchronously to that DB-Server.\nIt is an error if this attribute is not bound in the Coordinator case.\n\n\n> **INFO:**\nUsing the `global` parameter the top-level object contains a key `databases`\nunder which each key represents a database name, and the value conforms to the above description.\n"
+      operationId: getReplicationInventory
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Include system collections in the result.
+
+          '
+        in: query
+        name: includeSystem
+        required: false
+        schema:
+          default: true
+          type: boolean
+      - description: 'Include all databases in the response. Only works in the context of
+
+          the `_system` database.
+
+          '
+        in: query
+        name: global
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'A valid batchId is required for this API call
+
+          '
+        in: query
+        name: batchId
+        required: true
+        schema:
+          type: number
+      - description: 'If this parameter is set, the response will be restricted to a single collection (the one
+
+          specified), and no views will be returned. This can be used as an optimization to reduce
+
+          the size of the response.
+
+          '
+        in: query
+        name: collection
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Get a replication inventory
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/logger-first-tick:
+    get:
+      deprecated: true
+      description: '> **WARNING:**
+
+        This endpoint is deprecated and removed in ArangoDB v4.0.
+
+
+
+        Returns the first available tick value that can be served from the server''s
+
+        replication log. This method can be called by replication clients after to
+
+        determine if certain data (identified by a tick value) is still available
+
+        for replication.
+
+
+        The result is a JSON object containing the attribute `firstTick`. This
+
+        attribute contains the minimum tick value available in the server''s
+
+        replication
+
+        log.
+
+
+        > **INFO:**
+
+        This method is not supported on a Coordinator in a cluster deployment.
+
+        '
+      operationId: getReplicationLoggerFirstTick
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Get the first available replication tick value
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/logger-follow:
+    get:
+      deprecated: true
+      description: "> **WARNING:**\nThis route should no longer be used.\nIt is considered as deprecated from version 3.4.0 on. Client applications\nshould use the REST API endpoint `/_api/wal/tail` instead.\n\n\nReturns data from the server's replication log. This method can be called\nby replication clients after an initial synchronization of data. The method\nwill return all \"recent\" log entries from the logger server, and the clients\ncan replay and apply these entries locally so they get to the same data\nstate as the logger server.\n\nClients can call this method repeatedly to incrementally fetch all changes\nfrom the logger server. In this case, they should provide the `from` value so\nthey will only get returned the log events since their last fetch.\n\nWhen the `from` query parameter is not used, the logger server will return log\nentries starting at the beginning of its replication log. When the `from`\nparameter is used, the logger server will only return log entries which have\nhigher tick values than the specified `from` value (note: the log entry with a\ntick value equal to `from` will be excluded). Use the `from` value when\nincrementally fetching log data.\n\nThe `to` query parameter can be used to optionally restrict the upper bound of\nthe result to a certain tick value. If used, the result will contain only log events\nwith tick values up to (including) `to`. In incremental fetching, there is no\nneed to use the `to` parameter. It only makes sense in special situations,\nwhen only parts of the change log are required.\n\nThe `chunkSize` query parameter can be used to control the size of the result.\nIt must be specified in bytes. The `chunkSize` value will only be honored\napproximately. Otherwise a too low `chunkSize` value could cause the server\nto not be able to put just one log entry into the result and return it.\nTherefore, the `chunkSize` value will only be consulted after a log entry has\nbeen written into the result. If the result size is then greater than\n`chunkSize`, the server will respond with as many log entries as there are\nin the response already. If the result size is still less than `chunkSize`,\nthe server will try to return more data if there's more data left to return.\n\nIf `chunkSize` is not specified, some server-side default value will be used.\n\nThe `Content-Type` of the result is `application/x-arango-dump`. This is an\neasy-to-process format, with all log events going onto separate lines in the\nresponse body. Each log event itself is a JSON object, with at least the\nfollowing attributes:\n\n- `tick`: the log event tick value\n\n- `type`: the log event type\n\nIndividual log events will also have additional attributes, depending on the\nevent type. A few common attributes which are used for multiple events types\nare:\n\n- `cid`: id of the collection the event was for\n\n- `tid`: id of the transaction the event was contained in\n\n- `key`: document key\n\n- `rev`: document revision id\n\n- `data`: the original document data\n\nThe response will also contain the following HTTP headers:\n\n- `x-arango-replication-active`: whether or not the logger is active. Clients\n  can use this flag as an indication for their polling frequency. If the\n  logger is not active and there are no more replication events available, it\n  might be sensible for a client to abort, or to go to sleep for a long time\n  and try again later to check whether the logger has been activated.\n\n- `x-arango-replication-lastincluded`: the tick value of the last included\n  value in the result. In incremental log fetching, this value can be used\n  as the `from` value for the following request. **Note** that if the result is\n  empty, the value will be `0`. This value should not be used as `from` value\n  by clients in the next request (otherwise the server would return the log\n  events from the start of the log again).\n\n- `x-arango-replication-lasttick`: the last tick value the logger server has\n  logged (not necessarily included in the result). By comparing the last\n  tick and last included tick values, clients have an approximate indication of\n  how many events there are still left to fetch.\n\n- `x-arango-replication-checkmore`: whether or not there already exists more\n  log data which the client could fetch immediately. If there is more log data\n  available, the client could call `logger-follow` again with an adjusted `from`\n  value to fetch remaining log entries until there are no more.\n\n  If there isn't any more log data to fetch, the client might decide to go\n  to sleep for a while before calling the logger again.\n\n> **INFO:**\nThis method is not supported on a Coordinator in a cluster deployment.\n"
+      operationId: getReplicationLoggerFollow
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Exclusive lower bound tick value for results.
+
+          '
+        in: query
+        name: from
+        required: false
+        schema:
+          type: number
+      - description: 'Inclusive upper bound tick value for results.
+
+          '
+        in: query
+        name: to
+        required: false
+        schema:
+          type: number
+      - description: 'Approximate maximum size of the returned result.
+
+          '
+        in: query
+        name: chunkSize
+        required: false
+        schema:
+          type: number
+      - description: 'Include system collections in the result.
+
+          '
+        in: query
+        name: includeSystem
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully, and there are log
+
+            events available for the requested range. The response body will not be empty
+
+            in this case.
+
+            '
+        '204':
+          description: 'is returned if the request was executed successfully, but there are no log
+
+            events available for the requested range. The response body will be empty
+
+            in this case.
+
+            '
+        '400':
+          description: 'is returned if either the `from` or `to` values are invalid.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Get replication log entries (deprecated)
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/logger-state:
+    get:
+      description: "Returns the current state of the server's replication logger. The state will\ninclude information about whether the logger is running and about the last\nlogged tick value. This tick value is important for incremental fetching of\ndata.\n\nThe body of the response contains a JSON object with the following\nattributes:\n\n- `state`: the current logger state as a JSON object with the following\n  sub-attributes:\n\n  - `running`: whether or not the logger is running\n\n  - `lastLogTick`: the tick value of the latest tick the logger has logged.\n    This value can be used for incremental fetching of log data.\n\n  - `totalEvents`: total number of events logged since the server was started.\n    The value is not reset between multiple stops and re-starts of the logger.\n\n  - `time`: the current date and time on the logger server\n\n- `server`: a JSON object with the following sub-attributes:\n\n  - `version`: the logger server's version\n\n  - `serverId`: the logger server's id\n\n- `clients`: returns the last fetch status by replication clients connected to\n  the logger. Each client is returned as a JSON object with the following attributes:\n\n  - `syncerId`: id of the client syncer\n\n  - `serverId`: server id of client\n\n  - `lastServedTick`: last tick value served to this client via the WAL tailing API\n\n  - `time`: date and time when this client last called the WAL tailing API\n"
+      operationId: getReplicationLoggerState
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the logger state could be determined successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if the logger state could not be determined.
+
+            '
+      summary: Get the replication logger state
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/logger-tick-ranges:
+    get:
+      deprecated: true
+      description: '> **WARNING:**
+
+        This endpoint is deprecated and removed in ArangoDB v4.0.
+
+
+
+        Returns the currently available ranges of tick values for all currently
+
+        available WAL logfiles. The tick values can be used to determine if certain
+
+        data (identified by tick value) are still available for replication.
+
+
+        The body of the response contains a JSON array. Each array member is an
+
+        object
+
+        that describes a single logfile. Each object has the following attributes:
+
+
+        - `datafile`: name of the logfile
+
+
+        - `status`: status of the datafile, in textual form (e.g. "sealed", "open")
+
+
+        - `tickMin`: minimum tick value contained in logfile
+
+
+        - `tickMax`: maximum tick value contained in logfile
+
+        '
+      operationId: getReplicationLoggerTickRanges
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the tick ranges could be determined successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if the logger state could not be determined.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Get the tick ranges available in the WAL logfiles
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/make-follower:
+    put:
+      description: "> **WARNING:**\nCalling this endpoint will synchronize data from the collections found on the\nremote leader to the local ArangoDB database. All data in the local collections\nwill be purged and replaced with data from the leader. Use with caution!\n\n\n> **INFO:**\nThis command may take a long time to complete and return. This is because it\nwill first do a full data synchronization with the leader, which will take time\nroughly proportional to the amount of data.\n\n\nChanges the role to a follower and starts a full data synchronization from a\nremote endpoint into the local ArangoDB database and afterwards starts the\ncontinuous replication.\n\nThe operation works on a per-database level.\n\nAll local database data will be removed prior to the synchronization.\n\nIn case of success, the body of the response is a JSON object with the following\nattributes:\n\n- `state`: a JSON object with the following sub-attributes:\n\n  - `running`: whether or not the applier is active and running\n\n  - `lastAppliedContinuousTick`: the last tick value from the continuous\n    replication log the applier has applied.\n\n  - `lastProcessedContinuousTick`: the last tick value from the continuous\n    replication log the applier has processed.\n\n    Regularly, the last applied and last processed tick values should be\n    identical. For transactional operations, the replication applier will first\n    process incoming log events before applying them, so the processed tick\n    value might be higher than the applied tick value. This will be the case\n    until the applier encounters the *transaction commit* log event for the\n    transaction.\n\n  - `lastAvailableContinuousTick`: the last tick value the remote server can\n    provide.\n\n  - `ticksBehind`: this attribute will be present only if the applier is currently\n    running. It will provide the number of log ticks between what the applier\n    has applied/seen and the last log tick value provided by the remote server.\n    If this value is zero, then both servers are in sync. If this is non-zero,\n    then the remote server has additional data that the applier has not yet\n    fetched and processed, or the remote server may have more data that is not\n    applicable to the applier.\n\n    Client applications can use it to determine approximately how far the applier\n    is behind the remote server, and can periodically check if the value is\n    increasing (applier is falling behind) or decreasing (applier is catching up).\n\n    Please note that as the remote server will only keep one last log tick value\n    for all of its databases, but replication may be restricted to just certain\n    databases on the applier, this value is more meaningful when the global applier\n    is used.\n    Additionally, the last log tick provided by the remote server may increase\n    due to writes into system collections that are not replicated due to replication\n    configuration. So the reported value may exaggerate the reality a bit for\n    some scenarios.\n\n  - `time`: the time on the applier server.\n\n  - `totalRequests`: the total number of requests the applier has made to the\n    endpoint.\n\n  - `totalFailedConnects`: the total number of failed connection attempts the\n    applier has made.\n\n  - `totalEvents`: the total number of log events the applier has processed.\n\n  - `totalOperationsExcluded`: the total number of log events excluded because\n    of `restrictCollections`.\n\n  - `progress`: a JSON object with details about the replication applier progress.\n    It contains the following sub-attributes if there is progress to report:\n\n    - `message`: a textual description of the progress\n\n    - `time`: the date and time the progress was logged\n\n    - `failedConnects`: the current number of failed connection attempts\n\n  - `lastError`: a JSON object with details about the last error that happened on\n    the applier. It contains the following sub-attributes if there was an error:\n\n    - `errorNum`: a numerical error code\n\n    - `errorMessage`: a textual error description\n\n    - `time`: the date and time the error occurred\n\n    In case no error has occurred, `lastError` will be empty.\n\n- `server`: a JSON object with the following sub-attributes:\n\n  - `version`: the applier server's version\n\n  - `serverId`: the applier server's id\n\n- `endpoint`: the endpoint the applier is connected to (if applier is\n  active) or will connect to (if applier is currently inactive)\n\n- `database`: the name of the database the applier is connected to (if applier is\n  active) or will connect to (if applier is currently inactive)\n\nPlease note that all \"tick\" values returned do not have a specific unit. Tick\nvalues are only meaningful when compared to each other. Higher tick values mean\n\"later in time\" than lower tick values.\n\n> **INFO:**\nThis endpoint is not supported on a Coordinator in a cluster deployment.\n"
+      operationId: makeReplicationFollower
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                adaptivePolling:
+                  description: 'whether or not the replication applier will use adaptive polling.
+
+                    '
+                  type: boolean
+                autoResync:
+                  description: 'whether or not the follower should perform an automatic resynchronization with
+
+                    the leader in case the leader cannot serve log data requested by the follower,
+
+                    or when the replication is started and no tick value can be found.
+
+                    '
+                  type: boolean
+                autoResyncRetries:
+                  description: 'number of resynchronization retries that will be performed in a row when
+
+                    automatic resynchronization is enabled and kicks in. Setting this to `0` will
+
+                    effectively disable `autoResync`. Setting it to some other value will limit
+
+                    the number of retries that are performed. This helps preventing endless retries
+
+                    in case resynchronizations always fail.
+
+                    '
+                  type: integer
+                chunkSize:
+                  description: 'the requested maximum size for log transfer packets that
+
+                    is used when the endpoint is contacted.
+
+                    '
+                  type: integer
+                connectTimeout:
+                  description: 'the timeout (in seconds) when attempting to connect to the
+
+                    endpoint. This value is used for each connection attempt.
+
+                    '
+                  type: integer
+                connectionRetryWaitTime:
+                  description: 'the time (in seconds) that the applier will intentionally idle before
+
+                    it retries connecting to the leader in case of connection problems.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                database:
+                  description: 'the database name on the leader (if not specified, defaults to the
+
+                    name of the local current database).
+
+                    '
+                  type: string
+                endpoint:
+                  description: 'the leader endpoint to connect to (e.g. "tcp://192.168.173.13:8529").
+
+                    '
+                  type: string
+                idleMaxWaitTime:
+                  description: 'the maximum wait time (in seconds) that the applier will intentionally idle
+
+                    before fetching more log data from the leader in case the leader has
+
+                    already sent all its log data and there have been previous log fetch attempts
+
+                    that resulted in no more log data. This wait time can be used to control the
+
+                    maximum frequency with which the replication applier sends HTTP log fetch
+
+                    requests to the leader in case there is no write activity on the leader for
+
+                    longer periods. This configuration value will only be used if the option
+
+                    `adaptivePolling` is set to `true`.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                idleMinWaitTime:
+                  description: 'the minimum wait time (in seconds) that the applier will intentionally idle
+
+                    before fetching more log data from the leader in case the leader has
+
+                    already sent all its log data. This wait time can be used to control the
+
+                    frequency with which the replication applier sends HTTP log fetch requests
+
+                    to the leader in case there is no write activity on the leader.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                includeSystem:
+                  description: 'whether or not system collection operations will be applied
+
+                    '
+                  type: boolean
+                initialSyncMaxWaitTime:
+                  description: 'the maximum wait time (in seconds) that the initial synchronization will
+
+                    wait for a response from the leader when fetching initial collection data.
+
+                    This wait time can be used to control after what time the initial synchronization
+
+                    will give up waiting for a response and fail. This value is relevant even
+
+                    for continuous replication when `autoResync` is set to `true` because this
+
+                    may re-start the initial synchronization when the leader cannot provide
+
+                    log data the follower requires.
+
+                    This value will be ignored if set to `0`.
+
+                    '
+                  type: integer
+                maxConnectRetries:
+                  description: 'the maximum number of connection attempts the applier
+
+                    will make in a row. If the applier cannot establish a connection to the
+
+                    endpoint in this number of attempts, it will stop itself.
+
+                    '
+                  type: integer
+                password:
+                  description: 'the password to use when connecting to the leader.
+
+                    '
+                  type: string
+                requestTimeout:
+                  description: 'the timeout (in seconds) for individual requests to the endpoint.
+
+                    '
+                  type: integer
+                requireFromPresent:
+                  description: 'if set to `true`, then the replication applier will check
+
+                    at start of its continuous replication if the start tick from the dump phase
+
+                    is still present on the leader. If not, then there would be data loss. If
+
+                    `requireFromPresent` is `true`, the replication applier will abort with an
+
+                    appropriate error message. If set to `false`, then the replication applier will
+
+                    still start, and ignore the data loss.
+
+                    '
+                  type: boolean
+                restrictCollections:
+                  description: 'an optional array of collections for use with `restrictType`.
+
+                    If `restrictType` is `include`, only the specified collections
+
+                    will be synchronized. If `restrictType` is `exclude`, all but the specified
+
+                    collections will be synchronized.
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                restrictType:
+                  description: 'an optional string value for collection filtering. When
+
+                    specified, the allowed values are `include` or `exclude`.
+
+                    '
+                  type: string
+                username:
+                  description: 'an optional ArangoDB username to use when connecting to the leader.
+
+                    '
+                  type: string
+                verbose:
+                  description: 'if set to `true`, then a log line will be emitted for all operations
+
+                    performed by the replication applier. This should be used for debugging
+
+                    replication
+
+                    problems only.
+
+                    '
+                  type: boolean
+              required:
+              - endpoint
+              - database
+              - password
+              - includeSystem
+              type: object
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '400':
+          description: 'is returned if the configuration is incomplete or malformed.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred during synchronization or when starting the
+
+            continuous replication.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Turn a server into a follower of another
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/revisions/documents:
+    put:
+      description: "> **WARNING:**\nThis revision-based replication endpoint will only work with collections\ncreated in ArangoDB v3.8.0 or later.\n\n\nReturns documents by revision for replication.\n\nThe body of the request should be JSON/VelocyPack and should consist of an\narray of string-encoded revision IDs:\n\n```\n[\n  <String, revision>,\n  <String, revision>,\n  ...\n  <String, revision>\n]\n```\n\nIn particular, the revisions should be sorted in ascending order of their\ndecoded values.\n\nThe result will be a JSON/VelocyPack array of document objects. If there is no\ndocument corresponding to a particular requested revision, an empty object will\nbe returned in its place.\n\nThe response may be truncated if it would be very long. In this case, the\nresponse array length will be less than the request array length, and\nsubsequent requests can be made for the omitted documents.\n\nEach `<String, revision>` value type is a 64-bit value encoded as a string of\n11 characters, using the same encoding as our document `_rev` values. The\nreason for this is that 64-bit values cannot necessarily be represented in full\nin JavaScript, as it handles all numbers as floating point, and can only\nrepresent up to `2^53-1` faithfully.\n"
+      operationId: listReplicationRevisionDocuments
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name or id of the collection to query.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the snapshot to use
+
+          '
+        in: query
+        name: batchId
+        required: true
+        schema:
+          type: number
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully and data was returned.
+
+            '
+        '401':
+          description: 'is returned if necessary parameters are missing or incorrect
+
+            '
+        '404':
+          description: 'is returned when the collection or snapshot could not be found.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned if called on a collection which doesn''t support sync-by-revision
+
+            '
+      summary: Get documents by revision
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/revisions/ranges:
+    put:
+      description: "> **WARNING:**\nThis revision-based replication endpoint will only work with the RocksDB\nengine, and with collections created in ArangoDB v3.8.0 or later.\n\n\nReturns the revision IDs of documents within the requested ranges.\n\nThe body of the request should be JSON/VelocyPack and should consist of an\narray of pairs of string-encoded revision IDs:\n\n```\n[\n  [<String, revision>, <String, revision>],\n  [<String, revision>, <String, revision>],\n  ...\n  [<String, revision>, <String, revision>]\n]\n```\n\nIn particular, the pairs should be non-overlapping, and sorted in ascending\norder of their decoded values.\n\nThe result will be JSON/VelocyPack in the following format:\n```\n{\n  ranges: [\n    [<String, revision>, <String, revision>, ... <String, revision>],\n    [<String, revision>, <String, revision>, ... <String, revision>],\n    ...,\n    [<String, revision>, <String, revision>, ... <String, revision>]\n  ]\n  resume: <String, revision>\n}\n```\n\nThe `resume` field is optional. If specified, then the response is to be\nconsidered partial, only valid through the revision specified. A subsequent\nrequest should be made with the same request body, but specifying the `resume`\nURL parameter with the value specified. The subsequent response will pick up\nfrom the appropriate request pair, and omit any complete ranges or revisions\nwhich are less than the requested resume revision. As an example (ignoring the\nstring-encoding for a moment), if ranges `[1, 3], [5, 9], [12, 15]` are\nrequested, then a first response may return `[], [5, 6]` with a resume point of\n`7` and a subsequent response might be `[8], [12, 13]`.\n\nIf a requested range contains no revisions, then an empty array is returned.\nEmpty ranges will not be omitted.\n\nEach `<String, revision>` value type is a 64-bit value encoded as a string of\n11 characters, using the same encoding as our document `_rev` values. The\nreason for this is that 64-bit values cannot necessarily be represented in full\nin JavaScript, as it handles all numbers as floating point, and can only\nrepresent up to `2^53-1` faithfully.\n"
+      operationId: listReplicationRevisionRanges
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name or id of the collection to query.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the snapshot to use
+
+          '
+        in: query
+        name: batchId
+        required: true
+        schema:
+          type: number
+      - description: 'The revision at which to resume, if a previous request was truncated
+
+          '
+        in: query
+        name: resume
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully and data was returned.
+
+            '
+        '401':
+          description: 'is returned if necessary parameters are missing or incorrect
+
+            '
+        '404':
+          description: 'is returned when the collection or snapshot could not be found.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned if called on a collection which doesn''t support sync-by-revision
+
+            '
+      summary: List document revision IDs within requested ranges
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/revisions/tree:
+    get:
+      description: "> **WARNING:**\nThis revision-based replication endpoint will only work with collections\ncreated in ArangoDB v3.8.0 or later.\n\n\nReturns the Merkle tree associated with the specified collection.\n\nThe result will be JSON/VelocyPack in the following format:\n```\n{\n  version: <Number>,\n  branchingFactor: <Number>\n  maxDepth: <Number>,\n  rangeMin: <String, revision>,\n  rangeMax: <String, revision>,\n  nodes: [\n    { count: <Number>, hash: <String, revision> },\n    { count: <Number>, hash: <String, revision> },\n    ...\n    { count: <Number>, hash: <String, revision> }\n  ]\n}\n```\n\nAt the moment, there is only one version, 1, so this can safely be ignored for\nnow.\n\nEach `<String, revision>` value type is a 64-bit value encoded as a string of\n11 characters, using the same encoding as our document `_rev` values. The\nreason for this is that 64-bit values cannot necessarily be represented in full\nin JavaScript, as it handles all numbers as floating point, and can only\nrepresent up to `2^53-1` faithfully.\n\nThe node count should correspond to a full tree with the given `maxDepth` and\n`branchingFactor`. The nodes are laid out in level-order tree traversal, so the\nroot is at index `0`, its children at indices `[1, branchingFactor]`, and so\non.\n"
+      operationId: getReplicationRevisionTree
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name or id of the collection to query.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the snapshot to use
+
+          '
+        in: query
+        name: batchId
+        required: true
+        schema:
+          type: number
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully and data was returned.
+
+            '
+        '401':
+          description: 'is returned if necessary parameters are missing
+
+            '
+        '404':
+          description: 'is returned when the collection or snapshot could not be found.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned if called on a collection which doesn''t support sync-by-revision
+
+            '
+      summary: Get the replication revision tree
+      tags:
+      - Replication
+    post:
+      description: '> **WARNING:**
+
+        This revision-based replication endpoint will only work with collections
+
+        created in ArangoDB v3.8.0 or later.
+
+
+
+        Rebuilds the Merkle tree for a collection.
+
+
+        If successful, there will be no return body.
+
+        '
+      operationId: rebuildReplicationRevisionTree
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name or id of the collection to query.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '401':
+          description: 'is returned if necessary parameters are missing
+
+            '
+        '404':
+          description: 'is returned when the collection or could not be found.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned if called on a collection which doesn''t support sync-by-revision
+
+            '
+      summary: Rebuild the replication revision tree
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/server-id:
+    get:
+      description: 'Returns the servers id. The id is also returned by other replication API
+
+        methods, and this method is an easy means of determining a server''s id.
+
+
+        The body of the response is a JSON object with the attribute `serverId`. The
+
+        server id is returned as a string.
+
+        '
+      operationId: getReplicationServerId
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+      summary: Get the replication server ID
+      tags:
+      - Replication
+  /_db/{database-name}/_api/replication/sync:
+    put:
+      description: "Starts a full data synchronization from a remote endpoint into the local\nArangoDB database.\n\nThe *sync* method can be used by replication clients to connect an ArangoDB database\nto a remote endpoint, fetch the remote list of collections and indexes, and collection\ndata. It will thus create a local backup of the state of data at the remote ArangoDB\ndatabase. *sync* works on a per-database level.\n\n*sync* will first fetch the list of collections and indexes from the remote endpoint.\nIt does so by calling the *inventory* API of the remote database. It will then purge\ndata in the local ArangoDB database, and after start will transfer collection data\nfrom the remote database to the local ArangoDB database. It will extract data from the\nremote database by calling the remote database's *dump* API until all data are fetched.\n\nIn case of success, the body of the response is a JSON object with the following\nattributes:\n\n- *collections*: an array of collections that were transferred from the endpoint\n\n- *lastLogTick*: the last log tick on the endpoint at the time the transfer\n  was started. Use this value as the *from* value when starting the continuous\n  synchronization later.\n\nWARNING: calling this method will synchronize data from the collections found\non the remote endpoint to the local ArangoDB database. All data in the local\ncollections will be purged and replaced with data from the endpoint.\n\nUse with caution!\n\n> **INFO:**\nThis method is not supported on a Coordinator in a cluster deployment.\n"
+      operationId: startReplicationSync
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                database:
+                  description: 'the database name on the leader (if not specified, defaults to the
+
+                    name of the local current database).
+
+                    '
+                  type: string
+                endpoint:
+                  description: 'the leader endpoint to connect to (e.g. "tcp://192.168.173.13:8529").
+
+                    '
+                  type: string
+                includeSystem:
+                  description: 'whether or not system collection operations will be applied
+
+                    '
+                  type: boolean
+                incremental:
+                  description: 'if set to *true*, then an incremental synchronization method will be used
+
+                    for synchronizing data in collections. This method is useful when
+
+                    collections already exist locally, and only the remaining differences need
+
+                    to be transferred from the remote endpoint. In this case, the incremental
+
+                    synchronization can be faster than a full synchronization.
+
+                    The default value is *false*, meaning that the complete data from the remote
+
+                    collection will be transferred.
+
+                    '
+                  type: boolean
+                initialSyncMaxWaitTime:
+                  description: 'the maximum wait time (in seconds) that the initial synchronization will
+
+                    wait for a response from the leader when fetching initial collection data.
+
+                    This wait time can be used to control after what time the initial synchronization
+
+                    will give up waiting for a response and fail.
+
+                    This value will be ignored if set to *0*.
+
+                    '
+                  type: integer
+                password:
+                  description: 'the password to use when connecting to the endpoint.
+
+                    '
+                  type: string
+                restrictCollections:
+                  description: 'an optional array of collections for use with
+
+                    *restrictType*. If *restrictType* is *include*, only the specified collections
+
+                    will be synchronized. If *restrictType* is *exclude*, all but the specified
+
+                    collections will be synchronized.
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                restrictType:
+                  description: 'an optional string value for collection filtering. When
+
+                    specified, the allowed values are *include* or *exclude*.
+
+                    '
+                  type: string
+                username:
+                  description: 'an optional ArangoDB username to use when connecting to the endpoint.
+
+                    '
+                  type: string
+              required:
+              - endpoint
+              - password
+              type: object
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '400':
+          description: 'is returned if the configuration is incomplete or malformed.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred during synchronization.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Start replication from a remote endpoint
+      tags:
+      - Replication
+  /_db/{database-name}/_api/wal/lastTick:
+    get:
+      description: 'Returns the last available tick value that can be served from the server''s
+
+        replication log. This corresponds to the tick of the latest successful operation.
+
+
+        The result is a JSON object containing the attributes `tick`, `time` and `server`.
+
+        - `tick`: contains the last available tick, `time`
+
+        - `time`: the server time as string in format `YYYY-MM-DDTHH:MM:SSZ`
+
+        - `server`: An object with fields `version` and `serverId`
+
+
+        > **INFO:**
+
+        This method is not supported on a Coordinator in a cluster deployment.
+
+        '
+      operationId: getWalLastTick
+      parameters:
+      - description: 'The name of a database. The user account you authenticate with needs
+
+          at least read access to this database and administrate access to the
+
+          `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Get the last available tick value
+      tags:
+      - Replication
+  /_db/{database-name}/_api/wal/range:
+    get:
+      description: 'Returns the currently available ranges of tick values for all Write-Ahead Log
+
+        (WAL) files. The tick values can be used to determine if certain
+
+        data (identified by tick value) are still available for replication.
+
+
+        The body of the response contains a JSON object.
+
+        - `tickMin`: minimum tick available
+
+        - `tickMax`: maximum tick available
+
+        - `time`: the server time as string in format `YYYY-MM-DDTHH:MM:SSZ`
+
+        - `server`: An object with fields `version` and `serverId`
+
+        '
+      operationId: getWalRange
+      parameters:
+      - description: 'The name of a database. The user account you authenticate with needs
+
+          at least read access to this database and administrate access to the
+
+          `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the tick ranges could be determined successfully.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if the server operations state could not be determined.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Get the tick ranges available in the WAL
+      tags:
+      - Replication
+  /_db/{database-name}/_api/wal/tail:
+    get:
+      description: "Returns data from the server's write-ahead log (also named replication log). This method can be called\nby replication clients after an initial synchronization of data. The method\nreturns all \"recent\" logged operations from the server. Clients\ncan replay and apply these operations locally so they get to the same data\nstate as the server.\n\nClients can call this method repeatedly to incrementally fetch all changes\nfrom the server. In this case, they should provide the `from` value so\nthey only get returned the log events since their last fetch.\n\nWhen the `from` query parameter is not used, the server returns log\nentries starting at the beginning of its replication log. When the `from`\nparameter is used, the server only returns log entries which have\nhigher tick values than the specified `from` value (note: the log entry with a\ntick value equal to `from` is excluded). Use the `from` value when\nincrementally fetching log data.\n\nThe `to` query parameter can be used to optionally restrict the upper bound of\nthe result to a certain tick value. If used, the result contains only log events\nwith tick values up to (including) `to`. In incremental fetching, there is no\nneed to use the `to` parameter. It only makes sense in special situations,\nwhen only parts of the change log are required.\n\nThe `chunkSize` query parameter can be used to control the size of the result.\nIt must be specified in bytes. The `chunkSize` value is only honored\napproximately. Otherwise, a too low `chunkSize` value could cause the server\nto not be able to put just one log entry into the result and return it.\nTherefore, the `chunkSize` value is only consulted after a log entry has\nbeen written into the result. If the result size is then greater than\n`chunkSize`, the server responds with as many log entries as there are\nin the response already. If the result size is still less than `chunkSize`,\nthe server tries to return more data if there's more data left to return.\n\nIf `chunkSize` is not specified, some server-side default value is used.\n\nThe `Content-Type` of the result is `application/x-arango-dump`. This is an\neasy-to-process format, with all log events going onto separate lines in the\nresponse body. Each log event itself is a JSON object, with at least the\nfollowing attributes:\n\n- `tick`: the log event tick value\n\n- `type`: the log event type\n\nIndividual log events also have additional attributes, depending on the\nevent type. A few common attributes which are used for multiple events types\nare:\n\n- `cuid`: globally unique id of the View or collection the event was for\n\n- `db`: the database name the event was for\n\n- `tid`: id of the transaction the event was contained in\n\n- `data`: the original document data\n\nFor a more detailed description of the individual replication event types\nand their data structures, see the Operation Types.\n\nThe response also contains the following HTTP headers:\n\n- `x-arango-replication-active`: whether or not the logger is active. Clients\n  can use this flag as an indication for their polling frequency. If the\n  logger is not active and there are no more replication events available, it\n  might be sensible for a client to abort, or to go to sleep for a long time\n  and try again later to check whether the logger has been activated.\n\n- `x-arango-replication-lastincluded`: the tick value of the last included\n  value in the result. In incremental log fetching, this value can be used\n  as the `from` value for the following request. **Note** that if the result is\n  empty, the value is `0`. This value should not be used as `from` value\n  by clients in the next request (otherwise the server would return the log\n  events from the start of the log again).\n\n- `x-arango-replication-lastscanned`: the last tick the server scanned while\n  computing the operation log. This might include operations the server did not\n  returned to you due to various reasons (i.e. the value was filtered or skipped).\n  You may use this value in the `lastScanned` header to allow the RocksDB storage engine\n  to break up requests over multiple responses.\n\n- `x-arango-replication-lasttick`: the last tick value the server has\n  logged in its write ahead log (not necessarily included in the result). By comparing the last\n  tick and last included tick values, clients have an approximate indication of\n  how many events there are still left to fetch.\n\n- `x-arango-replication-frompresent`: is set to _true_ if server returned\n  all tick values starting from the specified tick in the _from_ parameter.\n  Should this be set to false the server did not have these operations anymore\n  and the client might have missed operations.\n\n- `x-arango-replication-checkmore`: whether or not there already exists more\n  log data which the client could fetch immediately. If there is more log data\n  available, the client could call the tailing API again with an adjusted `from`\n  value to fetch remaining log entries until there are no more.\n\n  If there isn't any more log data to fetch, the client might decide to go\n  to sleep for a while before calling the logger again.\n\n> **INFO:**\nThis method is not supported on a Coordinator in a cluster deployment.\n"
+      operationId: getWalTail
+      parameters:
+      - description: 'The name of a database. The user account you authenticate with needs
+
+          at least read access to this database and administrate access to the
+
+          `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Whether operations for all databases should be included. If set to `false`,
+
+          only the operations for the current database are included. The value `true` is
+
+          only valid on the `_system` database.
+
+          '
+        in: query
+        name: global
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'Exclusive lower bound tick value for results. On successive calls
+
+          to this API you should set this to the value returned
+
+          with the `x-arango-replication-lastincluded` header (unless that header
+
+          contains 0).
+
+          '
+        in: query
+        name: from
+        required: false
+        schema:
+          type: number
+      - description: 'Inclusive upper bound tick value for results.
+
+          '
+        in: query
+        name: to
+        required: false
+        schema:
+          type: number
+      - description: 'Should be set to the value of the `x-arango-replication-lastscanned` header
+
+          or alternatively `0` on the first try. This allows the RocksDB storage engine to break up
+
+          large transactions over multiple responses.
+
+          '
+        in: query
+        name: lastScanned
+        required: false
+        schema:
+          type: number
+      - description: 'Approximate maximum size of the returned result.
+
+          '
+        in: query
+        name: chunkSize
+        required: false
+        schema:
+          type: number
+      - description: 'The ID of the client used to tail results. The server uses this to
+
+          keep operations until the client has fetched them. Must be a positive integer.
+
+          > **INFO:**
+
+          Either `syncerId` or `serverId` is required to fetch all operations.
+
+          '
+        in: query
+        name: syncerId
+        required: false
+        schema:
+          type: number
+      - description: 'The ID of the client machine. If `syncerId` is unset, the server uses
+
+          this to keep operations until the client has fetched them. Must be a positive
+
+          integer.
+
+          > **INFO:**
+
+          Either `syncerId` or `serverId` is required to fetch all operations.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: number
+      - description: 'Short description of the client, used for informative purposes only.
+
+          '
+        in: query
+        name: clientInfo
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request was executed successfully, and there are log
+
+            events available for the requested range. The response body is not empty
+
+            in this case.
+
+            '
+        '204':
+          description: 'is returned if the request was executed successfully, but there are no log
+
+            events available for the requested range. The response body is empty
+
+            in this case.
+
+            '
+        '400':
+          description: 'is returned if either the `from` or `to` values are invalid.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+        '500':
+          description: 'is returned if an error occurred while assembling the response.
+
+            '
+        '501':
+          description: 'is returned when this operation is called on a Coordinator in a cluster deployment.
+
+            '
+      summary: Tail recent server operations
+      tags:
+      - Replication
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

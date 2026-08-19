@@ -1,0 +1,4577 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Views API
+  version: 3.12.10 (API v0)
+  description: Manage Views to use ArangoSearch for information retrieval
+tags:
+- description: Manage Views to use ArangoSearch for information retrieval
+  name: Views
+paths:
+  /_db/{database-name}/_api/view:
+    get:
+      description: 'Returns an object containing a listing of all Views in the current database,
+
+        regardless of their type.
+
+        '
+      operationId: listViews
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The result object.
+
+                      '
+                    items:
+                      properties:
+                        globallyUniqueId:
+                          description: 'A unique identifier of the View. This is an internal property.
+
+                            '
+                          type: string
+                        id:
+                          description: 'A unique identifier of the View (deprecated).
+
+                            '
+                          type: string
+                        name:
+                          description: 'The name of the View.
+
+                            '
+                          example: coll
+                          type: string
+                        type:
+                          description: 'The type of the View.
+
+                            '
+                          enum:
+                          - arangosearch
+                          - search-alias
+                          type: string
+                      required:
+                      - name
+                      - type
+                      - id
+                      - globallyUniqueId
+                      type: object
+                    type: array
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'The list of Views.
+
+            '
+      summary: List all Views
+      tags:
+      - Views
+    post:
+      description: 'Creates a new View with a given name and properties if it does not
+
+        already exist.
+
+        '
+      operationId: createView
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                cleanupIntervalStep:
+                  default: 2
+                  description: "Wait at least this many commits between removing unused files in the\nArangoSearch data directory (`0` = disable).\nFor the case where the consolidation policies merge segments often (i.e. a lot\nof commit+consolidate), a lower value causes a lot of disk space to be\nwasted.\nFor the case where the consolidation policies rarely merge segments (i.e. few\ninserts/deletes), a higher value impacts performance without any added\nbenefits.\n\n_Background:_\n  With every \"commit\" or \"consolidate\" operation, a new state of the View's\n  internal data structures is created on disk.\n  Old states/snapshots are released once there are no longer any users\n  remaining.\n  However, the files for the released states/snapshots are left on disk, and\n  only removed by \"cleanup\" operation.\n"
+                  type: integer
+                commitIntervalMsec:
+                  default: 1000
+                  description: "Wait at least this many milliseconds between committing View data store\nchanges and making documents visible to queries (`0` = disable).\nFor the case where there are a lot of inserts/updates, a higher value causes the\nindex not to account for them and memory usage continues to grow until the commit.\nA lower value impacts performance, including the case where there are no or only a\nfew inserts/updates because of synchronous locking, and it wastes disk space for\neach commit call.\n\n_Background:_\n  For data retrieval, ArangoSearch follows the concept of\n  \"eventually-consistent\", i.e. eventually all the data in ArangoDB will be\n  matched by corresponding query expressions.\n  The concept of ArangoSearch \"commit\" operations is introduced to\n  control the upper-bound on the time until document addition/removals are\n  actually reflected by corresponding query expressions.\n  Once a \"commit\" operation is complete, all documents added/removed prior to\n  the start of the \"commit\" operation will be reflected by queries invoked in\n  subsequent ArangoDB transactions, in-progress ArangoDB transactions will\n  still continue to return a repeatable-read state.\n"
+                  type: integer
+                consolidationIntervalMsec:
+                  default: 5000
+                  description: "Wait at least this many milliseconds between applying `consolidationPolicy` to\nconsolidate the View data store and possibly release space on the filesystem\n(`0` = disable).\nFor the case where there are a lot of data modification operations, a higher\nvalue could potentially have the data store consume more space and file handles.\nFor the case where there are a few data modification operations, a lower value\nimpacts performance due to no segment candidates being available for\nconsolidation.\n\n_Background:_\n  For data modification, ArangoSearch follows the concept of a\n  \"versioned data store\". Thus old versions of data may be removed once there\n  are no longer any users of the old data. The frequency of the cleanup and\n  compaction operations are governed by `consolidationIntervalMsec` and the\n  candidates for compaction are selected via `consolidationPolicy`.\n"
+                  type: integer
+                consolidationPolicy:
+                  description: "The consolidation policy to apply for selecting which segments should be merged.\n\n- If the `tier` type is used, then the `maxSkewThreshold`,\n  `minDeletionRatio`, `segments*`, and `minScore` properties are available.\n- If the `bytes_accum` type is used, then the `threshold` property is available.\n\n_Background:_\n  With each ArangoDB transaction that inserts documents, one or more\n  ArangoSearch-internal segments get created.\n  Similarly, for removed documents, the segments that contain such documents\n  have these documents marked as 'deleted'.\n  Over time, this approach causes a lot of small and sparse segments to be\n  created.\n  A \"consolidation\" operation selects one or more segments and copies all of\n  their valid documents into a single new segment, thereby allowing the\n  search algorithm to perform more optimally and for extra file handles to be\n  released once old segments are no longer used.\n"
+                  properties:
+                    maxSkewThreshold:
+                      default: 0.4
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The skew describes how much segment files vary in file size. It is a number
+
+                        between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                        of a set of segment files by the total size. For example, the skew of a
+
+                        200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                        A large `maxSkewThreshold` value allows merging large segment files with
+
+                        smaller ones, consolidation occurs more frequently, and there are fewer
+
+                        segment files on disk at all times. While this may potentially improve the
+
+                        read performance and use fewer file descriptors, frequent consolidations
+
+                        cause a higher write load and thus a higher write amplification.
+
+
+                        On the other hand, a small threshold value triggers the consolidation only
+
+                        when there are a large number of segment files that don''t vary in size a lot.
+
+                        Consolidation occurs less frequently, reducing the write amplification, but
+
+                        it can result in a greater number of segment files on disk.
+
+
+                        Multiple combinations of candidate segments are checked and the one with
+
+                        the lowest skew value is selected for consolidation. The selection process
+
+                        picks the greatest number of segments that together have the lowest skew value
+
+                        while ensuring that the size of the new consolidated segment remains under
+
+                        the configured `segmentsBytesMax`.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minDeletionRatio:
+                      default: 0.5
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The `minDeletionRatio` represents the minimum required deletion ratio
+
+                        in one or more segments to perform a cleanup of those segments.
+
+                        It is a number between `0.0` and `1.0`.
+
+
+                        The deletion ratio is the percentage of deleted documents across one or
+
+                        more segment files and is calculated by dividing the number of deleted
+
+                        documents by the total number of documents in a segment or a group of
+
+                        segments. For example, if there is a segment with 1000 documents of which
+
+                        300 are deleted and another segment with 1000 documents of which 700 are
+
+                        deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                        The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                        value leads to earlier cleanup of deleted documents from segments and
+
+                        thus reclamation of disk space but it generates a higher write load.
+
+                        A very large value lowers the write amplification but at the same time
+
+                        the system can be left with a large number of segment files with a high
+
+                        percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                        During cleanup, the segment files are first arranged in decreasing
+
+                        order of their individual deletion ratios. Then the largest subset of
+
+                        segments whose collective deletion ratio is greater than or equal to
+
+                        `minDeletionRatio` is picked.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minScore:
+                      default: 0
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Filter out consolidation candidates with a score less than this.
+
+                        '
+                      type: integer
+                    segmentsBytesFloor:
+                      default: 25165824
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Defines the value (in bytes) to treat all smaller segments
+
+                        as equal for consolidation selection.
+
+                        '
+                      type: integer
+                    segmentsBytesMax:
+                      default: 8589934592
+                      description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                        '
+                      type: integer
+                    segmentsMax:
+                      default: 200
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The maximum number of segments that are evaluated as
+
+                        candidates for consolidation.
+
+                        '
+                      type: integer
+                    segmentsMin:
+                      default: 50
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The minimum number of segments that are
+
+                        evaluated as candidates for consolidation
+
+                        '
+                      type: integer
+                    threshold:
+                      default: 0
+                      description: 'A value in the range `[0.0, 1.0]`.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    type:
+                      default: tier
+                      description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes. \n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                      enum:
+                      - tier
+                      - bytes_accum
+                      type: string
+                  required:
+                  - type
+                  type: object
+                links:
+                  description: "Expects an object with the attribute keys being names of to be linked collections,\nand the link properties as attribute values. Example:\n\n```json\n{\n  \"name\": \"arangosearch\",\n  \"links\": {\n    \"coll\": {\n      \"fields\": {\n        \"my_attribute\": {\n          \"fields\": {\n            \"my_sub_attribute\": {\n              \"analyzers\": [\"text_en\"]\n            }\n          }\n        }\n      }\n    }\n  }\n}\n```\n\nSee [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)\nfor details.\n"
+                  type: object
+                name:
+                  description: 'The name of the View.
+
+                    '
+                  type: string
+                optimizeTopK:
+                  default: []
+                  description: 'An array of strings defining sort expressions that you want to optimize.
+
+                    This is also known as _WAND optimization_ (introduced in v3.12.0).
+
+
+                    This option is immutable.
+
+
+                    If you query a View with the `SEARCH` operation in combination with a
+
+                    `SORT` and `LIMIT` operation, search results can be retrieved faster if the
+
+                    `SORT` expression matches one of the optimized expressions.
+
+
+                    Only sorting by highest rank is supported, that is, sorting by the result
+
+                    of a scoring function in descending order (`DESC`). Use `@doc` in the expression
+
+                    where you would normally pass the document variable emitted by the `SEARCH`
+
+                    operation to the scoring function.
+
+
+                    You can define up to 64 expressions per View.
+
+
+                    Example: `["BM25(@doc) DESC", "TFIDF(@doc, true) DESC"]`
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                primaryKeyCache:
+                  description: 'If you enable this option, then the primary key columns are always cached in
+
+                    memory (introduced in v3.9.6). This can improve the
+
+                    performance of queries that return many documents. Otherwise, these values are
+
+                    memory-mapped and it is up to the operating system to load them from disk into
+
+                    memory and to evict them from memory.
+
+
+                    This option is immutable.
+
+
+                    See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                    memory consumption of this cache. You can reduce the memory usage of the column
+
+                    cache in cluster deployments by only using the cache for leader shards, see the
+
+                    `--arangosearch.columns-cache-only-leader` startup option (introduced in v3.10.6).
+
+                    '
+                  type: boolean
+                primarySort:
+                  default: []
+                  description: 'You can define a primary sort order to enable an AQL
+
+                    optimization. If a query iterates over all documents of a View,
+
+                    wants to sort them by attribute values and the (left-most)
+
+                    fields to sort by as well as their sorting direction match
+
+                    with the `primarySort` definition, then the `SORT` operation is
+
+                    optimized away. This option is immutable.
+
+
+                    Expects an array of objects, each specifying a field
+
+                    (attribute path) and a sort direction:
+
+                    `[ { "field": "attr", "direction": "asc"}, … ]`
+
+                    '
+                  items:
+                    properties:
+                      direction:
+                        description: 'The sort direction.
+
+
+                          - `"asc"` for ascending
+
+                          - `"desc"` for descending
+
+                          '
+                        enum:
+                        - asc
+                        - desc
+                        type: string
+                      field:
+                        description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                          '
+                        type: string
+                    required:
+                    - field
+                    - direction
+                    type: object
+                  type: array
+                primarySortCache:
+                  description: 'If you enable this option, then the primary sort columns are always cached in
+
+                    memory. This can improve the
+
+                    performance of queries that utilize the primary sort order. Otherwise, these
+
+                    values are memory-mapped and it is up to the operating system to load them from
+
+                    disk into memory and to evict them from memory.
+
+
+                    This option is immutable.
+
+
+                    See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                    memory consumption of this cache. You can reduce the memory usage of the column
+
+                    cache in cluster deployments by only using the cache for leader shards, see the
+
+                    `--arangosearch.columns-cache-only-leader` startup option.
+
+                    '
+                  type: boolean
+                primarySortCompression:
+                  default: lz4
+                  description: 'Defines how to compress the primary sort data.
+
+
+                    - `"lz4"`: use LZ4 fast compression.
+
+                    - `"none"`: disable compression to trade space for speed.
+
+
+                    This option is immutable.
+
+                    '
+                  enum:
+                  - lz4
+                  - none
+                  type: string
+                storedValues:
+                  default: []
+                  description: "An array of objects to describe which document attributes to store in the View\nindex. It can then cover search queries, which means the\ndata can be taken from the index directly and accessing the storage engine can\nbe avoided.\n\nThis option is immutable.\n\nEach object is expected in the following form:\n\n`{ \"fields\": [ \"attr1\", \"attr2\", ... \"attrN\" ], \"compression\": \"none\", \"cache\": false }`\n\nYou may use the following shorthand notations on View creation instead of\nan array of objects as described above. The default compression and cache\nsettings are used in this case:\n\n- An array of strings, like `[\"attr1\", \"attr2\"]`, to place each attribute into\n  a separate column of the index.\n\n- An array of arrays of strings, like `[[\"attr1\", \"attr2\"]]`, to place the\n  attributes into a single column of the index, or `[[\"attr1\"], [\"attr2\"]]`\n  to place each attribute into a separate column. You can also mix it with the\n  full form:\n\n  ```json\n  [\n    [\"attr1\"],\n    [\"attr2\", \"attr3\"],\n    { \"fields\": [\"attr4\", \"attr5\"], \"cache\": true }\n  ]\n  ```\n\nThe `storedValues` option is not to be confused with the `storeValues` option,\nwhich allows you to store meta data about attribute values in the View index.\n"
+                  items:
+                    properties:
+                      cache:
+                        default: false
+                        description: 'Whether to always cache stored values in memory.
+
+                          This can improve the query performance if stored values are involved.
+
+                          Otherwise, these values are memory-mapped and it is up to the operating system
+
+                          to load them from disk into memory and to evict them from memory.
+
+
+                          See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                          memory consumption of this cache. You can reduce the memory usage of the
+
+                          column cache in cluster deployments by only using the cache for leader shards,
+
+                          see the `--arangosearch.columns-cache-only-leader` startup option.
+
+                          '
+                        type: boolean
+                      compression:
+                        default: lz4
+                        description: 'Defines the compression type used for the internal column-store.
+
+
+                          - `"lz4"`: LZ4 fast compression
+
+                          - `"none"`: no compression
+
+                          '
+                        enum:
+                        - lz4
+                        - none
+                        type: string
+                      fields:
+                        description: 'An array of strings with one or more document attribute paths.
+
+                          The specified attributes are placed into a single column of the index.
+
+                          A column with all fields that are involved in common search queries is
+
+                          ideal for performance. The column should not include too many unneeded
+
+                          fields, however.
+
+                          '
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - fields
+                    type: object
+                  type: array
+                type:
+                  description: 'The type of the View. Needs to be set to `"arangosearch"`.
+
+                    This option is immutable.
+
+                    '
+                  example: arangosearch
+                  type: string
+                writebufferActive:
+                  default: 0
+                  description: 'Maximum number of concurrent active writers (segments) that perform a
+
+                    transaction. Other writers (segments) wait till current active writers
+
+                    (segments) finish (immutable, `0` = disable).
+
+                    '
+                  type: integer
+                writebufferIdle:
+                  default: 64
+                  description: 'Maximum number of writers (segments) cached in the pool
+
+                    (immutable, `0` = disable).
+
+                    '
+                  type: integer
+                writebufferSizeMax:
+                  default: 33554432
+                  description: 'Maximum memory byte size per writer (segment) before a writer (segment) flush
+
+                    is triggered. The value `0` turns off this limit for any writer (buffer) and data
+
+                    is flushed periodically based on the value defined for the flush thread
+
+                    (ArangoDB server startup option). This should be used carefully due to
+
+                    high potential memory consumption (immutable, `0` = disable).
+
+                    '
+                  type: integer
+              required:
+              - name
+              - type
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cleanupIntervalStep:
+                    description: 'Wait at least this many commits between removing unused files in the
+
+                      ArangoSearch data directory (`0` = disabled).
+
+                      '
+                    type: integer
+                  commitIntervalMsec:
+                    description: 'Wait at least this many milliseconds between committing View data store
+
+                      changes and making documents visible to queries (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationIntervalMsec:
+                    description: 'Wait at least this many milliseconds between applying `consolidationPolicy` to
+
+                      consolidate the View data store and possibly release space on the filesystem
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationPolicy:
+                    description: 'The consolidation policy to apply for selecting which segments should be merged.
+
+
+                      - If the `tier` type is used, then the `maxSkewThreshold`,
+
+                      `minDeletionRatio`, `segments*`, and `minScore` properties are available.
+
+                      - If the `bytes_accum` type is used, then the `threshold` property is available.
+
+                      '
+                    properties:
+                      maxSkewThreshold:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The skew describes how much segment files vary in file size. It is a number
+
+                          between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                          of a set of segment files by the total size. For example, the skew of a
+
+                          200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                          A large `maxSkewThreshold` value allows merging large segment files with
+
+                          smaller ones, consolidation occurs more frequently, and there are fewer
+
+                          segment files on disk at all times. While this may potentially improve the
+
+                          read performance and use fewer file descriptors, frequent consolidations
+
+                          cause a higher write load and thus a higher write amplification.
+
+
+                          On the other hand, a small threshold value triggers the consolidation only
+
+                          when there are a large number of segment files that don''t vary in size a lot.
+
+                          Consolidation occurs less frequently, reducing the write amplification, but
+
+                          it can result in a greater number of segment files on disk.
+
+
+                          Multiple combinations of candidate segments are checked and the one with
+
+                          the lowest skew value is selected for consolidation. The selection process
+
+                          picks the greatest number of segments that together have the lowest skew value
+
+                          while ensuring that the size of the new consolidated segment remains under
+
+                          the configured `segmentsBytesMax`.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minDeletionRatio:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The `minDeletionRatio` represents the minimum required deletion ratio
+
+                          in one or more segments to perform a cleanup of those segments.
+
+                          It is a number between `0.0` and `1.0`.
+
+
+                          The deletion ratio is the percentage of deleted documents across one or
+
+                          more segment files and is calculated by dividing the number of deleted
+
+                          documents by the total number of documents in a segment or a group of
+
+                          segments. For example, if there is a segment with 1000 documents of which
+
+                          300 are deleted and another segment with 1000 documents of which 700 are
+
+                          deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                          The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                          value leads to earlier cleanup of deleted documents from segments and
+
+                          thus reclamation of disk space but it generates a higher write load.
+
+                          A very large value lowers the write amplification but at the same time
+
+                          the system can be left with a large number of segment files with a high
+
+                          percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                          During cleanup, the segment files are first arranged in decreasing
+
+                          order of their individual deletion ratios. Then the largest subset of
+
+                          segments whose collective deletion ratio is greater than or equal to
+
+                          `minDeletionRatio` is picked.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minScore:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Filter out consolidation candidates with a score less than this.
+
+                          '
+                        type: integer
+                      segmentsBytesFloor:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Defines the value (in bytes) to treat all smaller segments
+
+                          as equal for consolidation selection.
+
+                          '
+                        type: integer
+                      segmentsBytesMax:
+                        description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                          '
+                        type: integer
+                      segmentsMax:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The maximum number of segments that are evaluated as
+
+                          candidates for consolidation.
+
+                          '
+                        type: integer
+                      segmentsMin:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The minimum number of segments that are
+
+                          evaluated as candidates for consolidation
+
+                          '
+                        type: integer
+                      threshold:
+                        description: 'A value in the range `[0.0, 1.0]`
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      type:
+                        description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes.\n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                        enum:
+                        - tier
+                        - bytes_accum
+                        type: string
+                    type: object
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  links:
+                    description: 'An object with the attribute keys being names of to be linked collections,
+
+                      and the link properties as attribute values. See
+
+                      [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)
+
+                      for details.
+
+                      '
+                    type: object
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    example: coll
+                    type: string
+                  optimizeTopK:
+                    description: 'An array of strings defining sort expressions that can be optimized.
+
+                      This is also known as _WAND optimization_ (introduced in v3.12.0).
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  primaryKeyCache:
+                    description: 'Whether the primary key columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySort:
+                    description: 'The primary sort order, described by an array of objects, each specifying
+
+                      a field (attribute path) and a sort direction.
+
+                      '
+                    items:
+                      properties:
+                        asc:
+                          description: 'The sort direction.
+
+
+                            - `true` for ascending
+
+                            - `false` for descending
+
+                            '
+                          type: boolean
+                        field:
+                          description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                            '
+                          type: string
+                      required:
+                      - field
+                      - asc
+                      type: object
+                    type: array
+                  primarySortCache:
+                    description: 'Whether the primary sort columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySortCompression:
+                    description: 'Defines how the primary sort data is compressed.
+
+
+                      - `"lz4"`: LZ4 fast compression
+
+                      - `"none"`: no compression
+
+                      '
+                    enum:
+                    - lz4
+                    - none
+                    type: string
+                  storedValues:
+                    description: 'An array of objects that describes which document attributes are stored
+
+                      in the View index for covering search queries, which means the data can
+
+                      be taken from the index directly and accessing the storage engine can
+
+                      be avoided.
+
+                      '
+                    items:
+                      properties:
+                        cache:
+                          description: 'Whether stored values are always cached in memory.
+
+                            '
+                          type: boolean
+                        compression:
+                          description: 'The compression type used for the internal column-store.
+
+
+                            - `"lz4"`: LZ4 fast compression
+
+                            - `"none"`: no compression
+
+                            '
+                          enum:
+                          - lz4
+                          - none
+                          type: string
+                        fields:
+                          description: 'An array of strings with one or more document attribute paths.
+
+                            '
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - fields
+                      type: object
+                    type: array
+                  type:
+                    description: 'The type of the View (`"arangosearch"`).
+
+                      '
+                    example: arangosearch
+                    type: string
+                  writebufferActive:
+                    description: 'Maximum number of concurrent active writers (segments) that perform a
+
+                      transaction. Other writers (segments) wait till current active writers
+
+                      (segments) finish (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferIdle:
+                    description: 'Maximum number of writers (segments) cached in the pool (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferSizeMax:
+                    description: 'Maximum memory byte size per writer (segment) before a writer (segment) flush
+
+                      is triggered. `0` value turns off this limit for any writer (buffer) and data
+
+                      is flushed periodically based on the value defined for the flush thread
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                required:
+                - links
+                - primarySort
+                - primarySortCompression
+                - optimizeTopK
+                - storedValues
+                - cleanupIntervalStep
+                - commitIntervalMsec
+                - consolidationIntervalMsec
+                - consolidationPolicy
+                - writebufferIdle
+                - writebufferActive
+                - writebufferSizeMax
+                - id
+                - name
+                - type
+                - globallyUniqueId
+                type: object
+          description: 'The View has been created.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `name` or `type` attribute is missing or invalid.
+
+            '
+        '409':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 409
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `name` already exists.
+
+            '
+      summary: Create an arangosearch View
+      tags:
+      - Views
+  /_db/{database-name}/_api/view#searchalias:
+    post:
+      description: 'Creates a new View with a given name and properties if it does not
+
+        already exist.
+
+        '
+      operationId: createViewSearchAlias
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                indexes:
+                  description: 'A list of inverted indexes to add to the View.
+
+                    '
+                  items:
+                    properties:
+                      collection:
+                        description: 'The name of a collection.
+
+                          '
+                        type: string
+                      index:
+                        description: 'The name of an inverted index of the `collection`, or the index ID without
+
+                          the `<collection>/` prefix.
+
+                          '
+                        type: string
+                    required:
+                    - collection
+                    - index
+                    type: object
+                  type: array
+                name:
+                  description: 'The name of the View.
+
+                    '
+                  type: string
+                type:
+                  description: 'The type of the View. Needs to be set to `"search-alias"`.
+
+                    This option is immutable.
+
+                    '
+                  example: search-alias
+                  type: string
+              required:
+              - name
+              - type
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  indexes:
+                    description: 'The list of the View''s inverted indexes.
+
+                      '
+                    items:
+                      properties:
+                        collection:
+                          description: 'The name of a collection.
+
+                            '
+                          type: string
+                        index:
+                          description: 'The name of an inverted index of the `collection`.
+
+                            '
+                          type: string
+                      required:
+                      - collection
+                      - index
+                      type: object
+                    type: array
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    type: string
+                  type:
+                    description: 'The type of the View (`"search-alias"`).
+
+                      '
+                    example: search-alias
+                    type: string
+                required:
+                - name
+                - type
+                - id
+                - globallyUniqueId
+                - indexes
+                type: object
+          description: 'The View has been created.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `name` or `type` attribute or one of the `collection` or `index`
+
+            attributes is missing or invalid.
+
+            error is returned.
+
+            '
+        '409':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 409
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `name` already exists.
+
+            '
+      summary: Create a search-alias View
+      tags:
+      - Views
+  /_db/{database-name}/_api/view/{view-name}:
+    delete:
+      description: 'Deletes the View identified by `view-name`.
+
+        '
+      operationId: deleteView
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View to drop.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The value `true`.
+
+                      '
+                    example: true
+                    type: boolean
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'The View has been dropped successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` path parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Drop a View
+      tags:
+      - Views
+    get:
+      description: 'Returns the basic information about a specific View.
+
+        '
+      operationId: getView
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    example: coll
+                    type: string
+                  type:
+                    description: 'The type of the View (`"arangosearch"`).
+
+                      '
+                    example: arangosearch
+                    type: string
+                required:
+                - error
+                - code
+                - name
+                - type
+                - id
+                - globallyUniqueId
+                type: object
+          description: 'The basic information about the View.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Get information about a View
+      tags:
+      - Views
+  /_db/{database-name}/_api/view/{view-name}#searchalias:
+    get:
+      description: 'Returns the basic information about a specific View.
+
+        '
+      operationId: getViewSearchAlias
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    example: coll
+                    type: string
+                  type:
+                    description: 'The type of the View (`"search-alias"`).
+
+                      '
+                    example: search-alias
+                    type: string
+                required:
+                - error
+                - code
+                - name
+                - type
+                - id
+                - globallyUniqueId
+                type: object
+          description: 'The basic information about the View.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Get information about a View
+      tags:
+      - Views
+  /_db/{database-name}/_api/view/{view-name}/properties:
+    get:
+      description: 'Returns an object containing the definition of the View identified by `view-name`.
+
+        '
+      operationId: getViewProperties
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cleanupIntervalStep:
+                    description: 'Wait at least this many commits between removing unused files in the
+
+                      ArangoSearch data directory (`0` = disabled).
+
+                      '
+                    type: integer
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  commitIntervalMsec:
+                    description: 'Wait at least this many milliseconds between committing View data store
+
+                      changes and making documents visible to queries (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationIntervalMsec:
+                    description: 'Wait at least this many milliseconds between applying `consolidationPolicy` to
+
+                      consolidate the View data store and possibly release space on the filesystem
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationPolicy:
+                    description: 'The consolidation policy to apply for selecting which segments should be merged.
+
+
+                      - If the `tier` type is used, then the `maxSkewThreshold`,
+
+                      `minDeletionRatio`, `segments*`, and `minScore` properties are available.
+
+                      - If the `bytes_accum` type is used, then the `threshold` property is available.
+
+                      '
+                    properties:
+                      maxSkewThreshold:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The skew describes how much segment files vary in file size. It is a number
+
+                          between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                          of a set of segment files by the total size. For example, the skew of a
+
+                          200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                          A large `maxSkewThreshold` value allows merging large segment files with
+
+                          smaller ones, consolidation occurs more frequently, and there are fewer
+
+                          segment files on disk at all times. While this may potentially improve the
+
+                          read performance and use fewer file descriptors, frequent consolidations
+
+                          cause a higher write load and thus a higher write amplification.
+
+
+                          On the other hand, a small threshold value triggers the consolidation only
+
+                          when there are a large number of segment files that don''t vary in size a lot.
+
+                          Consolidation occurs less frequently, reducing the write amplification, but
+
+                          it can result in a greater number of segment files on disk.
+
+
+                          Multiple combinations of candidate segments are checked and the one with
+
+                          the lowest skew value is selected for consolidation. The selection process
+
+                          picks the greatest number of segments that together have the lowest skew value
+
+                          while ensuring that the size of the new consolidated segment remains under
+
+                          the configured `segmentsBytesMax`.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minDeletionRatio:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The `minDeletionRatio` represents the minimum required deletion ratio
+
+                          in one or more segments to perform a cleanup of those segments.
+
+                          It is a number between `0.0` and `1.0`.
+
+
+                          The deletion ratio is the percentage of deleted documents across one or
+
+                          more segment files and is calculated by dividing the number of deleted
+
+                          documents by the total number of documents in a segment or a group of
+
+                          segments. For example, if there is a segment with 1000 documents of which
+
+                          300 are deleted and another segment with 1000 documents of which 700 are
+
+                          deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                          The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                          value leads to earlier cleanup of deleted documents from segments and
+
+                          thus reclamation of disk space but it generates a higher write load.
+
+                          A very large value lowers the write amplification but at the same time
+
+                          the system can be left with a large number of segment files with a high
+
+                          percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                          During cleanup, the segment files are first arranged in decreasing
+
+                          order of their individual deletion ratios. Then the largest subset of
+
+                          segments whose collective deletion ratio is greater than or equal to
+
+                          `minDeletionRatio` is picked.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minScore:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Filter out consolidation candidates with a score less than this.
+
+                          '
+                        type: integer
+                      segmentsBytesFloor:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Defines the value (in bytes) to treat all smaller segments
+
+                          as equal for consolidation selection.
+
+                          '
+                        type: integer
+                      segmentsBytesMax:
+                        description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                          '
+                        type: integer
+                      segmentsMax:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The maximum number of segments that are evaluated as
+
+                          candidates for consolidation.
+
+                          '
+                        type: integer
+                      segmentsMin:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The minimum number of segments that are
+
+                          evaluated as candidates for consolidation
+
+                          '
+                        type: integer
+                      threshold:
+                        description: 'A value in the range `[0.0, 1.0]`
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      type:
+                        description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes.\n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                        enum:
+                        - tier
+                        - bytes_accum
+                        type: string
+                    type: object
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  links:
+                    description: 'An object with the attribute keys being names of to be linked collections,
+
+                      and the link properties as attribute values. See
+
+                      [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)
+
+                      for details.
+
+                      '
+                    type: object
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    example: coll
+                    type: string
+                  optimizeTopK:
+                    description: 'An array of strings defining sort expressions that can be optimized.
+
+                      This is also known as _WAND optimization_ (introduced in v3.12.0).
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  primaryKeyCache:
+                    description: 'Whether the primary key columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySort:
+                    description: 'The primary sort order, described by an array of objects, each specifying
+
+                      a field (attribute path) and a sort direction.
+
+                      '
+                    items:
+                      properties:
+                        asc:
+                          description: 'The sort direction.
+
+
+                            - `true` for ascending
+
+                            - `false` for descending
+
+                            '
+                          type: boolean
+                        field:
+                          description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                            '
+                          type: string
+                      required:
+                      - field
+                      - asc
+                      type: object
+                    type: array
+                  primarySortCache:
+                    description: 'Whether the primary sort columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySortCompression:
+                    description: 'Defines how the primary sort data is compressed.
+
+
+                      - `"lz4"`: LZ4 fast compression
+
+                      - `"none"`: no compression
+
+                      '
+                    enum:
+                    - lz4
+                    - none
+                    type: string
+                  storedValues:
+                    description: 'An array of objects that describes which document attributes are stored
+
+                      in the View index for covering search queries, which means the data can
+
+                      be taken from the index directly and accessing the storage engine can
+
+                      be avoided.
+
+                      '
+                    items:
+                      properties:
+                        cache:
+                          description: 'Whether stored values are always cached in memory.
+
+                            '
+                          type: boolean
+                        compression:
+                          description: 'The compression type used for the internal column-store.
+
+
+                            - `"lz4"`: LZ4 fast compression
+
+                            - `"none"`: no compression
+
+                            '
+                          enum:
+                          - lz4
+                          - none
+                          type: string
+                        fields:
+                          description: 'An array of strings with one or more document attribute paths.
+
+                            '
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - fields
+                      type: object
+                    type: array
+                  type:
+                    description: 'The type of the View (`"arangosearch"`).
+
+                      '
+                    example: arangosearch
+                    type: string
+                  writebufferActive:
+                    description: 'Maximum number of concurrent active writers (segments) that perform a
+
+                      transaction. Other writers (segments) wait till current active writers
+
+                      (segments) finish (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferIdle:
+                    description: 'Maximum number of writers (segments) cached in the pool (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferSizeMax:
+                    description: 'Maximum memory byte size per writer (segment) before a writer (segment) flush
+
+                      is triggered. `0` value turns off this limit for any writer (buffer) and data
+
+                      is flushed periodically based on the value defined for the flush thread
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - links
+                - primarySort
+                - primarySortCompression
+                - optimizeTopK
+                - storedValues
+                - cleanupIntervalStep
+                - commitIntervalMsec
+                - consolidationIntervalMsec
+                - consolidationPolicy
+                - writebufferIdle
+                - writebufferActive
+                - writebufferSizeMax
+                - id
+                - name
+                - type
+                - globallyUniqueId
+                type: object
+          description: 'An object with a full description of the specified View, including
+
+            `arangosearch` View type-dependent properties.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` path parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Get the properties of a View
+      tags:
+      - Views
+    patch:
+      description: 'Partially changes the properties of a View by updating the specified attributes.
+
+        '
+      operationId: updateViewProperties
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                cleanupIntervalStep:
+                  description: "Wait at least this many commits between removing unused files in the\nArangoSearch data directory (`0` = disable).\nFor the case where the consolidation policies merge segments often (i.e. a lot\nof commit+consolidate), a lower value causes a lot of disk space to be\nwasted.\nFor the case where the consolidation policies rarely merge segments (i.e. few\ninserts/deletes), a higher value impacts performance without any added\nbenefits.\n\n_Background:_\n  With every \"commit\" or \"consolidate\" operation, a new state of the View's\n  internal data structures is created on disk.\n  Old states/snapshots are released once there are no longer any users\n  remaining.\n  However, the files for the released states/snapshots are left on disk, and\n  only removed by \"cleanup\" operation.\n"
+                  type: integer
+                commitIntervalMsec:
+                  description: "Wait at least this many milliseconds between committing View data store\nchanges and making documents visible to queries (`0` = disable).\nFor the case where there are a lot of inserts/updates, a higher value causes the\nindex not to account for them and memory usage continues to grow until the commit.\nA lower value impacts performance, including the case where there are no or only a\nfew inserts/updates because of synchronous locking, and it wastes disk space for\neach commit call.\n\n_Background:_\n  For data retrieval, ArangoSearch follows the concept of\n  \"eventually-consistent\", i.e. eventually all the data in ArangoDB will be\n  matched by corresponding query expressions.\n  The concept of ArangoSearch \"commit\" operations is introduced to\n  control the upper-bound on the time until document addition/removals are\n  actually reflected by corresponding query expressions.\n  Once a \"commit\" operation is complete, all documents added/removed prior to\n  the start of the \"commit\" operation will be reflected by queries invoked in\n  subsequent ArangoDB transactions, in-progress ArangoDB transactions will\n  still continue to return a repeatable-read state.\n"
+                  type: integer
+                consolidationIntervalMsec:
+                  description: "Wait at least this many milliseconds between applying `consolidationPolicy` to\nconsolidate the View data store and possibly release space on the filesystem\n(`0` = disable).\nFor the case where there are a lot of data modification operations, a higher\nvalue could potentially have the data store consume more space and file handles.\nFor the case where there are a few data modification operations, a lower value\nimpacts performance due to no segment candidates being available for\nconsolidation.\n\n_Background:_\n  For data modification, ArangoSearch follows the concept of a\n  \"versioned data store\". Thus old versions of data may be removed once there\n  are no longer any users of the old data. The frequency of the cleanup and\n  compaction operations are governed by `consolidationIntervalMsec` and the\n  candidates for compaction are selected via `consolidationPolicy`.\n"
+                  type: integer
+                consolidationPolicy:
+                  description: "The consolidation policy to apply for selecting which segments should be merged.\n\n- If the `tier` type is used, then the `maxSkewThreshold`,\n`minDeletionRatio`, `segments*`, and `minScore` properties are available.\n- If the `bytes_accum` type is used, then the `threshold` property is available.\n\n_Background:_\n  With each ArangoDB transaction that inserts documents, one or more\n  ArangoSearch-internal segments get created.\n  Similarly, for removed documents, the segments that contain such documents\n  have these documents marked as 'deleted'.\n  Over time, this approach causes a lot of small and sparse segments to be\n  created.\n  A \"consolidation\" operation selects one or more segments and copies all of\n  their valid documents into a single new segment, thereby allowing the\n  search algorithm to perform more optimally and for extra file handles to be\n  released once old segments are no longer used.\n"
+                  properties:
+                    maxSkewThreshold:
+                      default: 0.4
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The skew describes how much segment files vary in file size. It is a number
+
+                        between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                        of a set of segment files by the total size. For example, the skew of a
+
+                        200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                        A large `maxSkewThreshold` value allows merging large segment files with
+
+                        smaller ones, consolidation occurs more frequently, and there are fewer
+
+                        segment files on disk at all times. While this may potentially improve the
+
+                        read performance and use fewer file descriptors, frequent consolidations
+
+                        cause a higher write load and thus a higher write amplification.
+
+
+                        On the other hand, a small threshold value triggers the consolidation only
+
+                        when there are a large number of segment files that don''t vary in size a lot.
+
+                        Consolidation occurs less frequently, reducing the write amplification, but
+
+                        it can result in a greater number of segment files on disk.
+
+
+                        Multiple combinations of candidate segments are checked and the one with
+
+                        the lowest skew value is selected for consolidation. The selection process
+
+                        picks the greatest number of segments that together have the lowest skew value
+
+                        while ensuring that the size of the new consolidated segment remains under
+
+                        the configured `segmentsBytesMax`.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minDeletionRatio:
+                      default: 0.5
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The `minDeletionRatio` represents the minimum required deletion ratio
+
+                        in one or more segments to perform a cleanup of those segments.
+
+                        It is a number between `0.0` and `1.0`.
+
+
+                        The deletion ratio is the percentage of deleted documents across one or
+
+                        more segment files and is calculated by dividing the number of deleted
+
+                        documents by the total number of documents in a segment or a group of
+
+                        segments. For example, if there is a segment with 1000 documents of which
+
+                        300 are deleted and another segment with 1000 documents of which 700 are
+
+                        deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                        The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                        value leads to earlier cleanup of deleted documents from segments and
+
+                        thus reclamation of disk space but it generates a higher write load.
+
+                        A very large value lowers the write amplification but at the same time
+
+                        the system can be left with a large number of segment files with a high
+
+                        percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                        During cleanup, the segment files are first arranged in decreasing
+
+                        order of their individual deletion ratios. Then the largest subset of
+
+                        segments whose collective deletion ratio is greater than or equal to
+
+                        `minDeletionRatio` is picked.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minScore:
+                      default: 0
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Filter out consolidation candidates with a score less than this.
+
+                        '
+                      type: integer
+                    segmentsBytesFloor:
+                      default: 25165824
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Defines the value (in bytes) to treat all smaller segments
+
+                        as equal for consolidation selection.
+
+                        '
+                      type: integer
+                    segmentsBytesMax:
+                      default: 8589934592
+                      description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                        '
+                      type: integer
+                    segmentsMax:
+                      default: 200
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The maximum number of segments that are evaluated as
+
+                        candidates for consolidation.
+
+                        '
+                      type: integer
+                    segmentsMin:
+                      default: 50
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The minimum number of segments that are
+
+                        evaluated as candidates for consolidation
+
+                        '
+                      type: integer
+                    threshold:
+                      default: 0
+                      description: 'A value in the range `[0.0, 1.0]`.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    type:
+                      description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes. \n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                      enum:
+                      - tier
+                      - bytes_accum
+                      type: string
+                  required:
+                  - type
+                  type: object
+                links:
+                  description: "Expects an object with the attribute keys being names of to be linked collections,\nand the link properties as attribute values. Example:\n\n```json\n{\n  \"name\": \"arangosearch\",\n  \"links\": {\n    \"coll\": {\n      \"fields\": {\n        \"my_attribute\": {\n          \"fields\": {\n            \"my_sub_attribute\": {\n              \"analyzers\": [\"text_en\"]\n            }\n          }\n        }\n      }\n    }\n  }\n}\n```\n\nSee [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)\nfor details.\n"
+                  type: object
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cleanupIntervalStep:
+                    description: 'Wait at least this many commits between removing unused files in the
+
+                      ArangoSearch data directory (`0` = disabled).
+
+                      '
+                    type: integer
+                  commitIntervalMsec:
+                    description: 'Wait at least this many milliseconds between committing View data store
+
+                      changes and making documents visible to queries (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationIntervalMsec:
+                    description: 'Wait at least this many milliseconds between applying `consolidationPolicy` to
+
+                      consolidate the View data store and possibly release space on the filesystem
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationPolicy:
+                    description: 'The consolidation policy to apply for selecting which segments should be merged.
+
+
+                      - If the `tier` type is used, then the `maxSkewThreshold`,
+
+                      `minDeletionRatio`, `segments*`, and `minScore` properties are available.
+
+                      - If the `bytes_accum` type is used, then the `threshold` property is available.
+
+                      '
+                    properties:
+                      maxSkewThreshold:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The skew describes how much segment files vary in file size. It is a number
+
+                          between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                          of a set of segment files by the total size. For example, the skew of a
+
+                          200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                          A large `maxSkewThreshold` value allows merging large segment files with
+
+                          smaller ones, consolidation occurs more frequently, and there are fewer
+
+                          segment files on disk at all times. While this may potentially improve the
+
+                          read performance and use fewer file descriptors, frequent consolidations
+
+                          cause a higher write load and thus a higher write amplification.
+
+
+                          On the other hand, a small threshold value triggers the consolidation only
+
+                          when there are a large number of segment files that don''t vary in size a lot.
+
+                          Consolidation occurs less frequently, reducing the write amplification, but
+
+                          it can result in a greater number of segment files on disk.
+
+
+                          Multiple combinations of candidate segments are checked and the one with
+
+                          the lowest skew value is selected for consolidation. The selection process
+
+                          picks the greatest number of segments that together have the lowest skew value
+
+                          while ensuring that the size of the new consolidated segment remains under
+
+                          the configured `segmentsBytesMax`.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minDeletionRatio:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The `minDeletionRatio` represents the minimum required deletion ratio
+
+                          in one or more segments to perform a cleanup of those segments.
+
+                          It is a number between `0.0` and `1.0`.
+
+
+                          The deletion ratio is the percentage of deleted documents across one or
+
+                          more segment files and is calculated by dividing the number of deleted
+
+                          documents by the total number of documents in a segment or a group of
+
+                          segments. For example, if there is a segment with 1000 documents of which
+
+                          300 are deleted and another segment with 1000 documents of which 700 are
+
+                          deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                          The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                          value leads to earlier cleanup of deleted documents from segments and
+
+                          thus reclamation of disk space but it generates a higher write load.
+
+                          A very large value lowers the write amplification but at the same time
+
+                          the system can be left with a large number of segment files with a high
+
+                          percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                          During cleanup, the segment files are first arranged in decreasing
+
+                          order of their individual deletion ratios. Then the largest subset of
+
+                          segments whose collective deletion ratio is greater than or equal to
+
+                          `minDeletionRatio` is picked.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minScore:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Filter out consolidation candidates with a score less than this.
+
+                          '
+                        type: integer
+                      segmentsBytesFloor:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Defines the value (in bytes) to treat all smaller segments
+
+                          as equal for consolidation selection.
+
+                          '
+                        type: integer
+                      segmentsBytesMax:
+                        description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                          '
+                        type: integer
+                      segmentsMax:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The maximum number of segments that are evaluated as
+
+                          candidates for consolidation.
+
+                          '
+                        type: integer
+                      segmentsMin:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The minimum number of segments that are
+
+                          evaluated as candidates for consolidation
+
+                          '
+                        type: integer
+                      threshold:
+                        description: 'A value in the range `[0.0, 1.0]`
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      type:
+                        description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes.\n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                        enum:
+                        - tier
+                        - bytes_accum
+                        type: string
+                    type: object
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  links:
+                    description: 'An object with the attribute keys being names of to be linked collections,
+
+                      and the link properties as attribute values. See
+
+                      [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)
+
+                      for details.
+
+                      '
+                    type: object
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    example: coll
+                    type: string
+                  optimizeTopK:
+                    description: 'An array of strings defining sort expressions that can be optimized.
+
+                      This is also known as _WAND optimization_ (introduced in v3.12.0).
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  primaryKeyCache:
+                    description: 'Whether the primary key columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySort:
+                    description: 'The primary sort order, described by an array of objects, each specifying
+
+                      a field (attribute path) and a sort direction.
+
+                      '
+                    items:
+                      properties:
+                        asc:
+                          description: 'The sort direction.
+
+
+                            - `true` for ascending
+
+                            - `false` for descending
+
+                            '
+                          type: boolean
+                        field:
+                          description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                            '
+                          type: string
+                      required:
+                      - field
+                      - asc
+                      type: object
+                    type: array
+                  primarySortCache:
+                    description: 'Whether the primary sort columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySortCompression:
+                    description: 'Defines how the primary sort data is compressed.
+
+
+                      - `"lz4"`: LZ4 fast compression
+
+                      - `"none"`: no compression
+
+                      '
+                    enum:
+                    - lz4
+                    - none
+                    type: string
+                  storedValues:
+                    description: 'An array of objects that describes which document attributes are stored
+
+                      in the View index for covering search queries, which means the data can
+
+                      be taken from the index directly and accessing the storage engine can
+
+                      be avoided.
+
+                      '
+                    items:
+                      properties:
+                        cache:
+                          description: 'Whether stored values are always cached in memory.
+
+                            '
+                          type: boolean
+                        compression:
+                          description: 'The compression type used for the internal column-store.
+
+
+                            - `"lz4"`: LZ4 fast compression
+
+                            - `"none"`: no compression
+
+                            '
+                          enum:
+                          - lz4
+                          - none
+                          type: string
+                        fields:
+                          description: 'An array of strings with one or more document attribute paths.
+
+                            '
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - fields
+                      type: object
+                    type: array
+                  type:
+                    description: 'The type of the View (`"arangosearch"`).
+
+                      '
+                    example: arangosearch
+                    type: string
+                  writebufferActive:
+                    description: 'Maximum number of concurrent active writers (segments) that perform a
+
+                      transaction. Other writers (segments) wait till current active writers
+
+                      (segments) finish (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferIdle:
+                    description: 'Maximum number of writers (segments) cached in the pool (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferSizeMax:
+                    description: 'Maximum memory byte size per writer (segment) before a writer (segment) flush
+
+                      is triggered. `0` value turns off this limit for any writer (buffer) and data
+
+                      is flushed periodically based on the value defined for the flush thread
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                required:
+                - links
+                - primarySort
+                - primarySortCompression
+                - optimizeTopK
+                - storedValues
+                - cleanupIntervalStep
+                - commitIntervalMsec
+                - consolidationIntervalMsec
+                - consolidationPolicy
+                - writebufferIdle
+                - writebufferActive
+                - writebufferSizeMax
+                - id
+                - name
+                - type
+                - globallyUniqueId
+                type: object
+          description: 'The View has been updated successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` path parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Update the properties of an arangosearch View
+      tags:
+      - Views
+    put:
+      description: 'Changes all properties of a View by replacing them, except for immutable properties.
+
+        '
+      operationId: replaceViewProperties
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                cleanupIntervalStep:
+                  default: 2
+                  description: "Wait at least this many commits between removing unused files in the\nArangoSearch data directory (`0` = disable).\nFor the case where the consolidation policies merge segments often (i.e. a lot\nof commit+consolidate), a lower value causes a lot of disk space to be\nwasted.\nFor the case where the consolidation policies rarely merge segments (i.e. few\ninserts/deletes), a higher value impacts performance without any added\nbenefits.\n\n_Background:_\n  With every \"commit\" or \"consolidate\" operation, a new state of the View's\n  internal data structures is created on disk.\n  Old states/snapshots are released once there are no longer any users\n  remaining.\n  However, the files for the released states/snapshots are left on disk, and\n  only removed by \"cleanup\" operation.\n"
+                  type: integer
+                commitIntervalMsec:
+                  default: 1000
+                  description: "Wait at least this many milliseconds between committing View data store\nchanges and making documents visible to queries (`0` = disable).\nFor the case where there are a lot of inserts/updates, a higher value causes the\nindex not to account for them and memory usage continues to grow until the commit.\nA lower value impacts performance, including the case where there are no or only a\nfew inserts/updates because of synchronous locking, and it wastes disk space for\neach commit call.\n\n_Background:_\n  For data retrieval, ArangoSearch follows the concept of\n  \"eventually-consistent\", i.e. eventually all the data in ArangoDB will be\n  matched by corresponding query expressions.\n  The concept of ArangoSearch \"commit\" operations is introduced to\n  control the upper-bound on the time until document addition/removals are\n  actually reflected by corresponding query expressions.\n  Once a \"commit\" operation is complete, all documents added/removed prior to\n  the start of the \"commit\" operation will be reflected by queries invoked in\n  subsequent ArangoDB transactions, in-progress ArangoDB transactions will\n  still continue to return a repeatable-read state.\n"
+                  type: integer
+                consolidationIntervalMsec:
+                  default: 5000
+                  description: "Wait at least this many milliseconds between applying `consolidationPolicy` to\nconsolidate the View data store and possibly release space on the filesystem\n(`0` = disable).\nFor the case where there are a lot of data modification operations, a higher\nvalue could potentially have the data store consume more space and file handles.\nFor the case where there are a few data modification operations, a lower value\nimpacts performance due to no segment candidates being available for\nconsolidation.\n\n_Background:_\n  For data modification, ArangoSearch follows the concept of a\n  \"versioned data store\". Thus old versions of data may be removed once there\n  are no longer any users of the old data. The frequency of the cleanup and\n  compaction operations are governed by `consolidationIntervalMsec` and the\n  candidates for compaction are selected via `consolidationPolicy`.\n"
+                  type: integer
+                consolidationPolicy:
+                  description: "The consolidation policy to apply for selecting which segments should be merged.\n\n- If the `tier` type is used, then the `maxSkewThreshold`,\n`minDeletionRatio`, `segments*`, and `minScore` properties are available.\n- If the `bytes_accum` type is used, then the `threshold` property is available.\n\n_Background:_\n  With each ArangoDB transaction that inserts documents, one or more\n  ArangoSearch-internal segments get created.\n  Similarly, for removed documents, the segments that contain such documents\n  have these documents marked as 'deleted'.\n  Over time, this approach causes a lot of small and sparse segments to be\n  created.\n  A \"consolidation\" operation selects one or more segments and copies all of\n  their valid documents into a single new segment, thereby allowing the\n  search algorithm to perform more optimally and for extra file handles to be\n  released once old segments are no longer used.\n"
+                  properties:
+                    maxSkewThreshold:
+                      default: 0.4
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The skew describes how much segment files vary in file size. It is a number
+
+                        between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                        of a set of segment files by the total size. For example, the skew of a
+
+                        200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                        A large `maxSkewThreshold` value allows merging large segment files with
+
+                        smaller ones, consolidation occurs more frequently, and there are fewer
+
+                        segment files on disk at all times. While this may potentially improve the
+
+                        read performance and use fewer file descriptors, frequent consolidations
+
+                        cause a higher write load and thus a higher write amplification.
+
+
+                        On the other hand, a small threshold value triggers the consolidation only
+
+                        when there are a large number of segment files that don''t vary in size a lot.
+
+                        Consolidation occurs less frequently, reducing the write amplification, but
+
+                        it can result in a greater number of segment files on disk.
+
+
+                        Multiple combinations of candidate segments are checked and the one with
+
+                        the lowest skew value is selected for consolidation. The selection process
+
+                        picks the greatest number of segments that together have the lowest skew value
+
+                        while ensuring that the size of the new consolidated segment remains under
+
+                        the configured `segmentsBytesMax`.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minDeletionRatio:
+                      default: 0.5
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The `minDeletionRatio` represents the minimum required deletion ratio
+
+                        in one or more segments to perform a cleanup of those segments.
+
+                        It is a number between `0.0` and `1.0`.
+
+
+                        The deletion ratio is the percentage of deleted documents across one or
+
+                        more segment files and is calculated by dividing the number of deleted
+
+                        documents by the total number of documents in a segment or a group of
+
+                        segments. For example, if there is a segment with 1000 documents of which
+
+                        300 are deleted and another segment with 1000 documents of which 700 are
+
+                        deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                        The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                        value leads to earlier cleanup of deleted documents from segments and
+
+                        thus reclamation of disk space but it generates a higher write load.
+
+                        A very large value lowers the write amplification but at the same time
+
+                        the system can be left with a large number of segment files with a high
+
+                        percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                        During cleanup, the segment files are first arranged in decreasing
+
+                        order of their individual deletion ratios. Then the largest subset of
+
+                        segments whose collective deletion ratio is greater than or equal to
+
+                        `minDeletionRatio` is picked.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minScore:
+                      default: 0
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Filter out consolidation candidates with a score less than this.
+
+                        '
+                      type: integer
+                    segmentsBytesFloor:
+                      default: 25165824
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Defines the value (in bytes) to treat all smaller segments
+
+                        as equal for consolidation selection.
+
+                        '
+                      type: integer
+                    segmentsBytesMax:
+                      default: 8589934592
+                      description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                        '
+                      type: integer
+                    segmentsMax:
+                      default: 200
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The maximum number of segments that are evaluated as
+
+                        candidates for consolidation.
+
+                        '
+                      type: integer
+                    segmentsMin:
+                      default: 50
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The minimum number of segments that are
+
+                        evaluated as candidates for consolidation
+
+                        '
+                      type: integer
+                    threshold:
+                      default: 0
+                      description: 'A value in the range `[0.0, 1.0]`.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    type:
+                      default: tier
+                      description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes. \n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                      enum:
+                      - tier
+                      - bytes_accum
+                      type: string
+                  required:
+                  - type
+                  type: object
+                links:
+                  description: "Expects an object with the attribute keys being names of to be linked collections,\nand the link properties as attribute values. Example:\n\n```json\n{\n  \"name\": \"arangosearch\",\n  \"links\": {\n    \"coll\": {\n      \"fields\": {\n        \"my_attribute\": {\n          \"fields\": {\n            \"my_sub_attribute\": {\n              \"analyzers\": [\"text_en\"]\n            }\n          }\n        }\n      }\n    }\n  }\n}\n```\n\nSee [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)\nfor details.\n"
+                  type: object
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cleanupIntervalStep:
+                    description: 'Wait at least this many commits between removing unused files in the
+
+                      ArangoSearch data directory (`0` = disabled).
+
+                      '
+                    type: integer
+                  commitIntervalMsec:
+                    description: 'Wait at least this many milliseconds between committing View data store
+
+                      changes and making documents visible to queries (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationIntervalMsec:
+                    description: 'Wait at least this many milliseconds between applying `consolidationPolicy` to
+
+                      consolidate the View data store and possibly release space on the filesystem
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationPolicy:
+                    description: 'The consolidation policy to apply for selecting which segments should be merged.
+
+
+                      - If the `tier` type is used, then the `maxSkewThreshold`,
+
+                      `minDeletionRatio`, `segments*`, and `minScore` properties are available.
+
+                      - If the `bytes_accum` type is used, then the `threshold` property is available.
+
+                      '
+                    properties:
+                      maxSkewThreshold:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The skew describes how much segment files vary in file size. It is a number
+
+                          between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                          of a set of segment files by the total size. For example, the skew of a
+
+                          200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                          A large `maxSkewThreshold` value allows merging large segment files with
+
+                          smaller ones, consolidation occurs more frequently, and there are fewer
+
+                          segment files on disk at all times. While this may potentially improve the
+
+                          read performance and use fewer file descriptors, frequent consolidations
+
+                          cause a higher write load and thus a higher write amplification.
+
+
+                          On the other hand, a small threshold value triggers the consolidation only
+
+                          when there are a large number of segment files that don''t vary in size a lot.
+
+                          Consolidation occurs less frequently, reducing the write amplification, but
+
+                          it can result in a greater number of segment files on disk.
+
+
+                          Multiple combinations of candidate segments are checked and the one with
+
+                          the lowest skew value is selected for consolidation. The selection process
+
+                          picks the greatest number of segments that together have the lowest skew value
+
+                          while ensuring that the size of the new consolidated segment remains under
+
+                          the configured `segmentsBytesMax`.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minDeletionRatio:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The `minDeletionRatio` represents the minimum required deletion ratio
+
+                          in one or more segments to perform a cleanup of those segments.
+
+                          It is a number between `0.0` and `1.0`.
+
+
+                          The deletion ratio is the percentage of deleted documents across one or
+
+                          more segment files and is calculated by dividing the number of deleted
+
+                          documents by the total number of documents in a segment or a group of
+
+                          segments. For example, if there is a segment with 1000 documents of which
+
+                          300 are deleted and another segment with 1000 documents of which 700 are
+
+                          deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                          The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                          value leads to earlier cleanup of deleted documents from segments and
+
+                          thus reclamation of disk space but it generates a higher write load.
+
+                          A very large value lowers the write amplification but at the same time
+
+                          the system can be left with a large number of segment files with a high
+
+                          percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                          During cleanup, the segment files are first arranged in decreasing
+
+                          order of their individual deletion ratios. Then the largest subset of
+
+                          segments whose collective deletion ratio is greater than or equal to
+
+                          `minDeletionRatio` is picked.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minScore:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Filter out consolidation candidates with a score less than this.
+
+                          '
+                        type: integer
+                      segmentsBytesFloor:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Defines the value (in bytes) to treat all smaller segments
+
+                          as equal for consolidation selection.
+
+                          '
+                        type: integer
+                      segmentsBytesMax:
+                        description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                          '
+                        type: integer
+                      segmentsMax:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The maximum number of segments that are evaluated as
+
+                          candidates for consolidation.
+
+                          '
+                        type: integer
+                      segmentsMin:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The minimum number of segments that are
+
+                          evaluated as candidates for consolidation
+
+                          '
+                        type: integer
+                      threshold:
+                        description: 'A value in the range `[0.0, 1.0]`
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      type:
+                        description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes.\n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                        enum:
+                        - tier
+                        - bytes_accum
+                        type: string
+                    type: object
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  links:
+                    description: 'An object with the attribute keys being names of to be linked collections,
+
+                      and the link properties as attribute values. See
+
+                      [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)
+
+                      for details.
+
+                      '
+                    type: object
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    example: coll
+                    type: string
+                  optimizeTopK:
+                    description: 'An array of strings defining sort expressions that can be optimized.
+
+                      This is also known as _WAND optimization_ (introduced in v3.12.0).
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  primaryKeyCache:
+                    description: 'Whether the primary key columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySort:
+                    description: 'The primary sort order, described by an array of objects, each specifying
+
+                      a field (attribute path) and a sort direction.
+
+                      '
+                    items:
+                      properties:
+                        asc:
+                          description: 'The sort direction.
+
+
+                            - `true` for ascending
+
+                            - `false` for descending
+
+                            '
+                          type: boolean
+                        field:
+                          description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                            '
+                          type: string
+                      required:
+                      - field
+                      - asc
+                      type: object
+                    type: array
+                  primarySortCache:
+                    description: 'Whether the primary sort columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySortCompression:
+                    description: 'Defines how the primary sort data is compressed.
+
+
+                      - `"lz4"`: LZ4 fast compression
+
+                      - `"none"`: no compression
+
+                      '
+                    enum:
+                    - lz4
+                    - none
+                    type: string
+                  storedValues:
+                    description: 'An array of objects that describes which document attributes are stored
+
+                      in the View index for covering search queries, which means the data can
+
+                      be taken from the index directly and accessing the storage engine can
+
+                      be avoided.
+
+                      '
+                    items:
+                      properties:
+                        cache:
+                          description: 'Whether stored values are always cached in memory.
+
+                            '
+                          type: boolean
+                        compression:
+                          description: 'The compression type used for the internal column-store.
+
+
+                            - `"lz4"`: LZ4 fast compression
+
+                            - `"none"`: no compression
+
+                            '
+                          enum:
+                          - lz4
+                          - none
+                          type: string
+                        fields:
+                          description: 'An array of strings with one or more document attribute paths.
+
+                            '
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - fields
+                      type: object
+                    type: array
+                  type:
+                    description: 'The type of the View (`"arangosearch"`).
+
+                      '
+                    example: arangosearch
+                    type: string
+                  writebufferActive:
+                    description: 'Maximum number of concurrent active writers (segments) that perform a
+
+                      transaction. Other writers (segments) wait till current active writers
+
+                      (segments) finish (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferIdle:
+                    description: 'Maximum number of writers (segments) cached in the pool (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferSizeMax:
+                    description: 'Maximum memory byte size per writer (segment) before a writer (segment) flush
+
+                      is triggered. `0` value turns off this limit for any writer (buffer) and data
+
+                      is flushed periodically based on the value defined for the flush thread
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                required:
+                - links
+                - primarySort
+                - primarySortCompression
+                - optimizeTopK
+                - storedValues
+                - cleanupIntervalStep
+                - commitIntervalMsec
+                - consolidationIntervalMsec
+                - consolidationPolicy
+                - writebufferIdle
+                - writebufferActive
+                - writebufferSizeMax
+                - id
+                - name
+                - type
+                - globallyUniqueId
+                type: object
+          description: 'The View has been updated successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` path parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Replace the properties of an arangosearch View
+      tags:
+      - Views
+  /_db/{database-name}/_api/view/{view-name}/properties#searchalias:
+    get:
+      description: 'Returns an object containing the definition of the View identified by `view-name`.
+
+        '
+      operationId: getViewPropertiesSearchAlias
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  indexes:
+                    description: 'The list of the View''s inverted indexes.
+
+                      '
+                    items:
+                      properties:
+                        collection:
+                          description: 'The name of a collection.
+
+                            '
+                          type: string
+                        index:
+                          description: 'The name of an inverted index of the `collection`.
+
+                            '
+                          type: string
+                      required:
+                      - collection
+                      - index
+                      type: object
+                    type: array
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    type: string
+                  type:
+                    description: 'The type of the View (`"search-alias"`).
+
+                      '
+                    example: search-alias
+                    type: string
+                required:
+                - name
+                - type
+                - id
+                - globallyUniqueId
+                - indexes
+                type: object
+          description: 'An object with a full description of the specified View, including
+
+            `search-alias` View type-dependent properties.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Read properties of a View
+      tags:
+      - Views
+    patch:
+      description: 'Updates the list of indexes of a `search-alias` View.
+
+        '
+      operationId: updateViewPropertiesSearchAlias
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                indexes:
+                  description: 'A list of inverted indexes to add to or remove from the View.
+
+                    '
+                  items:
+                    properties:
+                      collection:
+                        description: 'The name of a collection.
+
+                          '
+                        type: string
+                      index:
+                        description: 'The name of an inverted index of the `collection`, or the index ID without
+
+                          the `<collection>/` prefix.
+
+                          '
+                        type: string
+                      operation:
+                        default: add
+                        description: 'Whether to add or remove the index to the stored `indexes` property of the View.
+
+                          '
+                        enum:
+                        - add
+                        - del
+                        type: string
+                    required:
+                    - collection
+                    - index
+                    type: object
+                  type: array
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'The identifier of the View.
+
+                      '
+                    type: string
+                  indexes:
+                    description: 'The list of inverted indexes that are part of the View.
+
+                      '
+                    items:
+                      properties:
+                        collection:
+                          description: 'The name of a collection.
+
+                            '
+                          type: string
+                        index:
+                          description: 'The name of an inverted index of the `collection`.
+
+                            '
+                          type: string
+                      required:
+                      - collection
+                      - index
+                      type: object
+                    type: array
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    type: string
+                  type:
+                    description: 'The View type (`"search-alias"`).
+
+                      '
+                    type: string
+                required:
+                - name
+                - type
+                - id
+                - globallyUniqueId
+                - indexes
+                type: object
+          description: 'The View has been updated successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Update the properties of a search-alias View
+      tags:
+      - Views
+    put:
+      description: 'Replaces the list of indexes of a `search-alias` View.
+
+        '
+      operationId: replaceViewPropertiesSearchAlias
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                indexes:
+                  description: 'A list of inverted indexes for the View.
+
+                    '
+                  items:
+                    properties:
+                      collection:
+                        description: 'The name of a collection.
+
+                          '
+                        type: string
+                      index:
+                        description: 'The name of an inverted index of the `collection`, or the index ID without
+
+                          the `<collection>/` prefix.
+
+                          '
+                        type: string
+                    required:
+                    - collection
+                    - index
+                    type: object
+                  type: array
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'The identifier of the View.
+
+                      '
+                    type: string
+                  indexes:
+                    description: 'The list of inverted indexes that are part of the View.
+
+                      '
+                    items:
+                      properties:
+                        collection:
+                          description: 'The name of a collection.
+
+                            '
+                          type: string
+                        index:
+                          description: 'The name of an inverted index of the `collection`.
+
+                            '
+                          type: string
+                      required:
+                      - collection
+                      - index
+                      type: object
+                    type: array
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    type: string
+                  type:
+                    description: 'The View type (`"search-alias"`).
+
+                      '
+                    type: string
+                required:
+                - name
+                - type
+                - id
+                - globallyUniqueId
+                - indexes
+                type: object
+          description: 'The View has been updated successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Replace the properties of a search-alias View
+      tags:
+      - Views
+  /_db/{database-name}/_api/view/{view-name}/rename:
+    put:
+      description: 'Renames a View.
+
+
+        > **INFO:**
+
+        Renaming Views is not supported in cluster deployments.
+
+        '
+      operationId: renameView
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View to rename.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: 'The new name for the View.
+
+                    '
+                  type: string
+              required:
+              - name
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cleanupIntervalStep:
+                    description: 'Wait at least this many commits between removing unused files in the
+
+                      ArangoSearch data directory (`0` = disabled).
+
+                      '
+                    type: integer
+                  commitIntervalMsec:
+                    description: 'Wait at least this many milliseconds between committing View data store
+
+                      changes and making documents visible to queries (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationIntervalMsec:
+                    description: 'Wait at least this many milliseconds between applying `consolidationPolicy` to
+
+                      consolidate the View data store and possibly release space on the filesystem
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                  consolidationPolicy:
+                    description: 'The consolidation policy to apply for selecting which segments should be merged.
+
+
+                      - If the `tier` type is used, then the `maxSkewThreshold`,
+
+                      `minDeletionRatio`, `segments*`, and `minScore` properties are available.
+
+                      - If the `bytes_accum` type is used, then the `threshold` property is available.
+
+                      '
+                    properties:
+                      maxSkewThreshold:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The skew describes how much segment files vary in file size. It is a number
+
+                          between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                          of a set of segment files by the total size. For example, the skew of a
+
+                          200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                          A large `maxSkewThreshold` value allows merging large segment files with
+
+                          smaller ones, consolidation occurs more frequently, and there are fewer
+
+                          segment files on disk at all times. While this may potentially improve the
+
+                          read performance and use fewer file descriptors, frequent consolidations
+
+                          cause a higher write load and thus a higher write amplification.
+
+
+                          On the other hand, a small threshold value triggers the consolidation only
+
+                          when there are a large number of segment files that don''t vary in size a lot.
+
+                          Consolidation occurs less frequently, reducing the write amplification, but
+
+                          it can result in a greater number of segment files on disk.
+
+
+                          Multiple combinations of candidate segments are checked and the one with
+
+                          the lowest skew value is selected for consolidation. The selection process
+
+                          picks the greatest number of segments that together have the lowest skew value
+
+                          while ensuring that the size of the new consolidated segment remains under
+
+                          the configured `segmentsBytesMax`.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minDeletionRatio:
+                        description: 'This option is available from v3.12.7 onward:
+
+
+                          The `minDeletionRatio` represents the minimum required deletion ratio
+
+                          in one or more segments to perform a cleanup of those segments.
+
+                          It is a number between `0.0` and `1.0`.
+
+
+                          The deletion ratio is the percentage of deleted documents across one or
+
+                          more segment files and is calculated by dividing the number of deleted
+
+                          documents by the total number of documents in a segment or a group of
+
+                          segments. For example, if there is a segment with 1000 documents of which
+
+                          300 are deleted and another segment with 1000 documents of which 700 are
+
+                          deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                          The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                          value leads to earlier cleanup of deleted documents from segments and
+
+                          thus reclamation of disk space but it generates a higher write load.
+
+                          A very large value lowers the write amplification but at the same time
+
+                          the system can be left with a large number of segment files with a high
+
+                          percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                          During cleanup, the segment files are first arranged in decreasing
+
+                          order of their individual deletion ratios. Then the largest subset of
+
+                          segments whose collective deletion ratio is greater than or equal to
+
+                          `minDeletionRatio` is picked.
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      minScore:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Filter out consolidation candidates with a score less than this.
+
+                          '
+                        type: integer
+                      segmentsBytesFloor:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          Defines the value (in bytes) to treat all smaller segments
+
+                          as equal for consolidation selection.
+
+                          '
+                        type: integer
+                      segmentsBytesMax:
+                        description: 'Maximum allowed size of all consolidated segments in bytes.
+
+                          '
+                        type: integer
+                      segmentsMax:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The maximum number of segments that are evaluated as
+
+                          candidates for consolidation.
+
+                          '
+                        type: integer
+                      segmentsMin:
+                        description: 'This option is only available up to v3.12.6:
+
+
+                          The minimum number of segments that are
+
+                          evaluated as candidates for consolidation
+
+                          '
+                        type: integer
+                      threshold:
+                        description: 'A value in the range `[0.0, 1.0]`
+
+                          '
+                        maximum: 1
+                        minimum: 0
+                        type: number
+                      type:
+                        description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe currently supported types are:\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes.\n- `\"bytes_accum\"`: consolidate if and only if\n  `{threshold} > (segment_bytes + sum_of_merge_candidate_segment_bytes) / all_segment_bytes`\n  i.e. the sum of all candidate segment byte size is less than the total\n  segment byte size multiplied by the `{threshold}`.\n"
+                        enum:
+                        - tier
+                        - bytes_accum
+                        type: string
+                    type: object
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A unique identifier of the View (deprecated).
+
+                      '
+                    type: string
+                  links:
+                    description: 'An object with the attribute keys being names of to be linked collections,
+
+                      and the link properties as attribute values. See
+
+                      [`arangosearch` View Link Properties](https://docs.arango.ai/arangodb/3.12/indexes-and-search/arangosearch/arangosearch-views-reference/#link-properties)
+
+                      for details.
+
+                      '
+                    type: object
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    example: coll
+                    type: string
+                  optimizeTopK:
+                    description: 'An array of strings defining sort expressions that can be optimized.
+
+                      This is also known as _WAND optimization_ (introduced in v3.12.0).
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  primaryKeyCache:
+                    description: 'Whether the primary key columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySort:
+                    description: 'The primary sort order, described by an array of objects, each specifying
+
+                      a field (attribute path) and a sort direction.
+
+                      '
+                    items:
+                      properties:
+                        asc:
+                          description: 'The sort direction.
+
+
+                            - `true` for ascending
+
+                            - `false` for descending
+
+                            '
+                          type: boolean
+                        field:
+                          description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                            '
+                          type: string
+                      required:
+                      - field
+                      - asc
+                      type: object
+                    type: array
+                  primarySortCache:
+                    description: 'Whether the primary sort columns are always cached in memory.
+
+                      '
+                    type: boolean
+                  primarySortCompression:
+                    description: 'Defines how the primary sort data is compressed.
+
+
+                      - `"lz4"`: LZ4 fast compression
+
+                      - `"none"`: no compression
+
+                      '
+                    enum:
+                    - lz4
+                    - none
+                    type: string
+                  storedValues:
+                    description: 'An array of objects that describes which document attributes are stored
+
+                      in the View index for covering search queries, which means the data can
+
+                      be taken from the index directly and accessing the storage engine can
+
+                      be avoided.
+
+                      '
+                    items:
+                      properties:
+                        cache:
+                          description: 'Whether stored values are always cached in memory.
+
+                            '
+                          type: boolean
+                        compression:
+                          description: 'The compression type used for the internal column-store.
+
+
+                            - `"lz4"`: LZ4 fast compression
+
+                            - `"none"`: no compression
+
+                            '
+                          enum:
+                          - lz4
+                          - none
+                          type: string
+                        fields:
+                          description: 'An array of strings with one or more document attribute paths.
+
+                            '
+                          items:
+                            type: string
+                          type: array
+                      required:
+                      - fields
+                      type: object
+                    type: array
+                  type:
+                    description: 'The type of the View (`"arangosearch"`).
+
+                      '
+                    example: arangosearch
+                    type: string
+                  writebufferActive:
+                    description: 'Maximum number of concurrent active writers (segments) that perform a
+
+                      transaction. Other writers (segments) wait till current active writers
+
+                      (segments) finish (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferIdle:
+                    description: 'Maximum number of writers (segments) cached in the pool (`0` = disabled).
+
+                      '
+                    type: integer
+                  writebufferSizeMax:
+                    description: 'Maximum memory byte size per writer (segment) before a writer (segment) flush
+
+                      is triggered. `0` value turns off this limit for any writer (buffer) and data
+
+                      is flushed periodically based on the value defined for the flush thread
+
+                      (`0` = disabled).
+
+                      '
+                    type: integer
+                required:
+                - links
+                - primarySort
+                - primarySortCompression
+                - optimizeTopK
+                - storedValues
+                - cleanupIntervalStep
+                - commitIntervalMsec
+                - consolidationIntervalMsec
+                - consolidationPolicy
+                - writebufferIdle
+                - writebufferActive
+                - writebufferSizeMax
+                - id
+                - name
+                - type
+                - globallyUniqueId
+                type: object
+          description: 'The View has been renamed successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` path parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Rename a View
+      tags:
+      - Views
+  /_db/{database-name}/_api/view/{view-name}/rename#searchalias:
+    put:
+      description: 'Renames a View.
+
+
+        > **INFO:**
+
+        Renaming Views is not supported in cluster deployments.
+
+        '
+      operationId: renameViewSearchAlias
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the View to rename.
+
+          '
+        in: path
+        name: view-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: 'The new name for the View.
+
+                    '
+                  type: string
+              required:
+              - name
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  globallyUniqueId:
+                    description: 'A unique identifier of the View. This is an internal property.
+
+                      '
+                    type: string
+                  id:
+                    description: 'The identifier of the View.
+
+                      '
+                    type: string
+                  indexes:
+                    description: 'The list of inverted indexes that are part of the View.
+
+                      '
+                    items:
+                      properties:
+                        collection:
+                          description: 'The name of a collection.
+
+                            '
+                          type: string
+                        index:
+                          description: 'The name of an inverted index of the `collection`.
+
+                            '
+                          type: string
+                      required:
+                      - collection
+                      - index
+                      type: object
+                    type: array
+                  name:
+                    description: 'The name of the View.
+
+                      '
+                    type: string
+                  type:
+                    description: 'The View type (`"search-alias"`).
+
+                      '
+                    type: string
+                required:
+                - name
+                - type
+                - id
+                - globallyUniqueId
+                - indexes
+                type: object
+          description: 'The View has been renamed successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The `view-name` parameter is missing or invalid.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'A View called `view-name` could not be found.
+
+            '
+      summary: Rename a View
+      tags:
+      - Views
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

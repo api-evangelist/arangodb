@@ -1,0 +1,546 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Tasks API
+  version: 3.12.10 (API v0)
+  description: Set up JavaScript code to run periodically or timed
+tags:
+- description: Set up JavaScript code to run periodically or timed
+  name: Tasks
+paths:
+  /_db/{database-name}/_api/tasks:
+    get:
+      deprecated: true
+      description: 'Fetches all existing tasks on the server.
+
+        '
+      operationId: listTasks
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'A list of all tasks.
+
+                  '
+                items:
+                  properties:
+                    command:
+                      description: 'The JavaScript function for this task.
+
+                        '
+                      type: string
+                    created:
+                      description: 'The timestamp when this task was created.
+
+                        '
+                      type: number
+                    database:
+                      description: 'The database this task belongs to.
+
+                        '
+                      type: string
+                    id:
+                      description: 'A string identifying the task.
+
+                        '
+                      type: string
+                    name:
+                      description: 'A user-friendly name for the task.
+
+                        '
+                      type: string
+                    offset:
+                      description: 'Time offset in seconds from the `created` timestamp.
+
+                        '
+                      type: number
+                    period:
+                      description: 'This task should run each `period` seconds.
+
+                        '
+                      type: number
+                    type:
+                      description: "What type of task is this [ `periodic`, `timed`]\n  - periodic are tasks that repeat periodically\n  - timed are tasks that execute once at a specific time\n"
+                      type: string
+                  required:
+                  - name
+                  - id
+                  - created
+                  - type
+                  - period
+                  - offset
+                  - command
+                  - database
+                  type: object
+                type: array
+          description: 'The list of tasks.
+
+            '
+      summary: List all tasks
+      tags:
+      - Tasks
+    post:
+      deprecated: true
+      description: 'Creates a new task with a generated identifier.
+
+        '
+      operationId: createTask
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                command:
+                  description: 'The JavaScript code to be executed.
+
+                    '
+                  type: string
+                name:
+                  default: user-defined task
+                  description: 'The name of the task.
+
+                    '
+                  type: string
+                offset:
+                  default: 0
+                  description: 'The number of seconds for the initial delay.
+
+                    '
+                  type: integer
+                params:
+                  description: 'The value to be passed to the command.
+
+                    It can be of any type.
+
+                    '
+                period:
+                  description: 'The number of seconds between the executions.
+
+                    '
+                  type: integer
+              required:
+              - command
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  command:
+                    description: 'The JavaScript code of this task.
+
+                      '
+                    type: string
+                  created:
+                    description: 'The timestamp when this task was created.
+
+                      '
+                    type: number
+                  database:
+                    description: 'The database this task belongs to.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A string identifying the task.
+
+                      '
+                    type: string
+                  name:
+                    description: 'The name of the task.
+
+                      '
+                    type: string
+                  offset:
+                    description: 'The time offset in seconds from the created timestamp.
+
+                      '
+                    type: number
+                  period:
+                    description: 'The task runs every `period` seconds.
+
+                      '
+                    type: number
+                  type:
+                    description: 'The kind of the task:
+
+                      - `"periodic"`: The task repeats periodically
+
+                      - `"timed"`: The task executes once at a specific time
+
+                      '
+                    enum:
+                    - periodic
+                    - timed
+                    type: string
+                required:
+                - id
+                - name
+                - created
+                - type
+                - period
+                - offset
+                - command
+                - database
+                type: object
+          description: 'The task has been registered.
+
+            '
+        '400':
+          description: 'The task can''t be registered because the request is invalid.
+
+            '
+      summary: Create a task
+      tags:
+      - Tasks
+  /_db/{database-name}/_api/tasks/{id}:
+    delete:
+      deprecated: true
+      description: 'Deletes the task identified by `id` on the server.
+
+        '
+      operationId: deleteTask
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has administrate access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the task to delete.
+
+          '
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: '`false` in this case
+
+                      '
+                    type: boolean
+                required:
+                - code
+                - error
+                type: object
+          description: 'If the task was deleted, *HTTP 200* is returned.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                required:
+                - code
+                - error
+                - errorMessage
+                type: object
+          description: 'If the task `id` is unknown, then an *HTTP 404* is returned.
+
+            '
+      summary: Delete a task
+      tags:
+      - Tasks
+    get:
+      deprecated: true
+      description: 'fetches one existing task on the server specified by `id`
+
+        '
+      operationId: getTask
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the task to fetch.
+
+          '
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The function in question.
+
+                  '
+                properties:
+                  command:
+                    description: 'The JavaScript function for this task.
+
+                      '
+                    type: string
+                  created:
+                    description: 'The timestamp when this task was created.
+
+                      '
+                    type: number
+                  database:
+                    description: 'The database this task belongs to.
+
+                      '
+                    type: string
+                  id:
+                    description: 'A string identifying the task.
+
+                      '
+                    type: string
+                  name:
+                    description: 'A user-friendly name for the task.
+
+                      '
+                    type: string
+                  offset:
+                    description: 'Time offset in seconds from the `created` timestamp.
+
+                      '
+                    type: number
+                  period:
+                    description: 'This task should run each `period` seconds.
+
+                      '
+                    type: number
+                  type:
+                    description: "What type of task is this [ `periodic`, `timed`]\n  - periodic are tasks that repeat periodically\n  - timed are tasks that execute once at a specific time\n"
+                    type: string
+                required:
+                - name
+                - id
+                - created
+                - type
+                - period
+                - offset
+                - command
+                - database
+                type: object
+          description: 'The requested task.
+
+            '
+      summary: Get a task
+      tags:
+      - Tasks
+    put:
+      deprecated: true
+      description: 'Registers a new task with the specified ID.
+
+
+        Not compatible with load balancers.
+
+        '
+      operationId: createTaskWithId
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The id of the task to create
+
+          '
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                command:
+                  description: 'The JavaScript code to be executed.
+
+                    '
+                  type: string
+                name:
+                  description: 'The name of the task.
+
+                    '
+                  type: string
+                offset:
+                  default: 0
+                  description: 'The number of seconds for the initial delay.
+
+                    '
+                  type: integer
+                params:
+                  description: 'The value to be passed to the command.
+
+                    It can be of any type.
+
+                    '
+                period:
+                  description: 'The number of seconds between the executions.
+
+                    '
+                  type: integer
+              required:
+              - command
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  command:
+                    description: 'The JavaScript code of this task.
+
+                      '
+                    type: string
+                  created:
+                    description: 'The timestamp when this task was created.
+
+                      '
+                    type: number
+                  database:
+                    description: 'The database this task belongs to.
+
+                      '
+                    type: string
+                  id:
+                    description: 'The user-provided string identifying the task.
+
+                      '
+                    type: string
+                  name:
+                    description: 'The name of the task.
+
+                      '
+                    type: string
+                  offset:
+                    description: 'The time offset in seconds from the created timestamp.
+
+                      '
+                    type: number
+                  period:
+                    description: 'The task runs every `period` seconds.
+
+                      '
+                    type: number
+                  type:
+                    description: 'The kind of the task:
+
+                      - `"periodic"`: The task repeats periodically
+
+                      - `"timed"`: The task executes once at a specific time
+
+                      '
+                    enum:
+                    - periodic
+                    - timed
+                    type: string
+                required:
+                - id
+                - name
+                - created
+                - type
+                - period
+                - offset
+                - command
+                - database
+                type: object
+          description: 'The task has been registered.
+
+            '
+        '400':
+          description: 'The task can''t be registered because the request is invalid.
+
+            '
+        '409':
+          description: 'A task with the specified `id` already exists.
+
+            '
+      summary: Create a task with ID
+      tags:
+      - Tasks
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

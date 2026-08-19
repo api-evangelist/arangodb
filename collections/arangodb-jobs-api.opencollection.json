@@ -1,0 +1,130 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Jobs API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Jobs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List async jobs by status or get the status of specific job",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/job/:job-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              },
+              {
+                "name": "job-id",
+                "value": "",
+                "type": "path",
+                "description": "If you provide a value of `pending` or `done`, then the endpoint returns an\narray of strings with the job IDs of ongoing or completed async jobs.\n\nIf you provide a numeric job ID, then the endpoint returns the status of the\nspecific async job in the form of an HTTP reply without payload. Check the\nHTTP status code of the response for the job status.\n"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of job IDs to return per call. If not specified, a\nserver-defined maximum value is used. Only applicable if you specify `pending`\nor `done` as `job-id` to list jobs.\n"
+              }
+            ]
+          },
+          "docs": "This endpoint returns either of the following, depending on the specified value\nfor the `job-id` parameter:\n\n- The IDs of async jobs with a specific status\n- The processing status of a specific async job\n"
+        },
+        {
+          "info": {
+            "name": "Get the results of an async job",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/job/:job-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              },
+              {
+                "name": "job-id",
+                "value": "",
+                "type": "path",
+                "description": "The async job id.\n"
+              }
+            ]
+          },
+          "docs": "Returns the result of an async job identified by `job-id` if it's ready.\n\nIf the async job result is available on the server, the endpoint returns\nthe original operation's result headers and body, plus the additional\n`x-arango-async-job-id` HTTP header. The result and job are then removed\nwhich means that you can retrieve the result exactly once.\n\nIf the result is not available yet or if the job is not known (anymore),\nthe additional header is not present and you can tell the status from\nthe HTT"
+        },
+        {
+          "info": {
+            "name": "Delete async job results",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/job/:job-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              },
+              {
+                "name": "job-id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the job to delete. The ID can be:\n- `all`: Deletes all jobs results. Currently executing or queued async\n  jobs are not stopped by this call.\n- `expired`: Deletes expired results. To determine the expiration status of a\n  result, pass the stamp query parameter. stamp needs to be a Unix timestamp,\n  and all async job results created before this time are deleted.\n- **A numeric job ID**: In this case, the call removes the result of the\n  specified async job. If the job is currently executing or queued, it is\n  not aborted.\n"
+              },
+              {
+                "name": "stamp",
+                "value": "",
+                "type": "query",
+                "description": "A Unix timestamp specifying the expiration threshold for when the `job-id` is\nset to `expired`.\n"
+              }
+            ]
+          },
+          "docs": "Deletes either all job results, expired job results, or the result of a\nspecific job.\nClients can use this method to perform an eventual garbage collection of job\nresults.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel an async job",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/job/:job-id/cancel",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              },
+              {
+                "name": "job-id",
+                "value": "",
+                "type": "path",
+                "description": "The async job id.\n"
+              }
+            ]
+          },
+          "docs": "Cancels the currently running job identified by `job-id`. Note that it still\nmight take some time to actually cancel the running async job.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

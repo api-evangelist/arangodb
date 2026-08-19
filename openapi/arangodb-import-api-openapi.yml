@@ -1,0 +1,287 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Import API
+  version: 3.12.10 (API v0)
+  description: Load JSON data in bulk
+tags:
+- description: Load JSON data in bulk
+  name: Import
+paths:
+  /_db/{database-name}/_api/import:
+    post:
+      description: 'Load JSON data and store it as documents into the specified collection.
+
+
+        If you import documents into edge collections, all documents require a `_from`
+
+        and a `_to` attribute.
+
+        '
+      operationId: importData
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the target collection. The collection needs to exist already.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      - description: "Determines how the body of the request is interpreted.\n\n- `documents`: JSON Lines (JSONL) format. Each line is expected to be one\n  JSON object.\n\n  Example:\n\n  ```json\n  {\"_key\":\"john\",\"name\":\"John Smith\",\"age\":35}\n  {\"_key\":\"katie\",\"name\":\"Katie Foster\",\"age\":28}\n  ```\n\n- `array` (or `list`): JSON format. The request body is expected to be a\n  JSON array of objects. This format requires ArangoDB to parse the complete\n  array and keep it in memory for the duration of the import. This is more\n  resource-intensive than the line-wise JSONL processing.\n\n  Any whitespace outside of strings is ignored, which means the JSON data can be\n  a single line or be formatted as multiple lines.\n\n  Example:\n\n  ```json\n  [\n    {\"_key\":\"john\",\"name\":\"John Smith\",\"age\":35},\n    {\"_key\":\"katie\",\"name\":\"Katie Foster\",\"age\":28}\n  ]\n  ```\n\n- `auto`: automatically determines the type (either `documents` or `array`).\n\n- Omit the `type` parameter entirely (or set it to an empty string)\n  to import JSON arrays of tabular data, similar to CSV.\n\n  The first line is an array of strings that defines the attribute keys. The\n  subsequent lines are arrays with the attribute values. The keys and values\n  are matched by the order of the array elements.\n\n  Example:\n\n  ```json\n  [\"_key\",\"name\",\"age\"]\n  [\"john\",\"John Smith\",35]\n  [\"katie\",\"Katie Foster\",28]\n  ```\n"
+        in: query
+        name: type
+        required: false
+        schema:
+          default: ''
+          enum:
+          - ''
+          - documents
+          - array
+          - auto
+          type: string
+      - description: 'When importing JSON arrays of tabular data (`type` parameter is omitted),
+
+          the first line of the request body defines the attribute keys and the
+
+          subsequent lines the attribute values for each document. Subsequent lines
+
+          with a different number of elements than the first line are not imported
+
+          by default.
+
+
+          ```js
+
+          ["attr1", "attr2"]
+
+          [1, 2]     // matching number of elements
+
+          [1]        // misses 2nd element
+
+          [1, 2, 3]  // excess 3rd element
+
+          ```
+
+
+          You can enable this option to import them anyway. For the missing elements,
+
+          the document attributes are omitted. Excess elements are ignored.
+
+          '
+        in: query
+        name: ignoreMissing
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'The collection name prefix to prepend to all values in the `_from`
+
+          attribute that only specify a document key.
+
+          '
+        in: query
+        name: fromPrefix
+        required: false
+        schema:
+          type: string
+      - description: 'The collection name prefix to prepend to all values in the `_to`
+
+          attribute that only specify a document key.
+
+          '
+        in: query
+        name: toPrefix
+        required: false
+        schema:
+          type: string
+      - description: 'Force the `fromPrefix` and `toPrefix`, possibly replacing existing
+
+          collection name prefixes.
+
+          '
+        in: query
+        name: overwriteCollectionPrefix
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'If enabled, then all data in the collection is removed prior to the
+
+          import. Any existing index definitions are preserved.
+
+          '
+        in: query
+        name: overwrite
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'Wait until documents have been synced to disk before returning.
+
+          '
+        in: query
+        name: waitForSync
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: "Controls what action is carried out in case of a unique key constraint\nviolation.\n\n- `error`: this will not import the current document because of the unique\n  key constraint violation. This is the default setting.\n- `update`: this will update an existing document in the database with the\n  data specified in the request. Attributes of the existing document that\n  are not present in the request will be preserved.\n- `replace`: this will replace an existing document in the database with the\n  data specified in the request.\n- `ignore`: this will not update an existing document and simply ignore the\n  error caused by a unique key constraint violation.\n\nNote that `update`, `replace` and `ignore` will only work when the\nimport document in the request contains the `_key` attribute. `update` and\n`replace` may also fail because of secondary unique key constraint violations.\n"
+        in: query
+        name: onDuplicate
+        required: false
+        schema:
+          default: error
+          enum:
+          - error
+          - update
+          - replace
+          - ignore
+          type: string
+      - description: 'If set to `true`, the whole import fails if any error occurs. Otherwise, the
+
+          import continues even if some documents are invalid and cannot be imported,
+
+          skipping the problematic documents.
+
+          '
+        in: query
+        name: complete
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'If set to `true`, the result includes a `details` attribute with information
+
+          about documents that could not be imported.
+
+          '
+        in: query
+        name: details
+        required: false
+        schema:
+          default: false
+          type: boolean
+      requestBody:
+        content:
+          text/plain; charset=utf-8:
+            schema:
+              description: 'The request body can have different JSON formats depending on
+
+                the `type` parameter:
+
+                - One JSON object per line (JSONL)
+
+                - A JSON array of objects
+
+                - One JSON array per line (CSV-like)
+
+                '
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  created:
+                    description: 'The number of imported documents.
+
+                      '
+                    type: integer
+                  details:
+                    description: 'An array with the error messages caused by documents that could not be imported.
+
+                      Only present if `details` is set to `true`.
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  empty:
+                    description: 'The number of empty lines found in the input. Only greater than zero for the
+
+                      types `documents` and `auto`.
+
+                      '
+                    type: integer
+                  errors:
+                    description: 'The number of documents that were not imported due to errors.
+
+                      '
+                    type: integer
+                  ignored:
+                    description: 'The number of failed but ignored insert operations. Only greater than zero if
+
+                      `onDuplicate` is set to `ignore`.
+
+                      '
+                    type: integer
+                  updated:
+                    description: 'The number of updated/replaced documents. Only greater than zero if `onDuplicate`
+
+                      is set to either `update` or `replace`.
+
+                      '
+                    type: integer
+                required:
+                - created
+                - errors
+                - empty
+                - updated
+                - ignored
+                type: object
+          description: 'is returned if all documents could be imported successfully.
+
+
+            The response is a JSON object with the following attributes:
+
+            '
+        '400':
+          description: 'The `type` contains an invalid value, no `collection` is
+
+            specified, the documents are incorrectly encoded, or the request
+
+            is malformed.
+
+            '
+        '404':
+          description: 'The `collection` parameter or the `_from` or `_to` attributes of an
+
+            imported edge refer to an unknown collection.
+
+            '
+        '409':
+          description: 'The `complete` option is enabled and the import triggers a
+
+            unique key violation.
+
+            '
+        '500':
+          description: 'The `complete` option is enabled and the input is invalid,
+
+            or the server cannot auto-generate a document key (out of keys error)
+
+            for a document with no user-defined key.
+
+            '
+      summary: Import JSON data as documents
+      tags:
+      - Import
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

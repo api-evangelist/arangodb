@@ -1,0 +1,920 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Users API
+  version: 3.12.10 (API v0)
+  description: Manage ArangoDB user accounts
+tags:
+- description: Manage ArangoDB user accounts
+  name: Users
+paths:
+  /_db/{database-name}/_api/user:
+    get:
+      description: "Fetches data about all users. You need the *Administrate* server access level\nin order to execute this REST call.  Otherwise, you will only get information\nabout yourself.\n\nThe call will return a JSON object with at least the following\nattributes on success:\n\n- `user`: The name of the user as a string.\n- `active`: Whether the user account is able to log in to the database system.\n- `extra`: A JSON object with extra user information. It is used by the web\n  interface to store graph viewer settings and saved queries.\n"
+      operationId: listUsers
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'The users that were found.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+      summary: List available users
+      tags:
+      - Users
+    post:
+      description: 'Create a new user. You need server access level *Administrate* in order to
+
+        execute this REST call.
+
+        '
+      operationId: createUser
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                active:
+                  default: true
+                  description: 'Whether the user account should be able to log in to the database system.
+
+                    '
+                  type: boolean
+                extra:
+                  description: 'A JSON object with extra user information. It is used by the web interface
+
+                    to store graph viewer settings and saved queries. Should not be set or
+
+                    modified by end users, as custom attributes will not be preserved.
+
+                    '
+                  type: object
+                passwd:
+                  default: ''
+                  description: 'The user password as a string. If not specified, it defaults to an empty
+
+                    string.
+
+                    '
+                  type: string
+                user:
+                  description: 'The name of the user as a string. This is mandatory.
+
+                    '
+                  type: string
+              required:
+              - user
+              type: object
+      responses:
+        '201':
+          description: 'Returned if the user can be added by the server
+
+            '
+        '400':
+          description: 'If the JSON representation is malformed or mandatory data is missing
+
+            from the request.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+        '409':
+          description: 'Returned if a user with the same name already exists.
+
+            '
+      summary: Create a user
+      tags:
+      - Users
+  /_db/{database-name}/_api/user/{user}:
+    delete:
+      description: 'Removes an existing user, identified by `user`.
+
+
+        You need *Administrate* permissions for the server access level in order to
+
+        execute this REST call.
+
+        '
+      operationId: deleteUser
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: 'Is returned if the user was removed by the server
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+        '404':
+          description: 'The specified user does not exist
+
+            '
+      summary: Remove a user
+      tags:
+      - Users
+    get:
+      description: 'Fetches data about the specified user. You can fetch information about
+
+        yourself or you need the *Administrate* server access level in order to
+
+        execute this REST call.
+
+        '
+      operationId: getUser
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'The user was found.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+        '404':
+          description: 'The user with the specified name does not exist.
+
+            '
+      summary: Get a user
+      tags:
+      - Users
+    patch:
+      description: 'Partially modifies the data of an existing user. You need server access level
+
+        *Administrate* in order to execute this REST call. Additionally, users can
+
+        change their own data.
+
+        '
+      operationId: updateUserData
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                active:
+                  description: 'Whether the user account should be able to log in to the database system.
+
+                    '
+                  type: boolean
+                extra:
+                  description: 'A JSON object with extra user information. It is used by the web interface
+
+                    to store graph viewer settings and saved queries. Should not be set or
+
+                    modified by end users, as custom attributes will not be preserved.
+
+                    '
+                  type: object
+                passwd:
+                  description: 'The user password as a string.
+
+                    '
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'Is returned if the user data can be replaced by the server.
+
+            '
+        '400':
+          description: 'The JSON representation is malformed or mandatory data is missing from the request.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the *_system*
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+        '404':
+          description: 'The specified user does not exist
+
+            '
+      summary: Update a user
+      tags:
+      - Users
+    put:
+      description: 'Replaces the data of an existing user. This resets the user''s
+
+        access levels for databases and collections. You need server access level
+
+        *Administrate* in order to execute this REST call. Additionally, users can
+
+        change their own data.
+
+        '
+      operationId: replaceUserData
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                active:
+                  default: true
+                  description: 'Whether the user account should be able to log in to the database system.
+
+                    '
+                  type: boolean
+                extra:
+                  description: 'A JSON object with extra user information. It is used by the web interface
+
+                    to store graph viewer settings and saved queries. Should not be set or
+
+                    modified by end users, as custom attributes will not be preserved.
+
+                    '
+                  type: object
+                passwd:
+                  default: ''
+                  description: 'The user password as a string. If not specified, it defaults to an empty
+
+                    string.
+
+                    '
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'Is returned if the user data can be replaced by the server.
+
+            '
+        '400':
+          description: 'The JSON representation is malformed or mandatory data is missing from the request
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the *_system*
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+        '404':
+          description: 'The specified user does not exist
+
+            '
+      summary: Replace a user
+      tags:
+      - Users
+  /_db/{database-name}/_api/user/{user}/database:
+    get:
+      description: 'Fetch the list of databases available to the specified `user`.
+
+
+        You need *Administrate* permissions for the server access level in order to
+
+        execute this REST call.
+
+
+        The call will return a JSON object with the per-database access
+
+        privileges for the specified user. The `result` object will contain
+
+        the databases names as object keys, and the associated privileges
+
+        for the database as values.
+
+
+        In case you specified `full`, the result will contain the permissions
+
+        for the databases as well as the permissions for the collections.
+
+        '
+      operationId: listUserDatabases
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user for which you want to query the databases.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      - description: 'Return the full set of access levels for all databases and all collections.
+
+          '
+        in: query
+        name: full
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'Returned if the list of available databases can be returned.
+
+            '
+        '400':
+          description: 'If the access privileges are not right etc.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+      summary: List a user&rsquo;s accessible databases
+      tags:
+      - Users
+  /_db/{database-name}/_api/user/{user}/database/{dbname}:
+    delete:
+      description: 'Clears the database access level for the database `dbname` of user `user`. As
+
+        consequence, the default database access level is used. If there is no defined
+
+        default database access level, it defaults to *No access*.
+
+
+        You need write permissions (*Administrate* access level) for the `_system`
+
+        database in order to execute this REST call.
+
+        '
+      operationId: deleteUserDatabasePermissions
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the database to clear the access level for.
+
+          '
+        in: path
+        name: dbname
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: 'Returned if the access permissions were changed successfully.
+
+            '
+        '400':
+          description: 'If the JSON representation is malformed or mandatory data is missing
+
+            from the request.
+
+            '
+      summary: Clear a user&rsquo;s database access level
+      tags:
+      - Users
+    get:
+      description: 'Fetch the database access level for a specific database
+
+        '
+      operationId: getUserDatabasePermissions
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user for which you want to query the databases.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the database to query the access level of.
+
+          '
+        in: path
+        name: dbname
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the access level can be returned
+
+            '
+        '400':
+          description: 'If the access privileges are not right etc.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+      summary: Get a user&rsquo;s database access level
+      tags:
+      - Users
+    put:
+      description: 'Sets the database access levels for the database `dbname` of user `user`. You
+
+        need the *Administrate* server access level in order to execute this REST
+
+        call.
+
+        '
+      operationId: setUserDatabasePermissions
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the database to set the access level for.
+
+          '
+        in: path
+        name: dbname
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                grant:
+                  description: '- `"rw"`: Set the database access level to *Administrate*.
+
+                    - `"ro"`: Set the database access level to *Access*.
+
+                    - `"none"`: Set the database access level to *No access*.
+
+                    '
+                  enum:
+                  - rw
+                  - ro
+                  - none
+                  type: string
+              required:
+              - grant
+              type: object
+      responses:
+        '200':
+          description: 'Returned if the access level was changed successfully.
+
+            '
+        '400':
+          description: 'If the JSON representation is malformed or mandatory data is missing
+
+            from the request.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+      summary: Set a user&rsquo;s database access level
+      tags:
+      - Users
+  /_db/{database-name}/_api/user/{user}/database/{dbname}/{collection}:
+    delete:
+      description: 'Clears the collection access level for the collection `collection` in the
+
+        database `dbname` of user `user`. As consequence, the default collection
+
+        access level is used. If there is no defined default collection access level,
+
+        it defaults to *No access*.
+
+
+        You need write permissions (*Administrate* access level) for the `_system`
+
+        database in order to execute this REST call.
+
+        '
+      operationId: deleteUserCollectionPermissions
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the database to clear the access level for.
+
+          '
+        in: path
+        name: dbname
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the collection to clear the access level for.
+
+          '
+        in: path
+        name: collection
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: 'Returned if the access permissions were changed successfully.
+
+            '
+        '400':
+          description: 'If there was an error
+
+            '
+      summary: Clear a user&rsquo;s collection access level
+      tags:
+      - Users
+    get:
+      description: 'Returns the collection access level for a specific collection
+
+        '
+      operationId: getUserCollectionPermissions
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user for which you want to query the databases.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the database to query the access level of.
+
+          '
+        in: path
+        name: dbname
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the collection to query the access level of.
+
+          '
+        in: path
+        name: collection
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the access level can be returned
+
+            '
+        '400':
+          description: 'If the access privileges are not right etc.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+      summary: Get a user&rsquo;s collection access level
+      tags:
+      - Users
+    put:
+      description: 'Sets the collection access level for the `collection` in the database `dbname`
+
+        for user `user`. You need the *Administrate* server access level in order to
+
+        execute this REST call.
+
+        '
+      operationId: setUserCollectionPermissions
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the user.
+
+          '
+        in: path
+        name: user
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the database to set the access level for.
+
+          '
+        in: path
+        name: dbname
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the collection to set the access level for.
+
+          '
+        in: path
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                grant:
+                  description: '- `"rw"`: Set the collection access level to *Read/Write*.
+
+                    - `"ro"`: Set the collection access level to *Read Only*.
+
+                    - `"none"`: Set the collection access level to *No access*.
+
+                    '
+                  enum:
+                  - rw
+                  - ro
+                  - none
+                  type: string
+              required:
+              - grant
+              type: object
+      responses:
+        '200':
+          description: 'Returned if the access permissions were changed successfully.
+
+            '
+        '400':
+          description: 'If the JSON representation is malformed or mandatory data is missing
+
+            from the request.
+
+            '
+        '401':
+          description: 'Returned if you have *No access* database access level to the `_system`
+
+            database.
+
+            '
+        '403':
+          description: 'Returned if you have *No access* server access level.
+
+            '
+      summary: Set a user&rsquo;s collection access level
+      tags:
+      - Users
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

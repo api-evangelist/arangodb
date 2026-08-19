@@ -1,0 +1,839 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Documents API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Documents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` in which the document is to be created.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until document has been synced to disk.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result. Only available if the `overwriteMode`\nparameter is set to `\"update\"` or `\"replace\"`, or if `overwrite` is set to `true`.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if the document operation\nsucceeds. No meta-data is returned for the created document. If the\noperation raises an error, an error object is returned.\n\nYou can use this option to save network traffic.\n"
+              },
+              {
+                "name": "overwrite",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the insert becomes a replace-insert. If a document with the\nsame `_key` already exists, the new document is not rejected with unique\nconstraint violation error but replaces the old document. Note that operations\nwith `overwrite` parameter require a `_key` attribute in the request payload,\ntherefore they can only be performed on collections sharded by `_key`.\n"
+              },
+              {
+                "name": "overwriteMode",
+                "value": "",
+                "type": "query",
+                "description": "This option supersedes `overwrite` and offers the following modes:\n- `\"ignore\"`: if a document with the specified `_key` value exists already,\n  nothing is done and no write operation is carried out. The\n  insert operation returns success in this case. This mode does not\n  support returning the old document version using `RETURN OLD`. When using\n  `RETURN NEW`, `null` is returned in case the document already existed.\n- `\"replace\"`: if a document with the specified `_key` value exists already,\n  it is overwritten with the specified document value. This mode is\n  also used when no overwrite mode is specified but the `overwrite`\n  flag is set to `true`.\n- `\"update\"`: if a document with the specified `_key` value exists already,\n  it is patched (partially updated) with the specified document value.\n  The overwrite mode can be further controlled via the `keepNull` and\n  `mergeObjects` parameters.\n- `\"conflict\"`: if a document with the specified `_key` value exists already,\n  return a unique constraint violation error so that the insert operation\n  fails. This is also the default behavior in case the overwrite mode is\n  not set, and the `overwrite` flag is `false` or not set either.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "If the intention is to delete existing attributes with the update-insert\ncommand, set the `keepNull` query parameter to `false`. This modifies the\nbehavior of the patch command to remove top-level attributes and sub-attributes\nfrom the existing document that are contained in the patch document with an\nattribute value of `null` (but not attributes of objects that are nested inside\nof arrays). This option controls the update-insert behavior only.\n"
+              },
+              {
+                "name": "mergeObjects",
+                "value": "",
+                "type": "query",
+                "description": "Controls whether objects (not arrays) are merged if present in both, the\nexisting and the update-insert document. If set to `false`, the value in the\npatch document overwrites the existing document's value. If set to `true`,\nobjects are merged.\nThis option controls the update-insert behavior only.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to add new entries to in-memory index caches if document insertions\naffect the edge index or cache-enabled persistent indexes.\n"
+              },
+              {
+                "name": "versionAttribute",
+                "value": "",
+                "type": "query",
+                "description": "Only applicable if `overwrite` is set to `true` or `overwriteMode`\nis set to `update` or `replace`.\n\nYou can use the `versionAttribute` option for external versioning support.\nIf set, the attribute with the name specified by the option is looked up in the\nstored document and the attribute value is compared numerically to the value of\nthe versioning attribute in the supplied document that is supposed to update/replace it.\n\nIf the version number in the new document is higher (rounded down to a whole number)\nthan in the document that already exists in the database, then the update/replace\noperation is performed normally. This is also the case if the new versioning\nattribute has a non-numeric value, if it is a negative number, or if the\nattribute doesn't exist in the supplied or stored document.\n\nIf the version number in the new document is lower or equal to what exists in\nthe database, the operation is not performed and the existing document thus not\nchanged. No error is returned in this case.\n\nThe attribute can only be a top-level attribute.\n\nYou can check if `_oldRev` (if present) and `_rev` are different to determine if the\ndocument has been changed.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new document from the document given in the body, unless there\nis already a document with the `_key` given. If no `_key` is given, a\nnew unique `_key` is generated automatically. The `_id` is automatically\nset in both cases, derived from the collection name and `_key`.\n\n> **INFO:**\nAn `_id` or `_rev` attribute specified in the body is ignored.\n\n\nIf the document was created successfully, then the `Location` header\ncontains the path to the newly created document. The `ETag` header field\n"
+        },
+        {
+          "info": {
+            "name": "Replace multiple documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "This URL parameter is the name of the collection in which the\ndocuments are replaced.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until the new documents have been synced to disk.\n"
+              },
+              {
+                "name": "ignoreRevs",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the `_rev` attributes in\nthe given documents are ignored. If this is set to `false`, then\nany `_rev` attribute given in a body document is taken as a\nprecondition. The document is only replaced if the current revision\nis the one specified.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if all document operations\nsucceed. No meta-data is returned for the replaced documents. If at least one\noperation raises an error, an array with the error object(s) is returned.\n\nYou can use this option to save network traffic but you cannot map any errors\nto the inputs of your request.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to update existing entries in in-memory index caches if documents\nreplacements affect the edge index or cache-enabled persistent indexes.\n"
+              },
+              {
+                "name": "versionAttribute",
+                "value": "",
+                "type": "query",
+                "description": "You can use the `versionAttribute` option for external versioning support.\nIf set, the attribute with the name specified by the option is looked up in the\nstored document and the attribute value is compared numerically to the value of\nthe versioning attribute in the supplied document that is supposed to replace it.\n\nIf the version number in the new document is higher (rounded down to a whole number)\nthan in the document that already exists in the database, then the replace\noperation is performed normally. This is also the case if the new versioning\nattribute has a non-numeric value, if it is a negative number, or if the\nattribute doesn't exist in the supplied or stored document.\n\nIf the version number in the new document is lower or equal to what exists in\nthe database, the operation is not performed and the existing document thus not\nchanged. No error is returned in this case.\n\nThe attribute can only be a top-level attribute.\n\nYou can check if `_oldRev` and `_rev` are different to determine if the\ndocument has been changed.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces multiple documents in the specified collection with the\nones in the body, the replaced documents are specified by the `_key`\nattributes in the body documents.\n\nThe values of the `_key`, `_id`, and `_rev` system attributes as well as\nattributes used as sharding keys cannot be changed.\n\nIf `ignoreRevs` is `false` and there is a `_rev` attribute in a\ndocument in the body and its value does not match the revision of\nthe corresponding document in the database, the precondition is\nviolated.\n\n"
+        },
+        {
+          "info": {
+            "name": "Update multiple documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` in which the documents are to be updated.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "If the intention is to delete existing attributes with the patch\ncommand, set the `keepNull` query parameter to `false`. This modifies the\nbehavior of the patch command to remove top-level attributes and sub-attributes\nfrom the existing document that are contained in the patch document with an\nattribute value of `null` (but not attributes of objects that are nested inside\nof arrays).\n"
+              },
+              {
+                "name": "mergeObjects",
+                "value": "",
+                "type": "query",
+                "description": "Controls whether objects (not arrays) are merged if present in\nboth the existing and the patch document. If set to `false`, the\nvalue in the patch document overwrites the existing document's\nvalue. If set to `true`, objects are merged.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until the new documents have been synced to disk.\n"
+              },
+              {
+                "name": "ignoreRevs",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the `_rev` attributes in\nthe given documents are ignored. If this is set to `false`, then\nany `_rev` attribute given in a body document is taken as a\nprecondition. The document is only updated if the current revision\nis the one specified.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if all document operations\nsucceed. No meta-data is returned for the updated documents. If at least one\noperation raises an error, an array with the error object(s) is returned.\n\nYou can use this option to save network traffic but you cannot map any errors\nto the inputs of your request.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to update existing entries in in-memory index caches if document updates\naffect the edge index or cache-enabled persistent indexes.\n"
+              },
+              {
+                "name": "versionAttribute",
+                "value": "",
+                "type": "query",
+                "description": "You can use the `versionAttribute` option for external versioning support.\nIf set, the attribute with the name specified by the option is looked up in the\nstored document and the attribute value is compared numerically to the value of\nthe versioning attribute in the supplied document that is supposed to update it.\n\nIf the version number in the new document is higher (rounded down to a whole number)\nthan in the document that already exists in the database, then the update\noperation is performed normally. This is also the case if the new versioning\nattribute has a non-numeric value, if it is a negative number, or if the\nattribute doesn't exist in the supplied or stored document.\n\nIf the version number in the new document is lower or equal to what exists in\nthe database, the operation is not performed and the existing document thus not\nchanged. No error is returned in this case.\n\nThe attribute can only be a top-level attribute.\n\nYou can check if `_oldRev` and `_rev` are different to determine if the\ndocument has been changed.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially updates documents, the documents to update are specified\nby the `_key` attributes in the body objects. The body of the\nrequest must contain a JSON array of document updates with the\nattributes to patch (the patch documents). All attributes from the\npatch documents are added to the existing documents if they do\nnot yet exist, and overwritten in the existing documents if they do\nexist there.\n\nThe values of the `_key`, `_id`, and `_rev` system attributes as well as\nattributes used as shar"
+        },
+        {
+          "info": {
+            "name": "Remove multiple documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Collection from which documents are removed.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until deletion operation has been synced to disk.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if all document operations\nsucceed. No meta-data is returned for the deleted documents. If at least one of\nthe operations raises an error, an array with the error object(s) is returned.\n\nYou can use this option to save network traffic but you cannot map any errors\nto the inputs of your request.\n"
+              },
+              {
+                "name": "ignoreRevs",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, ignore any `_rev` attribute included in the request. No\nrevision check is performed. If set to `false`, then revisions are checked.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to delete existing entries from in-memory index caches and refill them\nif document removals affect the edge index or cache-enabled persistent indexes.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The body of the request is an array consisting of selectors for\ndocuments. A selector can either be a string with a key or a string\nwith a document identifier or an object with a `_key` attribute. This\nAPI call removes all specified documents from `collection`.\nIf the `ignoreRevs` query parameter is `false` and the\nselector is an object and has a `_rev` attribute, it is a\nprecondition that the actual revision of the removed document in the\ncollection is the specified one.\n\nThe body of the respon"
+        },
+        {
+          "info": {
+            "name": "Get multiple documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection#get",
+            "headers": [
+              {
+                "name": "x-arango-allow-dirty-read",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` from which the documents are to be read.\n"
+              },
+              {
+                "name": "onlyget",
+                "value": "true",
+                "type": "query",
+                "description": "This parameter is required to be `true`, otherwise a replace\noperation is executed!\n"
+              },
+              {
+                "name": "ignoreRevs",
+                "value": "",
+                "type": "query",
+                "description": "If set to `false` and a `_rev` attribute is included in the request,\nthen the document is only returned if it has the same revision.\nOtherwise, a precondition failed error is returned for the document.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **WARNING:**\nThe endpoint for getting multiple documents is the same as for replacing\nmultiple documents but with an additional query parameter:\n`PUT /_api/document/{collection}?onlyget=true`. This is because a lot of\nsoftware does not support payload bodies in `GET` requests.\n\n\nReturns the documents identified by their `_key` attribute.\nThe body of the request _must_ contain a JSON array of either\nstrings (the `_key` values to look up) or search documents.\n\nA search document _must_ contain at"
+        },
+        {
+          "info": {
+            "name": "Create multiple documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection#multiple",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` in which the documents are to be created.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until document has been synced to disk.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result. Only available if the `overwriteMode`\nparameter is set to `\"update\"` or `\"replace\"`, or if `overwrite` is set to `true`.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if all document operations\nsucceed. No meta-data is returned for the created documents. If any of the\noperations raises an error, an array with the error object(s) is returned.\n\nYou can use this option to save network traffic but you cannot map any errors\nto the inputs of your request.\n"
+              },
+              {
+                "name": "overwrite",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the insert becomes a replace-insert. If a document with the\nsame `_key` already exists, the new document is not rejected with a unique\nconstraint violation error but replaces the old document. Note that operations\nwith `overwrite` parameter require a `_key` attribute in the request payload,\ntherefore they can only be performed on collections sharded by `_key`.\n"
+              },
+              {
+                "name": "overwriteMode",
+                "value": "",
+                "type": "query",
+                "description": "This option supersedes `overwrite` and offers the following modes:\n- `\"ignore\"`: if a document with the specified `_key` value exists already,\n  nothing is done and no write operation is carried out. The\n  insert operation returns success in this case. This mode does not\n  support returning the old document version using `RETURN OLD`. When using\n  `RETURN NEW`, `null` is returned in case the document already existed.\n- `\"replace\"`: if a document with the specified `_key` value exists already,\n  it is overwritten with the specified document value. This mode is\n  also used when no overwrite mode is specified but the `overwrite`\n  flag is set to `true`.\n- `\"update\"`: if a document with the specified `_key` value exists already,\n  it is patched (partially updated) with the specified document value.\n  The overwrite mode can be further controlled via the `keepNull` and\n  `mergeObjects` parameters.\n- `\"conflict\"`: if a document with the specified `_key` value exists already,\n  return a unique constraint violation error so that the insert operation\n  fails. This is also the default behavior in case the overwrite mode is\n  not set, and the `overwrite` flag is `false` or not set either.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "If the intention is to delete existing attributes with the update-insert\ncommand, set the `keepNull` query parameter to `false`. This modifies the\nbehavior of the patch command to remove top-level attributes and sub-attributes\nfrom the existing document that are contained in the patch document with an\nattribute value of `null` (but not attributes of objects that are nested inside\nof arrays). This option controls the update-insert behavior only.\n"
+              },
+              {
+                "name": "mergeObjects",
+                "value": "",
+                "type": "query",
+                "description": "Controls whether objects (not arrays) are merged if present in both, the\nexisting and the update-insert document. If set to `false`, the value in the\npatch document overwrites the existing document's value. If set to `true`,\nobjects are merged.\nThis option controls the update-insert behavior only.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to add new entries to in-memory index caches if document insertions\naffect the edge index or cache-enabled persistent indexes.\n"
+              },
+              {
+                "name": "versionAttribute",
+                "value": "",
+                "type": "query",
+                "description": "Only applicable if `overwrite` is set to `true` or `overwriteMode`\nis set to `update` or `replace`.\n\nYou can use the `versionAttribute` option for external versioning support.\nIf set, the attribute with the name specified by the option is looked up in the\nstored document and the attribute value is compared numerically to the value of\nthe versioning attribute in the supplied document that is supposed to update/replace it.\n\nIf the version number in the new document is higher (rounded down to a whole number)\nthan in the document that already exists in the database, then the update/replace\noperation is performed normally. This is also the case if the new versioning\nattribute has a non-numeric value, if it is a negative number, or if the\nattribute doesn't exist in the supplied or stored document.\n\nIf the version number in the new document is lower or equal to what exists in\nthe database, the operation is not performed and the existing document thus not\nchanged. No error is returned in this case.\n\nThe attribute can only be a top-level attribute.\n\nYou can check if `_oldRev` (if present) and `_rev` are different to determine if the\ndocument has been changed.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates new documents from the documents given in the body, unless there\nis already a document with the `_key` given. If no `_key` is given, a new\nunique `_key` is generated automatically. The `_id` is automatically\nset in both cases, derived from the collection name and `_key`.\n\nThe result body contains a JSON array of the\nsame length as the input array, and each entry contains the result\nof the operation for the corresponding input. In case of an error\nthe entry is a document with attributes `"
+        },
+        {
+          "info": {
+            "name": "Get a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection/:key",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              },
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-allow-dirty-read",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the collection from which the document is to be read.\n"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The document key.\n"
+              }
+            ]
+          },
+          "docs": "Returns the document identified by the collection name and document key.\nThe returned document contains three special attributes:\n- `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.\n- `_key`, containing the document key that uniquely identifies a document within the collection.\n- `_rev`, containing the document revision.\n"
+        },
+        {
+          "info": {
+            "name": "Replace a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection/:key",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` in which the document is to be replaced.\n"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The document key.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until document has been synced to disk.\n"
+              },
+              {
+                "name": "ignoreRevs",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the `_rev` attributes in\nthe given document is ignored. If this is set to `false`, then\nthe `_rev` attribute given in the body document is taken as a\nprecondition. The document is only replaced if the current revision\nis the one specified.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if the document operation\nsucceeds. No meta-data is returned for the replaced document. If the\noperation raises an error, an error object is returned.\n\nYou can use this option to save network traffic.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to update existing entries in in-memory index caches if documents\nreplacements affect the edge index or cache-enabled persistent indexes.\n"
+              },
+              {
+                "name": "versionAttribute",
+                "value": "",
+                "type": "query",
+                "description": "You can use the `versionAttribute` option for external versioning support.\nIf set, the attribute with the name specified by the option is looked up in the\nstored document and the attribute value is compared numerically to the value of\nthe versioning attribute in the supplied document that is supposed to replace it.\n\nIf the version number in the new document is higher (rounded down to a whole number)\nthan in the document that already exists in the database, then the replace\noperation is performed normally. This is also the case if the new versioning\nattribute has a non-numeric value, if it is a negative number, or if the\nattribute doesn't exist in the supplied or stored document.\n\nIf the version number in the new document is lower or equal to what exists in\nthe database, the operation is not performed and the existing document thus not\nchanged. No error is returned in this case.\n\nThe attribute can only be a top-level attribute.\n\nYou can check if `_oldRev` and `_rev` are different to determine if the\ndocument has been changed.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the specified document with the one in the body, provided there is\nsuch a document and no precondition is violated.\n\nThe values of the `_key`, `_id`, and `_rev` system attributes as well as\nattributes used as sharding keys cannot be changed.\n\nIf the `If-Match` header is specified and the revision of the\ndocument in the database is unequal to the given revision, the\nprecondition is violated.\n\nIf `If-Match` is not given and `ignoreRevs` is `false` and there\nis a `_rev` attribute in the bo"
+        },
+        {
+          "info": {
+            "name": "Update a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection/:key",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` in which the document is to be updated.\n"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The document key.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "If the intention is to delete existing attributes with the patch\ncommand, set the `keepNull` query parameter to `false`. This modifies the\nbehavior of the patch command to remove top-level attributes and sub-attributes\nfrom the existing document that are contained in the patch document with an\nattribute value of `null` (but not attributes of objects that are nested inside\nof arrays).\n"
+              },
+              {
+                "name": "mergeObjects",
+                "value": "",
+                "type": "query",
+                "description": "Controls whether objects (not arrays) are merged if present in\nboth the existing and the patch document. If set to `false`, the\nvalue in the patch document overwrites the existing document's\nvalue. If set to `true`, objects are merged.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until document has been synced to disk.\n"
+              },
+              {
+                "name": "ignoreRevs",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the `_rev` attributes in\nthe given document is ignored. If this is set to `false`, then\nthe `_rev` attribute given in the body document is taken as a\nprecondition. The document is only updated if the current revision\nis the one specified.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if the document operation\nsucceeds. No meta-data is returned for the updated document. If the\noperation raises an error, an error object is returned.\n\nYou can use this option to save network traffic.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to update existing entries in in-memory index caches if document updates\naffect the edge index or cache-enabled persistent indexes.\n"
+              },
+              {
+                "name": "versionAttribute",
+                "value": "",
+                "type": "query",
+                "description": "You can use the `versionAttribute` option for external versioning support.\nIf set, the attribute with the name specified by the option is looked up in the\nstored document and the attribute value is compared numerically to the value of\nthe versioning attribute in the supplied document that is supposed to update it.\n\nIf the version number in the new document is higher (rounded down to a whole number)\nthan in the document that already exists in the database, then the update\noperation is performed normally. This is also the case if the new versioning\nattribute has a non-numeric value, if it is a negative number, or if the\nattribute doesn't exist in the supplied or stored document.\n\nIf the version number in the new document is lower or equal to what exists in\nthe database, the operation is not performed and the existing document thus not\nchanged. No error is returned in this case.\n\nThe attribute can only be a top-level attribute.\n\nYou can check if `_oldRev` and `_rev` are different to determine if the\ndocument has been changed.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially updates the document identified by the *document ID*.\nThe body of the request must contain a JSON document with the\nattributes to patch (the patch document). All attributes from the\npatch document are added to the existing document if they do not\nyet exist, and overwritten in the existing document if they do exist\nthere.\n\nThe values of the `_key`, `_id`, and `_rev` system attributes as well as\nattributes used as sharding keys cannot be changed.\n\nSetting an attribute value to `null` in "
+        },
+        {
+          "info": {
+            "name": "Remove a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection/:key",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` in which the document is to be deleted.\n"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The document key.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until deletion operation has been synced to disk.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "silent",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, an empty object is returned as response if the document operation\nsucceeds. No meta-data is returned for the deleted document. If the\noperation raises an error, an error object is returned.\n\nYou can use this option to save network traffic.\n"
+              },
+              {
+                "name": "refillIndexCaches",
+                "value": "",
+                "type": "query",
+                "description": "Whether to delete existing entries from in-memory index caches and refill them\nif document removals affect the edge index or cache-enabled persistent indexes.\n"
+              }
+            ]
+          },
+          "docs": "Unless `silent` is set to `true`, the body of the response contains a\nJSON object with the following attributes:\n- `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.\n- `_key`, containing the document key that uniquely identifies a document within the collection.\n- `_rev`, containing the document revision.\n\nIf the `waitForSync` parameter is not specified or set to `false`,\nthen the collection's default `waitForSync` behavior is applied.\nThe `waitForSync`"
+        },
+        {
+          "info": {
+            "name": "Get a document header",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "{{baseUrl}}/_db/:database-name/_api/document/:collection/:key",
+            "headers": [
+              {
+                "name": "If-None-Match",
+                "value": ""
+              },
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-allow-dirty-read",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "Name of the `collection` from which the document is to be read.\n"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The document key.\n"
+              }
+            ]
+          },
+          "docs": "Like `GET`, but only returns the header fields and not the body. You\ncan use this call to get the current revision of a document or check if\nthe document was deleted.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,599 @@
+{
+  "item": [
+    {
+      "id": "7dfe4784-6c9c-42ec-89d6-fbf41b915a1a",
+      "name": "Import",
+      "description": {
+        "content": "Load JSON data in bulk",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d1b4a710-a91d-41bd-891c-80b9743243b3",
+          "name": "Import JSON data as documents",
+          "request": {
+            "name": "Import JSON data as documents",
+            "description": {
+              "content": "Load JSON data and store it as documents into the specified collection.\n\nIf you import documents into edge collections, all documents require a `_from`\nand a `_to` attribute.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "import"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The name of the target collection. The collection needs to exist already.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "",
+                  "description": "Determines how the body of the request is interpreted.\n\n- `documents`: JSON Lines (JSONL) format. Each line is expected to be one\n  JSON object.\n\n  Example:\n\n  ```json\n  {\"_key\":\"john\",\"name\":\"John Smith\",\"age\":35}\n  {\"_key\":\"katie\",\"name\":\"Katie Foster\",\"age\":28}\n  ```\n\n- `array` (or `list`): JSON format. The request body is expected to be a\n  JSON array of objects. This format requires ArangoDB to parse the complete\n  array and keep it in memory for the duration of the import. This is more\n  resource-intensive than the line-wise JSONL processing.\n\n  Any whitespace outside of strings is ignored, which means the JSON data can be\n  a single line or be formatted as multiple lines.\n\n  Example:\n\n  ```json\n  [\n    {\"_key\":\"john\",\"name\":\"John Smith\",\"age\":35},\n    {\"_key\":\"katie\",\"name\":\"Katie Foster\",\"age\":28}\n  ]\n  ```\n\n- `auto`: automatically determines the type (either `documents` or `array`).\n\n- Omit the `type` parameter entirely (or set it to an empty string)\n  to import JSON arrays of tabular data, similar to CSV.\n\n  The first line is an array of strings that defines the attribute keys. The\n  subsequent lines are arrays with the attribute values. The keys and values\n  are matched by the order of the array elements.\n\n  Example:\n\n  ```json\n  [\"_key\",\"name\",\"age\"]\n  [\"john\",\"John Smith\",35]\n  [\"katie\",\"Katie Foster\",28]\n  ```\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "ignoreMissing",
+                  "value": "false",
+                  "description": "When importing JSON arrays of tabular data (`type` parameter is omitted),\nthe first line of the request body defines the attribute keys and the\nsubsequent lines the attribute values for each document. Subsequent lines\nwith a different number of elements than the first line are not imported\nby default.\n\n```js\n[\"attr1\", \"attr2\"]\n[1, 2]     // matching number of elements\n[1]        // misses 2nd element\n[1, 2, 3]  // excess 3rd element\n```\n\nYou can enable this option to import them anyway. For the missing elements,\nthe document attributes are omitted. Excess elements are ignored.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "fromPrefix",
+                  "value": "<string>",
+                  "description": "The collection name prefix to prepend to all values in the `_from`\nattribute that only specify a document key.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "toPrefix",
+                  "value": "<string>",
+                  "description": "The collection name prefix to prepend to all values in the `_to`\nattribute that only specify a document key.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "overwriteCollectionPrefix",
+                  "value": "false",
+                  "description": "Force the `fromPrefix` and `toPrefix`, possibly replacing existing\ncollection name prefixes.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "overwrite",
+                  "value": "false",
+                  "description": "If enabled, then all data in the collection is removed prior to the\nimport. Any existing index definitions are preserved.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "waitForSync",
+                  "value": "false",
+                  "description": "Wait until documents have been synced to disk before returning.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "onDuplicate",
+                  "value": "error",
+                  "description": "Controls what action is carried out in case of a unique key constraint\nviolation.\n\n- `error`: this will not import the current document because of the unique\n  key constraint violation. This is the default setting.\n- `update`: this will update an existing document in the database with the\n  data specified in the request. Attributes of the existing document that\n  are not present in the request will be preserved.\n- `replace`: this will replace an existing document in the database with the\n  data specified in the request.\n- `ignore`: this will not update an existing document and simply ignore the\n  error caused by a unique key constraint violation.\n\nNote that `update`, `replace` and `ignore` will only work when the\nimport document in the request contains the `_key` attribute. `update` and\n`replace` may also fail because of secondary unique key constraint violations.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "complete",
+                  "value": "false",
+                  "description": "If set to `true`, the whole import fails if any error occurs. Otherwise, the\nimport continues even if some documents are invalid and cannot be imported,\nskipping the problematic documents.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "details",
+                  "value": "false",
+                  "description": "If set to `true`, the result includes a `details` attribute with information\nabout documents that could not be imported.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/plain; charset=utf-8"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": [
+            {
+              "id": "657479e9-ac8d-4276-b294-d81302ea10a4",
+              "name": "is returned if all documents could be imported successfully.\n\nThe response is a JSON object with the following attributes:\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": ""
+                    },
+                    {
+                      "key": "ignoreMissing",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fromPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "overwriteCollectionPrefix",
+                      "value": "false"
+                    },
+                    {
+                      "key": "overwrite",
+                      "value": "false"
+                    },
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "onDuplicate",
+                      "value": "error"
+                    },
+                    {
+                      "key": "complete",
+                      "value": "false"
+                    },
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created\": 5557,\n  \"errors\": 6781,\n  \"empty\": 5302,\n  \"updated\": 4755,\n  \"ignored\": 4663,\n  \"details\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "18886ce2-6af6-46b2-9e31-0781b318c692",
+              "name": "The `type` contains an invalid value, no `collection` is\nspecified, the documents are incorrectly encoded, or the request\nis malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": ""
+                    },
+                    {
+                      "key": "ignoreMissing",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fromPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "overwriteCollectionPrefix",
+                      "value": "false"
+                    },
+                    {
+                      "key": "overwrite",
+                      "value": "false"
+                    },
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "onDuplicate",
+                      "value": "error"
+                    },
+                    {
+                      "key": "complete",
+                      "value": "false"
+                    },
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a5cab893-d01e-457c-bb5c-620c50f31415",
+              "name": "The `collection` parameter or the `_from` or `_to` attributes of an\nimported edge refer to an unknown collection.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": ""
+                    },
+                    {
+                      "key": "ignoreMissing",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fromPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "overwriteCollectionPrefix",
+                      "value": "false"
+                    },
+                    {
+                      "key": "overwrite",
+                      "value": "false"
+                    },
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "onDuplicate",
+                      "value": "error"
+                    },
+                    {
+                      "key": "complete",
+                      "value": "false"
+                    },
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f1b56d29-f644-480d-800c-a15bf7e557e5",
+              "name": "The `complete` option is enabled and the import triggers a\nunique key violation.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": ""
+                    },
+                    {
+                      "key": "ignoreMissing",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fromPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "overwriteCollectionPrefix",
+                      "value": "false"
+                    },
+                    {
+                      "key": "overwrite",
+                      "value": "false"
+                    },
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "onDuplicate",
+                      "value": "error"
+                    },
+                    {
+                      "key": "complete",
+                      "value": "false"
+                    },
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2fb63c7b-f86d-4a85-a283-1a59b77a3c70",
+              "name": "The `complete` option is enabled and the input is invalid,\nor the server cannot auto-generate a document key (out of keys error)\nfor a document with no user-defined key.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "type",
+                      "value": ""
+                    },
+                    {
+                      "key": "ignoreMissing",
+                      "value": "false"
+                    },
+                    {
+                      "key": "fromPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "toPrefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "overwriteCollectionPrefix",
+                      "value": "false"
+                    },
+                    {
+                      "key": "overwrite",
+                      "value": "false"
+                    },
+                    {
+                      "key": "waitForSync",
+                      "value": "false"
+                    },
+                    {
+                      "key": "onDuplicate",
+                      "value": "error"
+                    },
+                    {
+                      "key": "complete",
+                      "value": "false"
+                    },
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "03de7a88-e309-49fc-9ddf-f5d31112c5ad",
+    "name": "ArangoDB Core Import API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Load JSON data in bulk\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

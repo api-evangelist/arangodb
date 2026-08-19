@@ -1,0 +1,103 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Import API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Import",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Import JSON data as documents",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/import",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The name of the target collection. The collection needs to exist already.\n"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Determines how the body of the request is interpreted.\n\n- `documents`: JSON Lines (JSONL) format. Each line is expected to be one\n  JSON object.\n\n  Example:\n\n  ```json\n  {\"_key\":\"john\",\"name\":\"John Smith\",\"age\":35}\n  {\"_key\":\"katie\",\"name\":\"Katie Foster\",\"age\":28}\n  ```\n\n- `array` (or `list`): JSON format. The request body is expected to be a\n  JSON array of objects. This format requires ArangoDB to parse the complete\n  array and keep it in memory for the duration of the import. This is more\n  resource-intensive than the line-wise JSONL processing.\n\n  Any whitespace outside of strings is ignored, which means the JSON data can be\n  a single line or be formatted as multiple lines.\n\n  Example:\n\n  ```json\n  [\n    {\"_key\":\"john\",\"name\":\"John Smith\",\"age\":35},\n    {\"_key\":\"katie\",\"name\":\"Katie Foster\",\"age\":28}\n  ]\n  ```\n\n- `auto`: automatically determines the type (either `documents` or `array`).\n\n- Omit the `type` parameter entirely (or set it to an empty string)\n  to import JSON arrays of tabular data, similar to CSV.\n\n  The first line is an array of strings that defines the attribute keys. The\n  subsequent lines are arrays with the attribute values. The keys and values\n  are matched by the order of the array elements.\n\n  Example:\n\n  ```json\n  [\"_key\",\"name\",\"age\"]\n  [\"john\",\"John Smith\",35]\n  [\"katie\",\"Katie Foster\",28]\n  ```\n"
+              },
+              {
+                "name": "ignoreMissing",
+                "value": "",
+                "type": "query",
+                "description": "When importing JSON arrays of tabular data (`type` parameter is omitted),\nthe first line of the request body defines the attribute keys and the\nsubsequent lines the attribute values for each document. Subsequent lines\nwith a different number of elements than the first line are not imported\nby default.\n\n```js\n[\"attr1\", \"attr2\"]\n[1, 2]     // matching number of elements\n[1]        // misses 2nd element\n[1, 2, 3]  // excess 3rd element\n```\n\nYou can enable this option to import them anyway. For the missing elements,\nthe document attributes are omitted. Excess elements are ignored.\n"
+              },
+              {
+                "name": "fromPrefix",
+                "value": "",
+                "type": "query",
+                "description": "The collection name prefix to prepend to all values in the `_from`\nattribute that only specify a document key.\n"
+              },
+              {
+                "name": "toPrefix",
+                "value": "",
+                "type": "query",
+                "description": "The collection name prefix to prepend to all values in the `_to`\nattribute that only specify a document key.\n"
+              },
+              {
+                "name": "overwriteCollectionPrefix",
+                "value": "",
+                "type": "query",
+                "description": "Force the `fromPrefix` and `toPrefix`, possibly replacing existing\ncollection name prefixes.\n"
+              },
+              {
+                "name": "overwrite",
+                "value": "",
+                "type": "query",
+                "description": "If enabled, then all data in the collection is removed prior to the\nimport. Any existing index definitions are preserved.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Wait until documents have been synced to disk before returning.\n"
+              },
+              {
+                "name": "onDuplicate",
+                "value": "",
+                "type": "query",
+                "description": "Controls what action is carried out in case of a unique key constraint\nviolation.\n\n- `error`: this will not import the current document because of the unique\n  key constraint violation. This is the default setting.\n- `update`: this will update an existing document in the database with the\n  data specified in the request. Attributes of the existing document that\n  are not present in the request will be preserved.\n- `replace`: this will replace an existing document in the database with the\n  data specified in the request.\n- `ignore`: this will not update an existing document and simply ignore the\n  error caused by a unique key constraint violation.\n\nNote that `update`, `replace` and `ignore` will only work when the\nimport document in the request contains the `_key` attribute. `update` and\n`replace` may also fail because of secondary unique key constraint violations.\n"
+              },
+              {
+                "name": "complete",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the whole import fails if any error occurs. Otherwise, the\nimport continues even if some documents are invalid and cannot be imported,\nskipping the problematic documents.\n"
+              },
+              {
+                "name": "details",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the result includes a `details` attribute with information\nabout documents that could not be imported.\n"
+              }
+            ]
+          },
+          "docs": "Load JSON data and store it as documents into the specified collection.\n\nIf you import documents into edge collections, all documents require a `_from`\nand a `_to` attribute.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,498 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Administration API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Administration",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Compact all databases",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_admin/compact",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **WARNING:**\nThis command can cause a full rewrite of all data in all databases, which may\ntake very long for large databases. It should thus only be used with care and\nonly when additional I/O load can be tolerated for a prolonged time.\n\n\nThis endpoint can be used to reclaim disk space after substantial data\ndeletions have taken place, by compacting the entire database system data.\n\nThe endpoint requires superuser access.\n"
+        },
+        {
+          "info": {
+            "name": "Get the required database version (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/database/target-version"
+          },
+          "docs": "> **WARNING:**\nThis endpoint is deprecated and should no longer be used.\nIt is removed in ArangoDB v4.0. Use `GET /_api/version` instead.\n\n\nReturns the database version that this server requires.\nThe version is returned in the `version` attribute of the result.\n"
+        },
+        {
+          "info": {
+            "name": "Return whether or not a server is available",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/server/availability"
+          },
+          "docs": "Return availability information about a server.\n\nThe response is a JSON object with an attribute \"mode\". The \"mode\" can either\nbe \"readonly\", if the server is in read-only mode, or \"default\", if it is not.\nPlease note that the JSON object with \"mode\" is only returned in case the server\ndoes not respond with HTTP response code 503.\n\nThis is a public API so it does *not* require authentication. It is meant to be\nused only in the context of server monitoring.\n"
+        },
+        {
+          "info": {
+            "name": "Get the startup option configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/_system/_admin/options"
+          },
+          "docs": "Return the effective configuration of the queried _arangod_ instance as\nset by startup options on the command-line and via a configuration file.\n\n{{< security >}}\nThis endpoint may reveal sensitive information about the deployment!\n{{< /security >}}\n\nThe endpoint can only be accessed via the `_system` database. In addition, the\n[`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)\ncontrols the required privileges to "
+        },
+        {
+          "info": {
+            "name": "Get the available startup options",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/_system/_admin/options-description"
+          },
+          "docs": "Return the startup options available to configure the queried _arangod_\ninstance, similar to the `--dump-options` startup option.\n\nThe endpoint can only be accessed via the `_system` database. In addition, the\n[`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)\ncontrols the required privileges to access the option endpoints and allows\nyou to disable them entirely. The option can have the following values:\n- `disabl"
+        },
+        {
+          "info": {
+            "name": "Get information about the deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/_system/_admin/support-info"
+          },
+          "docs": "Retrieves deployment information for support purposes. The endpoint returns data\nabout the ArangoDB version used, the host (operating system, server ID, CPU and\nstorage capacity, current utilization, a few metrics) and the other servers in\nthe deployment (in case of cluster deployments).\n\nAs this API may reveal sensitive data about the deployment, it can only be\naccessed from inside the `_system` database. In addition, there is a policy\ncontrol startup option `--server.support-info-api` that con"
+        },
+        {
+          "info": {
+            "name": "List the endpoints of a single server (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/_system/_api/endpoint"
+          },
+          "docs": "> **WARNING:**\nThis route should no longer be used.\nIt is considered as deprecated from version 3.4.0 on.\n\n\nReturns an array of all configured endpoints the server is listening on.\n\nThe result is a JSON array of JSON objects, each with `\"entrypoint\"` as\nthe only attribute, and with the value being a string describing the\nendpoint.\n\n> **INFO:**\nRetrieving the array of all endpoints is allowed in the system database\nonly. Calling this action in any other database will make the server return\nan err"
+        },
+        {
+          "info": {
+            "name": "List crash dumps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/crashes",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+              }
+            ]
+          },
+          "docs": "<small>Introduced in: v3.12.8</small>\n\nReturn the list of crash dump directory identifiers (UUIDs).\n\nWhen the server crashes, the crash handler writes diagnostic data into\na per-crash directory under `<database-directory>/crashes/<uuid>/`.\nEach dump includes information such as recent API calls and AQL queries,\na backtrace, and system information.\n\nThe server keeps the most recent 10 crash dumps. Older ones are removed\nduring startup.\n\nThis endpoint requires *administrate* access to the `_system"
+        },
+        {
+          "info": {
+            "name": "Get a crash dump",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/crashes/:crashId",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+              },
+              {
+                "name": "crashId",
+                "value": "",
+                "type": "path",
+                "description": "The UUID of the crash dump directory.\n"
+              }
+            ]
+          },
+          "docs": "<small>Introduced in: v3.12.8</small>\n\nReturn the contents of a specific crash dump. The response includes all\nfiles from the crash directory (e.g. `backtrace.txt`, `system_info.txt`,\n`ApiRecording.json`, `AsyncRegistry.json`) as an object mapping filenames\nto their contents. Crash dumps are stored under\n`<database-directory>/crashes/<uuid>/`.\n\nThis endpoint requires *administrate* access to the `_system` database.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a crash dump",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/crashes/:crashId",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+              },
+              {
+                "name": "crashId",
+                "value": "",
+                "type": "path",
+                "description": "The UUID of the crash dump directory to delete.\n"
+              }
+            ]
+          },
+          "docs": "<small>Introduced in: v3.12.8</small>\n\nDelete a specific crash dump directory and its contents. Crash dumps are\nstored under `<database-directory>/crashes/<uuid>/`. The server keeps the\nmost recent 10 crash dumps. Older ones are removed during startup.\n\nThis endpoint requires *administrate* access to the `_system` database.\n"
+        },
+        {
+          "info": {
+            "name": "Get the deployment ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/deployment/id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Get the unique identifier of this ArangoDB deployment.\n"
+        },
+        {
+          "info": {
+            "name": "Echo a request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/echo",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThe Action feature, including this debug endpoint, is deprecated and\nremoved in ArangoDB v4.0.\n\n\nThe call returns an object with the servers request information\n"
+        },
+        {
+          "info": {
+            "name": "Execute a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/execute",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThe `/_admin/execute` endpoint is deprecated and removed in ArangoDB v4.0.\n\n\nExecutes the JavaScript code in the body on the server as the body\nof a function with no arguments. If you have a `return` statement\nthen the return value you produce will be returned as content type\n`application/json`. If the parameter `returnAsJSON` is set to\n`true`, the result will be a JSON object describing the return value\ndirectly, otherwise a string produced by JSON.stringify will be\nreturned.\n\nNo"
+        },
+        {
+          "info": {
+            "name": "Get information about the current license",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/license",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              }
+            ]
+          },
+          "docs": "View the license information and status of the ArangoDB deployment.\n\nCan be called on single servers, Coordinators, and DB-Servers.\n\nIn the Community Edition before v3.12.5, only `{\"license\":\"none\"}`\nis returned.\n"
+        },
+        {
+          "info": {
+            "name": "Set a new license",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/license",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "Whether to change the license even if it expires sooner than the current one.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set a new license for an Enterprise Edition instance.\nCan be called on single servers, Coordinators, and DB-Servers.\n"
+        },
+        {
+          "info": {
+            "name": "Get the public startup option configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/options-public",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Return a small, curated subset of the configured server startup options\nthat are safe to expose to any authenticated user with read access to the\nrequested database.\n\nAdministrative tools can use this endpoint to adapt their behavior to the server\nconfiguration. For example, they can show the valid range for `replicationFactor`\nwhen creating a collection, or respect `--database.extended-names` when\nvalidating names on the client-side.\n\nThis endpoint is available regardless of the\n[`--server.opti"
+        },
+        {
+          "info": {
+            "name": "Reload the routing table",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/routing/reload",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThe Action and Foxx microservice features, including this endpoint for\nroute reloading, are deprecated and removed in ArangoDB v4.0.\n\n\nReloads the routing information from the `_routing` system collection if it\nexists, and makes Foxx rebuild its local routing table on the next request.\n"
+        },
+        {
+          "info": {
+            "name": "Return whether or not a server is in read-only mode",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/server/mode",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Return mode information about a server. The json response will contain\na field `mode` with the value `readonly` or `default`. In a read-only server\nall write operations will fail with an error code of `1004` (_ERROR_READ_ONLY_).\nCreating or dropping of databases and collections will also fail with error code `11` (_ERROR_FORBIDDEN_).\n\nThis API requires authentication.\n"
+        },
+        {
+          "info": {
+            "name": "Set the server mode to read-only or default",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/server/mode",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update mode information about a server. The JSON response will contain\na field `mode` with the value `readonly` or `default`. In a read-only server\nall write operations will fail with an error code of `1004` (_ERROR_READ_ONLY_).\nCreating or dropping of databases and collections will also fail with error\ncode `11` (_ERROR_FORBIDDEN_).\n\nThis is a protected API. It requires authentication and administrative\nserver rights.\n"
+        },
+        {
+          "info": {
+            "name": "Query the soft shutdown progress",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/shutdown",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              }
+            ]
+          },
+          "docs": "<small>Introduced in: v3.7.12, v3.8.1, v3.9.0</small>\n\nThis call reports progress about a soft Coordinator shutdown (see\ndocumentation of `DELETE /_admin/shutdown?soft=true`).\nIn this case, the following types of operations are tracked:\n\n - AQL cursors (in particular streaming cursors)\n - Transactions (in particular stream transactions)\n - Ongoing asynchronous requests (using the `x-arango-async: store` HTTP header)\n - Finished asynchronous requests, whose result has not yet been\n   collected\n -"
+        },
+        {
+          "info": {
+            "name": "Start the shutdown sequence",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/shutdown",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "soft",
+                "value": "",
+                "type": "query",
+                "description": "<small>Introduced in: v3.7.12, v3.8.1, v3.9.0</small>\n\nIf set to `true`, this initiates a soft shutdown. This is only available\non Coordinators. When issued, the Coordinator tracks a number of ongoing\noperations, waits until all have finished, and then shuts itself down\nnormally. It will still accept new operations.\n\nThis feature can be used to make restart operations of Coordinators less\nintrusive for clients. It is designed for setups with a load balancer in front\nof Coordinators. Remove the designated Coordinator from the load balancer before\nissuing the soft-shutdown. The remaining Coordinators will internally forward\nrequests that need to be handled by the designated Coordinator. All other\nrequests will be handled by the remaining Coordinators, reducing the designated\nCoordinator's load.\n\nThe following types of operations are tracked:\n\n - AQL cursors (in particular streaming cursors)\n - Transactions (in particular stream transactions)\n - Ongoing asynchronous requests (using the `x-arango-async: store` HTTP header)\n - Finished asynchronous requests, whose result has not yet been\n   collected\n - Queued low priority requests (most normal requests)\n - Ongoing low priority requests\n"
+              }
+            ]
+          },
+          "docs": "This call initiates a clean shutdown sequence. Requires administrative privileges.\n"
+        },
+        {
+          "info": {
+            "name": "Get server status information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/status",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              }
+            ]
+          },
+          "docs": "Returns status information about the server.\n"
+        },
+        {
+          "info": {
+            "name": "Get the system time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/time",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "The call returns an object with the `time` attribute. This contains the\ncurrent system time as a Unix timestamp with microsecond precision.\n"
+        },
+        {
+          "info": {
+            "name": "Get the storage engine type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/engine",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the storage engine the server is configured to use.\n"
+        },
+        {
+          "info": {
+            "name": "Get the storage engine statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/engine/stats",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              }
+            ]
+          },
+          "docs": "Returns detailed statistics related to the RocksDB storage engine activity,\nincluding figures about data size, cache usage, individual column families, etc.\n"
+        },
+        {
+          "info": {
+            "name": "Get the server version",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/version",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              },
+              {
+                "name": "details",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true` and if the user account you authenticate with has\nadministrate access to the `_system` database, the response contains\na `details` attribute with additional information about included\ncomponents and their versions. The attribute names and internals of\nthe `details` object may vary depending on platform and ArangoDB version.\n"
+              }
+            ]
+          },
+          "docs": "Returns the server name and version number.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,3605 @@
+{
+  "item": [
+    {
+      "id": "3727d51f-f258-4740-bc08-1028c43285de",
+      "name": "Users",
+      "description": {
+        "content": "Manage ArangoDB user accounts",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "778a6568-e00e-4509-b754-d13a570b308f",
+          "name": "List available users",
+          "request": {
+            "name": "List available users",
+            "description": {
+              "content": "Fetches data about all users. You need the *Administrate* server access level\nin order to execute this REST call.  Otherwise, you will only get information\nabout yourself.\n\nThe call will return a JSON object with at least the following\nattributes on success:\n\n- `user`: The name of the user as a string.\n- `active`: Whether the user account is able to log in to the database system.\n- `extra`: A JSON object with extra user information. It is used by the web\n  interface to store graph viewer settings and saved queries.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e265c3c6-2301-4d64-82e9-ba5999e7f77b",
+              "name": "The users that were found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8743f180-29ad-465a-8896-738b7d28e265",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "83b25abb-5efd-4757-ba99-90cbfa0cd081",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "40bd32f5-3b81-4b13-86eb-7589555bb78b",
+          "name": "Create a user",
+          "request": {
+            "name": "Create a user",
+            "description": {
+              "content": "Create a new user. You need server access level *Administrate* in order to\nexecute this REST call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"<string>\",\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b6bde5e0-f0d8-47f7-9ff9-2995996947a4",
+              "name": "Returned if the user can be added by the server\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"<string>\",\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a28e8d49-5981-4ea8-b703-384dee630333",
+              "name": "If the JSON representation is malformed or mandatory data is missing\nfrom the request.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"<string>\",\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fed8d7a7-5008-4c82-ac99-0557e96519b9",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"<string>\",\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "537cdfd4-5461-4b0d-9a90-3d25cc66073b",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"<string>\",\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "44171b51-f4cd-49f2-a2ff-8ec695be7e15",
+              "name": "Returned if a user with the same name already exists.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"<string>\",\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3520cf8f-99dc-4ce7-b3ec-6f8ac671af93",
+          "name": "Remove a user",
+          "request": {
+            "name": "Remove a user",
+            "description": {
+              "content": "Removes an existing user, identified by `user`.\n\nYou need *Administrate* permissions for the server access level in order to\nexecute this REST call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f1cab4aa-fab4-4e67-ab5c-bbadc2f31b3e",
+              "name": "Is returned if the user was removed by the server\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "571f4287-5f2f-4561-91a5-1f656d5fd146",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1b765b4a-0a14-42d3-b5fa-0f3bcfdd5116",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d772e3f4-d4a4-4e7e-bfe5-1588d41bc690",
+              "name": "The specified user does not exist\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "27faa1dc-ef10-40a1-baf9-c6cafa4b6acf",
+          "name": "Get a user",
+          "request": {
+            "name": "Get a user",
+            "description": {
+              "content": "Fetches data about the specified user. You can fetch information about\nyourself or you need the *Administrate* server access level in order to\nexecute this REST call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "82fe8c8d-de9c-45f1-bbfe-3f1b38ad9f9a",
+              "name": "The user was found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4f0d7e41-a967-4033-97bd-31d2e8646ab0",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c3d5c3d3-e65c-4761-b185-6dea16ef31bf",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5dc7f594-c49e-42aa-a727-d1bc8779da65",
+              "name": "The user with the specified name does not exist.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c799ce21-1a9a-4085-b4b7-fa3a7ddb404f",
+          "name": "Update a user",
+          "request": {
+            "name": "Update a user",
+            "description": {
+              "content": "Partially modifies the data of an existing user. You need server access level\n*Administrate* in order to execute this REST call. Additionally, users can\nchange their own data.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": \"<boolean>\",\n  \"extra\": \"<object>\",\n  \"passwd\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "80d44a12-fe9f-4dd1-85f1-538a5884bc96",
+              "name": "Is returned if the user data can be replaced by the server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": \"<boolean>\",\n  \"extra\": \"<object>\",\n  \"passwd\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2317e987-bd46-42fd-b66f-05f0d953b569",
+              "name": "The JSON representation is malformed or mandatory data is missing from the request.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": \"<boolean>\",\n  \"extra\": \"<object>\",\n  \"passwd\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "90455a52-32c1-4a1b-ae27-2e0f265e87c2",
+              "name": "Returned if you have *No access* database access level to the *_system*\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": \"<boolean>\",\n  \"extra\": \"<object>\",\n  \"passwd\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "85ecbadf-c00d-4aed-932a-6d0f2a2f08f3",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": \"<boolean>\",\n  \"extra\": \"<object>\",\n  \"passwd\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b477fa59-cfb8-4976-a592-5b8644b0ffaf",
+              "name": "The specified user does not exist\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": \"<boolean>\",\n  \"extra\": \"<object>\",\n  \"passwd\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5bb33d56-d0a1-4ed9-b467-dc6dba1c3d66",
+          "name": "Replace a user",
+          "request": {
+            "name": "Replace a user",
+            "description": {
+              "content": "Replaces the data of an existing user. This resets the user's\naccess levels for databases and collections. You need server access level\n*Administrate* in order to execute this REST call. Additionally, users can\nchange their own data.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "44d476e5-d2d4-48ed-850b-da7178c37914",
+              "name": "Is returned if the user data can be replaced by the server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0cbbaa53-7187-4fe6-8ce6-a720cd666d61",
+              "name": "The JSON representation is malformed or mandatory data is missing from the request\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "57953c29-def6-404e-9e22-b2a85c002ad7",
+              "name": "Returned if you have *No access* database access level to the *_system*\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c594348b-9d09-4942-abb2-0c68264c5e03",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6432d722-63fb-4390-a3f7-3fab78ceed45",
+              "name": "The specified user does not exist\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"active\": true,\n  \"extra\": \"<object>\",\n  \"passwd\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eed63e6d-50b0-4801-9eea-c05928929810",
+          "name": "List a user&rsquo;s accessible databases",
+          "request": {
+            "name": "List a user&rsquo;s accessible databases",
+            "description": {
+              "content": "Fetch the list of databases available to the specified `user`.\n\nYou need *Administrate* permissions for the server access level in order to\nexecute this REST call.\n\nThe call will return a JSON object with the per-database access\nprivileges for the specified user. The `result` object will contain\nthe databases names as object keys, and the associated privileges\nfor the database as values.\n\nIn case you specified `full`, the result will contain the permissions\nfor the databases as well as the permissions for the collections.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user",
+                "database"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "full",
+                  "value": "false",
+                  "description": "Return the full set of access levels for all databases and all collections.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user for which you want to query the databases.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7c79361f-2b0c-4b63-a222-d189e85f6bb3",
+              "name": "Returned if the list of available databases can be returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "full",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f31c5097-c348-4a94-a3e5-270f5849be8b",
+              "name": "If the access privileges are not right etc.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "full",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6c46977f-21af-43cb-a437-bf5000f271ce",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "full",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0a5e5def-e1fa-4613-8633-5fedc5786639",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "full",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e8b7b904-a8f1-4fc1-99cc-95f198e419e2",
+          "name": "Clear a user&rsquo;s database access level",
+          "request": {
+            "name": "Clear a user&rsquo;s database access level",
+            "description": {
+              "content": "Clears the database access level for the database `dbname` of user `user`. As\nconsequence, the default database access level is used. If there is no defined\ndefault database access level, it defaults to *No access*.\n\nYou need write permissions (*Administrate* access level) for the `_system`\ndatabase in order to execute this REST call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user",
+                "database",
+                ":dbname"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dbname",
+                  "description": "(Required) The name of the database to clear the access level for.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "da447531-5ce6-43ab-983d-025f1886c232",
+              "name": "Returned if the access permissions were changed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to clear the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3293df5d-6dd2-49da-ad12-d1b6b02c0d88",
+              "name": "If the JSON representation is malformed or mandatory data is missing\nfrom the request.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to clear the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6d6eb97b-504a-4b2e-8efe-b777cc083500",
+          "name": "Get a user&rsquo;s database access level",
+          "request": {
+            "name": "Get a user&rsquo;s database access level",
+            "description": {
+              "content": "Fetch the database access level for a specific database\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user",
+                "database",
+                ":dbname"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user for which you want to query the databases.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dbname",
+                  "description": "(Required) The name of the database to query the access level of.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2a547ae8-1dfc-424f-bed1-42d9a7ef7c60",
+              "name": "Returned if the access level can be returned\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2b2b2321-c548-44f1-b039-911d3c8c6779",
+              "name": "If the access privileges are not right etc.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0c90b3e1-58b9-4af8-8b1a-c3f4aba49dfd",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1db52544-584a-4499-8911-968aacadd0a5",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b18dc140-c486-4cd5-bb8a-149547290566",
+          "name": "Set a user&rsquo;s database access level",
+          "request": {
+            "name": "Set a user&rsquo;s database access level",
+            "description": {
+              "content": "Sets the database access levels for the database `dbname` of user `user`. You\nneed the *Administrate* server access level in order to execute this REST\ncall.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user",
+                "database",
+                ":dbname"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dbname",
+                  "description": "(Required) The name of the database to set the access level for.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grant\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7678a192-bf81-4b55-8bb2-86943258184e",
+              "name": "Returned if the access level was changed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d45d9cbf-b586-4059-833f-d84def543b39",
+              "name": "If the JSON representation is malformed or mandatory data is missing\nfrom the request.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d2e29da8-4b1b-4abf-b948-c3adadf4fe71",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e772f059-6d77-4b10-a157-cd7a81460be2",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "499514bf-d93e-4d4a-b8d4-78b1615917f1",
+          "name": "Clear a user&rsquo;s collection access level",
+          "request": {
+            "name": "Clear a user&rsquo;s collection access level",
+            "description": {
+              "content": "Clears the collection access level for the collection `collection` in the\ndatabase `dbname` of user `user`. As consequence, the default collection\naccess level is used. If there is no defined default collection access level,\nit defaults to *No access*.\n\nYou need write permissions (*Administrate* access level) for the `_system`\ndatabase in order to execute this REST call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user",
+                "database",
+                ":dbname",
+                ":collection"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dbname",
+                  "description": "(Required) The name of the database to clear the access level for.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection",
+                  "description": "(Required) The name of the collection to clear the access level for.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c0ba5797-9336-4310-a497-88559204c668",
+              "name": "Returned if the access permissions were changed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to clear the access level for.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to clear the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "18943b56-1e36-4b32-b3b9-264bcea10884",
+              "name": "If there was an error\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to clear the access level for.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to clear the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c08a4f17-02e8-48de-90af-54702b55a1ab",
+          "name": "Get a user&rsquo;s collection access level",
+          "request": {
+            "name": "Get a user&rsquo;s collection access level",
+            "description": {
+              "content": "Returns the collection access level for a specific collection\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user",
+                "database",
+                ":dbname",
+                ":collection"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user for which you want to query the databases.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dbname",
+                  "description": "(Required) The name of the database to query the access level of.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection",
+                  "description": "(Required) The name of the collection to query the access level of.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "86430783-4649-498b-b56d-4ded6144a225",
+              "name": "Returned if the access level can be returned\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3fe40627-90e5-4637-b3d4-0daada67cb41",
+              "name": "If the access privileges are not right etc.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3f2dfea2-7cb1-4b0b-97a0-d3ed5527d8e9",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d4e21d46-8d45-419a-941f-e8b3ab9c1da9",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user for which you want to query the databases.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to query the access level of.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to query the access level of.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "08fedceb-ce08-4967-989b-4415fc3e41fd",
+          "name": "Set a user&rsquo;s collection access level",
+          "request": {
+            "name": "Set a user&rsquo;s collection access level",
+            "description": {
+              "content": "Sets the collection access level for the `collection` in the database `dbname`\nfor user `user`. You need the *Administrate* server access level in order to\nexecute this REST call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "user",
+                ":user",
+                "database",
+                ":dbname",
+                ":collection"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user",
+                  "description": "(Required) The name of the user.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "dbname",
+                  "description": "(Required) The name of the database to set the access level for.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "collection",
+                  "description": "(Required) The name of the collection to set the access level for.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grant\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7a7f737f-422c-4587-bd7b-92e16c63d8b5",
+              "name": "Returned if the access permissions were changed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b7a3e51b-42b3-4f2c-9e6d-8b7ef5b9af63",
+              "name": "If the JSON representation is malformed or mandatory data is missing\nfrom the request.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4d2b4604-62e3-495b-aae2-567389df3a36",
+              "name": "Returned if you have *No access* database access level to the `_system`\ndatabase.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8434bc5d-7368-4aff-bd1e-5d003f7ae914",
+              "name": "Returned if you have *No access* server access level.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "user",
+                    ":user",
+                    "database",
+                    ":dbname",
+                    ":collection"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user",
+                      "description": "(Required) The name of the user.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "dbname",
+                      "description": "(Required) The name of the database to set the access level for.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "collection",
+                      "description": "(Required) The name of the collection to set the access level for.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grant\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "1565b2ca-0ddf-43eb-a3dc-baefa59b11ea",
+    "name": "ArangoDB Core Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Manage ArangoDB user accounts\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

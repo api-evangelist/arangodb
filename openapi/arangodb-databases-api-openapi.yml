@@ -1,0 +1,335 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Databases API
+  version: 3.12.10 (API v0)
+  description: Manage databases for organizing collections
+tags:
+- description: Manage databases for organizing collections
+  name: Databases
+paths:
+  /_db/_system/_api/database:
+    get:
+      description: 'Retrieves the list of all existing databases
+
+
+        > **INFO:**
+
+        Retrieving the list of databases is only possible from within the `_system` database.
+
+        '
+      operationId: listDatabases
+      responses:
+        '200':
+          description: 'is returned if the list of database was compiled successfully.
+
+            '
+        '400':
+          description: 'is returned if the request is invalid.
+
+            '
+        '403':
+          description: 'is returned if the request was not executed in the `_system` database.
+
+            '
+      summary: List all databases
+      tags:
+      - Databases
+    post:
+      description: 'Creates a new database.
+
+
+        The response is a JSON object with the attribute `result` set to `true`.
+
+
+        > **INFO:**
+
+        Creating a new database is only possible from within the `_system` database.
+
+        '
+      operationId: createDatabase
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: 'Has to contain a valid database name. The name must conform to the selected
+
+                    naming convention for databases. If the name contains Unicode characters, the
+
+                    name must be [NFC-normalized](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
+
+                    Non-normalized names are rejected.
+
+                    '
+                  type: string
+                options:
+                  description: 'Optional object which can contain the following attributes:
+
+                    '
+                  properties:
+                    replicationFactor:
+                      description: 'Default replication factor for new collections created in this database.
+
+                        _(cluster only)_
+
+
+                        Special values:
+
+                        - `"satellite"`: Replicate the collection to every DB-Server
+
+                        - `1`: Disable replication
+
+
+                        You can configure the global default with the
+
+                        `--cluster.default-replication-factor` startup option.
+
+                        '
+                      type: integer
+                    sharding:
+                      default: ''
+                      description: "The sharding method to use for new collections in this database. _(cluster only)_\nValid values are:\n- `\"\"` or `\"flexible\"`: Create a database where collections can\n  be sharded independently.\n- `\"single\"`: Create a OneShard database where all collections have a\n  single shard and all leader shards are co-located on the same DB-Server.\n"
+                      enum:
+                      - ''
+                      - flexible
+                      - single
+                      type: string
+                    writeConcern:
+                      description: 'Default write concern for new collections created in this database.
+
+                        It determines how many copies of each shard are required to be
+
+                        in sync on the different DB-Servers. If there are less than these many copies
+
+                        in the cluster, a shard refuses to write. Writes to shards with enough
+
+                        up-to-date copies succeed at the same time, however. The value of
+
+                        `writeConcern` cannot be greater than `replicationFactor`.
+
+
+                        For SatelliteCollections, the `writeConcern` is automatically controlled to
+
+                        equal the number of DB-Servers and has a value of `0`.
+
+                        Otherwise, the default value is controlled by the `--cluster.write-concern`
+
+                        startup option, which defaults to `1`. _(cluster only)_
+
+                        '
+                      type: number
+                  type: object
+                users:
+                  description: 'An array of user objects. The users are granted *Administrate* permissions
+
+                    for the new database. Users that do not exist yet are created.
+
+                    If `users` is not specified or does not contain any users, the default user
+
+                    `root` is used to ensure that the new database is accessible after it
+
+                    is created. The `root` user is created with an empty password should it not
+
+                    exist. Each user object can contain the following attributes:
+
+                    '
+                  items:
+                    properties:
+                      active:
+                        default: true
+                        description: 'Whether the user account should be able to log in to the database system.
+
+
+                          The attribute is ignored for users that already exist.
+
+                          '
+                        type: boolean
+                      extra:
+                        description: 'A JSON object with extra user information. It is used by the web interface
+
+                          to store graph viewer settings and saved queries. Should not be set or
+
+                          modified by end users, as custom attributes are not preserved.
+
+                          '
+                        type: object
+                      passwd:
+                        description: 'The user password as a string. If not specified, it defaults to an empty
+
+                          string. The attribute is ignored for users that already exist.
+
+                          '
+                        type: string
+                      username:
+                        description: 'Login name of an existing user or one to be created.
+
+                          '
+                        type: string
+                    required:
+                    - username
+                    type: object
+                  type: array
+              required:
+              - name
+              type: object
+      responses:
+        '201':
+          description: 'is returned if the database was created successfully.
+
+            '
+        '400':
+          description: 'is returned if the request parameters are invalid, if a database with the
+
+            specified name already exists, or if the configured limit to the number
+
+            of databases has been reached.
+
+            '
+        '403':
+          description: 'is returned if the request was not executed in the `_system` database.
+
+            '
+        '409':
+          description: 'is returned if a database with the specified name already exists.
+
+            '
+      summary: Create a database
+      tags:
+      - Databases
+  /_db/_system/_api/database/{database-name}:
+    delete:
+      description: 'Drops the database along with all data stored in it.
+
+
+        > **INFO:**
+
+        Dropping a database is only possible from within the `_system` database.
+
+        The `_system` database itself cannot be dropped.
+
+        '
+      operationId: deleteDatabase
+      parameters:
+      - description: 'The name of the database
+
+          '
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the database was dropped successfully.
+
+            '
+        '400':
+          description: 'is returned if the request is malformed.
+
+            '
+        '403':
+          description: 'is returned if the request was not executed in the `_system` database.
+
+            '
+        '404':
+          description: 'is returned if the database could not be found.
+
+            '
+      summary: Drop a database
+      tags:
+      - Databases
+  /_db/{database-name}/_api/database/current:
+    get:
+      description: 'Retrieves the properties of the current database
+
+
+        The response is a JSON object with the following attributes:
+
+
+        - `name`: the name of the current database
+
+        - `id`: the id of the current database
+
+        - `path`: the filesystem path of the current database
+
+        - `isSystem`: whether or not the current database is the `_system` database
+
+        - `sharding`: the default sharding method for collections created in this database
+
+        - `replicationFactor`: the default replication factor for collections in this database
+
+        - `writeConcern`: the default write concern for collections in this database
+
+        '
+      operationId: getCurrentDatabase
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the information was retrieved successfully.
+
+            '
+        '400':
+          description: 'is returned if the request is invalid.
+
+            '
+        '404':
+          description: 'is returned if the database could not be found.
+
+            '
+      summary: Get information about the current database
+      tags:
+      - Databases
+  /_db/{database-name}/_api/database/user:
+    get:
+      description: 'Retrieves the list of all databases the current user can access without
+
+        specifying a different username or password.
+
+        '
+      operationId: listUserAccessibleDatabases
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the list of database was compiled successfully.
+
+            '
+        '400':
+          description: 'is returned if the request is invalid.
+
+            '
+      summary: List the accessible databases
+      tags:
+      - Databases
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

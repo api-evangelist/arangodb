@@ -1,0 +1,796 @@
+{
+  "item": [
+    {
+      "id": "e35dd972-e937-4771-8bc0-ef860ef40926",
+      "name": "Tasks",
+      "description": {
+        "content": "Set up JavaScript code to run periodically or timed",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "07aa09b9-32e9-4003-ae46-d4998452b0be",
+          "name": "List all tasks",
+          "request": {
+            "name": "List all tasks",
+            "description": {
+              "content": "Fetches all existing tasks on the server.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "tasks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4aa82351-9755-44a0-ae35-3794dba44b02",
+              "name": "The list of tasks.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"string\",\n    \"id\": \"string\",\n    \"created\": 1715.5560031008476,\n    \"type\": \"string\",\n    \"period\": 6175.968562401477,\n    \"offset\": 7661.903740670438,\n    \"command\": \"string\",\n    \"database\": \"string\"\n  },\n  {\n    \"name\": \"string\",\n    \"id\": \"string\",\n    \"created\": 1650.4881004049755,\n    \"type\": \"string\",\n    \"period\": 6052.001450628797,\n    \"offset\": 9872.098008630423,\n    \"command\": \"string\",\n    \"database\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "51e8bc68-55a2-4319-b765-dd0400d06664",
+          "name": "Create a task",
+          "request": {
+            "name": "Create a task",
+            "description": {
+              "content": "Creates a new task with a generated identifier.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "tasks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"command\": \"<string>\",\n  \"name\": \"user-defined task\",\n  \"offset\": 0,\n  \"params\": {},\n  \"period\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7c88183b-50e8-4888-ab53-8ea056c1965b",
+              "name": "The task has been registered.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"command\": \"<string>\",\n  \"name\": \"user-defined task\",\n  \"offset\": 0,\n  \"params\": {},\n  \"period\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"created\": 6816.15098448272,\n  \"type\": \"periodic\",\n  \"period\": 5847.301440079341,\n  \"offset\": 248.85674437039705,\n  \"command\": \"string\",\n  \"database\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd2e7682-26b8-4e91-b315-1b645adfb1d5",
+              "name": "The task can't be registered because the request is invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"command\": \"<string>\",\n  \"name\": \"user-defined task\",\n  \"offset\": 0,\n  \"params\": {},\n  \"period\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4f466cd3-2cbc-4c1c-8f61-fb9516f57d86",
+          "name": "Delete a task",
+          "request": {
+            "name": "Delete a task",
+            "description": {
+              "content": "Deletes the task identified by `id` on the server.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "tasks",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has administrate access\nto this database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The id of the task to delete.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a9bdcc08-4d84-4028-bc98-16e5beb9d93a",
+              "name": "If the task was deleted, *HTTP 200* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has administrate access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The id of the task to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 200,\n  \"error\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd0a91be-9c48-4f2a-989f-355b75ce45db",
+              "name": "If the task `id` is unknown, then an *HTTP 404* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has administrate access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The id of the task to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 404,\n  \"error\": true,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b4cfe9fd-3efc-44ed-a566-c484c57dc5b3",
+          "name": "Get a task",
+          "request": {
+            "name": "Get a task",
+            "description": {
+              "content": "fetches one existing task on the server specified by `id`\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "tasks",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The id of the task to fetch.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "522742b1-6a68-4f15-a37b-6652a9d9c157",
+              "name": "The requested task.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The id of the task to fetch.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\",\n  \"id\": \"string\",\n  \"created\": 957.8720788691563,\n  \"type\": \"string\",\n  \"period\": 4295.988061115261,\n  \"offset\": 33.19509803167753,\n  \"command\": \"string\",\n  \"database\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "888f26c0-7163-4d11-a0e4-2ef769c21d2d",
+          "name": "Create a task with ID",
+          "request": {
+            "name": "Create a task with ID",
+            "description": {
+              "content": "Registers a new task with the specified ID.\n\nNot compatible with load balancers.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "tasks",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The id of the task to create\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"command\": \"<string>\",\n  \"name\": \"<string>\",\n  \"offset\": 0,\n  \"params\": {},\n  \"period\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0ae3b8e6-6817-4e24-9ba2-25eb88f2989e",
+              "name": "The task has been registered.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The id of the task to create\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"command\": \"<string>\",\n  \"name\": \"<string>\",\n  \"offset\": 0,\n  \"params\": {},\n  \"period\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"created\": 7959.065566056931,\n  \"type\": \"periodic\",\n  \"period\": 3422.7575768663933,\n  \"offset\": 4540.856945848282,\n  \"command\": \"string\",\n  \"database\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "99102655-b55a-4540-a03f-dcc74a6d4d97",
+              "name": "The task can't be registered because the request is invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The id of the task to create\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"command\": \"<string>\",\n  \"name\": \"<string>\",\n  \"offset\": 0,\n  \"params\": {},\n  \"period\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a661ee31-1479-4126-afff-926ce73087e7",
+              "name": "A task with the specified `id` already exists.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "tasks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The id of the task to create\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"command\": \"<string>\",\n  \"name\": \"<string>\",\n  \"offset\": 0,\n  \"params\": {},\n  \"period\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "c840c02d-98b1-40a9-9339-549046d27dd8",
+    "name": "ArangoDB Core Tasks API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Set up JavaScript code to run periodically or timed\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

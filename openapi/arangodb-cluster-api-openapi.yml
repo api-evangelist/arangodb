@@ -1,0 +1,1611 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Cluster API
+  version: 3.12.10 (API v0)
+  description: Get information, monitor, and administrate cluster deployments
+tags:
+- description: Get information, monitor, and administrate cluster deployments
+  name: Cluster
+paths:
+  /_admin/cluster/health:
+    get:
+      description: "Queries the health of the cluster as assessed by the supervision (Agency) for\nmonitoring purposes. The response is a JSON object, containing the standard\n`code`, `error`, `errorNum`, and `errorMessage` fields as appropriate.\nThe endpoint-specific fields are as follows:\n\n- `ClusterId`: A UUID string identifying the cluster\n- `Health`: An object containing a descriptive sub-object for each node in the cluster.\n  - `<nodeID>`: Each entry in `Health` will be keyed by the node ID and contain the following attributes:\n    - `Endpoint`: A string representing the network endpoint of the server.\n    - `Role`: The role the server plays. Possible values are `\"AGENT\"`, `\"COORDINATOR\"`, and `\"DBSERVER\"`.\n    - `CanBeDeleted`: Boolean representing whether the node can safely be removed from the cluster.\n    - `Version`: Version String of ArangoDB used by that node.\n    - `Engine`: Storage Engine used by that node.\n    - `Status`: A string indicating the health of the node as assessed by the supervision (Agency). This should be considered primary source of truth for Coordinator and DB-Servers node health. If the node is responding normally to requests, it is `\"GOOD\"`. If it has missed one heartbeat, it is `\"BAD\"`. If it has been declared failed by the supervision, which occurs after missing heartbeats for about 15 seconds, it will be marked `\"FAILED\"`.\n\n    Additionally it will also have the following attributes for:\n\n    **Coordinators** and **DB-Servers**\n    - `SyncStatus`: The last sync status reported by the node. This value is primarily used to determine the value of `Status`. Possible values include `\"UNKNOWN\"`, `\"UNDEFINED\"`, `\"STARTUP\"`, `\"STOPPING\"`, `\"STOPPED\"`, `\"SERVING\"`, `\"SHUTDOWN\"`.\n    - `LastAckedTime`: ISO 8601 timestamp specifying the last heartbeat received.\n    - `ShortName`: A string representing the shortname of the server, e.g. `\"Coordinator0001\"`.\n    - `Timestamp`: ISO 8601 timestamp specifying the last heartbeat received. (deprecated)\n    - `Host`: An optional string, specifying the host machine if known.\n    - `SyncTime`: ISO 8601 timestamp of the last sync time reported by the node.\n\n    **Coordinators** only\n    - `AdvertisedEndpoint`: A string representing the advertised endpoint, if set. (e.g. external IP address or load balancer, optional)\n\n    **Agents**\n    - `Leader`: ID of the Agent this node regards as leader.\n    - `Leading`: Whether this Agent is the leader (true) or not (false).\n    - `LastAckedTime`: Time since last `acked` in seconds.\n"
+      operationId: getClusterHealth
+      responses:
+        '200':
+          description: 'is returned when everything went well.
+
+            '
+      summary: Get the cluster health
+      tags:
+      - Cluster
+  /_admin/cluster/maintenance:
+    put:
+      description: 'Enable or disable the cluster supervision (Agency) maintenance mode.
+
+
+        This endpoint allows you to temporarily enable the supervision maintenance mode.
+
+        Please be aware that no automatic failovers of any kind will take place
+
+        while the maintenance mode is enabled. The cluster supervision reactivates
+
+        itself automatically at some point after disabling it.
+
+        '
+      operationId: setClusterMaintenance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: "The mode to set for the cluster supervision.\n\nPossible values (always lowercase and in double quotes):\n- `\"on\"`: Enable the maintenance mode for 60 minutes, i.e. the\n  supervision maintenance will reactivate itself after one hour.\n- `\"off\"`: Disable the maintenance mode.\n- `\"<number>\"`: Enable the maintenance mode for a different\n  duration (in seconds) than the default 60 minutes. For example,\n  `\"7200\"` enables the maintenance mode for 7200 seconds (2 hours).\n"
+              example: 'on'
+              type: string
+      responses:
+        '200':
+          description: 'is returned when everything went well.
+
+            '
+        '400':
+          description: 'if the request contained an invalid body
+
+            '
+        '501':
+          description: 'if the request was sent to a node other than a Coordinator or single-server
+
+            '
+        '504':
+          description: 'if the request timed out while enabling the maintenance mode
+
+            '
+      summary: Set the cluster maintenance mode
+      tags:
+      - Cluster
+  /_admin/cluster/maintenance/{DB-Server-ID}:
+    get:
+      description: 'Check whether the specified DB-Server is in maintenance mode and until when.
+
+        '
+      operationId: getDbserverMaintenance
+      parameters:
+      - description: 'The ID of a DB-Server.
+
+          '
+        in: path
+        name: DB-Server-ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The result object with the status. This attribute is omitted if the DB-Server
+
+                      is in normal mode.
+
+                      '
+                    properties:
+                      Mode:
+                        description: 'The mode of the DB-Server. The value is `"maintenance"`.
+
+                          '
+                        type: string
+                      Until:
+                        description: 'Until what date and time the maintenance mode currently lasts, in the
+
+                          ISO 8601 date/time format.
+
+                          '
+                        type: string
+                    required:
+                    - Mode
+                    - Until
+                    type: object
+                required:
+                - error
+                - code
+                type: object
+          description: 'The request was successful.
+
+            '
+        '400':
+          description: 'if the request contained an invalid body
+
+            '
+        '412':
+          description: 'if the request was sent to an Agent node
+
+            '
+        '504':
+          description: 'if the request timed out while enabling the maintenance mode
+
+            '
+      summary: Get the maintenance status of a DB-Server
+      tags:
+      - Cluster
+    put:
+      description: 'Enable or disable the maintenance mode of a DB-Server.
+
+
+        For rolling upgrades or rolling restarts, DB-Servers can be put into
+
+        maintenance mode, so that no attempts are made to re-distribute the data in a
+
+        cluster for such planned events. DB-Servers in maintenance mode are not
+
+        considered viable failover targets because they are likely restarted soon.
+
+        '
+      operationId: setDbserverMaintenance
+      parameters:
+      - description: 'The ID of a DB-Server.
+
+          '
+        in: path
+        name: DB-Server-ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                mode:
+                  description: 'The mode to set for the DB-Server.
+
+                    '
+                  enum:
+                  - maintenance
+                  - normal
+                  type: string
+                timeout:
+                  default: 3600
+                  description: 'After how many seconds the maintenance mode shall automatically end.
+
+                    You can send another request when the DB-Server is already in maintenance mode
+
+                    to extend the timeout.
+
+                    '
+                  type: integer
+              required:
+              - mode
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The status code. `200` in this case.
+
+                      '
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                required:
+                - error
+                - code
+                type: object
+          description: 'The request was successful.
+
+            '
+        '400':
+          description: 'if the request contained an invalid body
+
+            '
+        '412':
+          description: 'if the request was sent to an Agency node
+
+            '
+        '504':
+          description: 'if the request timed out while enabling the maintenance mode
+
+            '
+      summary: Set the maintenance status of a DB-Server
+      tags:
+      - Cluster
+  /_admin/cluster/rebalance:
+    get:
+      description: 'Computes the current cluster imbalance and returns the result.
+
+        It additionally shows the amount of ongoing and pending move shard operations.
+
+        '
+      operationId: getClusterImbalance
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  pendingMoveShards:
+                    description: 'The number of pending move shard operations.
+
+                      '
+                    type: number
+                  result:
+                    description: 'The result object.
+
+                      '
+                    properties:
+                      leader:
+                        description: 'Information about the leader imbalance.
+
+                          '
+                        properties:
+                          imbalance:
+                            description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                              '
+                            type: integer
+                          leaderDupl:
+                            description: 'The measure of the leader shard distribution. The higher the number, the worse
+
+                              the distribution.
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          numberShards:
+                            description: 'The number of leader shards per DB-Server.
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          targetWeight:
+                            description: 'The ideal weight of leader shards per DB-Server.
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          totalShards:
+                            description: 'The sum of shards, counting leader shards only.
+
+                              '
+                            type: integer
+                          totalWeight:
+                            description: 'The sum of all weights.
+
+                              '
+                            type: integer
+                          weightUsed:
+                            description: 'The weight of leader shards per DB-Server. A leader has a weight of 1 by default
+
+                              but it is higher if collections can only be moved together because of
+
+                              `distributeShardsLike`.
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                        required:
+                        - weightUsed
+                        - targetWeight
+                        - numberShards
+                        - leaderDupl
+                        - totalWeight
+                        - imbalance
+                        - totalShards
+                        type: object
+                      shards:
+                        description: 'Information about the shard imbalance.
+
+                          '
+                        properties:
+                          imbalance:
+                            description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                              '
+                            type: integer
+                          numberShards:
+                            description: 'The number of leader and follower shards per DB-Server.
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sizeUsed:
+                            description: 'The size of shards per DB-Server.
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          targetSize:
+                            description: 'The ideal size of shards per DB-Server.
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          totalShards:
+                            description: 'The sum of shards, counting leader and follower shards.
+
+                              '
+                            type: integer
+                          totalShardsFromSystemCollections:
+                            description: 'The sum of system collection shards, counting leader shards only.
+
+                              '
+                            type: integer
+                          totalUsed:
+                            description: 'The sum of the sizes.
+
+                              '
+                            type: integer
+                        required:
+                        - sizeUsed
+                        - targetSize
+                        - numberShards
+                        - totalUsed
+                        - totalShards
+                        - totalShardsFromSystemCollections
+                        - imbalance
+                        type: object
+                    required:
+                    - leader
+                    - shards
+                    type: object
+                  todoMoveShards:
+                    description: 'The number of planned move shard operations.
+
+                      '
+                    type: number
+                required:
+                - code
+                - error
+                - result
+                - pendingMoveShards
+                - todoMoveShards
+                type: object
+          description: 'This API returns HTTP 200.
+
+            '
+      summary: Get the current cluster imbalance
+      tags:
+      - Cluster
+    post:
+      description: 'Compute a set of move shard operations to improve balance.
+
+        '
+      operationId: computeClusterRebalancePlan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'The options for the rebalance plan.
+
+                '
+              properties:
+                databasesExcluded:
+                  default: []
+                  description: 'A list of database names to exclude from the analysis.
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                excludeSystemCollections:
+                  default: false
+                  description: 'Ignore system collections in the rebalance plan.
+
+                    '
+                  type: boolean
+                leaderChanges:
+                  default: true
+                  description: 'Allow leader changes without moving data.
+
+                    '
+                  type: boolean
+                maximumNumberOfMoves:
+                  default: 1000
+                  description: 'Maximum number of moves to be computed.
+
+                    '
+                  type: integer
+                moveFollowers:
+                  default: false
+                  description: 'Allow moving followers.
+
+                    '
+                  type: boolean
+                moveLeaders:
+                  default: false
+                  description: 'Allow moving leaders.
+
+                    '
+                  type: boolean
+                piFactor:
+                  default: 256000000
+                  description: 'A weighting factor that should remain untouched.
+
+
+                    If a collection has more shards than there are DB-Servers, there can be a subtle
+
+                    form of leader imbalance. Some DB-Servers may be responsible for more shards as
+
+                    leader than others. The `piFactor` adjusts how much weight such imbalances get
+
+                    in the overall imbalance score.
+
+                    '
+                  type: integer
+                version:
+                  description: 'Must be set to `1`.
+
+                    '
+                  type: number
+              required:
+              - version
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The rebalance plan.
+
+                  '
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The result object.
+
+                      '
+                    properties:
+                      imbalanceAfter:
+                        description: 'Expected imbalance after the suggested move shard operations are applied.
+
+                          '
+                        properties:
+                          leader:
+                            description: 'Information about the leader imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              leaderDupl:
+                                description: 'The measure of the leader shard distribution. The higher the number, the worse
+
+                                  the distribution.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              numberShards:
+                                description: 'The number of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetWeight:
+                                description: 'The ideal weight of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalWeight:
+                                description: 'The sum of all weights.
+
+                                  '
+                                type: integer
+                              weightUsed:
+                                description: 'The weight of leader shards per DB-Server. A leader has a weight of 1 by default
+
+                                  but it is higher if collections can only be moved together because of
+
+                                  `distributeShardsLike`.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                            required:
+                            - weightUsed
+                            - targetWeight
+                            - numberShards
+                            - leaderDupl
+                            - totalWeight
+                            - imbalance
+                            - totalShards
+                            type: object
+                          shards:
+                            description: 'Information about the shard imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              numberShards:
+                                description: 'The number of leader and follower shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              sizeUsed:
+                                description: 'The size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetSize:
+                                description: 'The ideal size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader and follower shards.
+
+                                  '
+                                type: integer
+                              totalShardsFromSystemCollections:
+                                description: 'The sum of system collection shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalUsed:
+                                description: 'The sum of the sizes.
+
+                                  '
+                                type: integer
+                            required:
+                            - sizeUsed
+                            - targetSize
+                            - numberShards
+                            - totalUsed
+                            - totalShards
+                            - totalShardsFromSystemCollections
+                            - imbalance
+                            type: object
+                        required:
+                        - leader
+                        - shards
+                        type: object
+                      imbalanceBefore:
+                        description: 'Imbalance before the suggested move shard operations are applied.
+
+                          '
+                        properties:
+                          leader:
+                            description: 'Information about the leader imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              leaderDupl:
+                                description: 'The measure of the leader shard distribution. The higher the number, the worse
+
+                                  the distribution.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              numberShards:
+                                description: 'The number of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetWeight:
+                                description: 'The ideal weight of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalWeight:
+                                description: 'The sum of all weights.
+
+                                  '
+                                type: integer
+                              weightUsed:
+                                description: 'The weight of leader shards per DB-Server. A leader has a weight of 1 by default
+
+                                  but it is higher if collections can only be moved together because of
+
+                                  `distributeShardsLike`.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                            required:
+                            - weightUsed
+                            - targetWeight
+                            - numberShards
+                            - leaderDupl
+                            - totalWeight
+                            - imbalance
+                            - totalShards
+                            type: object
+                          shards:
+                            description: 'Information about the shard imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              numberShards:
+                                description: 'The number of leader and follower shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              sizeUsed:
+                                description: 'The size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetSize:
+                                description: 'The ideal size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader and follower shards.
+
+                                  '
+                                type: integer
+                              totalShardsFromSystemCollections:
+                                description: 'The sum of system collection shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalUsed:
+                                description: 'The sum of the sizes.
+
+                                  '
+                                type: integer
+                            required:
+                            - sizeUsed
+                            - targetSize
+                            - numberShards
+                            - totalUsed
+                            - totalShards
+                            - totalShardsFromSystemCollections
+                            - imbalance
+                            type: object
+                        required:
+                        - leader
+                        - shards
+                        type: object
+                      moves:
+                        description: 'The suggested move shard operations.
+
+                          '
+                        items:
+                          properties:
+                            collection:
+                              description: 'Collection ID of the collection the shard belongs to.
+
+                                '
+                              type: number
+                            from:
+                              description: 'The server name from which to move.
+
+                                '
+                              type: string
+                            isLeader:
+                              description: 'True if this is a leader move shard operation.
+
+                                '
+                              type: boolean
+                            shard:
+                              description: 'Shard ID of the shard to be moved.
+
+                                '
+                              type: string
+                            to:
+                              description: 'The ID of the destination server.
+
+                                '
+                              type: string
+                          required:
+                          - from
+                          - to
+                          - shard
+                          - collection
+                          - isLeader
+                          type: object
+                        type: array
+                    required:
+                    - imbalanceBefore
+                    - imbalanceAfter
+                    - moves
+                    type: object
+                required:
+                - code
+                - error
+                - result
+                type: object
+          description: 'This API returns HTTP 200.
+
+            '
+      summary: Compute a set of move shard operations to improve balance
+      tags:
+      - Cluster
+    put:
+      description: 'Compute a set of move shard operations to improve balance.
+
+        These moves are then immediately executed.
+
+        '
+      operationId: startClusterRebalance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'The options for the rebalancing.
+
+                '
+              properties:
+                databasesExcluded:
+                  default: []
+                  description: 'A list of database names to exclude from the analysis.
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                excludeSystemCollections:
+                  default: false
+                  description: 'Ignore system collections in the rebalance plan.
+
+                    '
+                  type: boolean
+                leaderChanges:
+                  default: true
+                  description: 'Allow leader changes without moving data.
+
+                    '
+                  type: boolean
+                maximumNumberOfMoves:
+                  default: 1000
+                  description: 'Maximum number of moves to be computed.
+
+                    '
+                  type: integer
+                moveFollowers:
+                  default: false
+                  description: 'Allow moving followers.
+
+                    '
+                  type: boolean
+                moveLeaders:
+                  default: false
+                  description: 'Allow moving leaders.
+
+                    '
+                  type: boolean
+                piFactor:
+                  default: 256000000
+                  description: 'A weighting factor that should remain untouched.
+
+
+                    If a collection has more shards than there are DB-Servers, there can be a subtle
+
+                    form of leader imbalance. Some DB-Servers may be responsible for more shards as
+
+                    leader than others. The `piFactor` adjusts how much weight such imbalances get
+
+                    in the overall imbalance score.
+
+                    '
+                  type: integer
+                version:
+                  description: 'Must be set to `1`.
+
+                    '
+                  type: number
+              required:
+              - version
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The executed move shard operations.
+
+                  '
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The result object.
+
+                      '
+                    properties:
+                      imbalanceAfter:
+                        description: 'Expected imbalance after the suggested move shard operations are applied.
+
+                          '
+                        properties:
+                          leader:
+                            description: 'Information about the leader imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              leaderDupl:
+                                description: 'The measure of the leader shard distribution. The higher the number, the worse
+
+                                  the distribution.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              numberShards:
+                                description: 'The number of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetWeight:
+                                description: 'The ideal weight of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalWeight:
+                                description: 'The sum of all weights.
+
+                                  '
+                                type: integer
+                              weightUsed:
+                                description: 'The weight of leader shards per DB-Server. A leader has a weight of 1 by default
+
+                                  but it is higher if collections can only be moved together because of
+
+                                  `distributeShardsLike`.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                            required:
+                            - weightUsed
+                            - targetWeight
+                            - numberShards
+                            - leaderDupl
+                            - totalWeight
+                            - imbalance
+                            - totalShards
+                            type: object
+                          shards:
+                            description: 'Information about the shard imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              numberShards:
+                                description: 'The number of leader and follower shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              sizeUsed:
+                                description: 'The size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetSize:
+                                description: 'The ideal size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader and follower shards.
+
+                                  '
+                                type: integer
+                              totalShardsFromSystemCollections:
+                                description: 'The sum of system collection shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalUsed:
+                                description: 'The sum of the sizes.
+
+                                  '
+                                type: integer
+                            required:
+                            - sizeUsed
+                            - targetSize
+                            - numberShards
+                            - totalUsed
+                            - totalShards
+                            - totalShardsFromSystemCollections
+                            - imbalance
+                            type: object
+                        required:
+                        - leader
+                        - shards
+                        type: object
+                      imbalanceBefore:
+                        description: 'Imbalance before the suggested move shard operations are applied.
+
+                          '
+                        properties:
+                          leader:
+                            description: 'Information about the leader imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              leaderDupl:
+                                description: 'The measure of the leader shard distribution. The higher the number, the worse
+
+                                  the distribution.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              numberShards:
+                                description: 'The number of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetWeight:
+                                description: 'The ideal weight of leader shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalWeight:
+                                description: 'The sum of all weights.
+
+                                  '
+                                type: integer
+                              weightUsed:
+                                description: 'The weight of leader shards per DB-Server. A leader has a weight of 1 by default
+
+                                  but it is higher if collections can only be moved together because of
+
+                                  `distributeShardsLike`.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                            required:
+                            - weightUsed
+                            - targetWeight
+                            - numberShards
+                            - leaderDupl
+                            - totalWeight
+                            - imbalance
+                            - totalShards
+                            type: object
+                          shards:
+                            description: 'Information about the shard imbalance.
+
+                              '
+                            properties:
+                              imbalance:
+                                description: 'The measure of the total imbalance. A high value indicates a high imbalance.
+
+                                  '
+                                type: integer
+                              numberShards:
+                                description: 'The number of leader and follower shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              sizeUsed:
+                                description: 'The size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              targetSize:
+                                description: 'The ideal size of shards per DB-Server.
+
+                                  '
+                                items:
+                                  type: integer
+                                type: array
+                              totalShards:
+                                description: 'The sum of shards, counting leader and follower shards.
+
+                                  '
+                                type: integer
+                              totalShardsFromSystemCollections:
+                                description: 'The sum of system collection shards, counting leader shards only.
+
+                                  '
+                                type: integer
+                              totalUsed:
+                                description: 'The sum of the sizes.
+
+                                  '
+                                type: integer
+                            required:
+                            - sizeUsed
+                            - targetSize
+                            - numberShards
+                            - totalUsed
+                            - totalShards
+                            - totalShardsFromSystemCollections
+                            - imbalance
+                            type: object
+                        required:
+                        - leader
+                        - shards
+                        type: object
+                      moves:
+                        description: 'The suggested move shard operations.
+
+                          '
+                        items:
+                          properties:
+                            collection:
+                              description: 'Collection ID of the collection the shard belongs to.
+
+                                '
+                              type: number
+                            from:
+                              description: 'The server name from which to move.
+
+                                '
+                              type: string
+                            isLeader:
+                              description: 'True if this is a leader move shard operation.
+
+                                '
+                              type: boolean
+                            shard:
+                              description: 'Shard ID of the shard to be moved.
+
+                                '
+                              type: string
+                            to:
+                              description: 'The ID of the destination server.
+
+                                '
+                              type: string
+                          required:
+                          - from
+                          - to
+                          - shard
+                          - collection
+                          - isLeader
+                          type: object
+                        type: array
+                    required:
+                    - imbalanceBefore
+                    - imbalanceAfter
+                    - moves
+                    type: object
+                required:
+                - code
+                - error
+                - result
+                type: object
+          description: 'This API returns HTTP 200.
+
+            '
+      summary: Compute and execute a set of move shard operations to improve balance
+      tags:
+      - Cluster
+  /_admin/cluster/rebalance/execute:
+    post:
+      description: 'Execute the given set of move shard operations. You can use the
+
+        `POST /_admin/cluster/rebalance` endpoint to calculate these operations to improve
+
+        the balance of shards, leader shards, and follower shards.
+
+        '
+      operationId: executeClusterRebalancePlan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                moves:
+                  description: 'A set of move shard operations to execute.
+
+                    '
+                  items:
+                    properties:
+                      collection:
+                        description: 'Collection ID of the collection the shard belongs to.
+
+                          '
+                        type: number
+                      from:
+                        description: 'The server name from which to move.
+
+                          '
+                        type: string
+                      isLeader:
+                        description: 'True if this is a leader move shard operation.
+
+                          '
+                        type: boolean
+                      shard:
+                        description: 'Shard ID of the shard to be moved.
+
+                          '
+                        type: string
+                      to:
+                        description: 'The ID of the destination server.
+
+                          '
+                        type: string
+                    required:
+                    - from
+                    - to
+                    - shard
+                    - collection
+                    - isLeader
+                    type: object
+                  type: array
+                version:
+                  description: 'Must be set to `1`.
+
+                    '
+                  type: number
+              required:
+              - version
+              - moves
+              type: object
+      responses:
+        '200':
+          description: 'This API returns HTTP 200 if no operations are provided.
+
+            '
+        '202':
+          description: 'This API returns HTTP 202 if the operations have been accepted and scheduled for execution.
+
+            '
+      summary: Execute a set of move shard operations
+      tags:
+      - Cluster
+  /_admin/cluster/statistics:
+    get:
+      deprecated: true
+      description: '> **WARNING:**
+
+        This endpoint is deprecated and removed in ArangoDB v4.0.
+
+        Use `GET /_admin/metrics` instead, which provides the data exposed by
+
+        this API and a lot more.
+
+
+
+        Queries the statistics of the given DB-Server
+
+        '
+      operationId: getClusterStatistics
+      parameters:
+      - description: 'The ID of a DB-Server.
+
+          '
+        in: query
+        name: DBserver
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned when everything went well.
+
+            '
+        '400':
+          description: 'The `DBserver` parameter was not specified or is not the ID of a DB-Server.
+
+            '
+        '403':
+          description: 'The specified server is not a DB-Server.
+
+            '
+      summary: Get the statistics of a DB-Server
+      tags:
+      - Cluster
+  /_admin/cluster/uniqId:
+    put:
+      description: 'Reserve or skip globally unique identifiers that are used as automatically
+
+        generated document keys when using the `traditional` or `padded` key generators.
+
+
+        Either the `number` or the `minimum` query parameter needs to be specified.
+
+
+        > **WARNING:**
+
+        Only use this endpoint to resolve issues with the key generation,
+
+        in particular of cluster deployments created with v3.12.5-2 or older.
+
+        '
+      operationId: reserveUniqueIDs
+      parameters:
+      - description: 'Reserve as many globally unique IDs as specified.
+
+          '
+        in: query
+        name: number
+        schema:
+          maximum: 1000000
+          minimum: 1
+          type: integer
+      - description: 'Make sure that globally unique IDs used in the future will always be
+
+          at least as large as the specified value.
+
+
+          Coordinators and DB-Servers will use these larger IDs only after a restart.
+
+          '
+        in: query
+        name: minimum
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The range of the reserved/skipped IDs.
+
+                  '
+                properties:
+                  code:
+                    description: 'The status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'Whether an error occurred. `false` in this case.
+
+                      '
+                    type: boolean
+                  largest:
+                    description: 'The upper bound of the IDs that have been reserved (`number`)
+
+                      respectively skipped (`minimum`).
+
+                      '
+                    type: string
+                  smallest:
+                    description: 'The lower bound of the IDs that have been reserved (`number`)
+
+                      respectively skipped (`minimum`).
+
+                      '
+                    type: string
+                required:
+                - code
+                - error
+                - smallest
+                - largest
+                type: object
+          description: 'Successfully reserved/skipped the globally unique IDs.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'Either the `number` or the `minimum` query parameter must be provided.
+
+            '
+      summary: Reserve globally unique IDs
+      tags:
+      - Cluster
+  /_admin/server/id:
+    get:
+      description: 'Returns the ID of a server in a cluster. The request will fail if the
+
+        server is not running in cluster mode.
+
+        '
+      operationId: getServerId
+      responses:
+        '200':
+          description: 'Is returned when the server is running in cluster mode.
+
+            '
+        '500':
+          description: 'Is returned when the server is not running in cluster mode.
+
+            '
+      summary: Get the server ID
+      tags:
+      - Cluster
+  /_admin/server/role:
+    get:
+      description: 'Returns the role of a server in a cluster.
+
+        The server role is returned in the `role` attribute of the result.
+
+        '
+      operationId: getServerRole
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                  role:
+                    description: "The server role.\n- `SINGLE`: the server is a standalone server without clustering\n- `COORDINATOR`: the server is a Coordinator in a cluster\n- `PRIMARY`: the server is a DB-Server in a cluster\n- `SECONDARY`: this role is not used anymore\n- `AGENT`: the server is an Agency node in a cluster\n- `UNDEFINED`: in a cluster, this is returned if the server role cannot be\n   determined.\n"
+                    enum:
+                    - SINGLE
+                    - COORDINATOR
+                    - PRIMARY
+                    - SECONDARY
+                    - AGENT
+                    - UNDEFINED
+                    type: string
+                required:
+                - error
+                - code
+                - errorNum
+                - role
+                type: object
+          description: 'Is returned in all cases.
+
+            '
+      summary: Get the server role
+      tags:
+      - Cluster
+  /_api/cluster/endpoints:
+    get:
+      description: 'Returns an object with an attribute `endpoints`, which contains an
+
+        array of objects, which each have the attribute `endpoint`, whose value
+
+        is a string with the endpoint description. There is an entry for each
+
+        Coordinator in the cluster. This method only works on Coordinators in
+
+        cluster mode. In case of an error the `error` attribute is set to
+
+        `true`.
+
+        '
+      operationId: listClusterEndpoints
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  endpoints:
+                    description: 'A list of active cluster endpoints.
+
+                      '
+                    items:
+                      properties:
+                        endpoint:
+                          description: 'The bind of the Coordinator, like `tcp://[::1]:8530`
+
+                            '
+                          type: string
+                      required:
+                      - endpoint
+                      type: object
+                    type: array
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                required:
+                - error
+                - code
+                - endpoints
+                type: object
+          description: 'is returned when everything went well.
+
+            '
+        '501':
+          description: 'server is not a Coordinator or method was not GET.
+
+            '
+      summary: List all Coordinator endpoints
+      tags:
+      - Cluster
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

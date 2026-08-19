@@ -1,0 +1,164 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Transactions API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List the running Stream Transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/transaction",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "List the currently running Stream Transactions.\nIn a cluster, the list contains the transactions from all Coordinators.\n"
+        },
+        {
+          "info": {
+            "name": "Execute a JavaScript Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/transaction",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **WARNING:**\nJavaScript Transactions are deprecated from v3.12.0 onward and are\nremoved in v4.0.\n\n\nThe transaction description must be passed in the body of the POST request.\n\nIf the transaction is fully executed and committed on the server,\n*HTTP 200* will be returned. Additionally, the return value of the\ncode defined in `action` will be returned in the `result` attribute.\n\nFor successfully committed transactions, the returned JSON object has the\nfollowing properties:\n\n- `error`: boolean fla"
+        },
+        {
+          "info": {
+            "name": "Begin a Stream Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/transaction/begin",
+            "headers": [
+              {
+                "name": "x-arango-allow-dirty-read",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Begin a Stream Transaction that allows clients to call selected APIs over a\nshort period of time, referencing the transaction ID, and have the server\nexecute the operations transactionally.\n\nCommitting or aborting a running transaction must be done by the client.\nIt is bad practice to not commit or abort a transaction once you are done\nusing it. It forces the server to keep resources and collection locks\nuntil the entire transaction times out.\n\nThe transaction description must be passed in the b"
+        },
+        {
+          "info": {
+            "name": "Get the status of a Stream Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/transaction/:transaction-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "transaction-id",
+                "value": "",
+                "type": "path",
+                "description": "The transaction identifier.\n"
+              }
+            ]
+          },
+          "docs": "Retrieve the status of a Stream Transaction by its identifier.\n\nAfter a transaction is committed or aborted, the server remembers its\nfinal state for a limited time. During this window, querying the\ntransaction returns its final status (`committed` or `aborted`). Once\nthe server garbage-collects this record, the same identifier becomes\nunknown and the endpoint returns `404`.\n"
+        },
+        {
+          "info": {
+            "name": "Commit a Stream Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/transaction/:transaction-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "transaction-id",
+                "value": "",
+                "type": "path",
+                "description": "The transaction identifier,\n"
+              }
+            ]
+          },
+          "docs": "Commit a running server-side transaction. Committing is an idempotent operation.\nIt is not an error to commit a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: committing an already-committed\n  transaction returns `200` (idempotent), and committing an already-aborted\n  transaction returns `400`.\n- Once the server h"
+        },
+        {
+          "info": {
+            "name": "Abort a Stream Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/transaction/:transaction-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "transaction-id",
+                "value": "",
+                "type": "path",
+                "description": "The transaction identifier,\n"
+              }
+            ]
+          },
+          "docs": "Abort a running server-side transaction. Aborting is an idempotent operation.\nIt is not an error to abort a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: aborting an already-aborted\n  transaction returns `200` (idempotent), and aborting an already-committed\n  transaction returns `400`.\n- The first abort against a"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

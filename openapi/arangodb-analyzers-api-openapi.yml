@@ -1,0 +1,243 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Analyzers API
+  version: 3.12.10 (API v0)
+  description: Manage Analyzers for transforming data
+tags:
+- description: Manage Analyzers for transforming data
+  name: Analyzers
+paths:
+  /_db/{database-name}/_api/analyzer:
+    get:
+      description: 'Retrieves a an array of all Analyzer definitions.
+
+        The resulting array contains objects with the following attributes:
+
+        - `name`: the Analyzer name
+
+        - `type`: the Analyzer type
+
+        - `properties`: the properties used to configure the specified type
+
+        - `features`: the set of features to set on the Analyzer generated fields
+
+        '
+      operationId: listAnalyzers
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'The Analyzer definitions was retrieved successfully.
+
+            '
+      summary: List all Analyzers
+      tags:
+      - Analyzers
+    post:
+      description: 'Creates a new Analyzer based on the provided configuration.
+
+        '
+      operationId: createAnalyzer
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                features:
+                  default: []
+                  description: 'The set of features to set on the Analyzer generated fields.
+
+                    '
+                  items:
+                    enum:
+                    - frequency
+                    - norm
+                    - position
+                    - offset
+                    type: string
+                  type: array
+                  uniqueItems: true
+                name:
+                  description: 'The Analyzer name.
+
+                    '
+                  type: string
+                properties:
+                  description: 'The properties used to configure the specified Analyzer type.
+
+                    '
+                  type: object
+                type:
+                  description: 'The Analyzer type.
+
+                    '
+                  type: string
+              required:
+              - name
+              - type
+              type: object
+      responses:
+        '200':
+          description: 'An Analyzer with a matching name and definition already exists.
+
+            '
+        '201':
+          description: 'A new Analyzer definition was successfully created.
+
+            '
+        '400':
+          description: 'One or more of the required parameters is missing or one or more of the parameters
+
+            is not valid.
+
+            '
+        '403':
+          description: 'The user does not have permission to create and Analyzer with this configuration.
+
+            '
+      summary: Create an Analyzer
+      tags:
+      - Analyzers
+  /_db/{database-name}/_api/analyzer/{analyzer-name}:
+    delete:
+      description: 'Removes an Analyzer configuration identified by `analyzer-name`.
+
+
+        If the Analyzer definition was successfully dropped, an object is returned with
+
+        the following attributes:
+
+        - `error`: `false`
+
+        - `name`: The name of the removed Analyzer
+
+        '
+      operationId: deleteAnalyzer
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the Analyzer to remove.
+
+          '
+        in: path
+        name: analyzer-name
+        required: true
+        schema:
+          type: string
+      - description: 'The Analyzer configuration should be removed even if it is in-use.
+
+          '
+        in: query
+        name: force
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'The Analyzer configuration was removed successfully.
+
+            '
+        '400':
+          description: 'The `analyzer-name` was not supplied or another request parameter was not
+
+            valid.
+
+            '
+        '403':
+          description: 'The user does not have permission to remove this Analyzer configuration.
+
+            '
+        '404':
+          description: 'Such an Analyzer configuration does not exist.
+
+            '
+        '409':
+          description: 'The specified Analyzer configuration is still in use and `force` was omitted or
+
+            `false` specified.
+
+            '
+      summary: Remove an Analyzer
+      tags:
+      - Analyzers
+    get:
+      description: 'Retrieves the full definition for the specified Analyzer name.
+
+        The resulting object contains the following attributes:
+
+        - `name`: the Analyzer name
+
+        - `type`: the Analyzer type
+
+        - `properties`: the properties used to configure the specified type
+
+        - `features`: the set of features to set on the Analyzer generated fields
+
+        '
+      operationId: getAnalyzer
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the Analyzer to retrieve.
+
+          '
+        in: path
+        name: analyzer-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'The Analyzer definition was retrieved successfully.
+
+            '
+        '404':
+          description: 'Such an Analyzer configuration does not exist.
+
+            '
+      summary: Get an Analyzer definition
+      tags:
+      - Analyzers
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

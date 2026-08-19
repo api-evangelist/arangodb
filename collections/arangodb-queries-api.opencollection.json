@@ -1,0 +1,567 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Queries API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Queries",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List the registered user-defined AQL functions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/aqlfunction",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Returns all registered AQL user functions from the specified namespace.\n"
+              }
+            ]
+          },
+          "docs": "Returns all registered user-defined functions (UDFs) for the use in AQL of the\ncurrent database.\n\nThe call returns a JSON array with status codes and all user functions found under `result`.\n"
+        },
+        {
+          "info": {
+            "name": "Create a user-defined AQL function",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/aqlfunction",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Registers a user-defined function (UDF) written in JavaScript for the use in\nAQL queries in the current database.\n\nIn case of success, HTTP 200 is returned.\nIf the function isn't valid etc. HTTP 400 including a detailed error message will be returned.\n"
+        },
+        {
+          "info": {
+            "name": "Remove a user-defined AQL function",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/aqlfunction/:name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "the name of the AQL user function.\n"
+              },
+              {
+                "name": "group",
+                "value": "",
+                "type": "query",
+                "description": "Possible values:\n- `true`: The function name provided in `name` is treated as\n  a namespace prefix, and all functions in the specified namespace will be deleted.\n  The returned number of deleted functions may become 0 if none matches the string.\n- `false`: The function name provided in `name` must be fully\n  qualified, including any namespaces. If none matches the `name`, HTTP 404 is returned.\n"
+              }
+            ]
+          },
+          "docs": "Deletes an existing user-defined function (UDF) or function group identified by\n`name` from the current database.\n"
+        },
+        {
+          "info": {
+            "name": "Create a cursor",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/cursor",
+            "headers": [
+              {
+                "name": "x-arango-allow-dirty-read",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits an AQL query for execution in the current database. The server returns\na result batch and may indicate that further batches need to be fetched using\na cursor identifier.\n\nThe query details include the query string plus optional query options and\nbind parameters. These values need to be passed in a JSON representation in\nthe body of the POST request.\n"
+        },
+        {
+          "info": {
+            "name": "Read the next batch from a cursor",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/cursor/:cursor-identifier",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "cursor-identifier",
+                "value": "",
+                "type": "path",
+                "description": "The name of the cursor\n"
+              }
+            ]
+          },
+          "docs": "If the cursor is still alive, returns an object with the next query result batch.\n\nIf the cursor is not fully consumed, the time-to-live for the cursor\nis renewed by this API call.\n"
+        },
+        {
+          "info": {
+            "name": "Read the next batch from a cursor (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/cursor/:cursor-identifier",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "cursor-identifier",
+                "value": "",
+                "type": "path",
+                "description": "The name of the cursor\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis endpoint is deprecated in favor its functionally equivalent POST counterpart.\n\n\nIf the cursor is still alive, returns an object with the following\nattributes:\n\n- `id`: a `cursor-identifier`\n- `result`: a list of documents for the current batch\n- `hasMore`: `false` if this was the last batch\n- `count`: if present the total number of elements\n- `code`: an HTTP status code\n- `error`: a boolean flag to indicate whether an error occurred\n- `errorNum`: a server error number (if `er"
+        },
+        {
+          "info": {
+            "name": "Delete a cursor",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/cursor/:cursor-identifier",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "cursor-identifier",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the cursor\n"
+              }
+            ]
+          },
+          "docs": "Deletes the cursor and frees the resources associated with it.\n\nThe cursor will automatically be destroyed on the server when the client has\nretrieved all documents from it. The client can also explicitly destroy the\ncursor at any earlier time using an HTTP DELETE request. The cursor identifier must\nbe included as part of the URL.\n\nNote: the server will also destroy abandoned cursors automatically after a\ncertain server-controlled timeout to avoid resource leakage.\n"
+        },
+        {
+          "info": {
+            "name": "Read a batch from the cursor again",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/cursor/:cursor-identifier/:batch-identifier",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "cursor-identifier",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cursor.\n"
+              },
+              {
+                "name": "batch-identifier",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the batch. The first batch has an ID of `1` and the value is\nincremented by 1 with every batch. You can only request the latest batch again\n(or the next batch). Earlier batches are not kept on the server-side.\n"
+              }
+            ]
+          },
+          "docs": "You can use this endpoint to retry fetching the latest batch from a cursor.\nThe endpoint requires the `allowRetry` query option to be enabled for the cursor.\n\nCalling this endpoint with the last returned batch identifier returns the\nquery results for that same batch again. This does not advance the cursor.\nClient applications can use this to re-transfer a batch once more in case of\ntransfer errors.\n\nYou can also call this endpoint with the next batch identifier, i.e. the value\nreturned in the `n"
+        },
+        {
+          "info": {
+            "name": "Explain an AQL query",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/explain",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "To explain how an AQL query would be executed on the server, the query string\ncan be sent to the server via an HTTP POST request. The server will then validate\nthe query and create an execution plan for it. The execution plan will be\nreturned, but the query will not be executed.\n\nThe execution plan that is returned by the server can be used to estimate the\nprobable performance of the query. Though the actual performance will depend\non many different factors, the execution plan normally can provi"
+        },
+        {
+          "info": {
+            "name": "Parse an AQL query",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint is for query validation only. To actually query the database,\nsee `/api/cursor`.\n"
+        },
+        {
+          "info": {
+            "name": "Clear the AQL query results cache",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query-cache",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Clears all results stored in the AQL query results cache for the current database.\n"
+        },
+        {
+          "info": {
+            "name": "List the entries of the AQL query results cache",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query-cache/entries",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Returns an array containing the AQL query results currently stored in the query results\ncache of the selected database.\n"
+        },
+        {
+          "info": {
+            "name": "Get the AQL query results cache configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query-cache/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the global AQL query results cache configuration.\n"
+        },
+        {
+          "info": {
+            "name": "Set the AQL query results cache configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query-cache/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adjusts the global properties for the AQL query results cache.\n\nChanging the properties may invalidate all results currently in the cache.\n"
+        },
+        {
+          "info": {
+            "name": "List the entries of the AQL query plan cache",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query-plan-cache",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Returns an array containing information about each AQL execution plan\ncurrently stored in the cache of the selected database.\n\nThis requires read privileges for the current database. In addition, only those\nquery plans are returned for which the current user has at least read permissions\non all collections and Views included in the query.\n"
+        },
+        {
+          "info": {
+            "name": "Clear the AQL query plan cache",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query-plan-cache",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Clears all execution plans stored in the AQL query plan cache for the\ncurrent database.\n\nThis requires write privileges for the current database.\n"
+        },
+        {
+          "info": {
+            "name": "List the running AQL queries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query/current",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "all",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, will return the currently running queries in all databases,\nnot just the selected one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of the AQL queries that currently run in the specified\ndatabase.\n\nQuery tracking needs to be enabled by the\n[`--query.tracking` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking)\nor at runtime with the `enabled` query tracking property of the\n`PUT /_db/{database-name}/_api/query/properties` endpoint.\nIf query tracking is disabled for the current database,\nan **empty list** is returned.\n"
+        },
+        {
+          "info": {
+            "name": "Get the AQL query tracking configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the current query tracking properties of the specified database.\n"
+        },
+        {
+          "info": {
+            "name": "Update the AQL query tracking configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify one or more query tracking properties at runtime for the\nspecified database.\n"
+        },
+        {
+          "info": {
+            "name": "List all AQL optimizer rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query/rules",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "A list of all optimizer rules and their properties.\n"
+        },
+        {
+          "info": {
+            "name": "List the slow AQL queries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query/slow",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "all",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, returns the slow queries from all databases, not just\nthe specified one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of the recently finished AQL queries that exceeded the\nslow query threshold in the specified database.\n\nSlow query tracking needs to be enabled by the\n[`--query.tracking-slow-queries` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-slow-queries)\nor at runtime with the `trackSlowQueries` query tracking property of the\n`PUT /_db/{database-name}/_api/query/properties` endpoint.\nIf slow query tracking is disabled for the current"
+        },
+        {
+          "info": {
+            "name": "Clear the list of slow AQL queries",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query/slow",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "all",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, clears the slow query history in all databases, not just\nthe specified one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+              }
+            ]
+          },
+          "docs": "Clears the list of slow AQL queries for the current database.\n"
+        },
+        {
+          "info": {
+            "name": "Kill a running AQL query",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/query/:query-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "query-id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the query.\n"
+              },
+              {
+                "name": "all",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, attempt to kill the specified query in all databases,\nnot just the selected one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+              }
+            ]
+          },
+          "docs": "Kills a running query in the currently selected database. The query will be\nterminated at the next cancellation point.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

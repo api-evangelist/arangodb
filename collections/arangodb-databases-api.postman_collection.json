@@ -1,0 +1,859 @@
+{
+  "item": [
+    {
+      "id": "6bd34eda-1c04-484c-8163-fb59471a913d",
+      "name": "Databases",
+      "description": {
+        "content": "Manage databases for organizing collections",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ce30b352-2d8a-4f78-9a5c-f677b5dedbb7",
+          "name": "List all databases",
+          "request": {
+            "name": "List all databases",
+            "description": {
+              "content": "Retrieves the list of all existing databases\n\n> **INFO:**\nRetrieving the list of databases is only possible from within the `_system` database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                "_system",
+                "_api",
+                "database"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a944db78-9233-4083-928a-4d510aad4270",
+              "name": "is returned if the list of database was compiled successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ba5392a0-a63c-404c-9ca9-03086dd8f5f7",
+              "name": "is returned if the request is invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d63fac10-ff7d-48a6-9b8f-37d375903607",
+              "name": "is returned if the request was not executed in the `_system` database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7c4bafe5-fabe-4b13-946a-201248146182",
+          "name": "Create a database",
+          "request": {
+            "name": "Create a database",
+            "description": {
+              "content": "Creates a new database.\n\nThe response is a JSON object with the attribute `result` set to `true`.\n\n> **INFO:**\nCreating a new database is only possible from within the `_system` database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                "_system",
+                "_api",
+                "database"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"options\": {\n    \"replicationFactor\": \"<integer>\",\n    \"sharding\": \"\",\n    \"writeConcern\": \"<number>\"\n  },\n  \"users\": [\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    },\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "15b34828-4451-4160-87c7-b4bf7743ef0d",
+              "name": "is returned if the database was created successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"options\": {\n    \"replicationFactor\": \"<integer>\",\n    \"sharding\": \"\",\n    \"writeConcern\": \"<number>\"\n  },\n  \"users\": [\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    },\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e9e2225f-f562-4122-80a8-7e6b27ecc9b3",
+              "name": "is returned if the request parameters are invalid, if a database with the\nspecified name already exists, or if the configured limit to the number\nof databases has been reached.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"options\": {\n    \"replicationFactor\": \"<integer>\",\n    \"sharding\": \"\",\n    \"writeConcern\": \"<number>\"\n  },\n  \"users\": [\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    },\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a1e29fda-f5dc-4271-98fe-0a6cd9d546eb",
+              "name": "is returned if the request was not executed in the `_system` database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"options\": {\n    \"replicationFactor\": \"<integer>\",\n    \"sharding\": \"\",\n    \"writeConcern\": \"<number>\"\n  },\n  \"users\": [\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    },\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "125b5c51-8d3b-4042-b0d6-8f0dd2715154",
+              "name": "is returned if a database with the specified name already exists.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"options\": {\n    \"replicationFactor\": \"<integer>\",\n    \"sharding\": \"\",\n    \"writeConcern\": \"<number>\"\n  },\n  \"users\": [\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    },\n    {\n      \"username\": \"<string>\",\n      \"active\": true,\n      \"extra\": \"<object>\",\n      \"passwd\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "67063a4a-65ab-4bc8-a365-7de7c4fef89a",
+          "name": "Drop a database",
+          "request": {
+            "name": "Drop a database",
+            "description": {
+              "content": "Drops the database along with all data stored in it.\n\n> **INFO:**\nDropping a database is only possible from within the `_system` database.\nThe `_system` database itself cannot be dropped.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                "_system",
+                "_api",
+                "database",
+                ":database-name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "843365d4-8978-455c-af4e-f6fcc4a9ea4c",
+              "name": "is returned if the database was dropped successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database",
+                    ":database-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e9e3bc7e-af19-47d0-a67e-04f92cdac165",
+              "name": "is returned if the request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database",
+                    ":database-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6bc16f3c-312c-4e5f-8872-37fa16932b88",
+              "name": "is returned if the request was not executed in the `_system` database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database",
+                    ":database-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bccc8ccf-0b55-4757-ad67-924a2669219a",
+              "name": "is returned if the database could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "database",
+                    ":database-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cb0fba17-4471-4483-b5db-91e523d4de7a",
+          "name": "Get information about the current database",
+          "request": {
+            "name": "Get information about the current database",
+            "description": {
+              "content": "Retrieves the properties of the current database\n\nThe response is a JSON object with the following attributes:\n\n- `name`: the name of the current database\n- `id`: the id of the current database\n- `path`: the filesystem path of the current database\n- `isSystem`: whether or not the current database is the `_system` database\n- `sharding`: the default sharding method for collections created in this database\n- `replicationFactor`: the default replication factor for collections in this database\n- `writeConcern`: the default write concern for collections in this database\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "database",
+                "current"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a5346409-eae0-40ad-ba9b-aa966f2f8d5d",
+              "name": "is returned if the information was retrieved successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "database",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a0a1ce52-16b8-43ce-962b-5c6b146aa1c3",
+              "name": "is returned if the request is invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "database",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b9e7d36a-4b2e-4fb0-85ba-755c7f55cbf8",
+              "name": "is returned if the database could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "database",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "900c8820-5c74-42d1-bd48-d17e315db67d",
+          "name": "List the accessible databases",
+          "request": {
+            "name": "List the accessible databases",
+            "description": {
+              "content": "Retrieves the list of all databases the current user can access without\nspecifying a different username or password.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "database",
+                "user"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7d5d3116-2d84-4e75-aa91-06618a394863",
+              "name": "is returned if the list of database was compiled successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "database",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f7755c0a-a1a0-4085-b3dd-871de332ab1e",
+              "name": "is returned if the request is invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "database",
+                    "user"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "357c0b36-c195-487d-9248-46da91831def",
+    "name": "ArangoDB Core Databases API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Manage databases for organizing collections\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

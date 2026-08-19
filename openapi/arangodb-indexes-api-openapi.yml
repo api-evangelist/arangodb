@@ -1,0 +1,2708 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Indexes API
+  version: 3.12.10 (API v0)
+  description: Improve the performance of queries
+tags:
+- description: Improve the performance of queries
+  name: Indexes
+paths:
+  /_db/{database-name}/_api/index:
+    get:
+      description: 'Returns an object with an `indexes` attribute containing an array of all
+
+        index descriptions for the given collection. The same information is also
+
+        available in the `identifiers` attribute as an object with the index identifiers
+
+        as object keys.
+
+        '
+      operationId: listIndexes
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      - description: 'Whether to include figures and estimates in the result.
+
+          '
+        in: query
+        name: withStats
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'Whether to include hidden indexes in the result. Internal indexes
+
+          (such as `arangosearch`) and ones that are currently built in the
+
+          background are hidden.
+
+          '
+        in: query
+        name: withHidden
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'returns a JSON object containing a list of indexes on that collection.
+
+            '
+      summary: List all indexes of a collection
+      tags:
+      - Indexes
+    post:
+      description: 'Creates a new index in the collection `collection`. Expects
+
+        an object containing the index details.
+
+
+        The type of the index to be created must specified in the **type**
+
+        attribute of the index details. Depending on the index type, additional
+
+        other attributes may need to specified in the request in order to create
+
+        the index.
+
+
+        Indexes require the to be indexed attribute(s) in the **fields** attribute
+
+        of the index details. Depending on the index type, a single attribute or
+
+        multiple attributes can be indexed. In the latter case, an array of
+
+        strings is expected.
+
+
+        The `.` character denotes sub-attributes in attribute paths. Attributes with
+
+        literal `.` in their name cannot be indexed. Attributes with the name `_id`
+
+        cannot be indexed either, neither as a top-level attribute nor as a sub-attribute.
+
+
+        Optionally, an index name may be specified as a string in the **name** attribute.
+
+        Index names have the same restrictions as collection names. If no value is
+
+        specified, one will be auto-generated.
+
+
+        Persistent indexes (including vertex-centric indexes) can be created as unique
+
+        or non-unique variants. Uniqueness can be controlled by specifying the
+
+        **unique** option for the index definition. Setting it to `true` creates a
+
+        unique index. Setting it to `false` or omitting the `unique` attribute creates a
+
+        non-unique index.
+
+
+        > **INFO:**
+
+        Unique indexes on non-shard keys are not supported in cluster deployments.
+
+
+
+        Persistent indexes can optionally be created in a sparse
+
+        variant. A sparse index will be created if the **sparse** attribute in
+
+        the index details is set to `true`. Sparse indexes do not index documents
+
+        for which any of the index attributes is either not set or is `null`.
+
+
+        The optional **deduplicate** attribute is supported by persistent array indexes.
+
+        It controls whether inserting duplicate index values
+
+        from the same document into a unique array index will lead to a unique constraint
+
+        error or not. The default value is `true`, so only a single instance of each
+
+        non-unique index value will be inserted into the index per document. Trying to
+
+        insert a value into the index that already exists in the index always fails,
+
+        regardless of the value of this attribute.
+
+
+        The optional **estimates** attribute is supported by `persistent`, `mdi`, and
+
+        `mdi-prefixed` indexes. This attribute controls whether index selectivity estimates are
+
+        maintained for the index. Not maintaining index selectivity estimates can have
+
+        a slightly positive impact on write performance.
+
+        The downside of turning off index selectivity estimates will be that
+
+        the query optimizer will not be able to determine the usefulness of different
+
+        competing indexes in AQL queries when there are multiple candidate indexes to
+
+        choose from.
+
+        The `estimates` attribute is optional and defaults to `true` if not set. It will
+
+        have no effect on indexes other than persistent indexes.
+
+
+        The optional attribute **cacheEnabled** is supported by indexes of type
+
+        `persistent`. This attribute controls whether an extra in-memory hash cache is
+
+        created for the index. The hash cache can be used to speed up index lookups.
+
+        The cache can only be used for queries that look up all index attributes via
+
+        an equality lookup (`==`). The hash cache cannot be used for range scans,
+
+        partial lookups or sorting.
+
+        The cache will be populated lazily upon reading data from the index. Writing data
+
+        into the collection or updating existing data will invalidate entries in the
+
+        cache. The cache may have a negative effect on performance in case index values
+
+        are updated more often than they are read.
+
+        The maximum size of cache entries that can be stored is currently 4 MB, i.e.
+
+        the cumulated size of all index entries for any index lookup value must be
+
+        less than 4 MB. This limitation is there to avoid storing the index entries
+
+        of "super nodes" in the cache.
+
+        `cacheEnabled` defaults to `false` and should only be used for indexes that
+
+        are known to benefit from an extra layer of caching.
+
+
+        The optional attribute **inBackground** can be set to `true` to keep the
+
+        collection/shards available for write operations by not using an exclusive
+
+        write lock for the duration of the index creation.
+
+        '
+      operationId: createIndex
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'The options for the index. The available attributes depend on the index type.
+
+                '
+              type: object
+      responses:
+        '200':
+          description: 'If the index already exists, then an *HTTP 200* is returned.
+
+            '
+        '201':
+          description: 'If the index does not already exist and could be created, then an *HTTP 201*
+
+            is returned.
+
+            '
+        '400':
+          description: 'If an invalid index description is posted or attributes are used that the
+
+            target index will not support, then an *HTTP 400* is returned.
+
+            '
+        '404':
+          description: 'If `collection` is unknown, then an *HTTP 404* is returned.
+
+            '
+      summary: Create an index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index#fulltext:
+    post:
+      deprecated: true
+      description: '> **WARNING:**
+
+        The fulltext index type is deprecated from version 3.10 onwards.
+
+
+
+        Creates a fulltext index for the collection `collection-name`, if
+
+        it does not already exist. The call expects an object containing the index
+
+        details.
+
+        '
+      operationId: createIndexFulltext
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                fields:
+                  description: 'A list with exactly one attribute path.
+
+                    '
+                  items:
+                    type: string
+                  maxItems: 1
+                  minItems: 1
+                  type: array
+                inBackground:
+                  default: false
+                  description: 'Set this option to `true` to keep the collection/shards available for
+
+                    write operations by not using an exclusive write lock for the duration
+
+                    of the index creation.
+
+                    '
+                  type: boolean
+                minLength:
+                  default: 2
+                  description: 'Minimum character length of words to index. The default is
+
+                    low, thus it is recommended to set this value explicitly
+
+                    when creating the index.
+
+                    '
+                  type: integer
+                name:
+                  description: 'An easy-to-remember name for the index to look it up or refer to it in index hints.
+
+                    Index names are subject to the same character restrictions as collection names.
+
+                    If omitted, a name is auto-generated so that it is unique with respect to the
+
+                    collection, e.g. `idx_832910498`.
+
+                    '
+                  type: string
+                type:
+                  description: 'Needs to be set to `"fulltext"`.
+
+                    '
+                  example: fulltext
+                  type: string
+              required:
+              - type
+              - fields
+              - minLength
+              type: object
+      responses:
+        '200':
+          description: 'The index exists already.
+
+            '
+        '201':
+          description: 'The index is created as there is no such existing index.
+
+            '
+        '404':
+          description: 'The collection is unknown.
+
+            '
+      summary: Create a full-text index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index#geo:
+    post:
+      description: 'Creates a geo-spatial index in the collection `collection`, if
+
+        it does not already exist.
+
+
+        Geo indexes are always sparse, meaning that documents that do not contain
+
+        the index attributes or have non-numeric values in the index attributes
+
+        will not be indexed.
+
+        '
+      operationId: createIndexGeo
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                fields:
+                  description: 'An array with one or two attribute paths.
+
+
+                    If it is an array with one attribute path `location`, then a geo-spatial
+
+                    index on all documents is created using `location` as path to the
+
+                    coordinates. The value of the attribute must be an array with at least two
+
+                    double values. The array must contain the latitude (first value) and the
+
+                    longitude (second value). All documents, which do not have the attribute
+
+                    path or with value that are not suitable, are ignored.
+
+
+                    If it is an array with two attribute paths `latitude` and `longitude`,
+
+                    then a geo-spatial index on all documents is created using `latitude`
+
+                    and `longitude` as paths the latitude and the longitude. The values of
+
+                    the `latitude` and `longitude` attributes must each be a number (double).
+
+                    All documents which do not have the attribute paths or which have
+
+                    values that are not suitable are ignored.
+
+                    '
+                  items:
+                    type: string
+                  maxItems: 2
+                  minItems: 1
+                  type: array
+                  uniqueItems: true
+                geoJson:
+                  default: false
+                  description: 'If you create a geo-spatial index over a single attribute and `geoJson`
+
+                    is `true`, then the coordinate order within the attribute''s array is
+
+                    longitude followed by latitude. This corresponds to the format described in
+
+                    <http://geojson.org/geojson-spec.html#positions>
+
+                    '
+                  type: boolean
+                inBackground:
+                  default: false
+                  description: 'Set this option to `true` to keep the collection/shards available for
+
+                    write operations by not using an exclusive write lock for the duration
+
+                    of the index creation.
+
+                    '
+                  type: boolean
+                legacyPolygons:
+                  description: "If `geoJson` is set to `true`, then this option controls how GeoJSON Polygons\nare interpreted.\n\n- If `legacyPolygons` is `true`, the smaller of the two regions defined by a\n  linear ring is interpreted as the interior of the ring and a ring can at most\n  enclose half the Earth's surface.\n- If `legacyPolygons` is `false`, the area to the left of the boundary ring's\n  path is considered to be the interior and a ring can enclose the entire\n  surface of the Earth.\n\nThe default is `true` for geo indexes that were created in versions before 3.10,\nand `false` for geo indexes created in 3.10 or later.\n"
+                  type: boolean
+                name:
+                  description: 'An easy-to-remember name for the index to look it up or refer to it in index hints.
+
+                    Index names are subject to the same character restrictions as collection names.
+
+                    If omitted, a name is auto-generated so that it is unique with respect to the
+
+                    collection, e.g. `idx_832910498`.
+
+                    '
+                  type: string
+                type:
+                  description: 'Needs to be set to `"geo"`.
+
+                    '
+                  example: geo
+                  type: string
+              required:
+              - type
+              - fields
+              type: object
+      responses:
+        '200':
+          description: 'The index exists already.
+
+            '
+        '201':
+          description: 'The index is created as there is no such existing index.
+
+            '
+        '404':
+          description: 'The collection is unknown.
+
+            '
+      summary: Create a geo-spatial index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index#inverted:
+    post:
+      description: 'Creates an inverted index for the collection `collection-name`, if
+
+        it does not already exist. The call expects an object containing the index
+
+        details.
+
+        '
+      operationId: createIndexInverted
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                analyzer:
+                  default: identity
+                  description: 'The name of an Analyzer to use by default. This Analyzer is applied to the
+
+                    values of the indexed fields for which you don''t define Analyzers explicitly.
+
+                    '
+                  type: string
+                cache:
+                  default: false
+                  description: 'Enable this option to always cache the field normalization values in memory
+
+                    for all fields by default. This can improve the performance of scoring and
+
+                    ranking queries. Otherwise, these values are memory-mapped and it is up to the
+
+                    operating system to load them from disk into memory and to evict them from memory.
+
+
+                    Normalization values are computed for fields which are processed with Analyzers
+
+                    that have the `"norm"` feature enabled. These values are used to score fairer if
+
+                    the same tokens occur repeatedly, to emphasize these documents less.
+
+
+                    You can also enable this option to always cache auxiliary data used for querying
+
+                    fields that are indexed with Geo Analyzers in memory for all fields by default.
+
+                    This can improve the performance of geo-spatial queries.
+
+
+                    See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                    memory consumption of this cache. You can reduce the memory usage of the column
+
+                    cache in cluster deployments by only using the cache for leader shards, see the
+
+                    `--arangosearch.columns-cache-only-leader` startup option (introduced in v3.10.6).
+
+                    '
+                  type: boolean
+                cleanupIntervalStep:
+                  default: 2
+                  description: "Wait at least this many commits between removing unused files in the\nArangoSearch data directory (set to `0` to disable).\nFor the case where the consolidation policies merge segments often (i.e. a lot\nof commit+consolidate), a lower value causes a lot of disk space to be\nwasted.\nFor the case where the consolidation policies rarely merge segments (i.e. few\ninserts/deletes), a higher value impacts performance without any added\nbenefits.\n\n_Background:_\n  With every \"commit\" or \"consolidate\" operation, a new state of the\n  inverted index' internal data structures is created on disk.\n  Old states/snapshots are released once there are no longer any users\n  remaining.\n  However, the files for the released states/snapshots are left on disk, and\n  only removed by \"cleanup\" operation.\n"
+                  type: integer
+                commitIntervalMsec:
+                  default: 1000
+                  description: "Wait at least this many milliseconds between committing inverted index data store\nchanges and making documents visible to queries (set to `0` to disable).\nFor the case where there are a lot of inserts/updates, a higher value causes the\nindex not to account for them and memory usage continues to grow until the commit.\nA lower value impacts performance, including the case where there are no or only a\nfew inserts/updates because of synchronous locking, and it wastes disk space for\neach commit call.\n\n_Background:_\n  For data retrieval, ArangoSearch follows the concept of\n  \"eventually-consistent\", i.e. eventually all the data in ArangoDB will be\n  matched by corresponding query expressions.\n  The concept of ArangoSearch \"commit\" operations is introduced to\n  control the upper-bound on the time until document addition/removals are\n  actually reflected by corresponding query expressions.\n  Once a \"commit\" operation is complete, all documents added/removed prior to\n  the start of the \"commit\" operation will be reflected by queries invoked in\n  subsequent ArangoDB transactions, in-progress ArangoDB transactions will\n  still continue to return a repeatable-read state.\n"
+                  type: integer
+                consolidationIntervalMsec:
+                  default: 5000
+                  description: "Wait at least this many milliseconds between applying `consolidationPolicy` to\nconsolidate the inverted index data store and possibly release space on the filesystem\n(set to `0` to disable).\nFor the case where there are a lot of data modification operations, a higher\nvalue could potentially have the data store consume more space and file handles.\nFor the case where there are a few data modification operations, a lower value\nimpacts performance due to no segment candidates being available for\nconsolidation.\n\n_Background:_\n  For data modification, ArangoSearch follows the concept of a\n  \"versioned data store\". Thus old versions of data may be removed once there\n  are no longer any users of the old data. The frequency of the cleanup and\n  compaction operations are governed by `consolidationIntervalMsec` and the\n  candidates for compaction are selected via `consolidationPolicy`.\n"
+                  type: integer
+                consolidationPolicy:
+                  description: "The consolidation policy to apply for selecting which segments should be merged.\n\n_Background:_\n  With each ArangoDB transaction that inserts documents, one or more\n  ArangoSearch-internal segments get created.\n  Similarly, for removed documents, the segments that contain such documents\n  have these documents marked as 'deleted'.\n  Over time, this approach causes a lot of small and sparse segments to be\n  created.\n  A \"consolidation\" operation selects one or more segments and copies all of\n  their valid documents into a single new segment, thereby allowing the\n  search algorithm to perform more optimally and for extra file handles to be\n  released once old segments are no longer used.\n"
+                  properties:
+                    maxSkewThreshold:
+                      default: 0.4
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The skew describes how much segment files vary in file size. It is a number
+
+                        between `0.0` and `1.0` and is calculated by dividing the largest file size
+
+                        of a set of segment files by the total size. For example, the skew of a
+
+                        200 MiB, 300 MiB, and 500 MiB segment file is `0.5` (`500 / 1000`).
+
+
+                        A large `maxSkewThreshold` value allows merging large segment files with
+
+                        smaller ones, consolidation occurs more frequently, and there are fewer
+
+                        segment files on disk at all times. While this may potentially improve the
+
+                        read performance and use fewer file descriptors, frequent consolidations
+
+                        cause a higher write load and thus a higher write amplification.
+
+
+                        On the other hand, a small threshold value triggers the consolidation only
+
+                        when there are a large number of segment files that don''t vary in size a lot.
+
+                        Consolidation occurs less frequently, reducing the write amplification, but
+
+                        it can result in a greater number of segment files on disk.
+
+
+                        Multiple combinations of candidate segments are checked and the one with
+
+                        the lowest skew value is selected for consolidation. The selection process
+
+                        picks the greatest number of segments that together have the lowest skew value
+
+                        while ensuring that the size of the new consolidated segment remains under
+
+                        the configured `segmentsBytesMax`.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minDeletionRatio:
+                      default: 0.5
+                      description: 'This option is available from v3.12.7 onward:
+
+
+                        The `minDeletionRatio` represents the minimum required deletion ratio
+
+                        in one or more segments to perform a cleanup of those segments.
+
+                        It is a number between `0.0` and `1.0`.
+
+
+                        The deletion ratio is the percentage of deleted documents across one or
+
+                        more segment files and is calculated by dividing the number of deleted
+
+                        documents by the total number of documents in a segment or a group of
+
+                        segments. For example, if there is a segment with 1000 documents of which
+
+                        300 are deleted and another segment with 1000 documents of which 700 are
+
+                        deleted, the deletion ratio is `0.5` (50%, calculated as `1000 / 2000`).
+
+
+                        The `minDeletionRatio` threshold must be carefully selected. A smaller
+
+                        value leads to earlier cleanup of deleted documents from segments and
+
+                        thus reclamation of disk space but it generates a higher write load.
+
+                        A very large value lowers the write amplification but at the same time
+
+                        the system can be left with a large number of segment files with a high
+
+                        percentage of deleted documents that occupy disk space unnecessarily.
+
+
+                        During cleanup, the segment files are first arranged in decreasing
+
+                        order of their individual deletion ratios. Then the largest subset of
+
+                        segments whose collective deletion ratio is greater than or equal to
+
+                        `minDeletionRatio` is picked.
+
+                        '
+                      maximum: 1
+                      minimum: 0
+                      type: number
+                    minScore:
+                      default: 0
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Filter out consolidation candidates with a score less than this.
+
+                        '
+                      type: integer
+                    segmentsBytesFloor:
+                      default: 25165824
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        Defines the value (in bytes) to treat all smaller segments as equal for
+
+                        consolidation selection.
+
+                        '
+                      type: integer
+                    segmentsBytesMax:
+                      default: 8589934592
+                      description: 'The maximum allowed size of all consolidated segments in bytes.
+
+                        '
+                      type: integer
+                    segmentsMax:
+                      default: 200
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The maximum number of segments that are evaluated as candidates for
+
+                        consolidation.
+
+                        '
+                      type: integer
+                    segmentsMin:
+                      default: 50
+                      description: 'This option is only available up to v3.12.6:
+
+
+                        The minimum number of segments that are evaluated as candidates for
+
+                        consolidation.
+
+                        '
+                      type: integer
+                    type:
+                      default: tier
+                      description: "The segment candidates for the \"consolidation\" operation are selected based\nupon several possible configurable formulas as defined by their types.\nThe supported types are:\n\n- `\"tier\"`: consolidate based on segment byte size skew and live\n  document count as dictated by the customization attributes.\n"
+                      type: string
+                  type: object
+                features:
+                  description: 'A list of Analyzer features. You can set this option to overwrite what features
+
+                    are enabled for the default `analyzer`.
+
+
+                    Default: the features as defined by the Analyzer itself.
+
+                    '
+                  items:
+                    enum:
+                    - frequency
+                    - norm
+                    - position
+                    - offset
+                    type: string
+                  type: array
+                  uniqueItems: true
+                fields:
+                  description: 'An array of attribute paths. You can use strings to index the fields with the
+
+                    default options, or objects to specify options for the fields (with the
+
+                    attribute path in the `name` property), or a mix of both.
+
+                    '
+                  items:
+                    properties:
+                      analyzer:
+                        description: 'The name of an Analyzer to use for this field.
+
+
+                          Default: the value defined by the top-level `analyzer` option.
+
+                          '
+                        type: string
+                      cache:
+                        description: 'Enable this option to always cache the field normalization values in memory
+
+                          for this specific field. This can improve the performance of scoring and
+
+                          ranking queries. Otherwise, these values are memory-mapped and it is up to the
+
+                          operating system to load them from disk into memory and to evict them from memory.
+
+
+                          Normalization values are computed for fields which are processed with Analyzers
+
+                          that have the `"norm"` feature enabled. These values are used to score fairer if
+
+                          the same tokens occur repeatedly, to emphasize these documents less.
+
+
+                          You can also enable this option to always cache auxiliary data used for querying
+
+                          fields that are indexed with Geo Analyzers in memory for this specific field.
+
+                          This can improve the performance of geo-spatial queries.
+
+
+                          Default: the value defined by the top-level `cache` option.
+
+
+                          See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                          memory consumption of this cache. You can reduce the memory usage of the column
+
+                          cache in cluster deployments by only using the cache for leader shards, see the
+
+                          `--arangosearch.columns-cache-only-leader` startup option (introduced in v3.10.6).
+
+                          '
+                        type: boolean
+                      features:
+                        description: 'A list of Analyzer features to use for this field. You can set this option to
+
+                          overwrite what features are enabled for the `analyzer`.
+
+
+                          Default: the features as defined by the Analyzer itself, or inherited from the
+
+                          top-level `features` option if the `analyzer` option adjacent to this option is
+
+                          not set.
+
+                          '
+                        items:
+                          enum:
+                          - frequency
+                          - norm
+                          - position
+                          - offset
+                          type: string
+                        type: array
+                        uniqueItems: true
+                      includeAllFields:
+                        description: 'This option only applies if you use the inverted index in a `search-alias` Views.
+
+
+                          If set to `true`, then all sub-attributes of this field are indexed, excluding
+
+                          any sub-attributes that are configured separately by other elements in the
+
+                          `fields` array (and their sub-attributes). The `analyzer` and `features`
+
+                          properties apply to the sub-attributes.
+
+
+                          If set to `false`, then sub-attributes are ignored.
+
+
+                          Default: the value defined by the top-level `includeAllFields` option.
+
+                          '
+                        type: boolean
+                      name:
+                        description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                          You can expand one array attribute with `[*]`.
+
+                          '
+                        type: string
+                      nested:
+                        description: 'Index the specified sub-objects that are stored in an array. Other than with the
+
+                          `fields` property, the values get indexed in a way that lets you query for
+
+                          co-occurring values. For example, you can search the sub-objects and all the
+
+                          conditions need to be met by a single sub-object instead of across all of them.
+
+                          '
+                        items:
+                          properties:
+                            analyzer:
+                              description: 'The name of an Analyzer to use for this field.
+
+                                Default: the value defined by the parent field, or the top-level `analyzer` option.
+
+                                '
+                              type: string
+                            cache:
+                              description: 'Enable this option to always cache the field normalization values in memory
+
+                                for this specific nested field. This can improve the performance of scoring and
+
+                                ranking queries. Otherwise, these values are memory-mapped and it is up to the
+
+                                operating system to load them from disk into memory and to evict them from memory.
+
+
+                                Normalization values are computed for fields which are processed with Analyzers
+
+                                that have the `"norm"` feature enabled. These values are used to score fairer if
+
+                                the same tokens occur repeatedly, to emphasize these documents less.
+
+
+                                You can also enable this option to always cache auxiliary data used for querying
+
+                                fields that are indexed with Geo Analyzers in memory for this specific nested field.
+
+                                This can improve the performance of geo-spatial queries.
+
+
+                                Default: the value defined by the top-level `cache` option.
+
+
+                                See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                                memory consumption of this cache. You can reduce the memory usage of the column
+
+                                cache in cluster deployments by only using the cache for leader shards, see the
+
+                                `--arangosearch.columns-cache-only-leader` startup option (introduced in v3.10.6).
+
+                                '
+                              type: boolean
+                            features:
+                              description: 'A list of Analyzer features to use for this field. You can set this option to
+
+                                overwrite what features are enabled for the `analyzer`.
+
+
+                                Default: the features as defined by the Analyzer itself, or inherited from the
+
+                                parent field''s or top-level `features` option if no `analyzer` option is set
+
+                                at a deeper level, closer to this option.
+
+                                '
+                              items:
+                                enum:
+                                - frequency
+                                - norm
+                                - position
+                                - offset
+                                type: string
+                              type: array
+                              uniqueItems: true
+                            name:
+                              description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                                '
+                              type: string
+                            nested:
+                              description: 'You can recursively index sub-objects. See the above description of the
+
+                                `nested` option.
+
+                                '
+                              items:
+                                type: object
+                              type: array
+                            searchField:
+                              description: 'This option only applies if you use the inverted index in a `search-alias` Views.
+
+
+                                You can set the option to `true` to get the same behavior as with `arangosearch`
+
+                                Views regarding the indexing of array values for this field. If enabled, both,
+
+                                array and primitive values (strings, numbers, etc.) are accepted. Every element
+
+                                of an array is indexed according to the `trackListPositions` option.
+
+
+                                If set to `false`, it depends on the attribute path. If it explicitly expands an
+
+                                array (`[*]`), then the elements are indexed separately. Otherwise, the array is
+
+                                indexed as a whole, but only `geopoint` and `aql` Analyzers accept array inputs.
+
+                                You cannot use an array expansion if `searchField` is enabled.
+
+
+                                Default: the value defined by the top-level `searchField` option.
+
+                                '
+                              type: boolean
+                          required:
+                          - name
+                          type: object
+                        type: array
+                      searchField:
+                        description: 'This option only applies if you use the inverted index in a `search-alias` Views.
+
+
+                          You can set the option to `true` to get the same behavior as with `arangosearch`
+
+                          Views regarding the indexing of array values for this field. If enabled, both,
+
+                          array and primitive values (strings, numbers, etc.) are accepted. Every element
+
+                          of an array is indexed according to the `trackListPositions` option.
+
+
+                          If set to `false`, it depends on the attribute path. If it explicitly expands an
+
+                          array (`[*]`), then the elements are indexed separately. Otherwise, the array is
+
+                          indexed as a whole, but only `geopoint` and `aql` Analyzers accept array inputs.
+
+                          You cannot use an array expansion if `searchField` is enabled.
+
+
+                          Default: the value defined by the top-level `searchField` option.
+
+                          '
+                        type: boolean
+                      trackListPositions:
+                        description: 'This option only applies if you use the inverted index in a `search-alias` Views,
+
+                          and `searchField` needs to be `true`.
+
+
+                          If set to `true`, then track the value position in arrays for array values.
+
+                          For example, when querying a document like `{ attr: [ "valueX", "valueY", "valueZ" ] }`,
+
+                          you need to specify the array element, e.g. `doc.attr[1] == "valueY"`.
+
+
+                          If set to `false`, all values in an array are treated as equal alternatives.
+
+                          You don''t specify an array element in queries, e.g. `doc.attr == "valueY"`, and
+
+                          all elements are searched for a match.
+
+
+                          Default: the value defined by the top-level `trackListPositions` option.
+
+                          '
+                        type: boolean
+                    required:
+                    - name
+                    type: object
+                  minItems: 1
+                  type: array
+                  uniqueItems: true
+                inBackground:
+                  default: false
+                  description: 'Set this option to `true` to keep the collection/shards available for
+
+                    write operations by not using an exclusive write lock for the duration
+
+                    of the index creation.
+
+                    '
+                  type: boolean
+                includeAllFields:
+                  default: false
+                  description: 'This option only applies if you use the inverted index in a `search-alias` Views.
+
+
+                    If set to `true`, then all document attributes are indexed, excluding any
+
+                    sub-attributes that are configured in the `fields` array (and their sub-attributes).
+
+                    The `analyzer` and `features` properties apply to the sub-attributes.
+
+
+                    > **WARNING:**
+
+                    Using `includeAllFields` for a lot of attributes in combination
+
+                    with complex Analyzers may significantly slow down the indexing process.
+
+                    '
+                  type: boolean
+                name:
+                  description: 'An easy-to-remember name for the index to look it up or refer to it in index hints.
+
+                    Index names are subject to the same character restrictions as collection names.
+
+                    If omitted, a name is auto-generated so that it is unique with respect to the
+
+                    collection, e.g. `idx_832910498`.
+
+                    '
+                  type: string
+                optimizeTopK:
+                  default: []
+                  description: 'This option only applies if you use the inverted index in a `search-alias` Views.
+
+
+                    An array of strings defining sort expressions that you want to optimize.
+
+                    This is also known as _WAND optimization_ (introduced in v3.12.0).
+
+
+                    If you query a View with the `SEARCH` operation in combination with a
+
+                    `SORT` and `LIMIT` operation, search results can be retrieved faster if the
+
+                    `SORT` expression matches one of the optimized expressions.
+
+
+                    Only sorting by highest rank is supported, that is, sorting by the result
+
+                    of a scoring function in descending order (`DESC`). Use `@doc` in the expression
+
+                    where you would normally pass the document variable emitted by the `SEARCH`
+
+                    operation to the scoring function.
+
+
+                    You can define up to 64 expressions per View.
+
+
+                    Example: `["BM25(@doc) DESC", "TFIDF(@doc, true) DESC"]`
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                parallelism:
+                  default: 2
+                  description: 'The number of threads to use for indexing the fields.
+
+                    '
+                  type: integer
+                primaryKeyCache:
+                  default: false
+                  description: 'Enable this option to always cache the primary key column in memory. This can
+
+                    improve the performance of queries that return many documents. Otherwise, these
+
+                    values are memory-mapped and it is up to the operating system to load them from
+
+                    disk into memory and to evict them from memory.
+
+
+                    See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                    memory consumption of this cache. You can reduce the memory usage of the column
+
+                    cache in cluster deployments by only using the cache for leader shards, see the
+
+                    `--arangosearch.columns-cache-only-leader` startup option (introduced in v3.10.6).
+
+                    '
+                  type: boolean
+                primarySort:
+                  description: 'You can define a primary sort order to enable an AQL optimization. If a query
+
+                    iterates over all documents of a collection, wants to sort them by attribute values,
+
+                    and the (left-most) fields to sort by, as well as their sorting direction, match
+
+                    with the `primarySort` definition, then the `SORT` operation is optimized away.
+
+                    '
+                  properties:
+                    cache:
+                      default: false
+                      description: 'Enable this option to always cache the primary sort columns in memory. This can
+
+                        improve the performance of queries that utilize the primary sort order.
+
+                        Otherwise, these values are memory-mapped and it is up to the operating system
+
+                        to load them from disk into memory and to evict them from memory.
+
+
+                        See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                        memory consumption of this cache. You can reduce the memory usage of the column
+
+                        cache in cluster deployments by only using the cache for leader shards, see the
+
+                        `--arangosearch.columns-cache-only-leader` startup option (introduced in v3.10.6).
+
+                        '
+                      type: boolean
+                    compression:
+                      default: lz4
+                      description: 'Defines how to compress the primary sort data.
+
+                        - `"lz4"`: use LZ4 fast compression.
+
+                        - `"none"`: disable compression to trade space for speed.
+
+                        '
+                      enum:
+                      - lz4
+                      - none
+                      type: string
+                    fields:
+                      description: 'An array of the fields to sort the index by and the direction to sort each field in.
+
+                        '
+                      items:
+                        properties:
+                          direction:
+                            description: 'The sorting direction.
+
+                              - `"asc` for ascending
+
+                              - `"desc"` for descending
+
+                              '
+                            enum:
+                            - asc
+                            - desc
+                            type: string
+                          field:
+                            description: 'An attribute path. The `.` character denotes sub-attributes.
+
+                              '
+                            type: string
+                        required:
+                        - field
+                        - direction
+                        type: object
+                      type: array
+                  required:
+                  - fields
+                  type: object
+                searchField:
+                  default: false
+                  description: 'This option only applies if you use the inverted index in a `search-alias` Views.
+
+
+                    You can set the option to `true` to get the same behavior as with `arangosearch`
+
+                    Views regarding the indexing of array values as the default. If enabled, both,
+
+                    array and primitive values (strings, numbers, etc.) are accepted. Every element
+
+                    of an array is indexed according to the `trackListPositions` option.
+
+
+                    If set to `false`, it depends on the attribute path. If it explicitly expands an
+
+                    array (`[*]`), then the elements are indexed separately. Otherwise, the array is
+
+                    indexed as a whole, but only `geopoint` and `aql` Analyzers accept array inputs.
+
+                    You cannot use an array expansion if `searchField` is enabled.
+
+                    '
+                  type: boolean
+                storedValues:
+                  description: "The optional `storedValues` attribute can contain an array of objects with paths\nto additional attributes to store in the index. These additional attributes\ncannot be used for index lookups or for sorting, but they can be used for\nprojections. This allows an index to fully cover more queries and avoid extra\ndocument lookups.\n\nYou may use the following shorthand notations on index creation instead of\nan array of objects. The default compression and cache settings are used in\nthis case:\n\n- An array of strings, like `[\"attr1\", \"attr2\"]`, to place each attribute into\n  a separate column of the index (introduced in v3.10.3).\n\n- An array of arrays of strings, like `[[\"attr1\", \"attr2\"]]`, to place the\n  attributes into a single column of the index, or `[[\"attr1\"], [\"attr2\"]]`\n  to place each attribute into a separate column. You can also mix it with the\n  full form:\n\n  ```json\n  [\n    [\"attr1\"],\n    [\"attr2\", \"attr3\"],\n    { \"fields\": [\"attr4\", \"attr5\"], \"cache\": true }\n  ]\n  ```\n"
+                  items:
+                    properties:
+                      cache:
+                        default: false
+                        description: 'Enable this option to always cache stored values in memory. This can improve the
+
+                          query performance if stored values are involved. Otherwise, these values are
+
+                          memory-mapped and it is up to the operating system to load them from disk into
+
+                          memory and to evict them from memory.
+
+
+                          See the `--arangosearch.columns-cache-limit` startup option to control the
+
+                          memory consumption of this cache. You can reduce the memory usage of the column
+
+                          cache in cluster deployments by only using the cache for leader shards, see the
+
+                          `--arangosearch.columns-cache-only-leader` startup option (introduced in v3.10.6).
+
+                          '
+                        type: boolean
+                      compression:
+                        default: lz4
+                        description: 'Defines how to compress the attribute values.
+
+                          - `"lz4"`: use LZ4 fast compression.
+
+                          - `"none"`: disable compression to trade space for speed.
+
+                          '
+                        enum:
+                        - lz4
+                        - none
+                        type: string
+                      fields:
+                        description: 'A list of attribute paths. The `.` character denotes sub-attributes.
+
+                          '
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - fields
+                    type: object
+                  type: array
+                trackListPositions:
+                  default: false
+                  description: 'This option only applies if you use the inverted index in a `search-alias` Views,
+
+                    and `searchField` needs to be `true`.
+
+
+                    If set to `true`, then track the value position in arrays for array values.
+
+                    For example, when querying a document like `{ attr: [ "valueX", "valueY", "valueZ" ] }`,
+
+                    you need to specify the array element, e.g. `doc.attr[1] == "valueY"`.
+
+
+                    If set to `false`, all values in an array are treated as equal alternatives.
+
+                    You don''t specify an array element in queries, e.g. `doc.attr == "valueY"`, and
+
+                    all elements are searched for a match.
+
+                    '
+                  type: boolean
+                type:
+                  description: 'Needs to be set to `"inverted"`.
+
+                    '
+                  example: inverted
+                  type: string
+                writebufferActive:
+                  default: 0
+                  description: 'Maximum number of concurrent active writers (segments) that perform a
+
+                    transaction. Other writers (segments) wait till current active writers
+
+                    (segments) finish (set to `0` to disable).
+
+                    '
+                  type: integer
+                writebufferIdle:
+                  default: 64
+                  description: 'Maximum number of writers (segments) cached in the pool
+
+                    (set to `0` to disable).
+
+                    '
+                  type: integer
+                writebufferSizeMax:
+                  default: 33554432
+                  description: 'Maximum memory byte size per writer (segment) before a writer (segment) flush
+
+                    is triggered. `0` value turns off this limit for any writer (buffer) and data
+
+                    is flushed periodically based on the value defined for the flush thread
+
+                    (ArangoDB server startup option). `0` value should be used carefully due to
+
+                    high potential memory consumption (set to `0 `to disable).
+
+                    '
+                  type: integer
+              required:
+              - type
+              - fields
+              type: object
+      responses:
+        '200':
+          description: 'The index exists already.
+
+            '
+        '201':
+          description: 'The index is created as there is no such existing index.
+
+            '
+        '404':
+          description: 'The collection is unknown.
+
+            '
+      summary: Create an inverted index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index#mdi:
+    post:
+      description: 'Creates a multi-dimensional index for the collection `collection-name`, if
+
+        it does not already exist.
+
+        '
+      operationId: createIndexMdi
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                estimates:
+                  default: true
+                  description: 'This attribute controls whether index selectivity estimates are maintained for the
+
+                    index. Not maintaining index selectivity estimates can have a slightly positive
+
+                    impact on write performance.
+
+
+                    The downside of turning off index selectivity estimates is that
+
+                    the query optimizer is not able to determine the usefulness of different
+
+                    competing indexes in AQL queries when there are multiple candidate indexes to
+
+                    choose from.
+
+
+                    The `estimates` attribute is optional and defaults to `true` if not set.
+
+                    It has no effect on indexes other than `persistent`, `mdi`, and `mdi-prefixed`.
+
+                    It cannot be disabled for non-unique `mdi` indexes because they have a fixed
+
+                    selectivity estimate of `1`.
+
+                    '
+                  type: boolean
+                fieldValueTypes:
+                  description: 'Needs to be set to `"double"`. Currently only doubles are supported as values.
+
+                    '
+                  type: string
+                fields:
+                  description: 'An array of attribute names used for each dimension. Array expansions are not allowed.
+
+                    '
+                  items:
+                    type: string
+                  minItems: 1
+                  type: array
+                  uniqueItems: true
+                inBackground:
+                  default: false
+                  description: 'Set this option to `true` to keep the collection/shards available for
+
+                    write operations by not using an exclusive write lock for the duration
+
+                    of the index creation.
+
+                    '
+                  type: boolean
+                name:
+                  description: 'An easy-to-remember name for the index to look it up or refer to it in index hints.
+
+                    Index names are subject to the same character restrictions as collection names.
+
+                    If omitted, a name is auto-generated so that it is unique with respect to the
+
+                    collection, e.g. `idx_832910498`.
+
+                    '
+                  type: string
+                prefixFields:
+                  description: 'Requires `type` to be `"mdi-prefixed"`, and `prefixFields` needs to be set in this case.
+
+
+                    An array of attribute names used as search prefix. Array expansions are not allowed.
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                  uniqueItems: true
+                sparse:
+                  default: false
+                  description: 'Whether to create a sparse index that excludes documents with
+
+                    at least one of the attributes for indexing missing or set to
+
+                    `null`. These attributes are defined by `fields` and (for
+
+                    `mdi-prefixed` indexes) by `prefixFields`.
+
+                    '
+                  type: boolean
+                storedValues:
+                  description: 'The optional `storedValues` attribute can contain an array of paths to additional
+
+                    attributes to store in the index. These additional attributes cannot be used for
+
+                    index lookups or for sorting, but they can be used for projections. This allows an
+
+                    index to fully cover more queries and avoid extra document lookups.
+
+
+                    You can have the same attributes in `storedValues` and `fields` as the attributes
+
+                    in `fields` cannot be used for projections, but you can also store additional
+
+                    attributes that are not listed in `fields`.
+
+                    Attributes in `storedValues` cannot overlap with the attributes specified in
+
+                    `prefixFields`. There is no reason to store them in the index because you need
+
+                    to specify them in queries in order to use `mdi-prefixed` indexes.
+
+
+                    You cannot create multiple multi-dimensional indexes with the same `sparse`,
+
+                    `unique`, `fields` and (for `mdi-prefixed` indexes) `prefixFields` attributes
+
+                    but different `storedValues` settings. That means the value of `storedValues` is
+
+                    not considered by index creation calls when checking if an index is already
+
+                    present or needs to be created.
+
+
+                    In unique indexes, only the index attributes in `fields` and (for `mdi-prefixed`
+
+                    indexes) `prefixFields` are checked for uniqueness. The index attributes in
+
+                    `storedValues` are not checked for their uniqueness.
+
+
+                    Non-existing attributes are stored as `null` values inside `storedValues`.
+
+
+                    The maximum number of attributes in `storedValues` is 32.
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                  uniqueItems: true
+                type:
+                  description: 'Needs to be set to `"mdi"` or `"mdi-prefixed"`.
+
+                    '
+                  example: mdi
+                  type: string
+                unique:
+                  default: false
+                  description: 'if `true`, then create a unique index.
+
+                    '
+                  type: boolean
+              required:
+              - type
+              - fields
+              - fieldValueTypes
+              type: object
+      responses:
+        '200':
+          description: 'The index exists already.
+
+            '
+        '201':
+          description: 'The index is created as there is no such existing index.
+
+            '
+        '400':
+          description: 'The index definition is invalid.
+
+            '
+        '404':
+          description: 'The collection is unknown.
+
+            '
+      summary: Create a multi-dimensional index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index#persistent:
+    post:
+      description: 'Creates a persistent index for the collection `collection-name`, if
+
+        it does not already exist.
+
+
+        In a sparse index all documents will be excluded from the index that do not
+
+        contain at least one of the specified index attributes (i.e. `fields`) or that
+
+        have a value of `null` in any of the specified index attributes. Such documents
+
+        will not be indexed, and not be taken into account for uniqueness checks if
+
+        the `unique` flag is set.
+
+
+        In a non-sparse index, these documents will be indexed (for non-present
+
+        indexed attributes, a value of `null` will be used) and will be taken into
+
+        account for uniqueness checks if the `unique` flag is set.
+
+
+        > **INFO:**
+
+        Unique indexes on non-shard keys are not supported in cluster deployments.
+
+        '
+      operationId: createIndexPersistent
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                cacheEnabled:
+                  default: false
+                  description: 'This attribute controls whether an extra in-memory hash cache is
+
+                    created for the index. The hash cache can be used to speed up index lookups.
+
+                    The cache can only be used for queries that look up all index attributes via
+
+                    an equality lookup (`==`). The hash cache cannot be used for range scans,
+
+                    partial lookups or sorting.
+
+
+                    The cache will be populated lazily upon reading data from the index. Writing data
+
+                    into the collection or updating existing data will invalidate entries in the
+
+                    cache. The cache may have a negative effect on performance in case index values
+
+                    are updated more often than they are read.
+
+
+                    The maximum size of cache entries that can be stored is currently 4 MB, i.e.
+
+                    the cumulated size of all index entries for any index lookup value must be
+
+                    less than 4 MB. This limitation is there to avoid storing the index entries
+
+                    of "super nodes" in the cache.
+
+
+                    `cacheEnabled` defaults to `false` and should only be used for indexes that
+
+                    are known to benefit from an extra layer of caching.
+
+                    '
+                  type: boolean
+                deduplicate:
+                  default: true
+                  description: 'The attribute controls whether inserting duplicate index values
+
+                    from the same document into a unique array index lead to a unique constraint
+
+                    error or not. Only a single instance of each non-unique index value
+
+                    is inserted into the index per document by default. Trying to
+
+                    insert a value into the index that already exists in the index always fails,
+
+                    regardless of the value of this attribute.
+
+                    '
+                  type: boolean
+                estimates:
+                  default: true
+                  description: 'This attribute controls whether index selectivity estimates are maintained for the
+
+                    index. Not maintaining index selectivity estimates can have a slightly positive
+
+                    impact on write performance.
+
+
+                    The downside of turning off index selectivity estimates is that
+
+                    the query optimizer is not able to determine the usefulness of different
+
+                    competing indexes in AQL queries when there are multiple candidate indexes to
+
+                    choose from.
+
+
+                    The option has no effect on indexes other than `persistent`, `mdi`, and `mdi-prefixed`.
+
+                    '
+                  type: boolean
+                fields:
+                  description: 'An array of attribute paths.
+
+
+                    The `.` character denotes sub-attributes in attribute paths. Attributes with
+
+                    literal `.` in their name cannot be indexed. Attributes with the name `_id`
+
+                    cannot be indexed either, neither as a top-level attribute nor as a sub-attribute.
+
+
+                    You can expand one array attribute with `[*]`.
+
+                    '
+                  items:
+                    type: string
+                  minItems: 1
+                  type: array
+                  uniqueItems: true
+                inBackground:
+                  default: false
+                  description: 'Set this option to `true` to keep the collection/shards available for
+
+                    write operations by not using an exclusive write lock for the duration
+
+                    of the index creation.
+
+                    '
+                  type: boolean
+                name:
+                  description: 'An easy-to-remember name for the index to look it up or refer to it in index hints.
+
+                    Index names are subject to the same character restrictions as collection names.
+
+                    If omitted, a name is auto-generated so that it is unique with respect to the
+
+                    collection, e.g. `idx_832910498`.
+
+                    '
+                  type: string
+                sparse:
+                  default: false
+                  description: 'Whether to create a sparse index that excludes documents with
+
+                    at least one of the attributes for indexing missing or set to
+
+                    `null`. These attributes are defined by `fields`.
+
+                    '
+                  type: boolean
+                storedValues:
+                  description: 'The optional `storedValues` attribute can contain an array of paths to additional
+
+                    attributes to store in the index. These additional attributes cannot be used for
+
+                    index lookups or for sorting, but they can be used for projections. This allows an
+
+                    index to fully cover more queries and avoid extra document lookups.
+
+                    The maximum number of attributes in `storedValues` is 32.
+
+
+                    It is not possible to create multiple indexes with the same `fields` attributes
+
+                    and uniqueness but different `storedValues` attributes. That means the value of
+
+                    `storedValues` is not considered by index creation calls when checking if an
+
+                    index is already present or needs to be created.
+
+
+                    In unique indexes, only the attributes in `fields` are checked for uniqueness,
+
+                    but the attributes in `storedValues` are not checked for their uniqueness.
+
+                    Non-existing attributes are stored as `null` values inside `storedValues`.
+
+                    '
+                  items:
+                    type: string
+                  type: array
+                type:
+                  description: 'Needs to be set to `"persistent"`.
+
+                    '
+                  example: persistent
+                  type: string
+                unique:
+                  default: false
+                  description: 'Whether to create the index with a uniqueness constraint.
+
+                    In unique indexes, only the attributes in `fields` are checked for uniqueness,
+
+                    but the attributes in `storedValues` are not checked for their uniqueness.
+
+                    '
+                  type: boolean
+              required:
+              - type
+              - fields
+              type: object
+      responses:
+        '200':
+          description: 'The index exists already.
+
+            '
+        '201':
+          description: 'The index is created as there is no such existing index.
+
+            '
+        '400':
+          description: 'You try to create a unique persistent index but there are already
+
+            documents in the collection that violate the uniqueness requirement.
+
+            '
+        '404':
+          description: 'The collection is unknown.
+
+            '
+      summary: Create a persistent index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index#ttl:
+    post:
+      description: 'Creates a time-to-live (TTL) index for the collection `collection-name` if it
+
+        does not already exist.
+
+        '
+      operationId: createIndexTtl
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                expireAfter:
+                  description: 'The time interval (in seconds) from the point in time stored in the `fields`
+
+                    attribute after which the documents count as expired. Can be set to `0` to let
+
+                    documents expire as soon as the server time passes the point in time stored in
+
+                    the document attribute, or to a higher number to delay the expiration.
+
+                    '
+                  type: number
+                fields:
+                  description: 'A list with exactly one attribute path.
+
+                    '
+                  items:
+                    type: string
+                  maxItems: 1
+                  minItems: 1
+                  type: array
+                inBackground:
+                  default: false
+                  description: 'Set this option to `true` to keep the collection/shards available for
+
+                    write operations by not using an exclusive write lock for the duration
+
+                    of the index creation.
+
+                    '
+                  type: boolean
+                name:
+                  description: 'An easy-to-remember name for the index to look it up or refer to it in index hints.
+
+                    Index names are subject to the same character restrictions as collection names.
+
+                    If omitted, a name is auto-generated so that it is unique with respect to the
+
+                    collection, e.g. `idx_832910498`.
+
+                    '
+                  type: string
+                type:
+                  description: 'Needs to be set to `"ttl"`.
+
+                    '
+                  type: string
+              required:
+              - type
+              - fields
+              - expireAfter
+              type: object
+      responses:
+        '200':
+          description: 'The index exists already.
+
+            '
+        '201':
+          description: 'The index is created as there is no such existing index.
+
+            '
+        '400':
+          description: 'There is already a TTL index for the collection but there can only be one.
+
+            '
+        '404':
+          description: 'The collection is unknown.
+
+            '
+      summary: Create a TTL index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index#vector:
+    post:
+      description: 'Creates a vector index for the collection `collection-name`, if
+
+        it does not already exist.
+
+        '
+      operationId: createIndexVector
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The collection name.
+
+          '
+        in: query
+        name: collection
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                fields:
+                  description: 'A list with exactly one attribute path to specify
+
+                    where the vector embedding is stored in each document.
+
+
+                    If you want to index another vector embedding attribute, you need to create a
+
+                    separate vector index.
+
+
+                    Up to ArangoDB v3.12.8, the vector data needs to be populated before creating
+
+                    the index. From v3.12.9 onward, you can create the vector index first and then
+
+                    populate the collection with vector data. However, it is still recommended to
+
+                    load the data first and then create the index to ensure that all documents
+
+                    participate in the training process as the training is only executed once.
+
+                    The training is triggered automatically if the vector index hasn''t been
+
+                    trained yet and the number of documents to index exceeds the threshold of
+
+                    `nLists` documents. If `sparse` is set to `true`, documents without the
+
+                    vector embedding field are not counted toward this threshold.
+
+                    Check the `trainingState` to see if the index is
+
+                    `"ready"` and `errorMessage` for the reason if it''s not.
+
+                    '
+                  items:
+                    type: string
+                  maxItems: 1
+                  minItems: 1
+                  type: array
+                inBackground:
+                  default: false
+                  description: 'Set this option to `true` to keep the collection/shards available for
+
+                    write operations by not using an exclusive write lock for the duration
+
+                    of the index creation.
+
+
+                    If the option is disabled, the call returns only after the index is
+
+                    ready (but timeouts may occur), or if an error is encountered.
+
+                    '
+                  type: boolean
+                name:
+                  description: 'A user-defined name for the index for easier
+
+                    identification. If not specified, a name is automatically generated.
+
+                    '
+                  type: string
+                parallelism:
+                  default: 2
+                  description: 'The number of threads to use for indexing.
+
+                    '
+                  type: integer
+                params:
+                  description: 'The parameters as used by the Faiss library.
+
+                    '
+                  properties:
+                    defaultNProbe:
+                      default: 1
+                      description: 'How many neighboring centroids to
+
+                        consider for the search results by default. The larger the number, the slower
+
+                        the search but the better the search results. The default is `1`. You should
+
+                        generally use a higher value here or per query via the `nProbe` option of
+
+                        the vector similarity functions.
+
+                        '
+                      type: integer
+                    dimension:
+                      description: 'The vector dimension. The attribute to index needs to
+
+                        have this many elements in the array that stores the vector embedding.
+
+                        '
+                      type: integer
+                    factory:
+                      description: 'You can specify an index factory string that is
+
+                        forwarded to the underlying Faiss library, allowing you to combine different
+
+                        advanced options. Examples:
+
+                        - `"IVF100_HNSW10,Flat"`
+
+                        - `"IVF100,SQ4"`
+
+                        - `"IVF10_HNSW5,Flat"`
+
+                        - `"IVF100_HNSW5,PQ256x16"`
+
+
+                        The base index must be an inverted file (IVF) to work with ArangoDB.
+
+                        If you don''t specify an index factory, the value is equivalent to
+
+                        `IVF<nLists>,Flat`. For more information on how to create these custom
+
+                        indexes, see the [Faiss Wiki](https://github.com/facebookresearch/faiss/wiki/The-index-factory).
+
+                        '
+                      type: string
+                    metric:
+                      description: "The measure for calculating the vector similarity:\n- `\"cosine\"`: Angular similarity. Vectors are automatically\n  normalized before insertion and search.\n- `\"innerProduct\"` (introduced in v3.12.6):\n  Similarity in terms of angle and magnitude.\n  Vectors are not normalized, making it faster than `cosine`.\n- `\"l2\":` Euclidean distance.\n"
+                      enum:
+                      - cosine
+                      - innerProduct
+                      - l2
+                    nLists:
+                      description: 'The number of Voronoi cells to partition the vector space
+
+                        into, respectively the number of centroids in the index. What value to choose
+
+                        depends on the data distribution and chosen metric. According to
+
+                        [The Faiss library paper](https://arxiv.org/abs/2401.08281), it should scale
+
+                        sublinearly with the document count. The recommendation for ArangoDB is to use
+
+                        approximately `15 * sqrt(N)` where `N` is the number of documents in the collection,
+
+                        respectively the number of documents in the shard for cluster deployments.
+
+                        A bigger value produces more correct results but increases the training time
+
+                        and thus how long it takes to build the index. It cannot be bigger than the
+
+                        number of documents.
+
+                        '
+                      type: integer
+                    numberOfDocsPerCentroid:
+                      default: 100
+                      description: 'How many vectors per centroid to include in the random sample used for
+
+                        training. It must be `1` or greater.
+
+
+                        Up to v3.12.9, this is not configurable and a fixed value of `256` per
+
+                        centroid is used instead.
+
+
+                        The training does not use the full dataset but a sample bounded to
+
+                        `nLists` × `numberOfDocsPerCentroid` vectors. A larger value can improve the
+
+                        training quality but increases the memory and time required for training.
+
+                        See [Resource usage during index creation](https://docs.arango.ai/arangodb/3.12/indexes-and-search/indexing/working-with-indexes/vector-indexes/#resource-usage-during-index-creation)
+
+                        for details.
+
+                        '
+                      minimum: 1
+                      type: integer
+                    trainingIterations:
+                      default: 25
+                      description: 'The number of iterations in the
+
+                        training process. The default is `25`. Smaller values lead to a faster index
+
+                        creation but may yield worse search results.
+
+                        '
+                      type: integer
+                  required:
+                  - metric
+                  - dimension
+                  - nLists
+                  type: object
+                sparse:
+                  default: false
+                  description: 'Whether to create a sparse index that excludes documents with
+
+                    the attribute for indexing missing or set to `null`. This
+
+                    attribute is defined by `fields`.
+
+                    '
+                  type: boolean
+                storedValues:
+                  description: 'Store additional attributes in the index (introduced in v3.12.7).
+
+                    Unlike with other index types, this is not for covering projections
+
+                    with the index but for adding attributes that you filter on.
+
+                    This lets you make the lookup in the vector index more efficient
+
+                    because it avoids materializing documents twice, once for the
+
+                    filtering and once for the matches.
+
+
+                    The maximum number of attributes that you can use in `storedValues` is 32.
+
+                    '
+                  items:
+                    description: 'A list of attribute paths. The `.` character denotes sub-attributes.
+
+                      type: string
+
+                      '
+                    type: string
+                  type: array
+                  uniqueItems: true
+                type:
+                  description: 'The index type. Needs to be `"vector"`.
+
+                    '
+                  example: vector
+                  type: string
+              required:
+              - type
+              - fields
+              - params
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  errorMessage:
+                    description: 'An optional message with details about the
+
+                      training state, for example, `"not enough training data for vector index"`.
+
+                      Only present if there is a problem with the index.
+
+                      '
+                    type: string
+                  fields:
+                    description: 'The list with exactly one attribute path the index is created on.
+
+                      '
+                    items:
+                      type: string
+                    maxItems: 1
+                    minItems: 1
+                    type: array
+                  id:
+                    description: 'The identifier of the index in the format `<collection-name>/<index-identifier>`.
+
+                      '
+                    example: products/68
+                    type: string
+                  isNewlyCreated:
+                    description: 'Whether the index was newly created (`true`) or already existed (`false`).
+
+                      '
+                    example: false
+                    type: boolean
+                  name:
+                    description: 'The user-defined name of the index or an auto-generated name.
+
+                      '
+                    type: string
+                  params:
+                    description: 'The parameters of the vector index.
+
+                      '
+                    properties:
+                      defaultNProbe:
+                        description: 'The default number of neighboring centroids to consider
+
+                          in search queries.
+
+                          '
+                        type: integer
+                      dimension:
+                        description: 'The vector dimension.
+
+                          '
+                        type: integer
+                      factory:
+                        description: 'The Faiss index factory string, if one was specified
+
+                          during index creation.
+
+                          '
+                        type: string
+                      metric:
+                        description: 'The distance metric used for similarity calculations.
+
+                          '
+                        enum:
+                        - cosine
+                        - innerProduct
+                        - l2
+                        type: string
+                      nLists:
+                        description: 'The number of Voronoi cells.
+
+                          '
+                        type: integer
+                      numberOfDocsPerCentroid:
+                        description: 'How many vectors per centroid are included in the random
+
+                          sample used for training (introduced in v3.12.10).
+
+                          '
+                        type: integer
+                      trainingIterations:
+                        description: 'The number of iterations used in the training process.
+
+                          '
+                        type: integer
+                    required:
+                    - metric
+                    - dimension
+                    - nLists
+                    - trainingIterations
+                    - defaultNProbe
+                    - numberOfDocsPerCentroid
+                    type: object
+                  sparse:
+                    description: 'Whether the index is a sparse index that excludes documents
+
+                      with the indexed attribute missing or set to `null`.
+
+                      '
+                    type: boolean
+                  storedValues:
+                    description: 'The list of additionally stored attribute paths. Only
+
+                      present if `storedValues` was specified during index creation.
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  trainingState:
+                    description: "The current training state of the vector index:\n- `\"unusable\"`: The index is not yet trained or cannot be\n  trained, for example, because of insufficient training data.\n- `\"training\"`: The index is currently being trained.\n- `\"ingesting\"`: The index has been trained and data is being\n  ingested.\n- `\"ready\"`: The index is fully trained and ready for queries.\n"
+                    enum:
+                    - unusable
+                    - training
+                    - ingesting
+                    - ready
+                    type: string
+                  type:
+                    description: 'The index type (`"vector"`).
+
+                      '
+                    example: vector
+                    type: string
+                  unique:
+                    description: 'Whether the index is a unique index. Always `false` for vector indexes.
+
+                      '
+                    example: false
+                    type: boolean
+                required:
+                - code
+                - error
+                - id
+                - isNewlyCreated
+                - type
+                - name
+                - fields
+                - params
+                - sparse
+                - unique
+                - trainingState
+                type: object
+          description: 'The index already exists. The `isNewlyCreated` field is `false`.
+
+            '
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 201
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  errorMessage:
+                    description: 'An optional message with details about the
+
+                      training state, for example, `"not enough training data for vector index"`.
+
+                      Only present if there is a problem with the index.
+
+                      '
+                    type: string
+                  fields:
+                    description: 'The list with exactly one attribute path the index is created on.
+
+                      '
+                    items:
+                      type: string
+                    maxItems: 1
+                    minItems: 1
+                    type: array
+                  id:
+                    description: 'The identifier of the index in the format `<collection-name>/<index-identifier>`.
+
+                      '
+                    example: products/68
+                    type: string
+                  isNewlyCreated:
+                    description: 'Whether the index was newly created (`true`) or already existed (`false`).
+
+                      '
+                    example: true
+                    type: boolean
+                  name:
+                    description: 'The user-defined name of the index or an auto-generated name.
+
+                      '
+                    type: string
+                  params:
+                    description: 'The parameters of the vector index.
+
+                      '
+                    properties:
+                      defaultNProbe:
+                        description: 'The default number of neighboring centroids to consider
+
+                          in search queries.
+
+                          '
+                        type: integer
+                      dimension:
+                        description: 'The vector dimension.
+
+                          '
+                        type: integer
+                      factory:
+                        description: 'The Faiss index factory string, if one was specified
+
+                          during index creation.
+
+                          '
+                        type: string
+                      metric:
+                        description: 'The distance metric used for similarity calculations.
+
+                          '
+                        enum:
+                        - cosine
+                        - innerProduct
+                        - l2
+                        type: string
+                      nLists:
+                        description: 'The number of Voronoi cells.
+
+                          '
+                        type: integer
+                      numberOfDocsPerCentroid:
+                        description: 'How many vectors per centroid are included in the random
+
+                          sample used for training (introduced in v3.12.10).
+
+                          '
+                        type: integer
+                      trainingIterations:
+                        description: 'The number of iterations used in the training process.
+
+                          '
+                        type: integer
+                    required:
+                    - metric
+                    - dimension
+                    - nLists
+                    - trainingIterations
+                    - defaultNProbe
+                    - numberOfDocsPerCentroid
+                    type: object
+                  sparse:
+                    description: 'Whether the index is a sparse index that excludes documents
+
+                      with the indexed attribute missing or set to `null`.
+
+                      '
+                    type: boolean
+                  storedValues:
+                    description: 'The list of additionally stored attribute paths. Only
+
+                      present if `storedValues` was specified during index creation.
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  trainingState:
+                    description: "The current training state of the vector index:\n- `\"unusable\"`: The index is not yet trained or cannot be\n  trained, for example, because of insufficient training data.\n- `\"training\"`: The index is currently being trained.\n- `\"ingesting\"`: The index has been trained and data is being\n  ingested.\n- `\"ready\"`: The index is fully trained and ready for queries.\n"
+                    enum:
+                    - unusable
+                    - training
+                    - ingesting
+                    - ready
+                    type: string
+                  type:
+                    description: 'The index type (`"vector"`).
+
+                      '
+                    example: vector
+                    type: string
+                  unique:
+                    description: 'Whether the index is a unique index. Always `false` for vector indexes.
+
+                      '
+                    example: false
+                    type: boolean
+                required:
+                - code
+                - error
+                - id
+                - isNewlyCreated
+                - type
+                - name
+                - fields
+                - params
+                - sparse
+                - unique
+                - trainingState
+                type: object
+          description: 'The index is newly created. The `isNewlyCreated` field is `true`.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The request body or its content is invalid, for example,
+
+            because of a missing or malformed `params` attribute,
+
+            or the vector index feature is not enabled. You need to run ArangoDB
+
+            with the `--vector-index` startup option.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The collection is unknown.
+
+            '
+      summary: Create a vector index
+      tags:
+      - Indexes
+  /_db/{database-name}/_api/index/{index-id}:
+    delete:
+      description: 'Deletes an index with `index-id`.
+
+        '
+      operationId: deleteIndex
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The index id.
+
+          '
+        in: path
+        name: index-id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'If the index could be deleted, then an *HTTP 200* is
+
+            returned.
+
+            '
+        '404':
+          description: 'If the `index-id` is unknown, then an *HTTP 404* is returned.
+
+            '
+      summary: Delete an index
+      tags:
+      - Indexes
+    get:
+      description: 'The result is an object describing the index. It has at least the following
+
+        attributes:
+
+
+        - `id`: the identifier of the index
+
+
+        - `type`: the index type
+
+
+        All other attributes are type-dependent. For example, some indexes provide
+
+        `unique` or `sparse` flags, whereas others don''t. Some indexes also provide
+
+        a selectivity estimate in the `selectivityEstimate` attribute of the result.
+
+        '
+      operationId: getIndex
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The index identifier.
+
+          '
+        in: path
+        name: index-id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'If the index exists, then a *HTTP 200* is returned.
+
+            '
+        '404':
+          description: 'If the index does not exist, then a *HTTP 404*
+
+            is returned.
+
+            '
+      summary: Get an index
+      tags:
+      - Indexes
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

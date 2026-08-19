@@ -1,0 +1,3859 @@
+{
+  "item": [
+    {
+      "id": "4e4bac59-205e-4963-b067-16fe0e73fe5f",
+      "name": "Administration",
+      "description": {
+        "content": "Get server information, manage licenses, shut down nodes, and more",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "edd0a9b6-0ad4-4d2a-bdc8-d19ff4b13592",
+          "name": "Compact all databases",
+          "request": {
+            "name": "Compact all databases",
+            "description": {
+              "content": "> **WARNING:**\nThis command can cause a full rewrite of all data in all databases, which may\ntake very long for large databases. It should thus only be used with care and\nonly when additional I/O load can be tolerated for a prolonged time.\n\n\nThis endpoint can be used to reclaim disk space after substantial data\ndeletions have taken place, by compacting the entire database system data.\n\nThe endpoint requires superuser access.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "compact"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"changeLevel\": false,\n  \"compactBottomMostLevel\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1b462b71-c5e6-454f-85f4-2a17ceb3c2de",
+              "name": "Compaction started successfully\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "compact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"changeLevel\": false,\n  \"compactBottomMostLevel\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7dd2b2dc-0b46-4efd-9b49-59b216c2bcf5",
+              "name": "if the request was not authenticated as a user with sufficient rights\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "compact"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"changeLevel\": false,\n  \"compactBottomMostLevel\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "35e0ccbd-db6f-4562-8aed-dfb0cae75af2",
+          "name": "Get the required database version (deprecated)",
+          "request": {
+            "name": "Get the required database version (deprecated)",
+            "description": {
+              "content": "> **WARNING:**\nThis endpoint is deprecated and should no longer be used.\nIt is removed in ArangoDB v4.0. Use `GET /_api/version` instead.\n\n\nReturns the database version that this server requires.\nThe version is returned in the `version` attribute of the result.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "database",
+                "target-version"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "29790a92-de47-440f-81e3-1c3ee8df98d2",
+              "name": "Is returned in all cases.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "database",
+                    "target-version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "43f1fa4e-282d-4f1a-8d57-da0827424521",
+          "name": "Return whether or not a server is available",
+          "request": {
+            "name": "Return whether or not a server is available",
+            "description": {
+              "content": "Return availability information about a server.\n\nThe response is a JSON object with an attribute \"mode\". The \"mode\" can either\nbe \"readonly\", if the server is in read-only mode, or \"default\", if it is not.\nPlease note that the JSON object with \"mode\" is only returned in case the server\ndoes not respond with HTTP response code 503.\n\nThis is a public API so it does *not* require authentication. It is meant to be\nused only in the context of server monitoring.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "server",
+                "availability"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "36c6b0ad-1ead-435f-80fe-b74e82d229ff",
+              "name": "This API will return HTTP 200 in case the server is up and running and usable for\narbitrary operations, is not set to read-only mode.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "availability"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2a7477e5-05d2-4e63-be5d-0427323b95ec",
+              "name": "HTTP 503 will be returned during startup and shutdown, and in case\nthe server is set to read-only mode.\n\nIn addition, HTTP 503 will be returned in case the fill grade of the scheduler\nqueue exceeds the configured high-water mark (adjustable via startup option\n`--server.unavailability-queue-fill-grade`), which by default is set to 75 % of\nthe maximum queue length.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "server",
+                    "availability"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d70816d5-4cd8-4466-9e19-3c649ca7244e",
+          "name": "Get the startup option configuration",
+          "request": {
+            "name": "Get the startup option configuration",
+            "description": {
+              "content": "Return the effective configuration of the queried _arangod_ instance as\nset by startup options on the command-line and via a configuration file.\n\n{{< security >}}\nThis endpoint may reveal sensitive information about the deployment!\n{{< /security >}}\n\nThe endpoint can only be accessed via the `_system` database. In addition, the\n[`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)\ncontrols the required privileges to access the option endpoints and allows\nyou to disable them entirely. The option can have the following values:\n- `disabled`: This endpoint is disabled.\n- `jwt`: This endpoint can only be accessed using a superuser JWT (default).\n- `admin`: This endpoint can only be accessed by users with\n  write access to the `_system` database.\n- `public`: Every user with read access to the `_system` database can\n  access this endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                "_system",
+                "_admin",
+                "options"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4b66bed0-78eb-48e8-9f09-3301cea86450",
+              "name": "An object with startup option names as keys and their effective\nvalue as values. The values can be of different data types, typically\nnumbers, strings, or arrays thereof.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6c86f259-b262-497d-bf85-65c08f57b9f8",
+              "name": "You tried to authenticate with user credentials but a superuser token\ncreated from the JWT secret is required (`--server.options-api` set\nto `jwt`), you lack read access to the `_system` database\n(`--server.options-api` set to `public`), the credentials are wrong,\nor the user account is inactive.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7eda59e0-8fb1-42df-b625-f8f92fe2036d",
+              "name": "You don't have write access to the `_system` database\n(`--server.options-api` set to `admin`) or you tried to access the\nendpoint using a database other than `_system`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 894,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec044e30-601c-4d66-9d9a-05e1455be870",
+              "name": "Returned if the HTTP method is not `GET`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 405,\n  \"errorNum\": 6239,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "588818b7-8a30-40a7-9f8e-354d2041c719",
+          "name": "Get the available startup options",
+          "request": {
+            "name": "Get the available startup options",
+            "description": {
+              "content": "Return the startup options available to configure the queried _arangod_\ninstance, similar to the `--dump-options` startup option.\n\nThe endpoint can only be accessed via the `_system` database. In addition, the\n[`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)\ncontrols the required privileges to access the option endpoints and allows\nyou to disable them entirely. The option can have the following values:\n- `disabled`: This endpoint is disabled.\n- `jwt`: This endpoint can only be accessed using a superuser JWT (default).\n- `admin`: This endpoint can only be accessed by users with\n  write access to the `_system` database.\n- `public`: Every user with read access to the `_system` database can\n  access this endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                "_system",
+                "_admin",
+                "options-description"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "559164c4-72c7-472c-8595-1dcd36e0cc56",
+              "name": "An object with startup option names as keys and sub-objects as values.\nThe structure of each sub-object is as follows:\n- `section` (string): The part before the dot of a startup option\n  (`--section.param`), or `\"\"` if it is a general option that doesn't\n  belong to a section\n- `description` (string): A succinct explanation of the startup option\n- `longDescription` (string, *optional*): Additional details about the\n  startup option if available\n- `category` (string): Either `\"option\"` for regular options or `\"command\"`\n  if using the option performs an action and then terminates the process\n- `hidden` (boolean): Whether the option is uncommon. If yes, then\n  the `--help` command does not list it, but `--help-all` lists every\n  startup option\n- `type` (string): the data type of the option, typically one of\n  `\"uint64\"`, `\"uint32\"`, `\"int64\"`, `\"int32\"`, `\"double\"`, `\"boolean\"`,\n  `\"string\"`, `\"string...\"`\n- `experimental` (boolean): Whether the option relates to a feature\n  that is not ready for production yet\n- `obsolete` (boolean): Whether the option has been deprecated and\n  no effect anymore\n- `enterpriseOnly` (boolean): Whether the option is implemented in\n  the non-public enterprise code.\n- `requiresValue` (boolean): Whether the option can be specified\n  without a value to enable it\n- `os` (array of strings): The operating systems the startup option\n  is supported on, always `[\"linux\"]`\n- `component` (array of strings): A list of server roles the startup\n  option is available on. If it is supported by all cluster node types\n  as well as the single server deployment mode, then the value is\n  `[\"coordinator\", \"dbserver\", \"agent\", \"single\"]`\n- `introducedIn` (array of strings\\|null): A list of versions the\n  startup option has been added in. Does not include later minor and\n  major versions then the current version, and the information may\n  get removed once all listed versions reach their end of life\n- `deprecatedIn` (array of strings\\|null): A list of versions the\n  startup option has been marked for deprecation in. It can still\n  be used until fully removed. Does not include later minor and\n  major versions then the current version, and the information may\n  get removed once all listed versions reach their end of life\n- `values` (string, *optional*):\n  A description of the possible values you can set\n- `default` (any, *optional*): The standard value if the option is not set\n- `dynamic` (boolean): Whether the default value is calculated based\n  on the target host configuration, e.g. available memory\n- `required` (boolean): Whether the option must be specified\n- `base` (number, *optional*): the unit for a numeric option\n- `minValue` (number, *optional*): The minimum value for a numeric option\n- `maxValue` (number, *optional*): The maximum value for a numeric option\n- `minInclusive` (boolean, *optional*): Whether the minimum value is\n  included in the allowed value range\n- `maxInclusive` (boolean, *optional*): Whether the maximum value is\n  included in the allowed value range\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options-description"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f0494b65-087c-4cae-b555-7d56d20bfb36",
+              "name": "You tried to authenticate with user credentials but a superuser token\nis required, the credentials are wrong, or the user account is inactive.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options-description"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eae6b248-ea7b-4464-a1c7-7a759d7e2812",
+              "name": "You don't have write access to the `_system` database or you tried\nto access the endpoint using a database other than `_system`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options-description"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 894,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9bd7d972-825e-4ecd-a9d4-fa72841f87f9",
+              "name": "Returned if the HTTP method is not `GET`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "options-description"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 405,\n  \"errorNum\": 6239,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "999898dc-1d80-48a8-a458-4b5b0fdf7df4",
+          "name": "Get information about the deployment",
+          "request": {
+            "name": "Get information about the deployment",
+            "description": {
+              "content": "Retrieves deployment information for support purposes. The endpoint returns data\nabout the ArangoDB version used, the host (operating system, server ID, CPU and\nstorage capacity, current utilization, a few metrics) and the other servers in\nthe deployment (in case of cluster deployments).\n\nAs this API may reveal sensitive data about the deployment, it can only be\naccessed from inside the `_system` database. In addition, there is a policy\ncontrol startup option `--server.support-info-api` that controls if and to whom\nthe API is made available.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                "_system",
+                "_admin",
+                "support-info"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "133b74d5-ba0a-4c83-a1cf-fcb7f74b921a",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "support-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"date\": \"string\",\n  \"deployment\": {},\n  \"host\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9af4c24e-ee9d-4db2-b71e-37a2850e4872",
+              "name": "The support info API is turned off.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_admin",
+                    "support-info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "351b500a-93c1-4ca1-b80d-31338edcb324",
+          "name": "List the endpoints of a single server (deprecated)",
+          "request": {
+            "name": "List the endpoints of a single server (deprecated)",
+            "description": {
+              "content": "> **WARNING:**\nThis route should no longer be used.\nIt is considered as deprecated from version 3.4.0 on.\n\n\nReturns an array of all configured endpoints the server is listening on.\n\nThe result is a JSON array of JSON objects, each with `\"entrypoint\"` as\nthe only attribute, and with the value being a string describing the\nendpoint.\n\n> **INFO:**\nRetrieving the array of all endpoints is allowed in the system database\nonly. Calling this action in any other database will make the server return\nan error.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                "_system",
+                "_api",
+                "endpoint"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f0c30573-7b58-46cf-b68f-d88560a44e8e",
+              "name": "is returned when the array of endpoints can be determined successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "endpoint"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f12152c2-dd28-45bf-b460-5d4442aa93b3",
+              "name": "is returned if the action is not carried out in the system database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "endpoint"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3cd941dc-ae01-48ca-b465-ea3a6948b3ae",
+              "name": "The server will respond with *HTTP 405* if an unsupported HTTP method is used.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    "_system",
+                    "_api",
+                    "endpoint"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3ed78438-53e9-4410-8351-6dc08b051e4e",
+          "name": "List crash dumps",
+          "request": {
+            "name": "List crash dumps",
+            "description": {
+              "content": "<small>Introduced in: v3.12.8</small>\n\nReturn the list of crash dump directory identifiers (UUIDs).\n\nWhen the server crashes, the crash handler writes diagnostic data into\na per-crash directory under `<database-directory>/crashes/<uuid>/`.\nEach dump includes information such as recent API calls and AQL queries,\na backtrace, and system information.\n\nThe server keeps the most recent 10 crash dumps. Older ones are removed\nduring startup.\n\nThis endpoint requires *administrate* access to the `_system` database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "crashes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3ec833a4-0ad8-4b24-a9de-a55555a13445",
+              "name": "Returns a list of crash dump identifiers (UUIDs).\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": [\n    \"02ba8640-de8b-f6bb-a7ab-c85c6b4400b4\",\n    \"84ba9244-9e72-a8f8-4f87-a628b446afa2\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0e26ebba-2f48-4edb-88c6-931a623b583b",
+              "name": "Returned if authentication is enabled and the user does not have at\nleast read access to the specified database, the credentials are\nwrong, or the user account is inactive.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c73b5948-8827-480d-b355-21fd9b7b9872",
+              "name": "Returned if authentication is enabled and the user does not have\nwrite access to the `_system` database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 894,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d1eb64e0-7074-4dbc-976a-4e36e8ada10f",
+              "name": "The crash handler feature is not ready or has been disabled via the\n[`--crash-handler.enable-dumps` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--crash-handlerenable-dumps).\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 503,\n  \"errorNum\": 9692,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e428ff8e-f05c-4dab-8daf-a207dc0f8df4",
+          "name": "Delete a crash dump",
+          "request": {
+            "name": "Delete a crash dump",
+            "description": {
+              "content": "<small>Introduced in: v3.12.8</small>\n\nDelete a specific crash dump directory and its contents. Crash dumps are\nstored under `<database-directory>/crashes/<uuid>/`. The server keeps the\nmost recent 10 crash dumps. Older ones are removed during startup.\n\nThis endpoint requires *administrate* access to the `_system` database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "crashes",
+                ":crashId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "crashId",
+                  "description": "(Required) The UUID of the crash dump directory to delete.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "64b87b6f-d76f-436d-8d6f-2fc34d6f8c78",
+              "name": "The crash dump was deleted successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": {\n    \"deleted\": true,\n    \"crashId\": \"86204575-c8ff-25ad-3dee-f026939547bf\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "00b56223-bc22-4099-b867-6b1c7354edec",
+              "name": "Returned if authentication is enabled and the user does not have at\nleast read access to the specified database, the credentials are\nwrong, or the user account is inactive.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fa90e090-6436-4e48-bd37-1b49801c0ba1",
+              "name": "Returned if authentication is enabled and the user does not have\nwrite access to the `_system` database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 894,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ce09e0b3-a5cb-432d-9f87-9a57d95d8d45",
+              "name": "Returned if the crash dump folder based on the specified `crashId`\ncannot be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 1849,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "994551d9-960d-4dba-976d-7edb03ea60d4",
+              "name": "The crash handler feature is not ready or has been disabled via the\n[`--crash-handler.enable-dumps` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--crash-handlerenable-dumps).\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 503,\n  \"errorNum\": 9692,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bc2024a1-3697-4745-9061-2801ce86fd4c",
+          "name": "Get a crash dump",
+          "request": {
+            "name": "Get a crash dump",
+            "description": {
+              "content": "<small>Introduced in: v3.12.8</small>\n\nReturn the contents of a specific crash dump. The response includes all\nfiles from the crash directory (e.g. `backtrace.txt`, `system_info.txt`,\n`ApiRecording.json`, `AsyncRegistry.json`) as an object mapping filenames\nto their contents. Crash dumps are stored under\n`<database-directory>/crashes/<uuid>/`.\n\nThis endpoint requires *administrate* access to the `_system` database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "crashes",
+                ":crashId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "crashId",
+                  "description": "(Required) The UUID of the crash dump directory.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "355dce1c-274c-4b9e-aab2-b893f58dce52",
+              "name": "Returns the crash dump contents.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": {\n    \"crashId\": \"1e119b46-9292-6487-5bc7-a47b2e6803b1\",\n    \"files\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e494eef0-2a2b-4e01-9a30-efb2965a9d7e",
+              "name": "Returned if authentication is enabled and the user does not have at\nleast read access to the specified database, the credentials are\nwrong, or the user account is inactive.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7fbc7770-9d82-4cd7-b03d-06c0628351d8",
+              "name": "Returned if authentication is enabled and the user does not have\nwrite access to the `_system` database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 894,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "15f23831-a2c3-42e1-8f77-97812a156dbe",
+              "name": "Returned if the crash dump folder based on the specified `crashId`\ncannot be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 1849,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b6fb72b-4e72-4707-ad19-aa4f3bff3593",
+              "name": "The crash handler feature is not ready or has been disabled via the\n[`--crash-handler.enable-dumps` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--crash-handlerenable-dumps).\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "crashes",
+                    ":crashId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and write access to the `_system` database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "crashId",
+                      "description": "(Required) The UUID of the crash dump directory.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 503,\n  \"errorNum\": 9692,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d0036c10-d681-469a-bcd2-f7a0bb6477a7",
+          "name": "Get the deployment ID",
+          "request": {
+            "name": "Get the deployment ID",
+            "description": {
+              "content": "Get the unique identifier of this ArangoDB deployment.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "deployment",
+                "id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "09eb8418-b584-45b8-a4bc-2cbf1a0a93a0",
+              "name": "The deployment ID has been retrieved successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "deployment",
+                    "id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"c36c6eac-03f9-b4d0-bbd2-bca3274bd80b\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c1a5f345-0671-43f9-8118-921e9ca13c5c",
+              "name": "The user account has insufficient permissions for the selected database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "deployment",
+                    "id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cc4935f8-52ac-41c1-8a39-e8adc41a34ad",
+          "name": "Echo a request",
+          "request": {
+            "name": "Echo a request",
+            "description": {
+              "content": "> **WARNING:**\nThe Action feature, including this debug endpoint, is deprecated and\nremoved in ArangoDB v4.0.\n\n\nThe call returns an object with the servers request information\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "echo"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/octet-stream"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": [
+            {
+              "id": "6b6793ef-72fd-46f4-b4ee-22bbb9f5e661",
+              "name": "Echo was returned successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "echo"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"authorized\": true,\n  \"user\": \"string\",\n  \"isAdminUser\": true,\n  \"database\": \"string\",\n  \"url\": \"string\",\n  \"protocol\": \"string\",\n  \"portType\": \"string\",\n  \"server\": {\n    \"address\": \"string\",\n    \"port\": 7404,\n    \"endpoint\": \"string\"\n  },\n  \"client\": {\n    \"address\": 1201,\n    \"port\": 5524,\n    \"id\": \"string\"\n  },\n  \"internals\": {},\n  \"prefix\": {},\n  \"headers\": {},\n  \"requestType\": \"string\",\n  \"requestBody\": \"string\",\n  \"rawRequestBody\": {},\n  \"parameters\": {},\n  \"cookies\": {},\n  \"suffix\": [\n    \"string\",\n    \"string\"\n  ],\n  \"rawSuffix\": [\n    \"string\",\n    \"string\"\n  ],\n  \"path\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3a128e01-8514-4da3-979c-797b13dcb335",
+          "name": "Execute a script",
+          "request": {
+            "name": "Execute a script",
+            "description": {
+              "content": "> **WARNING:**\nThe `/_admin/execute` endpoint is deprecated and removed in ArangoDB v4.0.\n\n\nExecutes the JavaScript code in the body on the server as the body\nof a function with no arguments. If you have a `return` statement\nthen the return value you produce will be returned as content type\n`application/json`. If the parameter `returnAsJSON` is set to\n`true`, the result will be a JSON object describing the return value\ndirectly, otherwise a string produced by JSON.stringify will be\nreturned.\n\nNote that this API endpoint is available if the server has been\nstarted with the `--javascript.allow-admin-execute` startup options\nenabled.\n\nThe default value of this option is `false`, which disables the execution of\nuser-defined code and disables this API endpoint entirely.\nThis is also the recommended setting for production.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "execute"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/javascript"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": [
+            {
+              "id": "ad514feb-6056-4aa7-be75-abdc8ab5586f",
+              "name": "is returned when everything went well, or if a timeout occurred. In the\nlatter case a body of type application/json indicating the timeout\nis returned. depending on `returnAsJSON` this is a json object or a plain string.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "adf8f8e1-e838-4deb-9836-217c2e5d4f99",
+              "name": "is returned if ArangoDB is not running in cluster mode.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f9d354ab-a9be-4349-acf4-4d10f6e71c5c",
+              "name": "is returned if ArangoDB was not compiled for cluster operation.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "execute"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "99207955-d7b8-4514-8a2a-8a81e633c6c7",
+          "name": "Get information about the current license",
+          "request": {
+            "name": "Get information about the current license",
+            "description": {
+              "content": "View the license information and status of the ArangoDB deployment.\n\nCan be called on single servers, Coordinators, and DB-Servers.\n\nIn the Community Edition before v3.12.5, only `{\"license\":\"none\"}`\nis returned.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "license"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9c29106e-5f77-47d1-a79d-7e37e54ba07a",
+              "name": "Returns the license information.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "license"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"diskUsage\": {\n    \"bytesUsed\": 9551,\n    \"bytesLimit\": 7046,\n    \"limitReached\": false,\n    \"secondsUntilReadOnly\": 9877,\n    \"secondsUntilShutDown\": 3391,\n    \"status\": \"limit-reached\"\n  },\n  \"features\": {\n    \"expires\": 1683173040\n  },\n  \"hash\": \"982db5...44f3\",\n  \"license\": \"V0h/W...wEDw==\",\n  \"status\": \"good\",\n  \"upgrading\": false,\n  \"version\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ee1c95e0-b92e-4c82-8afe-7849abed4e86",
+          "name": "Set a new license",
+          "request": {
+            "name": "Set a new license",
+            "description": {
+              "content": "Set a new license for an Enterprise Edition instance.\nCan be called on single servers, Coordinators, and DB-Servers.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "license"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "force",
+                  "value": "false",
+                  "description": "Whether to change the license even if it expires sooner than the current one.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<string>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "aba8ff8a-6576-4a70-a442-12c5de1f3e65",
+              "name": "License successfully deployed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "license"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "force",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "eyJncmFudCI6...(Base64-encoded license string)...",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result\": {\n    \"error\": false,\n    \"code\": 201\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bc35bd64-36aa-4e54-8361-13bdcfc8be1f",
+              "name": "If the license expires earlier than the previously installed one,\nor if the supplied license string is invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "license"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "force",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "eyJncmFudCI6...(Base64-encoded license string)...",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 3786,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "168ebcc9-94b2-4400-abfa-94d36779cec6",
+              "name": "If you try to apply a license using a custom build of the public source code.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "license"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "force",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "eyJncmFudCI6...(Base64-encoded license string)...",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 501,\n  \"errorNum\": 3516,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1b275603-8b25-489a-894f-a5b922d37070",
+          "name": "Get the public startup option configuration",
+          "request": {
+            "name": "Get the public startup option configuration",
+            "description": {
+              "content": "Return a small, curated subset of the configured server startup options\nthat are safe to expose to any authenticated user with read access to the\nrequested database.\n\nAdministrative tools can use this endpoint to adapt their behavior to the server\nconfiguration. For example, they can show the valid range for `replicationFactor`\nwhen creating a collection, or respect `--database.extended-names` when\nvalidating names on the client-side.\n\nThis endpoint is available regardless of the\n[`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)\nsetting, so that the Arango Contextual Data Platform web interface for\ninstance can always access the public options.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "options-public"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5515cb97-322a-4fd1-9df1-db2ba6021356",
+              "name": "An object with public startup option names as keys and their\neffective values.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "options-public"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"cluster.api-jwt-policy\": \"string\",\n  \"cluster.max-number-of-shards\": 1015,\n  \"cluster.max-replication-factor\": 2092,\n  \"cluster.min-replication-factor\": 7604,\n  \"database.extended-names\": false,\n  \"server.session-timeout\": 5205.812338297571\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fbdfad0b-f06a-41ab-9ede-bfaeff6039fb",
+              "name": "Authentication is enabled and the user account you authenticated with\ndoesn't have at least read access to the specified database, the\ncredentials are wrong, or the user account is inactive.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "options-public"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a4f2a1da-0c0c-41ec-8c6b-a0da28d136b4",
+              "name": "Returned if the HTTP method is not `GET`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "options-public"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 405,\n  \"errorNum\": 6239,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eaed9fd2-b4ee-4b85-b553-7768c4fda538",
+          "name": "Reload the routing table",
+          "request": {
+            "name": "Reload the routing table",
+            "description": {
+              "content": "> **WARNING:**\nThe Action and Foxx microservice features, including this endpoint for\nroute reloading, are deprecated and removed in ArangoDB v4.0.\n\n\nReloads the routing information from the `_routing` system collection if it\nexists, and makes Foxx rebuild its local routing table on the next request.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "routing",
+                "reload"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c7256483-b517-4b8a-95ed-88bce2c1a0c1",
+              "name": "The routing information has been reloaded successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "routing",
+                    "reload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4c5954cc-9cdd-49c9-b61d-f50c0aa6537c",
+          "name": "Return whether or not a server is in read-only mode",
+          "request": {
+            "name": "Return whether or not a server is in read-only mode",
+            "description": {
+              "content": "Return mode information about a server. The json response will contain\na field `mode` with the value `readonly` or `default`. In a read-only server\nall write operations will fail with an error code of `1004` (_ERROR_READ_ONLY_).\nCreating or dropping of databases and collections will also fail with error code `11` (_ERROR_FORBIDDEN_).\n\nThis API requires authentication.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "server",
+                "mode"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6f0f7bed-d5ff-4d29-9828-491d59283f48",
+              "name": "This API will return HTTP 200 if everything is ok\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "server",
+                    "mode"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a0154d46-2a43-44e9-9a1b-b213183ba66c",
+          "name": "Set the server mode to read-only or default",
+          "request": {
+            "name": "Set the server mode to read-only or default",
+            "description": {
+              "content": "Update mode information about a server. The JSON response will contain\na field `mode` with the value `readonly` or `default`. In a read-only server\nall write operations will fail with an error code of `1004` (_ERROR_READ_ONLY_).\nCreating or dropping of databases and collections will also fail with error\ncode `11` (_ERROR_FORBIDDEN_).\n\nThis is a protected API. It requires authentication and administrative\nserver rights.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "server",
+                "mode"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mode\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3acc8bda-e963-41a5-a11f-e9bbcbb84c89",
+              "name": "This API will return HTTP 200 if everything is ok\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "server",
+                    "mode"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mode\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "09a0d630-d341-4ae9-affc-305a6707ce06",
+              "name": "if the request was not authenticated as a user with sufficient rights\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "server",
+                    "mode"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mode\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "70d7f038-d57b-40f2-8632-dd2231f3ca47",
+          "name": "Start the shutdown sequence",
+          "request": {
+            "name": "Start the shutdown sequence",
+            "description": {
+              "content": "This call initiates a clean shutdown sequence. Requires administrative privileges.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "shutdown"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "soft",
+                  "value": "false",
+                  "description": "<small>Introduced in: v3.7.12, v3.8.1, v3.9.0</small>\n\nIf set to `true`, this initiates a soft shutdown. This is only available\non Coordinators. When issued, the Coordinator tracks a number of ongoing\noperations, waits until all have finished, and then shuts itself down\nnormally. It will still accept new operations.\n\nThis feature can be used to make restart operations of Coordinators less\nintrusive for clients. It is designed for setups with a load balancer in front\nof Coordinators. Remove the designated Coordinator from the load balancer before\nissuing the soft-shutdown. The remaining Coordinators will internally forward\nrequests that need to be handled by the designated Coordinator. All other\nrequests will be handled by the remaining Coordinators, reducing the designated\nCoordinator's load.\n\nThe following types of operations are tracked:\n\n - AQL cursors (in particular streaming cursors)\n - Transactions (in particular stream transactions)\n - Ongoing asynchronous requests (using the `x-arango-async: store` HTTP header)\n - Finished asynchronous requests, whose result has not yet been\n   collected\n - Queued low priority requests (most normal requests)\n - Ongoing low priority requests\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9a9e085c-d6ab-4d5a-860b-f4e92bb668af",
+              "name": "is returned in all cases, `OK` will be returned in the result buffer on success.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "shutdown"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "soft",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5b6b14b7-66fd-4cd3-8121-c2c0107e1d0b",
+          "name": "Query the soft shutdown progress",
+          "request": {
+            "name": "Query the soft shutdown progress",
+            "description": {
+              "content": "<small>Introduced in: v3.7.12, v3.8.1, v3.9.0</small>\n\nThis call reports progress about a soft Coordinator shutdown (see\ndocumentation of `DELETE /_admin/shutdown?soft=true`).\nIn this case, the following types of operations are tracked:\n\n - AQL cursors (in particular streaming cursors)\n - Transactions (in particular stream transactions)\n - Ongoing asynchronous requests (using the `x-arango-async: store` HTTP header)\n - Finished asynchronous requests, whose result has not yet been\n   collected\n - Queued low priority requests (most normal requests)\n - Ongoing low priority requests\n\nThis API is only available on Coordinators.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "shutdown"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b8da0ce6-ed8e-4e1f-8f03-869f1a4fa4d7",
+              "name": "The response indicates the fact that a soft shutdown is ongoing and the\nnumber of active operations of the various types. Once all numbers have gone\nto 0, the flag `allClear` is set and the Coordinator shuts down automatically.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "shutdown"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"softShutdownOngoing\": true,\n  \"AQLcursors\": 2069.16739633918,\n  \"transactions\": 2807.7756698867806,\n  \"pendingJobs\": 4069.7199929635162,\n  \"doneJobs\": 5436.447568554569,\n  \"lowPrioOngoingRequests\": 2186.456032881987,\n  \"lowPrioQueuedRequests\": 7275.784397578213,\n  \"allClear\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6ae082db-5035-4948-a7b5-0f1a47880b74",
+          "name": "Get server status information",
+          "request": {
+            "name": "Get server status information",
+            "description": {
+              "content": "Returns status information about the server.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0618a663-fe41-4ea4-9e45-f53e04afafb7",
+              "name": "Status information was returned successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"server\": \"string\",\n  \"license\": \"string\",\n  \"version\": \"string\",\n  \"mode\": \"string\",\n  \"operationMode\": \"string\",\n  \"foxxApi\": true,\n  \"host\": \"string\",\n  \"pid\": 8881.369399618761,\n  \"serverInfo\": {\n    \"progress\": {\n      \"phase\": \"string\",\n      \"feature\": \"string\",\n      \"recoveryTick\": 6083.597111315089\n    },\n    \"role\": \"string\",\n    \"writeOpsEnabled\": true,\n    \"readOnly\": false,\n    \"maintenance\": true,\n    \"address\": \"string\",\n    \"persistedId\": \"string\",\n    \"rebootId\": 12.960597388701478,\n    \"serverId\": \"string\",\n    \"state\": \"string\"\n  },\n  \"agency\": {\n    \"agencyComm\": {\n      \"endpoints\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  },\n  \"agent\": {\n    \"endpoint\": \"string\",\n    \"id\": \"string\",\n    \"leaderId\": \"string\",\n    \"leading\": false,\n    \"term\": 6674.751347125158\n  },\n  \"coordinator\": {\n    \"foxxmaster\": [\n      \"string\",\n      \"string\"\n    ],\n    \"isFoxxmaster\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"hostname\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7ac9f355-1dae-4d2f-a2cf-b4312b53dd8d",
+          "name": "Get the system time",
+          "request": {
+            "name": "Get the system time",
+            "description": {
+              "content": "The call returns an object with the `time` attribute. This contains the\ncurrent system time as a Unix timestamp with microsecond precision.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_admin",
+                "time"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a29f613f-0421-4f2c-b7ce-d462374a26d3",
+              "name": "Time was returned successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_admin",
+                    "time"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"time\": 5675.497472069592\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f07c8908-32ad-4679-b6fe-49bbdaacfeb3",
+          "name": "Get the storage engine type",
+          "request": {
+            "name": "Get the storage engine type",
+            "description": {
+              "content": "Returns the storage engine the server is configured to use.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "engine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d0578a2a-8a78-4fde-9c99-967f2bae0856",
+              "name": "Successfully retrieved storage engine name.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "engine"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "588a34d6-f9c9-4276-af31-f1e7ccdd4670",
+              "name": "Missing read access to the given database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "engine"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3f16c202-906c-4199-8660-ace0822f24b3",
+          "name": "Get the storage engine statistics",
+          "request": {
+            "name": "Get the storage engine statistics",
+            "description": {
+              "content": "Returns detailed statistics related to the RocksDB storage engine activity,\nincluding figures about data size, cache usage, individual column families, etc.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "engine",
+                "stats"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0b1cba36-431f-474d-b130-b5a9bd3181c9",
+              "name": "Successfully retrieved the storage engine statistics.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "engine",
+                    "stats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0e0500c4-52f2-46ae-94ad-a8f4fc3f3942",
+              "name": "The user account you authenticated with lacks read access to the\nspecified database, the credentials are wrong, or the user account\nis inactive.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "engine",
+                    "stats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 401,\n  \"errorNum\": 9582,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6796cfb2-2642-4249-9cc6-8b7ed3bf12b3",
+              "name": "The `--server.harden` startup option is enabled but the user account\nyou authenticated with lacks write access to the `_system` database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "engine",
+                    "stats"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 894,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d4445f98-98c1-4d2a-b708-d7b53b7ff29d",
+          "name": "Get the server version",
+          "request": {
+            "name": "Get the server version",
+            "description": {
+              "content": "Returns the server name and version number.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "version"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "details",
+                  "value": "false",
+                  "description": "If set to `true` and if the user account you authenticate with has\nadministrate access to the `_system` database, the response contains\na `details` attribute with additional information about included\ncomponents and their versions. The attribute names and internals of\nthe `details` object may vary depending on platform and ArangoDB version.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9875b6ff-9e40-48df-b11c-842cee4004f9",
+              "name": "is returned in all cases.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "details",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"server\": \"string\",\n  \"license\": \"enterprise\",\n  \"version\": \"string\",\n  \"apiVersions\": [\n    \"v0\"\n  ],\n  \"deprecatedApiVersions\": [\n    \"undefined\"\n  ],\n  \"requestedApiVersion\": \"v0\",\n  \"details\": {\n    \"architecture\": \"string\",\n    \"arm\": \"false\",\n    \"asan\": \"false\",\n    \"assertions\": \"true\",\n    \"avx\": \"false\",\n    \"avx2\": \"true\",\n    \"boost-version\": \"string\",\n    \"build-date\": \"string\",\n    \"build-id\": \"string\",\n    \"build-repository\": \"string\",\n    \"compiler\": \"string\",\n    \"coverage\": \"false\",\n    \"cplusplus\": \"string\",\n    \"curl-version\": \"string\",\n    \"debug\": \"true\",\n    \"endianness\": \"string\",\n    \"enterprise-build-repository\": \"string\",\n    \"enterprise-version\": \"string\",\n    \"failure-tests\": \"true\",\n    \"faiss\": \"string\",\n    \"fd-client-event-handler\": \"string\",\n    \"fd-setsize\": \"string\",\n    \"full-version-string\": \"string\",\n    \"host\": \"string\",\n    \"icu-version\": \"string\",\n    \"ipo\": \"true\",\n    \"iresearch-version\": \"string\",\n    \"jemalloc\": \"false\",\n    \"libunwind\": \"string\",\n    \"license\": \"enterprise\",\n    \"maintainer-mode\": \"true\",\n    \"memory-profiler\": \"false\",\n    \"mode\": \"server\",\n    \"ndebug\": \"false\",\n    \"openmp\": \"string\",\n    \"openssl-version\": \"string\",\n    \"openssl-version-compile-time\": \"string\",\n    \"openssl-version-run-time\": \"string\",\n    \"optimization-flags\": \"string\",\n    \"pic\": \"string\",\n    \"pie\": \"string\",\n    \"platform\": \"string\",\n    \"reactor-type\": \"string\",\n    \"replication2-enabled\": \"true\",\n    \"rocksdb-version\": \"string\",\n    \"role\": \"PRIMARY\",\n    \"server-version\": \"string\",\n    \"sizeof int\": \"string\",\n    \"sizeof long\": \"string\",\n    \"sizeof void*\": \"string\",\n    \"sse42\": \"string\",\n    \"tsan\": \"false\",\n    \"unaligned-access\": \"true\",\n    \"v8-version\": \"string\",\n    \"vpack-version\": \"string\",\n    \"zlib-version\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "4210ac32-fcb0-4597-8c97-e51bdbd925b7",
+    "name": "ArangoDB Core Administration API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Get server information, manage licenses, shut down nodes, and more\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

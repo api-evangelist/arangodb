@@ -1,0 +1,659 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Foxx API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Foxx",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List the installed services",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "excludeSystem",
+                "value": "",
+                "type": "query",
+                "description": "Whether or not system services should be excluded from the result.\n"
+              }
+            ]
+          },
+          "docs": "Fetches a list of services installed in the current database.\n\nReturns a list of objects with the following attributes:\n\n- `mount`: the mount path of the service\n- `development`: `true` if the service is running in development mode\n- `legacy`: `true` if the service is running in 2.8 legacy compatibility mode\n- `provides`: the service manifest's `provides` value or an empty object\n\nAdditionally the object may contain the following attributes if they have been set on the manifest:\n\n- `name`: a str"
+        },
+        {
+          "info": {
+            "name": "Install a new service",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path the service should be installed at.\n"
+              },
+              {
+                "name": "development",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to enable development mode.\n"
+              },
+              {
+                "name": "setup",
+                "value": "",
+                "type": "query",
+                "description": "Set to `false` to not run the service's setup script.\n"
+              },
+              {
+                "name": "legacy",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to install the service in 2.8 legacy compatibility mode.\n"
+              }
+            ]
+          },
+          "docs": "Installs the given new service at the given mount path.\n\nThe request body can be any of the following formats:\n\n- `application/zip`: a raw zip bundle containing a service\n- `application/javascript`: a standalone JavaScript file\n- `application/json`: a service definition as JSON\n- `multipart/form-data`: a service definition as a multipart form\n\nA service definition is an object or form with the following properties or fields:\n\n- `configuration`: a JSON object describing configuration values\n- `de"
+        },
+        {
+          "info": {
+            "name": "Commit the local service state",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/commit",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "replace",
+                "value": "",
+                "type": "query",
+                "description": "Overwrite existing service files in database even if they already exist.\n"
+              }
+            ]
+          },
+          "docs": "Commits the local service state of the Coordinator to the database.\n\nThis can be used to resolve service conflicts between Coordinators that cannot be fixed automatically due to missing data.\n"
+        },
+        {
+          "info": {
+            "name": "Get the configuration options",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/configuration",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Fetches the current configuration for the service at the given mount path.\n\nReturns an object mapping the configuration option names to their definitions\nincluding a human-friendly `title` and the `current` value (if any).\n"
+        },
+        {
+          "info": {
+            "name": "Replace the configuration options",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/configuration",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the given service's configuration completely.\n\nReturns an object mapping all configuration option names to their new values.\n"
+        },
+        {
+          "info": {
+            "name": "Update the configuration options",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/configuration",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the given service's configuration partially.\n\nReturns an object mapping all configuration option names to their new values.\n"
+        },
+        {
+          "info": {
+            "name": "Get the dependency options",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/dependencies",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Fetches the current dependencies for service at the given mount path.\n\nReturns an object mapping the dependency names to their definitions\nincluding a human-friendly `title` and the `current` mount path (if any).\n"
+        },
+        {
+          "info": {
+            "name": "Replace the dependency options",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/dependencies",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the given service's dependencies completely.\n\nReturns an object mapping all dependency names to their new mount paths.\n"
+        },
+        {
+          "info": {
+            "name": "Update the dependency options",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/dependencies",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the given service's dependencies.\n\nReturns an object mapping all dependency names to their new mount paths.\n"
+        },
+        {
+          "info": {
+            "name": "Enable the development mode",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/development",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Puts the service into development mode.\n\nWhile the service is running in development mode the service will be reloaded\nfrom the filesystem and its setup script (if any) will be re-executed every\ntime the service handles a request.\n\nWhen running ArangoDB in a cluster with multiple Coordinators note that changes\nto the filesystem on one Coordinator will not be reflected across the other\nCoordinators. This means you should treat your Coordinators as inconsistent\nas long as any service is running in"
+        },
+        {
+          "info": {
+            "name": "Disable the development mode",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/development",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Puts the service at the given mount path into production mode.\n\nWhen running ArangoDB in a cluster with multiple Coordinators this will\nreplace the service on all other Coordinators with the version on this\nCoordinator.\n"
+        },
+        {
+          "info": {
+            "name": "Download a service bundle",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/download",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Downloads a zip bundle of the service directory.\n\nWhen development mode is enabled, this always creates a new bundle.\n\nOtherwise the bundle will represent the version of a service that\nis installed on that ArangoDB instance.\n"
+        },
+        {
+          "info": {
+            "name": "Get the service README",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/readme",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Fetches the service's README or README.md file's contents if any.\n"
+        },
+        {
+          "info": {
+            "name": "List the service scripts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/scripts",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Fetches a list of the scripts defined by the service.\n\nReturns an object mapping the raw script names to human-friendly names.\n"
+        },
+        {
+          "info": {
+            "name": "Run a service script",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/scripts/:name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the script to run.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Runs the given script for the service at the given mount path.\n\nReturns the exports of the script, if any.\n"
+        },
+        {
+          "info": {
+            "name": "Get the service description",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/service",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Fetches detailed information for the service at the given mount path.\n\nReturns an object with the following attributes:\n\n- `mount`: the mount path of the service\n- `path`: the local file system path of the service\n- `development`: `true` if the service is running in development mode\n- `legacy`: `true` if the service is running in 2.8 legacy compatibility mode\n- `manifest`: the normalized JSON manifest of the service\n\nAdditionally the object may contain the following attributes if they have been "
+        },
+        {
+          "info": {
+            "name": "Replace a service",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/service",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              },
+              {
+                "name": "teardown",
+                "value": "",
+                "type": "query",
+                "description": "Set to `false` to not run the old service's teardown script.\n"
+              },
+              {
+                "name": "setup",
+                "value": "",
+                "type": "query",
+                "description": "Set to `false` to not run the new service's setup script.\n"
+              },
+              {
+                "name": "legacy",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to install the new service in 2.8 legacy compatibility mode.\n"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to force service install even if no service is installed under given mount.\n"
+              }
+            ]
+          },
+          "docs": "Removes the service at the given mount path from the database and file system.\nThen installs the given new service at the same mount path.\n\nThis is a slightly safer equivalent to performing an uninstall of the old service\nfollowed by installing the new service. The new service's main and script files\n(if any) will be checked for basic syntax errors before the old service is removed.\n\nThe request body can be any of the following formats:\n\n- `application/zip`: a raw zip bundle containing a service"
+        },
+        {
+          "info": {
+            "name": "Upgrade a service",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/service",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              },
+              {
+                "name": "teardown",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to run the old service's teardown script.\n"
+              },
+              {
+                "name": "setup",
+                "value": "",
+                "type": "query",
+                "description": "Set to `false` to not run the new service's setup script.\n"
+              },
+              {
+                "name": "legacy",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to install the new service in 2.8 legacy compatibility mode.\n"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to force service install even if no service is installed under given mount.\n"
+              }
+            ]
+          },
+          "docs": "Installs the given new service on top of the service currently installed at the given mount path.\nThis is only recommended for switching between different versions of the same service.\n\nUnlike replacing a service, upgrading a service retains the old service's configuration\nand dependencies (if any) and should therefore only be used to migrate an existing service\nto a newer or equivalent service.\n\nThe request body can be any of the following formats:\n\n- `application/zip`: a raw zip bundle contain"
+        },
+        {
+          "info": {
+            "name": "Uninstall a service",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/service",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              },
+              {
+                "name": "teardown",
+                "value": "",
+                "type": "query",
+                "description": "Set to `false` to not run the service's teardown script.\n"
+              }
+            ]
+          },
+          "docs": "Removes the service at the given mount path from the database and file system.\n\nReturns an empty response on success.\n"
+        },
+        {
+          "info": {
+            "name": "Get the Swagger description",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/swagger",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              }
+            ]
+          },
+          "docs": "Fetches the Swagger API description for the service at the given mount path.\n\nThe response body will be an OpenAPI 2.0 compatible JSON description of the service API.\n"
+        },
+        {
+          "info": {
+            "name": "Run the service tests",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/foxx/tests",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "mount",
+                "value": "",
+                "type": "query",
+                "description": "Mount path of the installed service.\n"
+              },
+              {
+                "name": "reporter",
+                "value": "",
+                "type": "query",
+                "description": "Test reporter to use.\n"
+              },
+              {
+                "name": "idiomatic",
+                "value": "",
+                "type": "query",
+                "description": "Use the matching format for the reporter, regardless of the `Accept` header.\n"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Only run tests where the full name (including full test suites and test case)\nmatches this string.\n"
+              }
+            ]
+          },
+          "docs": "Runs the tests for the service at the given mount path and returns the results.\n\nSupported test reporters are:\n\n- `default`: a simple list of test cases\n- `suite`: an object of test cases nested in suites\n- `stream`: a raw stream of test results\n- `xunit`: an XUnit/JUnit compatible structure\n- `tap`: a raw TAP compatible stream\n\nThe `Accept` request header can be used to further control the response format:\n\nWhen using the `stream` reporter `application/x-ldjson` will result\nin the response body"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

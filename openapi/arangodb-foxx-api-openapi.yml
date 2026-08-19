@@ -1,0 +1,1224 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Foxx API
+  version: 3.12.10 (API v0)
+  description: Manage microservices written in JavaScript
+tags:
+- description: Manage microservices written in JavaScript
+  name: Foxx
+paths:
+  /_db/{database-name}/_api/foxx:
+    get:
+      deprecated: true
+      description: 'Fetches a list of services installed in the current database.
+
+
+        Returns a list of objects with the following attributes:
+
+
+        - `mount`: the mount path of the service
+
+        - `development`: `true` if the service is running in development mode
+
+        - `legacy`: `true` if the service is running in 2.8 legacy compatibility mode
+
+        - `provides`: the service manifest''s `provides` value or an empty object
+
+
+        Additionally the object may contain the following attributes if they have been set on the manifest:
+
+
+        - `name`: a string identifying the service type
+
+        - `version`: a semver-compatible version string
+
+        '
+      operationId: listFoxxServices
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Whether or not system services should be excluded from the result.
+
+          '
+        in: query
+        name: excludeSystem
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: List the installed services
+      tags:
+      - Foxx
+    post:
+      deprecated: true
+      description: 'Installs the given new service at the given mount path.
+
+
+        The request body can be any of the following formats:
+
+
+        - `application/zip`: a raw zip bundle containing a service
+
+        - `application/javascript`: a standalone JavaScript file
+
+        - `application/json`: a service definition as JSON
+
+        - `multipart/form-data`: a service definition as a multipart form
+
+
+        A service definition is an object or form with the following properties or fields:
+
+
+        - `configuration`: a JSON object describing configuration values
+
+        - `dependencies`: a JSON object describing dependency settings
+
+        - `source`: a fully qualified URL or an absolute path on the server''s file system
+
+
+        When using multipart data, the `source` field can also alternatively be a file field
+
+        containing either a zip bundle or a standalone JavaScript file.
+
+
+        When using a standalone JavaScript file the given file will be executed
+
+        to define our service''s HTTP endpoints. It is the same which would be defined
+
+        in the field `main` of the service manifest.
+
+
+        If `source` is a URL, the URL must be reachable from the server.
+
+        If `source` is a file system path, the path will be resolved on the server.
+
+        In either case the path or URL is expected to resolve to a zip bundle,
+
+        JavaScript file or (in case of a file system path) directory.
+
+
+        Note that when using file system paths in a cluster with multiple Coordinators
+
+        the file system path must resolve to equivalent files on every Coordinator.
+
+        '
+      operationId: createFoxxService
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path the service should be installed at.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      - description: 'Set to `true` to enable development mode.
+
+          '
+        in: query
+        name: development
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'Set to `false` to not run the service''s setup script.
+
+          '
+        in: query
+        name: setup
+        required: false
+        schema:
+          default: true
+          type: boolean
+      - description: 'Set to `true` to install the service in 2.8 legacy compatibility mode.
+
+          '
+        in: query
+        name: legacy
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '201':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Install a new service
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/commit:
+    post:
+      deprecated: true
+      description: 'Commits the local service state of the Coordinator to the database.
+
+
+        This can be used to resolve service conflicts between Coordinators that cannot be fixed automatically due to missing data.
+
+        '
+      operationId: commitFoxxServiceState
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Overwrite existing service files in database even if they already exist.
+
+          '
+        in: query
+        name: replace
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '204':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Commit the local service state
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/configuration:
+    get:
+      deprecated: true
+      description: 'Fetches the current configuration for the service at the given mount path.
+
+
+        Returns an object mapping the configuration option names to their definitions
+
+        including a human-friendly `title` and the `current` value (if any).
+
+        '
+      operationId: getFoxxConfiguration
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Get the configuration options
+      tags:
+      - Foxx
+    patch:
+      deprecated: true
+      description: 'Replaces the given service''s configuration partially.
+
+
+        Returns an object mapping all configuration option names to their new values.
+
+        '
+      operationId: updateFoxxConfiguration
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'A JSON object, mapping configuration option names to their new values.
+
+                Any omitted options will be ignored.
+
+                '
+              type: object
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Update the configuration options
+      tags:
+      - Foxx
+    put:
+      deprecated: true
+      description: 'Replaces the given service''s configuration completely.
+
+
+        Returns an object mapping all configuration option names to their new values.
+
+        '
+      operationId: replaceFoxxConfiguration
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'A JSON object, mapping configuration option names to their new values.
+
+                Any omitted options will be reset to their default values or marked as unconfigured.
+
+                '
+              type: object
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Replace the configuration options
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/dependencies:
+    get:
+      deprecated: true
+      description: 'Fetches the current dependencies for service at the given mount path.
+
+
+        Returns an object mapping the dependency names to their definitions
+
+        including a human-friendly `title` and the `current` mount path (if any).
+
+        '
+      operationId: getFoxxDependencies
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Get the dependency options
+      tags:
+      - Foxx
+    patch:
+      deprecated: true
+      description: 'Replaces the given service''s dependencies.
+
+
+        Returns an object mapping all dependency names to their new mount paths.
+
+        '
+      operationId: updateFoxxDependencies
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                options:
+                  description: 'A JSON object mapping dependency names to their new mount paths.
+
+                    Any omitted dependencies will be ignored.
+
+                    '
+                  type: object
+              required:
+              - options
+              type: object
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Update the dependency options
+      tags:
+      - Foxx
+    put:
+      deprecated: true
+      description: 'Replaces the given service''s dependencies completely.
+
+
+        Returns an object mapping all dependency names to their new mount paths.
+
+        '
+      operationId: replaceFoxxDependencies
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                options:
+                  description: 'A JSON object mapping dependency names to their new mount paths.
+
+                    Any omitted dependencies will be disabled.
+
+                    '
+                  type: object
+              required:
+              - options
+              type: object
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Replace the dependency options
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/development:
+    delete:
+      deprecated: true
+      description: 'Puts the service at the given mount path into production mode.
+
+
+        When running ArangoDB in a cluster with multiple Coordinators this will
+
+        replace the service on all other Coordinators with the version on this
+
+        Coordinator.
+
+        '
+      operationId: disableFoxxDevelopmentMode
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Disable the development mode
+      tags:
+      - Foxx
+    post:
+      deprecated: true
+      description: 'Puts the service into development mode.
+
+
+        While the service is running in development mode the service will be reloaded
+
+        from the filesystem and its setup script (if any) will be re-executed every
+
+        time the service handles a request.
+
+
+        When running ArangoDB in a cluster with multiple Coordinators note that changes
+
+        to the filesystem on one Coordinator will not be reflected across the other
+
+        Coordinators. This means you should treat your Coordinators as inconsistent
+
+        as long as any service is running in development mode.
+
+        '
+      operationId: enableFoxxDevelopmentMode
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Enable the development mode
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/download:
+    post:
+      deprecated: true
+      description: 'Downloads a zip bundle of the service directory.
+
+
+        When development mode is enabled, this always creates a new bundle.
+
+
+        Otherwise the bundle will represent the version of a service that
+
+        is installed on that ArangoDB instance.
+
+        '
+      operationId: downloadFoxxService
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+        '400':
+          description: 'Returned if the mount path is unknown.
+
+            '
+      summary: Download a service bundle
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/readme:
+    get:
+      deprecated: true
+      description: 'Fetches the service''s README or README.md file''s contents if any.
+
+        '
+      operationId: getFoxxReadme
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+        '204':
+          description: 'Returned if no README file was found.
+
+            '
+      summary: Get the service README
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/scripts:
+    get:
+      deprecated: true
+      description: 'Fetches a list of the scripts defined by the service.
+
+
+        Returns an object mapping the raw script names to human-friendly names.
+
+        '
+      operationId: listFoxxScripts
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: List the service scripts
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/scripts/{name}:
+    post:
+      deprecated: true
+      description: 'Runs the given script for the service at the given mount path.
+
+
+        Returns the exports of the script, if any.
+
+        '
+      operationId: runFoxxScript
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Name of the script to run.
+
+          '
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'An arbitrary JSON value that will be parsed and passed to the
+
+                script as its first argument.
+
+                '
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Run a service script
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/service:
+    delete:
+      deprecated: true
+      description: 'Removes the service at the given mount path from the database and file system.
+
+
+        Returns an empty response on success.
+
+        '
+      operationId: deleteFoxxService
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      - description: 'Set to `false` to not run the service''s teardown script.
+
+          '
+        in: query
+        name: teardown
+        required: false
+        schema:
+          default: true
+          type: boolean
+      responses:
+        '204':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Uninstall a service
+      tags:
+      - Foxx
+    get:
+      deprecated: true
+      description: 'Fetches detailed information for the service at the given mount path.
+
+
+        Returns an object with the following attributes:
+
+
+        - `mount`: the mount path of the service
+
+        - `path`: the local file system path of the service
+
+        - `development`: `true` if the service is running in development mode
+
+        - `legacy`: `true` if the service is running in 2.8 legacy compatibility mode
+
+        - `manifest`: the normalized JSON manifest of the service
+
+
+        Additionally the object may contain the following attributes if they have been set on the manifest:
+
+
+        - `name`: a string identifying the service type
+
+        - `version`: a semver-compatible version string
+
+        '
+      operationId: getFoxxServiceDescription
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+        '400':
+          description: 'Returned if the mount path is unknown.
+
+            '
+      summary: Get the service description
+      tags:
+      - Foxx
+    patch:
+      deprecated: true
+      description: 'Installs the given new service on top of the service currently installed at the given mount path.
+
+        This is only recommended for switching between different versions of the same service.
+
+
+        Unlike replacing a service, upgrading a service retains the old service''s configuration
+
+        and dependencies (if any) and should therefore only be used to migrate an existing service
+
+        to a newer or equivalent service.
+
+
+        The request body can be any of the following formats:
+
+
+        - `application/zip`: a raw zip bundle containing a service
+
+        - `application/javascript`: a standalone JavaScript file
+
+        - `application/json`: a service definition as JSON
+
+        - `multipart/form-data`: a service definition as a multipart form
+
+
+        A service definition is an object or form with the following properties or fields:
+
+
+        - `configuration`: a JSON object describing configuration values
+
+        - `dependencies`: a JSON object describing dependency settings
+
+        - `source`: a fully qualified URL or an absolute path on the server''s file system
+
+
+        When using multipart data, the `source` field can also alternatively be a file field
+
+        containing either a zip bundle or a standalone JavaScript file.
+
+
+        When using a standalone JavaScript file the given file will be executed
+
+        to define our service''s HTTP endpoints. It is the same which would be defined
+
+        in the field `main` of the service manifest.
+
+
+        If `source` is a URL, the URL must be reachable from the server.
+
+        If `source` is a file system path, the path will be resolved on the server.
+
+        In either case the path or URL is expected to resolve to a zip bundle,
+
+        JavaScript file or (in case of a file system path) directory.
+
+
+        Note that when using file system paths in a cluster with multiple Coordinators
+
+        the file system path must resolve to equivalent files on every Coordinator.
+
+        '
+      operationId: upgradeFoxxService
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      - description: 'Set to `true` to run the old service''s teardown script.
+
+          '
+        in: query
+        name: teardown
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'Set to `false` to not run the new service''s setup script.
+
+          '
+        in: query
+        name: setup
+        required: false
+        schema:
+          default: true
+          type: boolean
+      - description: 'Set to `true` to install the new service in 2.8 legacy compatibility mode.
+
+          '
+        in: query
+        name: legacy
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'Set to `true` to force service install even if no service is installed under given mount.
+
+          '
+        in: query
+        name: force
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Upgrade a service
+      tags:
+      - Foxx
+    put:
+      deprecated: true
+      description: 'Removes the service at the given mount path from the database and file system.
+
+        Then installs the given new service at the same mount path.
+
+
+        This is a slightly safer equivalent to performing an uninstall of the old service
+
+        followed by installing the new service. The new service''s main and script files
+
+        (if any) will be checked for basic syntax errors before the old service is removed.
+
+
+        The request body can be any of the following formats:
+
+
+        - `application/zip`: a raw zip bundle containing a service
+
+        - `application/javascript`: a standalone JavaScript file
+
+        - `application/json`: a service definition as JSON
+
+        - `multipart/form-data`: a service definition as a multipart form
+
+
+        A service definition is an object or form with the following properties or fields:
+
+
+        - `configuration`: a JSON object describing configuration values
+
+        - `dependencies`: a JSON object describing dependency settings
+
+        - `source`: a fully qualified URL or an absolute path on the server''s file system
+
+
+        When using multipart data, the `source` field can also alternatively be a file field
+
+        containing either a zip bundle or a standalone JavaScript file.
+
+
+        When using a standalone JavaScript file the given file will be executed
+
+        to define our service''s HTTP endpoints. It is the same which would be defined
+
+        in the field `main` of the service manifest.
+
+
+        If `source` is a URL, the URL must be reachable from the server.
+
+        If `source` is a file system path, the path will be resolved on the server.
+
+        In either case the path or URL is expected to resolve to a zip bundle,
+
+        JavaScript file or (in case of a file system path) directory.
+
+
+        Note that when using file system paths in a cluster with multiple Coordinators
+
+        the file system path must resolve to equivalent files on every Coordinator.
+
+        '
+      operationId: replaceFoxxService
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      - description: 'Set to `false` to not run the old service''s teardown script.
+
+          '
+        in: query
+        name: teardown
+        required: false
+        schema:
+          default: true
+          type: boolean
+      - description: 'Set to `false` to not run the new service''s setup script.
+
+          '
+        in: query
+        name: setup
+        required: false
+        schema:
+          default: true
+          type: boolean
+      - description: 'Set to `true` to install the new service in 2.8 legacy compatibility mode.
+
+          '
+        in: query
+        name: legacy
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - description: 'Set to `true` to force service install even if no service is installed under given mount.
+
+          '
+        in: query
+        name: force
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Replace a service
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/swagger:
+    get:
+      deprecated: true
+      description: 'Fetches the Swagger API description for the service at the given mount path.
+
+
+        The response body will be an OpenAPI 2.0 compatible JSON description of the service API.
+
+        '
+      operationId: getFoxxSwaggerDescription
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Get the Swagger description
+      tags:
+      - Foxx
+  /_db/{database-name}/_api/foxx/tests:
+    post:
+      deprecated: true
+      description: 'Runs the tests for the service at the given mount path and returns the results.
+
+
+        Supported test reporters are:
+
+
+        - `default`: a simple list of test cases
+
+        - `suite`: an object of test cases nested in suites
+
+        - `stream`: a raw stream of test results
+
+        - `xunit`: an XUnit/JUnit compatible structure
+
+        - `tap`: a raw TAP compatible stream
+
+
+        The `Accept` request header can be used to further control the response format:
+
+
+        When using the `stream` reporter `application/x-ldjson` will result
+
+        in the response body being formatted as a newline-delimited JSON stream.
+
+
+        When using the `tap` reporter `text/plain` or `text/*` will result
+
+        in the response body being formatted as a plain text TAP report.
+
+
+        When using the `xunit` reporter `application/xml` or `text/xml` will result
+
+        in the response body being formatted as XML instead of JSONML.
+
+
+        Otherwise the response body will be formatted as non-prettyprinted JSON.
+
+        '
+      operationId: runFoxxTests
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Mount path of the installed service.
+
+          '
+        in: query
+        name: mount
+        required: true
+        schema:
+          type: string
+      - description: 'Test reporter to use.
+
+          '
+        in: query
+        name: reporter
+        required: false
+        schema:
+          type: string
+      - description: 'Use the matching format for the reporter, regardless of the `Accept` header.
+
+          '
+        in: query
+        name: idiomatic
+        required: false
+        schema:
+          type: boolean
+      - description: 'Only run tests where the full name (including full test suites and test case)
+
+          matches this string.
+
+          '
+        in: query
+        name: filter
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Returned if the request was successful.
+
+            '
+      summary: Run the service tests
+      tags:
+      - Foxx
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

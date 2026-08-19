@@ -1,0 +1,2525 @@
+{
+  "item": [
+    {
+      "id": "d7a7dd0f-e062-4a82-ab6d-0d8ad9811d86",
+      "name": "Indexes",
+      "description": {
+        "content": "Improve the performance of queries",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7b5851de-69a7-4b61-b161-51aa7d80f37f",
+          "name": "List all indexes of a collection",
+          "request": {
+            "name": "List all indexes of a collection",
+            "description": {
+              "content": "Returns an object with an `indexes` attribute containing an array of all\nindex descriptions for the given collection. The same information is also\navailable in the `identifiers` attribute as an object with the index identifiers\nas object keys.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "withStats",
+                  "value": "false",
+                  "description": "Whether to include figures and estimates in the result.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "withHidden",
+                  "value": "false",
+                  "description": "Whether to include hidden indexes in the result. Internal indexes\n(such as `arangosearch`) and ones that are currently built in the\nbackground are hidden.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e78f9017-ea89-4536-a9d9-0aadaf137bce",
+              "name": "returns a JSON object containing a list of indexes on that collection.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "withStats",
+                      "value": "false"
+                    },
+                    {
+                      "key": "withHidden",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4541fb9c-e6a3-4941-b555-0f774fbaf7ef",
+          "name": "Create an index",
+          "request": {
+            "name": "Create an index",
+            "description": {
+              "content": "Creates a new index in the collection `collection`. Expects\nan object containing the index details.\n\nThe type of the index to be created must specified in the **type**\nattribute of the index details. Depending on the index type, additional\nother attributes may need to specified in the request in order to create\nthe index.\n\nIndexes require the to be indexed attribute(s) in the **fields** attribute\nof the index details. Depending on the index type, a single attribute or\nmultiple attributes can be indexed. In the latter case, an array of\nstrings is expected.\n\nThe `.` character denotes sub-attributes in attribute paths. Attributes with\nliteral `.` in their name cannot be indexed. Attributes with the name `_id`\ncannot be indexed either, neither as a top-level attribute nor as a sub-attribute.\n\nOptionally, an index name may be specified as a string in the **name** attribute.\nIndex names have the same restrictions as collection names. If no value is\nspecified, one will be auto-generated.\n\nPersistent indexes (including vertex-centric indexes) can be created as unique\nor non-unique variants. Uniqueness can be controlled by specifying the\n**unique** option for the index definition. Setting it to `true` creates a\nunique index. Setting it to `false` or omitting the `unique` attribute creates a\nnon-unique index.\n\n> **INFO:**\nUnique indexes on non-shard keys are not supported in cluster deployments.\n\n\nPersistent indexes can optionally be created in a sparse\nvariant. A sparse index will be created if the **sparse** attribute in\nthe index details is set to `true`. Sparse indexes do not index documents\nfor which any of the index attributes is either not set or is `null`.\n\nThe optional **deduplicate** attribute is supported by persistent array indexes.\nIt controls whether inserting duplicate index values\nfrom the same document into a unique array index will lead to a unique constraint\nerror or not. The default value is `true`, so only a single instance of each\nnon-unique index value will be inserted into the index per document. Trying to\ninsert a value into the index that already exists in the index always fails,\nregardless of the value of this attribute.\n\nThe optional **estimates** attribute is supported by `persistent`, `mdi`, and\n`mdi-prefixed` indexes. This attribute controls whether index selectivity estimates are\nmaintained for the index. Not maintaining index selectivity estimates can have\na slightly positive impact on write performance.\nThe downside of turning off index selectivity estimates will be that\nthe query optimizer will not be able to determine the usefulness of different\ncompeting indexes in AQL queries when there are multiple candidate indexes to\nchoose from.\nThe `estimates` attribute is optional and defaults to `true` if not set. It will\nhave no effect on indexes other than persistent indexes.\n\nThe optional attribute **cacheEnabled** is supported by indexes of type\n`persistent`. This attribute controls whether an extra in-memory hash cache is\ncreated for the index. The hash cache can be used to speed up index lookups.\nThe cache can only be used for queries that look up all index attributes via\nan equality lookup (`==`). The hash cache cannot be used for range scans,\npartial lookups or sorting.\nThe cache will be populated lazily upon reading data from the index. Writing data\ninto the collection or updating existing data will invalidate entries in the\ncache. The cache may have a negative effect on performance in case index values\nare updated more often than they are read.\nThe maximum size of cache entries that can be stored is currently 4 MB, i.e.\nthe cumulated size of all index entries for any index lookup value must be\nless than 4 MB. This limitation is there to avoid storing the index entries\nof \"super nodes\" in the cache.\n`cacheEnabled` defaults to `false` and should only be used for indexes that\nare known to benefit from an extra layer of caching.\n\nThe optional attribute **inBackground** can be set to `true` to keep the\ncollection/shards available for write operations by not using an exclusive\nwrite lock for the duration of the index creation.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "02d7305f-eec1-4858-b5c7-0732c3639f8f",
+              "name": "If the index already exists, then an *HTTP 200* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6662c87a-0fbf-4cc2-b98e-1893357468a4",
+              "name": "If the index does not already exist and could be created, then an *HTTP 201*\nis returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6cef973b-3f60-4a9e-9bf5-cec48026509e",
+              "name": "If an invalid index description is posted or attributes are used that the\ntarget index will not support, then an *HTTP 400* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ab3f8d54-5616-4606-b025-1a031a6f9aa2",
+              "name": "If `collection` is unknown, then an *HTTP 404* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "33108fcd-24a3-4caa-ac69-a9495bc69dc0",
+          "name": "Create a full-text index",
+          "request": {
+            "name": "Create a full-text index",
+            "description": {
+              "content": "> **WARNING:**\nThe fulltext index type is deprecated from version 3.10 onwards.\n\n\nCreates a fulltext index for the collection `collection-name`, if\nit does not already exist. The call expects an object containing the index\ndetails.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "hash": "fulltext",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"minLength\": 2,\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "bb6a528a-aeb2-4e2c-9441-b7d9379cb3d0",
+              "name": "The index exists already.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "fulltext",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"fulltext\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"minLength\": 2,\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6f32d3c7-17ae-43e2-8ed3-52e42c1265ec",
+              "name": "The index is created as there is no such existing index.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "fulltext",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"fulltext\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"minLength\": 2,\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6ef01104-a4f6-4f81-a7ca-11820ebf0d24",
+              "name": "The collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "fulltext",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"fulltext\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"minLength\": 2,\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d27f056c-aa4f-4270-a075-bd939bd518c1",
+          "name": "Create a geo-spatial index",
+          "request": {
+            "name": "Create a geo-spatial index",
+            "description": {
+              "content": "Creates a geo-spatial index in the collection `collection`, if\nit does not already exist.\n\nGeo indexes are always sparse, meaning that documents that do not contain\nthe index attributes or have non-numeric values in the index attributes\nwill not be indexed.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "hash": "geo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"geoJson\": false,\n  \"inBackground\": false,\n  \"legacyPolygons\": \"<boolean>\",\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c6cb6556-91cf-4bfd-a7a3-9405bdc121f3",
+              "name": "The index exists already.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "geo",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"geo\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"geoJson\": false,\n  \"inBackground\": false,\n  \"legacyPolygons\": \"<boolean>\",\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9a457ddf-3427-442e-b778-b862b9a53f49",
+              "name": "The index is created as there is no such existing index.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "geo",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"geo\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"geoJson\": false,\n  \"inBackground\": false,\n  \"legacyPolygons\": \"<boolean>\",\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ab450259-796d-48f5-80d9-c78b42fddb86",
+              "name": "The collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "geo",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"geo\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"geoJson\": false,\n  \"inBackground\": false,\n  \"legacyPolygons\": \"<boolean>\",\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0c6edcc9-3507-400f-a463-88988588e4fa",
+          "name": "Create an inverted index",
+          "request": {
+            "name": "Create an inverted index",
+            "description": {
+              "content": "Creates an inverted index for the collection `collection-name`, if\nit does not already exist. The call expects an object containing the index\ndetails.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "hash": "inverted",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"analyzer\": \"<string>\",\n      \"cache\": \"<boolean>\",\n      \"features\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"includeAllFields\": \"<boolean>\",\n      \"nested\": [\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\",\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\",\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        }\n      ],\n      \"searchField\": \"<boolean>\",\n      \"trackListPositions\": \"<boolean>\"\n    }\n  ],\n  \"analyzer\": \"identity\",\n  \"cache\": false,\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"type\": \"tier\"\n  },\n  \"features\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"inBackground\": false,\n  \"includeAllFields\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"primaryKeyCache\": false,\n  \"primarySort\": {\n    \"fields\": [\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      },\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      }\n    ],\n    \"cache\": false,\n    \"compression\": \"lz4\"\n  },\n  \"searchField\": false,\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    },\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"trackListPositions\": false,\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0337a9fa-184d-436d-9b82-31c60b88ee29",
+              "name": "The index exists already.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "inverted",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"inverted\",\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"analyzer\": \"<string>\",\n      \"cache\": \"<boolean>\",\n      \"features\": [\n        \"<string>\"\n      ],\n      \"includeAllFields\": \"<boolean>\",\n      \"nested\": [\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        }\n      ],\n      \"searchField\": \"<boolean>\",\n      \"trackListPositions\": \"<boolean>\"\n    }\n  ],\n  \"analyzer\": \"identity\",\n  \"cache\": false,\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"type\": \"tier\"\n  },\n  \"features\": [\n    \"<string>\"\n  ],\n  \"inBackground\": false,\n  \"includeAllFields\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"primaryKeyCache\": false,\n  \"primarySort\": {\n    \"fields\": [\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      },\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      }\n    ],\n    \"cache\": false,\n    \"compression\": \"lz4\"\n  },\n  \"searchField\": false,\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    },\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"trackListPositions\": false,\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c9671163-4def-413a-abf1-d91ad65f5f9d",
+              "name": "The index is created as there is no such existing index.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "inverted",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"inverted\",\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"analyzer\": \"<string>\",\n      \"cache\": \"<boolean>\",\n      \"features\": [\n        \"<string>\"\n      ],\n      \"includeAllFields\": \"<boolean>\",\n      \"nested\": [\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        }\n      ],\n      \"searchField\": \"<boolean>\",\n      \"trackListPositions\": \"<boolean>\"\n    }\n  ],\n  \"analyzer\": \"identity\",\n  \"cache\": false,\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"type\": \"tier\"\n  },\n  \"features\": [\n    \"<string>\"\n  ],\n  \"inBackground\": false,\n  \"includeAllFields\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"primaryKeyCache\": false,\n  \"primarySort\": {\n    \"fields\": [\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      },\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      }\n    ],\n    \"cache\": false,\n    \"compression\": \"lz4\"\n  },\n  \"searchField\": false,\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    },\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"trackListPositions\": false,\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "10dd9dc2-154b-49f7-9840-ed2c2b8660a6",
+              "name": "The collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "inverted",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"inverted\",\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"analyzer\": \"<string>\",\n      \"cache\": \"<boolean>\",\n      \"features\": [\n        \"<string>\"\n      ],\n      \"includeAllFields\": \"<boolean>\",\n      \"nested\": [\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        },\n        {\n          \"name\": \"<string>\",\n          \"analyzer\": \"<string>\",\n          \"cache\": \"<boolean>\",\n          \"features\": [\n            \"<string>\"\n          ],\n          \"nested\": [\n            \"<object>\",\n            \"<object>\"\n          ],\n          \"searchField\": \"<boolean>\"\n        }\n      ],\n      \"searchField\": \"<boolean>\",\n      \"trackListPositions\": \"<boolean>\"\n    }\n  ],\n  \"analyzer\": \"identity\",\n  \"cache\": false,\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"type\": \"tier\"\n  },\n  \"features\": [\n    \"<string>\"\n  ],\n  \"inBackground\": false,\n  \"includeAllFields\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"primaryKeyCache\": false,\n  \"primarySort\": {\n    \"fields\": [\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      },\n      {\n        \"field\": \"<string>\",\n        \"direction\": \"<string>\"\n      }\n    ],\n    \"cache\": false,\n    \"compression\": \"lz4\"\n  },\n  \"searchField\": false,\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    },\n    {\n      \"fields\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"trackListPositions\": false,\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5d70739e-0999-4317-9460-dd084a9fdcec",
+          "name": "Create a multi-dimensional index",
+          "request": {
+            "name": "Create a multi-dimensional index",
+            "description": {
+              "content": "Creates a multi-dimensional index for the collection `collection-name`, if\nit does not already exist.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "hash": "mdi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"fieldValueTypes\": \"<string>\",\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"prefixFields\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5d080020-f03b-4431-a43b-d8deccb6ed3f",
+              "name": "The index exists already.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "mdi",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"mdi\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"fieldValueTypes\": \"<string>\",\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"prefixFields\": [\n    \"<string>\"\n  ],\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "13c58dbf-f8a6-4e63-b994-37389b1326a9",
+              "name": "The index is created as there is no such existing index.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "mdi",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"mdi\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"fieldValueTypes\": \"<string>\",\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"prefixFields\": [\n    \"<string>\"\n  ],\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "323f2e05-6733-405e-9630-7e8debc167af",
+              "name": "The index definition is invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "mdi",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"mdi\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"fieldValueTypes\": \"<string>\",\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"prefixFields\": [\n    \"<string>\"\n  ],\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "07809842-69ec-4fda-8775-aa15f7a26a80",
+              "name": "The collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "mdi",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"mdi\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"fieldValueTypes\": \"<string>\",\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"prefixFields\": [\n    \"<string>\"\n  ],\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "023efdf9-bcb9-4a98-8c3a-72672768dfee",
+          "name": "Create a persistent index",
+          "request": {
+            "name": "Create a persistent index",
+            "description": {
+              "content": "Creates a persistent index for the collection `collection-name`, if\nit does not already exist.\n\nIn a sparse index all documents will be excluded from the index that do not\ncontain at least one of the specified index attributes (i.e. `fields`) or that\nhave a value of `null` in any of the specified index attributes. Such documents\nwill not be indexed, and not be taken into account for uniqueness checks if\nthe `unique` flag is set.\n\nIn a non-sparse index, these documents will be indexed (for non-present\nindexed attributes, a value of `null` will be used) and will be taken into\naccount for uniqueness checks if the `unique` flag is set.\n\n> **INFO:**\nUnique indexes on non-shard keys are not supported in cluster deployments.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "hash": "persistent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"cacheEnabled\": false,\n  \"deduplicate\": true,\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "449d8260-5d03-47bd-9581-685fa6b9382d",
+              "name": "The index exists already.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "persistent",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"persistent\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"cacheEnabled\": false,\n  \"deduplicate\": true,\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a1e884cc-c700-43c1-9bbb-72eb184a433b",
+              "name": "The index is created as there is no such existing index.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "persistent",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"persistent\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"cacheEnabled\": false,\n  \"deduplicate\": true,\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7c1ad39e-8df5-4a5b-81a2-55091b0f4af3",
+              "name": "You try to create a unique persistent index but there are already\ndocuments in the collection that violate the uniqueness requirement.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "persistent",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"persistent\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"cacheEnabled\": false,\n  \"deduplicate\": true,\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d5f62227-06dc-4777-805d-16bd87e47c3e",
+              "name": "The collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "persistent",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"persistent\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"cacheEnabled\": false,\n  \"deduplicate\": true,\n  \"estimates\": true,\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"unique\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1cc7d134-9d53-4ff5-bede-34091c66ba2a",
+          "name": "Create a TTL index",
+          "request": {
+            "name": "Create a TTL index",
+            "description": {
+              "content": "Creates a time-to-live (TTL) index for the collection `collection-name` if it\ndoes not already exist.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "hash": "ttl",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"expireAfter\": \"<number>\",\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9ec7c196-1839-4e85-baa6-f59d64994f9c",
+              "name": "The index exists already.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "ttl",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"expireAfter\": \"<number>\",\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9e7c15b3-bcb6-4ec4-8806-e3de79987531",
+              "name": "The index is created as there is no such existing index.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "ttl",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"expireAfter\": \"<number>\",\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f4b17089-83d3-458b-a338-d751a0d3599f",
+              "name": "There is already a TTL index for the collection but there can only be one.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "ttl",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"expireAfter\": \"<number>\",\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5dd46deb-87db-4b49-a326-029cb556fcd5",
+              "name": "The collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "ttl",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"expireAfter\": \"<number>\",\n  \"inBackground\": false,\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e604a1a8-e202-4e38-9d2a-61cd5e0a94a8",
+          "name": "Create a vector index",
+          "request": {
+            "name": "Create a vector index",
+            "description": {
+              "content": "Creates a vector index for the collection `collection-name`, if\nit does not already exist.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index"
+              ],
+              "hash": "vector",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "collection",
+                  "value": "<string>",
+                  "description": "(Required) The collection name.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"params\": {\n    \"metric\": \"<string>\",\n    \"dimension\": \"<integer>\",\n    \"nLists\": \"<integer>\",\n    \"defaultNProbe\": 1,\n    \"factory\": \"<string>\",\n    \"numberOfDocsPerCentroid\": 100,\n    \"trainingIterations\": 25\n  },\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "850fd610-b475-4829-8841-1236a6ddef1c",
+              "name": "The index already exists. The `isNewlyCreated` field is `false`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "vector",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"vector\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"params\": {\n    \"metric\": \"<string>\",\n    \"dimension\": \"<integer>\",\n    \"nLists\": \"<integer>\",\n    \"defaultNProbe\": 1,\n    \"factory\": \"<string>\",\n    \"numberOfDocsPerCentroid\": 100,\n    \"trainingIterations\": 25\n  },\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 200,\n  \"error\": false,\n  \"id\": \"products/68\",\n  \"isNewlyCreated\": false,\n  \"type\": \"vector\",\n  \"name\": \"string\",\n  \"fields\": [\n    \"string\"\n  ],\n  \"params\": {\n    \"metric\": \"l2\",\n    \"dimension\": 445,\n    \"nLists\": 7010,\n    \"trainingIterations\": 9563,\n    \"defaultNProbe\": 2644,\n    \"numberOfDocsPerCentroid\": 7687,\n    \"factory\": \"string\"\n  },\n  \"sparse\": false,\n  \"unique\": false,\n  \"trainingState\": \"ingesting\",\n  \"errorMessage\": \"string\",\n  \"storedValues\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bda1f0c9-936e-473e-9162-6012b31d3a2e",
+              "name": "The index is newly created. The `isNewlyCreated` field is `true`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "vector",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"vector\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"params\": {\n    \"metric\": \"<string>\",\n    \"dimension\": \"<integer>\",\n    \"nLists\": \"<integer>\",\n    \"defaultNProbe\": 1,\n    \"factory\": \"<string>\",\n    \"numberOfDocsPerCentroid\": 100,\n    \"trainingIterations\": 25\n  },\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 201,\n  \"error\": false,\n  \"id\": \"products/68\",\n  \"isNewlyCreated\": true,\n  \"type\": \"vector\",\n  \"name\": \"string\",\n  \"fields\": [\n    \"string\"\n  ],\n  \"params\": {\n    \"metric\": \"innerProduct\",\n    \"dimension\": 5501,\n    \"nLists\": 9952,\n    \"trainingIterations\": 9473,\n    \"defaultNProbe\": 595,\n    \"numberOfDocsPerCentroid\": 7158,\n    \"factory\": \"string\"\n  },\n  \"sparse\": true,\n  \"unique\": false,\n  \"trainingState\": \"training\",\n  \"errorMessage\": \"string\",\n  \"storedValues\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7316676f-6e63-457c-b0e4-6ebe44459c56",
+              "name": "The request body or its content is invalid, for example,\nbecause of a missing or malformed `params` attribute,\nor the vector index feature is not enabled. You need to run ArangoDB\nwith the `--vector-index` startup option.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "vector",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"vector\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"params\": {\n    \"metric\": \"<string>\",\n    \"dimension\": \"<integer>\",\n    \"nLists\": \"<integer>\",\n    \"defaultNProbe\": 1,\n    \"factory\": \"<string>\",\n    \"numberOfDocsPerCentroid\": 100,\n    \"trainingIterations\": 25\n  },\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 400,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 5132\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ae74968f-7e70-4e4b-a54b-76a686437b59",
+              "name": "The collection is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index"
+                  ],
+                  "hash": "vector",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "collection",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"vector\",\n  \"fields\": [\n    \"<string>\"\n  ],\n  \"params\": {\n    \"metric\": \"<string>\",\n    \"dimension\": \"<integer>\",\n    \"nLists\": \"<integer>\",\n    \"defaultNProbe\": 1,\n    \"factory\": \"<string>\",\n    \"numberOfDocsPerCentroid\": 100,\n    \"trainingIterations\": 25\n  },\n  \"inBackground\": false,\n  \"name\": \"<string>\",\n  \"parallelism\": 2,\n  \"sparse\": false,\n  \"storedValues\": [\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 404,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 5633\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4fc11943-2f9a-4564-9f4a-68a8ca33a8d1",
+          "name": "Delete an index",
+          "request": {
+            "name": "Delete an index",
+            "description": {
+              "content": "Deletes an index with `index-id`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index",
+                ":index-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "index-id",
+                  "description": "(Required) The index id.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a5d92b49-a494-400b-9142-89e3171cfc02",
+              "name": "If the index could be deleted, then an *HTTP 200* is\nreturned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index",
+                    ":index-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index-id",
+                      "description": "(Required) The index id.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "24bf85b1-ce7d-428e-a349-a021cce01431",
+              "name": "If the `index-id` is unknown, then an *HTTP 404* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index",
+                    ":index-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index-id",
+                      "description": "(Required) The index id.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7e39336a-1cfe-4ab7-979c-0a08da8900f6",
+          "name": "Get an index",
+          "request": {
+            "name": "Get an index",
+            "description": {
+              "content": "The result is an object describing the index. It has at least the following\nattributes:\n\n- `id`: the identifier of the index\n\n- `type`: the index type\n\nAll other attributes are type-dependent. For example, some indexes provide\n`unique` or `sparse` flags, whereas others don't. Some indexes also provide\na selectivity estimate in the `selectivityEstimate` attribute of the result.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "index",
+                ":index-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "index-id",
+                  "description": "(Required) The index identifier.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "65dc58cf-0fe5-44fe-a74d-dc6f24684dce",
+              "name": "If the index exists, then a *HTTP 200* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index",
+                    ":index-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index-id",
+                      "description": "(Required) The index identifier.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f0216eb6-9d9f-4465-9b21-4aaf5e90546b",
+              "name": "If the index does not exist, then a *HTTP 404*\nis returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "index",
+                    ":index-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "index-id",
+                      "description": "(Required) The index identifier.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "9534d46a-c22a-4fe1-a36e-e44228f7c806",
+    "name": "ArangoDB Core Indexes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Improve the performance of queries\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

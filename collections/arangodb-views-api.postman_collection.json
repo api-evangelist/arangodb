@@ -1,0 +1,3100 @@
+{
+  "item": [
+    {
+      "id": "c201cf35-bd80-4f03-9516-30d6b6ba0647",
+      "name": "Views",
+      "description": {
+        "content": "Manage Views to use ArangoSearch for information retrieval",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "10266dce-63e8-4793-9005-6ef070938802",
+          "name": "List all Views",
+          "request": {
+            "name": "List all Views",
+            "description": {
+              "content": "Returns an object containing a listing of all Views in the current database,\nregardless of their type.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "50ddf905-38bb-4b40-8fb3-91d6781930cc",
+              "name": "The list of Views.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": [\n    {\n      \"name\": \"coll\",\n      \"type\": \"search-alias\",\n      \"id\": \"string\",\n      \"globallyUniqueId\": \"string\"\n    },\n    {\n      \"name\": \"coll\",\n      \"type\": \"search-alias\",\n      \"id\": \"string\",\n      \"globallyUniqueId\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "62cd2165-9cf1-4b08-a191-c3b9c356d6e2",
+          "name": "Create an arangosearch View",
+          "request": {
+            "name": "Create an arangosearch View",
+            "description": {
+              "content": "Creates a new View with a given name and properties if it does not\nalready exist.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\",\n  \"primaryKeyCache\": \"<boolean>\",\n  \"primarySortCache\": \"<boolean>\",\n  \"primarySortCompression\": \"lz4\",\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "36693db7-0217-4dbc-a242-c0786b96e7ff",
+              "name": "The View has been created.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"arangosearch\",\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\",\n  \"primaryKeyCache\": \"<boolean>\",\n  \"primarySortCache\": \"<boolean>\",\n  \"primarySortCompression\": \"lz4\",\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"links\": {},\n  \"primarySort\": [\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    },\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    }\n  ],\n  \"primarySortCompression\": \"lz4\",\n  \"optimizeTopK\": [\n    \"string\",\n    \"string\"\n  ],\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": true,\n      \"compression\": \"none\"\n    },\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"cleanupIntervalStep\": 4210,\n  \"commitIntervalMsec\": 5108,\n  \"consolidationIntervalMsec\": 6633,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.9761540855175617,\n    \"minDeletionRatio\": 0.36786428567172413,\n    \"minScore\": 363,\n    \"segmentsBytesFloor\": 9295,\n    \"segmentsBytesMax\": 7770,\n    \"segmentsMax\": 6461,\n    \"segmentsMin\": 9273,\n    \"threshold\": 0.6548310270518505,\n    \"type\": \"bytes_accum\"\n  },\n  \"writebufferIdle\": 6573,\n  \"writebufferActive\": 9069,\n  \"writebufferSizeMax\": 7593,\n  \"id\": \"string\",\n  \"name\": \"coll\",\n  \"type\": \"arangosearch\",\n  \"globallyUniqueId\": \"string\",\n  \"primaryKeyCache\": true,\n  \"primarySortCache\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1db9f177-38b9-4f9e-a1b1-a77cf2a9627b",
+              "name": "The `name` or `type` attribute is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"arangosearch\",\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\",\n  \"primaryKeyCache\": \"<boolean>\",\n  \"primarySortCache\": \"<boolean>\",\n  \"primarySortCompression\": \"lz4\",\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "05c3d00f-ced9-4b4a-90c1-784b0e20774b",
+              "name": "A View called `name` already exists.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"arangosearch\",\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\",\n  \"primaryKeyCache\": \"<boolean>\",\n  \"primarySortCache\": \"<boolean>\",\n  \"primarySortCompression\": \"lz4\",\n  \"writebufferActive\": 0,\n  \"writebufferIdle\": 64,\n  \"writebufferSizeMax\": 33554432\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 409,\n  \"errorNum\": 8152,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "afc16ebc-83be-4caa-a989-bf346326d304",
+          "name": "Create a search-alias View",
+          "request": {
+            "name": "Create a search-alias View",
+            "description": {
+              "content": "Creates a new View with a given name and properties if it does not\nalready exist.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view"
+              ],
+              "hash": "searchalias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"<string>\",\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "be80d38b-2d6f-4dc8-ba60-0ba23b69d52b",
+              "name": "The View has been created.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"search-alias\",\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\",\n  \"type\": \"search-alias\",\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"indexes\": [\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    },\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e13c707-9aaf-4137-998d-878ed6983afa",
+              "name": "The `name` or `type` attribute or one of the `collection` or `index`\nattributes is missing or invalid.\nerror is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"search-alias\",\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "964b890a-81f0-4e02-8820-920de054b014",
+              "name": "A View called `name` already exists.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"type\": \"search-alias\",\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 409,\n  \"errorNum\": 8152,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "baa4e665-c587-479f-9c93-0d4ce300b544",
+          "name": "Drop a View",
+          "request": {
+            "name": "Drop a View",
+            "description": {
+              "content": "Deletes the View identified by `view-name`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View to drop.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "02c1e447-aa32-4b86-8d34-e8403717ac4a",
+              "name": "The View has been dropped successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to drop.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d4febb4-1141-46af-9db2-b2b79a2d14d3",
+              "name": "The `view-name` path parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to drop.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4d738394-6962-473e-84a7-f108cddcb8c1",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to drop.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8bdd28a1-50e6-47cd-b42d-ec793b6bdd7e",
+          "name": "Get information about a View",
+          "request": {
+            "name": "Get information about a View",
+            "description": {
+              "content": "Returns the basic information about a specific View.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fc6c1f4c-7374-4724-8a72-dc28e2fd7d90",
+              "name": "The basic information about the View.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"coll\",\n  \"type\": \"arangosearch\",\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71e5615a-6a26-4715-97e3-04cc1d6ab7b7",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "eb225936-e9f3-4ead-9f9a-8a7d39f51ca6",
+          "name": "Get information about a View",
+          "request": {
+            "name": "Get information about a View",
+            "description": {
+              "content": "Returns the basic information about a specific View.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                "{{view-name}}"
+              ],
+              "hash": "searchalias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b0cb5f75-2120-45b8-93c7-f75787c4357f",
+              "name": "The basic information about the View.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    "{{view-name}}"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"name\": \"coll\",\n  \"type\": \"search-alias\",\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "561db017-7446-4a3c-ba9e-c6a27bf500aa",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    "{{view-name}}"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "48413b51-f173-4a2e-ac18-e51443adbed8",
+          "name": "Get the properties of a View",
+          "request": {
+            "name": "Get the properties of a View",
+            "description": {
+              "content": "Returns an object containing the definition of the View identified by `view-name`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4c2b510c-500a-4dc0-95ec-db70fe2a8654",
+              "name": "An object with a full description of the specified View, including\n`arangosearch` View type-dependent properties.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"links\": {},\n  \"primarySort\": [\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    },\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    }\n  ],\n  \"primarySortCompression\": \"lz4\",\n  \"optimizeTopK\": [\n    \"string\",\n    \"string\"\n  ],\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": false,\n      \"compression\": \"none\"\n    },\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"cleanupIntervalStep\": 9437,\n  \"commitIntervalMsec\": 8033,\n  \"consolidationIntervalMsec\": 1605,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.25130382087120473,\n    \"minDeletionRatio\": 0.7578843053236136,\n    \"minScore\": 8455,\n    \"segmentsBytesFloor\": 5151,\n    \"segmentsBytesMax\": 1370,\n    \"segmentsMax\": 4378,\n    \"segmentsMin\": 4393,\n    \"threshold\": 0.48213380088216407,\n    \"type\": \"bytes_accum\"\n  },\n  \"writebufferIdle\": 2432,\n  \"writebufferActive\": 4268,\n  \"writebufferSizeMax\": 744,\n  \"id\": \"string\",\n  \"name\": \"coll\",\n  \"type\": \"arangosearch\",\n  \"globallyUniqueId\": \"string\",\n  \"primaryKeyCache\": true,\n  \"primarySortCache\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "13618fee-93ba-4514-b2a7-f846c8ba8523",
+              "name": "The `view-name` path parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c7d86b43-636e-48bc-93e9-de975570298f",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3f0d7d02-57d8-40c7-a1fe-1292f7f2d4de",
+          "name": "Update the properties of an arangosearch View",
+          "request": {
+            "name": "Update the properties of an arangosearch View",
+            "description": {
+              "content": "Partially changes the properties of a View by updating the specified attributes.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cleanupIntervalStep\": \"<integer>\",\n  \"commitIntervalMsec\": \"<integer>\",\n  \"consolidationIntervalMsec\": \"<integer>\",\n  \"consolidationPolicy\": {\n    \"type\": \"<string>\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "23590003-5f4c-4a12-b4b2-eac062937417",
+              "name": "The View has been updated successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cleanupIntervalStep\": \"<integer>\",\n  \"commitIntervalMsec\": \"<integer>\",\n  \"consolidationIntervalMsec\": \"<integer>\",\n  \"consolidationPolicy\": {\n    \"type\": \"<string>\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"links\": {},\n  \"primarySort\": [\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    },\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    }\n  ],\n  \"primarySortCompression\": \"lz4\",\n  \"optimizeTopK\": [\n    \"string\",\n    \"string\"\n  ],\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": true,\n      \"compression\": \"none\"\n    },\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"cleanupIntervalStep\": 4210,\n  \"commitIntervalMsec\": 5108,\n  \"consolidationIntervalMsec\": 6633,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.9761540855175617,\n    \"minDeletionRatio\": 0.36786428567172413,\n    \"minScore\": 363,\n    \"segmentsBytesFloor\": 9295,\n    \"segmentsBytesMax\": 7770,\n    \"segmentsMax\": 6461,\n    \"segmentsMin\": 9273,\n    \"threshold\": 0.6548310270518505,\n    \"type\": \"bytes_accum\"\n  },\n  \"writebufferIdle\": 6573,\n  \"writebufferActive\": 9069,\n  \"writebufferSizeMax\": 7593,\n  \"id\": \"string\",\n  \"name\": \"coll\",\n  \"type\": \"arangosearch\",\n  \"globallyUniqueId\": \"string\",\n  \"primaryKeyCache\": true,\n  \"primarySortCache\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7df3e79a-676f-41f8-a4b2-7afcd7e6155c",
+              "name": "The `view-name` path parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cleanupIntervalStep\": \"<integer>\",\n  \"commitIntervalMsec\": \"<integer>\",\n  \"consolidationIntervalMsec\": \"<integer>\",\n  \"consolidationPolicy\": {\n    \"type\": \"<string>\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec50b843-a617-48d0-a37d-6ad17b7d7d2e",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cleanupIntervalStep\": \"<integer>\",\n  \"commitIntervalMsec\": \"<integer>\",\n  \"consolidationIntervalMsec\": \"<integer>\",\n  \"consolidationPolicy\": {\n    \"type\": \"<string>\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4d4fb2fb-1417-4569-9b1d-ee34892faff8",
+          "name": "Replace the properties of an arangosearch View",
+          "request": {
+            "name": "Replace the properties of an arangosearch View",
+            "description": {
+              "content": "Changes all properties of a View by replacing them, except for immutable properties.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f0e83ba0-3640-4693-9d2d-2714c1dfffc0",
+              "name": "The View has been updated successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"links\": {},\n  \"primarySort\": [\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    },\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    }\n  ],\n  \"primarySortCompression\": \"lz4\",\n  \"optimizeTopK\": [\n    \"string\",\n    \"string\"\n  ],\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": true,\n      \"compression\": \"none\"\n    },\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"cleanupIntervalStep\": 4210,\n  \"commitIntervalMsec\": 5108,\n  \"consolidationIntervalMsec\": 6633,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.9761540855175617,\n    \"minDeletionRatio\": 0.36786428567172413,\n    \"minScore\": 363,\n    \"segmentsBytesFloor\": 9295,\n    \"segmentsBytesMax\": 7770,\n    \"segmentsMax\": 6461,\n    \"segmentsMin\": 9273,\n    \"threshold\": 0.6548310270518505,\n    \"type\": \"bytes_accum\"\n  },\n  \"writebufferIdle\": 6573,\n  \"writebufferActive\": 9069,\n  \"writebufferSizeMax\": 7593,\n  \"id\": \"string\",\n  \"name\": \"coll\",\n  \"type\": \"arangosearch\",\n  \"globallyUniqueId\": \"string\",\n  \"primaryKeyCache\": true,\n  \"primarySortCache\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2260a715-f9d0-4a21-8f9a-8416e1420929",
+              "name": "The `view-name` path parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b08afa2-5bb2-44be-96e5-9cee33aeec80",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cleanupIntervalStep\": 2,\n  \"commitIntervalMsec\": 1000,\n  \"consolidationIntervalMsec\": 5000,\n  \"consolidationPolicy\": {\n    \"type\": \"tier\",\n    \"maxSkewThreshold\": 0.4,\n    \"minDeletionRatio\": 0.5,\n    \"minScore\": 0,\n    \"segmentsBytesFloor\": 25165824,\n    \"segmentsBytesMax\": 8589934592,\n    \"segmentsMax\": 200,\n    \"segmentsMin\": 50,\n    \"threshold\": 0\n  },\n  \"links\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4f7d7e8a-0848-45b1-a98d-9d8fea4bdcc5",
+          "name": "Read properties of a View",
+          "request": {
+            "name": "Read properties of a View",
+            "description": {
+              "content": "Returns an object containing the definition of the View identified by `view-name`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "properties"
+              ],
+              "hash": "searchalias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9c962661-0c3a-464a-a252-277663239ccb",
+              "name": "An object with a full description of the specified View, including\n`search-alias` View type-dependent properties.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\",\n  \"type\": \"search-alias\",\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"indexes\": [\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    },\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bfcb0ddf-f4e0-4b3f-b06f-da8e0a1b90d8",
+              "name": "The `view-name` parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "339ec860-f911-4aa3-afbf-ff3598069d0b",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3f8bfb6e-ec15-48d0-864c-efa3fa43239c",
+          "name": "Update the properties of a search-alias View",
+          "request": {
+            "name": "Update the properties of a search-alias View",
+            "description": {
+              "content": "Updates the list of indexes of a `search-alias` View.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "properties"
+              ],
+              "hash": "searchalias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4ade85f5-09f7-4144-968e-f99c882feede",
+              "name": "The View has been updated successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\",\n  \"type\": \"string\",\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"indexes\": [\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    },\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "971e6767-8dfa-47e0-8751-1d6b1434041c",
+              "name": "The `view-name` parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d70bf592-8418-47ab-a25a-972cc2e26830",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\",\n      \"operation\": \"add\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8e0803a6-67b7-4490-9608-d69308642079",
+          "name": "Replace the properties of a search-alias View",
+          "request": {
+            "name": "Replace the properties of a search-alias View",
+            "description": {
+              "content": "Replaces the list of indexes of a `search-alias` View.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "properties"
+              ],
+              "hash": "searchalias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "21843525-c9db-4170-ba5c-0884e59568a9",
+              "name": "The View has been updated successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\",\n  \"type\": \"string\",\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"indexes\": [\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    },\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7721e708-9edf-4e8b-931b-c3bfbde71015",
+              "name": "The `view-name` parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1c153842-24df-4112-a53f-9a814d4ca851",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "properties"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indexes\": [\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    },\n    {\n      \"collection\": \"<string>\",\n      \"index\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f0007b97-7eaf-42e7-8d99-35750295e8e4",
+          "name": "Rename a View",
+          "request": {
+            "name": "Rename a View",
+            "description": {
+              "content": "Renames a View.\n\n> **INFO:**\nRenaming Views is not supported in cluster deployments.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "rename"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View to rename.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8c159246-6f12-4167-b2a0-6eb9c18cd80c",
+              "name": "The View has been renamed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "rename"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to rename.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"links\": {},\n  \"primarySort\": [\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    },\n    {\n      \"field\": \"string\",\n      \"asc\": false\n    }\n  ],\n  \"primarySortCompression\": \"lz4\",\n  \"optimizeTopK\": [\n    \"string\",\n    \"string\"\n  ],\n  \"storedValues\": [\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": true,\n      \"compression\": \"none\"\n    },\n    {\n      \"fields\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cache\": false,\n      \"compression\": \"lz4\"\n    }\n  ],\n  \"cleanupIntervalStep\": 4210,\n  \"commitIntervalMsec\": 5108,\n  \"consolidationIntervalMsec\": 6633,\n  \"consolidationPolicy\": {\n    \"maxSkewThreshold\": 0.9761540855175617,\n    \"minDeletionRatio\": 0.36786428567172413,\n    \"minScore\": 363,\n    \"segmentsBytesFloor\": 9295,\n    \"segmentsBytesMax\": 7770,\n    \"segmentsMax\": 6461,\n    \"segmentsMin\": 9273,\n    \"threshold\": 0.6548310270518505,\n    \"type\": \"bytes_accum\"\n  },\n  \"writebufferIdle\": 6573,\n  \"writebufferActive\": 9069,\n  \"writebufferSizeMax\": 7593,\n  \"id\": \"string\",\n  \"name\": \"coll\",\n  \"type\": \"arangosearch\",\n  \"globallyUniqueId\": \"string\",\n  \"primaryKeyCache\": true,\n  \"primarySortCache\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7e42cbbb-709b-4e48-a773-e054bcc7809c",
+              "name": "The `view-name` path parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "rename"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to rename.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1a83b9d0-3347-40ed-bd77-6e9e3f50b67d",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "rename"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to rename.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fbec9864-694a-4b38-af72-fb04f641fda9",
+          "name": "Rename a View",
+          "request": {
+            "name": "Rename a View",
+            "description": {
+              "content": "Renames a View.\n\n> **INFO:**\nRenaming Views is not supported in cluster deployments.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "view",
+                ":view-name",
+                "rename"
+              ],
+              "hash": "searchalias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "view-name",
+                  "description": "(Required) The name of the View to rename.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c10e20d5-e36b-4c06-b7c8-e1a0486efc32",
+              "name": "The View has been renamed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "rename"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to rename.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"name\": \"string\",\n  \"type\": \"string\",\n  \"id\": \"string\",\n  \"globallyUniqueId\": \"string\",\n  \"indexes\": [\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    },\n    {\n      \"collection\": \"string\",\n      \"index\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6907b19a-4c44-4ea0-9f4a-20e60931583b",
+              "name": "The `view-name` parameter is missing or invalid.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "rename"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to rename.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 318,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ae830554-6ff4-4d34-922f-18cea0404111",
+              "name": "A View called `view-name` could not be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "view",
+                    ":view-name",
+                    "rename"
+                  ],
+                  "hash": "searchalias",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "view-name",
+                      "description": "(Required) The name of the View to rename.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7678,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) The name of the View.\n",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<string>",
+      "key": "view-name"
+    }
+  ],
+  "info": {
+    "_postman_id": "9617fe30-9e8f-4588-93fe-b7fb837bb93c",
+    "name": "ArangoDB Core Views API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Manage Views to use ArangoSearch for information retrieval\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

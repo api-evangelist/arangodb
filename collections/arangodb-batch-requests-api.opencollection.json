@@ -1,0 +1,37 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Batch Requests API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Batch Requests",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Execute a batch request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/batch",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThe `/_api/batch` endpoint was deprecated in v3.8.0 and has been removed\nin v3.12.3.\n\n\nExecutes a batch request. A batch request can contain any number of\nother requests that can be sent to ArangoDB in isolation. The benefit of\nusing batch requests is that batching requests requires less client/server\nroundtrips than when sending isolated requests.\n\nAll parts of a batch request are executed serially on the server. The\nserver will return the results of all parts in a single respons"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

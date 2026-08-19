@@ -1,0 +1,147 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Security API
+  version: 3.12.10 (API v0)
+  description: Configure audit logging, encryption at rest and encryption in transit
+tags:
+- description: Configure audit logging, encryption at rest and encryption in transit
+  name: Security
+paths:
+  /_admin/server/encryption:
+    post:
+      description: 'Change the user-supplied encryption at rest key by sending a request without
+
+        payload to this endpoint. The file supplied via `--rocksdb.encryption-keyfolder`
+
+        will be reloaded and the internal encryption key will be re-encrypted with the
+
+        new user key.
+
+
+        This is a protected API and can only be executed with superuser rights.
+
+        This API is not available on Coordinator nodes.
+
+        '
+      operationId: rotateEncryptionAtRestKey
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The result object.
+
+                      '
+                    properties:
+                      encryption-keys:
+                        description: 'An array of objects with the SHA-256 hashes of the key secrets.
+
+                          Can be empty.
+
+                          '
+                        items:
+                          type: object
+                        type: array
+                    required:
+                    - encryption-keys
+                    type: object
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'This API will return HTTP 200 if everything is ok
+
+            '
+        '403':
+          description: 'This API will return HTTP 403 FORBIDDEN if it is not called with
+
+            superuser rights.
+
+            '
+        '404':
+          description: 'This API will return HTTP 404 in case encryption key rotation is disabled.
+
+            '
+      summary: Rotate the encryption at rest key
+      tags:
+      - Security
+  /_admin/server/tls:
+    post:
+      description: 'This API call triggers a reload of all the TLS data (server key, client-auth CA)
+
+        and then returns a summary. The JSON response is exactly as in the corresponding
+
+        GET request.
+
+
+        This is a protected API and can only be executed with superuser rights.
+
+        '
+      operationId: reloadServerTls
+      responses:
+        '200':
+          description: 'This API will return HTTP 200 if everything is ok
+
+            '
+        '403':
+          description: 'This API will return HTTP 403 Forbidden if it is not called with
+
+            superuser rights.
+
+            '
+      summary: Reload the TLS data
+      tags:
+      - Security
+  /_db/{database-name}/_admin/server/tls:
+    get:
+      description: "Return a summary of the TLS data. The JSON response will contain a field\n`result` with the following components:\n\n  - `keyfile`: Information about the key file.\n  - `clientCA`: Information about the Certificate Authority (CA) for\n    client certificate verification.\n\nIf server name indication (SNI) is used and multiple key files are\nconfigured for different server names, then there is an additional\nattribute `SNI`, which contains for each configured server name\nthe corresponding information about the key file for that server name.\n\nIn all cases the value of the attribute will be a JSON object, which\nhas a subset of the following attributes (whatever is appropriate):\n\n  - `sha256`: The value is a string with the SHA256 of the whole input\n    file.\n  - `certificates`: The value is a JSON array with the public\n    certificates in the chain in the file.\n  - `privateKeySha256`: In cases where there is a private key (`keyfile`\n    but not `clientCA`), this field is present and contains a\n    JSON string with the SHA256 of the private key.\n\nThis API requires authentication.\n"
+      operationId: getServerTls
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database. If the `--server.harden` startup option is enabled,
+
+          administrate access to the `_system` database is required.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'This API will return HTTP 200 if everything is ok
+
+            '
+      summary: Get the TLS data
+      tags:
+      - Security
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

@@ -1,0 +1,588 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Collections API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Collections",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "excludeSystem",
+                "value": "",
+                "type": "query",
+                "description": "Whether system collections should be excluded from the result.\n"
+              }
+            ]
+          },
+          "docs": "Returns basic information for all collections in the current database,\noptionally excluding system collections.\n"
+        },
+        {
+          "info": {
+            "name": "Create a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "waitForSyncReplication",
+                "value": "",
+                "type": "query",
+                "description": "The default is `true`, which means the server only reports success back to the\nclient when all replicas have created the collection. Set it to `false` if you want\nfaster server responses and don't care about full replication.\n"
+              },
+              {
+                "name": "enforceReplicationFactor",
+                "value": "",
+                "type": "query",
+                "description": "The default is `true`, which means the server checks if there are enough replicas\navailable at creation time and bail out otherwise. Set it to `false` to disable\nthis extra check.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new collection with a given name. The request must contain an\nobject with the following attributes.\n"
+        },
+        {
+          "info": {
+            "name": "Get the collection information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ]
+          },
+          "docs": "Returns the basic information about a specific collection.\n"
+        },
+        {
+          "info": {
+            "name": "Drop a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection to drop.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              },
+              {
+                "name": "isSystem",
+                "value": "",
+                "type": "query",
+                "description": "Whether the collection to drop is a system collection. This parameter\nmust be set to `true` in order to drop a system collection.\n"
+              }
+            ]
+          },
+          "docs": "Delete the collection identified by `collection-name` and all its documents.\n"
+        },
+        {
+          "info": {
+            "name": "Get the collection checksum",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/checksum",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              },
+              {
+                "name": "withRevisions",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include document revision ids in the checksum calculation.\n"
+              },
+              {
+                "name": "withData",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include document body data in the checksum calculation.\n"
+              }
+            ]
+          },
+          "docs": "Calculates a checksum of the meta-data (keys and optionally revision ids) and\noptionally the document data in the collection.\n\nThe checksum can be used to compare if two collections on different ArangoDB\ninstances contain the same contents. The current revision of the collection is\nreturned too so one can make sure the checksums are calculated for the same\nstate of data.\n\nBy default, the checksum is only calculated on the `_key` system attribute\nof the documents contained in the collection. For "
+        },
+        {
+          "info": {
+            "name": "Compact a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/compact",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "Name of the collection to compact\n"
+              }
+            ]
+          },
+          "docs": "Compacts the data of a collection in order to reclaim disk space.\nThe operation will compact the document and index data by rewriting the\nunderlying .sst files and only keeping the relevant entries.\n\nUnder normal circumstances, running a compact operation is not necessary, as\nthe collection data will eventually get compacted anyway. However, in some\nsituations, e.g. after running lots of update/replace or remove operations,\nthe disk data for a collection may contain a lot of outdated data for wh"
+        },
+        {
+          "info": {
+            "name": "Get the document count of a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/count",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ]
+          },
+          "docs": "Get the number of documents in a collection.\n"
+        },
+        {
+          "info": {
+            "name": "Get the collection statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/figures",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              },
+              {
+                "name": "details",
+                "value": "",
+                "type": "query",
+                "description": "Setting `details` to `true` will return extended storage engine-specific\ndetails to the figures. The details are intended for debugging ArangoDB itself\nand their format is subject to change. By default, `details` is set to `false`,\nso no details are returned and the behavior is identical to previous versions\nof ArangoDB.\nPlease note that requesting `details` may cause additional load and thus have\nan impact on performance.\n"
+              }
+            ]
+          },
+          "docs": "Get the number of documents and additional statistical information\nabout the collection.\n"
+        },
+        {
+          "info": {
+            "name": "Load a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/load",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThe load function is deprecated from version 3.8.0 onwards and is a no-op\nfrom version 3.9.0 onwards. It should no longer be used and is removed\nin ArangoDB v4.0.\n\n\nSince ArangoDB version 3.9.0 this API does nothing. Previously, it used to\nload a collection into memory.\n"
+        },
+        {
+          "info": {
+            "name": "Load collection indexes into memory",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/loadIndexesIntoMemory",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ]
+          },
+          "docs": "You can call this endpoint to try to cache this collection's index entries in\nthe main memory. Index lookups served from the memory cache can be much faster\nthan lookups not stored in the cache, resulting in a performance boost.\n\nThe endpoint iterates over suitable indexes of the collection and stores the\nindexed values (not the entire document data) in memory. This is implemented for\nedge indexes only.\n\nThe endpoint returns as soon as the index warmup has been scheduled. The index\nwarmup may st"
+        },
+        {
+          "info": {
+            "name": "Get the properties of a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ]
+          },
+          "docs": "Returns all properties of the specified collection.\n"
+        },
+        {
+          "info": {
+            "name": "Change the properties of a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Changes the properties of a collection. Only the provided attributes are\nupdated. Collection properties **cannot be changed** once a collection is\ncreated except for the listed properties, as well as the collection name via\nthe rename endpoint (but not in clusters).\n"
+        },
+        {
+          "info": {
+            "name": "Recalculate the document count of a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/recalculateCount",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n"
+              }
+            ]
+          },
+          "docs": "Recalculates the document count of a collection, if it ever becomes inconsistent.\n"
+        },
+        {
+          "info": {
+            "name": "Rename a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/rename",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection to rename.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Renames a collection.\n\n> **INFO:**\nRenaming collections is not supported in cluster deployments.\n\n\nIf renaming the collection succeeds, then the collection is also renamed in\nall graph definitions inside the `_graphs` collection in the current database.\n"
+        },
+        {
+          "info": {
+            "name": "Get the responsible shard for a document",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/responsibleShard",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the ID of the shard that is responsible for the given document\n(if the document exists) or that would be responsible if such document\nexisted.\n\nThe request must body must contain a JSON document with at least the\ncollection's shard key attributes set to some values.\n\nThe response is a JSON object with a `shardId` attribute, which will\ncontain the ID of the responsible shard.\n\n> **INFO:**\nThis method is only available in cluster deployments on Coordinators.\n"
+        },
+        {
+          "info": {
+            "name": "Get the collection revision ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/revision",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ]
+          },
+          "docs": "The response contains the collection's latest used revision ID.\nThe revision ID is a server-generated string that clients can use to\ncheck whether data in a collection has changed since the last revision check.\n"
+        },
+        {
+          "info": {
+            "name": "Get the shard IDs of a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/shards",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n"
+              },
+              {
+                "name": "details",
+                "value": "",
+                "type": "query",
+                "description": "If set to true, the return value also contains the responsible servers for the collections' shards.\n"
+              }
+            ]
+          },
+          "docs": "The response contains a list of the collection's shard IDs.\n\nIf the `details` parameter is set to `true`, it returns an object instead\nof a list, with the shard IDs as object attribute keys, and an array with\nthe responsible servers for each shard mapped to them as attribute values.\nThe first element of each array is the leader shard.\n\n> **INFO:**\nThis method is only available in cluster deployments on Coordinators.\n"
+        },
+        {
+          "info": {
+            "name": "Truncate a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/truncate",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the data is synchronized to disk before returning from the\ntruncate operation.\n"
+              },
+              {
+                "name": "compact",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, the storage engine is told to start a compaction\nin order to free up disk space. This can be resource intensive. If the only\nintention is to start over with an empty collection, specify `false`.\n"
+              }
+            ]
+          },
+          "docs": "Removes all documents from the collection, but leaves the indexes intact.\n"
+        },
+        {
+          "info": {
+            "name": "Unload a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/collection/:collection-name/unload",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection.\n\n> **WARNING:**\nAccessing collections by their numeric ID is deprecated from version 3.4.0 on.\nYou should reference them via their names instead.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThe unload function is deprecated from version 3.8.0 onwards and is a no-op\nfrom version 3.9.0 onwards. It should no longer be used and is removed\nin ArangoDB v4.0.\n\n\nSince ArangoDB version 3.9.0 this API does nothing. Previously it used to\nunload a collection from memory, while preserving all documents.\n"
+        },
+        {
+          "info": {
+            "name": "Get the available key generators",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/key-generators",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the available key generators for collections.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

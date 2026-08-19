@@ -1,0 +1,4533 @@
+{
+  "item": [
+    {
+      "id": "a135a8e6-5821-4a15-9d27-c31fe456b75b",
+      "name": "Queries",
+      "description": {
+        "content": "Run, process, and manage AQL queries",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bdd6c9bc-2738-4481-b833-7d0f19d1f279",
+          "name": "List the registered user-defined AQL functions",
+          "request": {
+            "name": "List the registered user-defined AQL functions",
+            "description": {
+              "content": "Returns all registered user-defined functions (UDFs) for the use in AQL of the\ncurrent database.\n\nThe call returns a JSON array with status codes and all user functions found under `result`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "aqlfunction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "namespace",
+                  "value": "<string>",
+                  "description": "Returns all registered AQL user functions from the specified namespace.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "758bb48a-1d85-4656-8092-459f4559ca16",
+              "name": "on success *HTTP 200* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "namespace",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": [\n    {\n      \"name\": \"string\",\n      \"code\": \"string\",\n      \"isDeterministic\": false\n    },\n    {\n      \"name\": \"string\",\n      \"code\": \"string\",\n      \"isDeterministic\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5eab2a87-8e52-416f-b933-46f648a1845e",
+              "name": "If the user function name is malformed, the server will respond with *HTTP 400*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "namespace",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3f780c1b-a2da-4fb0-800b-74e4fb39af15",
+          "name": "Create a user-defined AQL function",
+          "request": {
+            "name": "Create a user-defined AQL function",
+            "description": {
+              "content": "Registers a user-defined function (UDF) written in JavaScript for the use in\nAQL queries in the current database.\n\nIn case of success, HTTP 200 is returned.\nIf the function isn't valid etc. HTTP 400 including a detailed error message will be returned.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "aqlfunction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"code\": \"<string>\",\n  \"isDeterministic\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cb0e87e4-721c-4647-bcd6-367ebc6f88fc",
+              "name": "If the function already existed and was replaced by the\ncall, the server will respond with *HTTP 200*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"code\": \"<string>\",\n  \"isDeterministic\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"isNewlyCreated\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c757f2e7-500a-4d63-a68d-ab5c226bfbb6",
+              "name": "If the function can be registered by the server, the server will respond with\n*HTTP 201*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"code\": \"<string>\",\n  \"isDeterministic\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 201,\n  \"isNewlyCreated\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "24075ef8-089f-470e-8564-28b775c0de09",
+              "name": "If the JSON representation is malformed or mandatory data is missing from the\nrequest, the server will respond with *HTTP 400*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"code\": \"<string>\",\n  \"isDeterministic\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "58d209e3-ffd2-49c6-9c4a-fa2fc5bdbaa2",
+          "name": "Remove a user-defined AQL function",
+          "request": {
+            "name": "Remove a user-defined AQL function",
+            "description": {
+              "content": "Deletes an existing user-defined function (UDF) or function group identified by\n`name` from the current database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "aqlfunction",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "group",
+                  "value": "false",
+                  "description": "Possible values:\n- `true`: The function name provided in `name` is treated as\n  a namespace prefix, and all functions in the specified namespace will be deleted.\n  The returned number of deleted functions may become 0 if none matches the string.\n- `false`: The function name provided in `name` must be fully\n  qualified, including any namespaces. If none matches the `name`, HTTP 404 is returned.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) the name of the AQL user function.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d55d8df6-3466-44ac-9cb4-0167b3eee01d",
+              "name": "If the function can be removed by the server, the server will respond with\n*HTTP 200*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "group",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) the name of the AQL user function.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"deletedCount\": 5418\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8619b2d3-3ef6-4661-b0a1-4083945115e8",
+              "name": "If the user function name is malformed, the server will respond with *HTTP 400*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "group",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) the name of the AQL user function.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "87cb3040-7e04-4ad0-9c7c-a1a34a74ed11",
+              "name": "If the specified user function does not exist, the server will respond with *HTTP 404*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "aqlfunction",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "group",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) the name of the AQL user function.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 9213,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c7e7734c-0156-42f9-8028-1a763e4af865",
+          "name": "Create a cursor",
+          "request": {
+            "name": "Create a cursor",
+            "description": {
+              "content": "Submits an AQL query for execution in the current database. The server returns\na result batch and may indicate that further batches need to be fetched using\na cursor identifier.\n\nThe query details include the query string plus optional query options and\nbind parameters. These values need to be passed in a JSON representation in\nthe body of the POST request.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "cursor"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThe header is ignored if this operation is part of a Stream Transaction\n(`x-arango-trx-id` header). The header set when creating the transaction decides\nabout dirty reads for the entire transaction, not the individual read operations.\n",
+                "key": "x-arango-allow-dirty-read",
+                "value": "<boolean>"
+              },
+              {
+                "disabled": false,
+                "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                "key": "x-arango-trx-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"batchSize\": 1000,\n  \"bindVars\": \"<object>\",\n  \"count\": false,\n  \"memoryLimit\": \"<integer>\",\n  \"options\": {\n    \"allowDirtyReads\": false,\n    \"allowRetry\": false,\n    \"cache\": \"<boolean>\",\n    \"failOnWarning\": \"<boolean>\",\n    \"fillBlockCache\": true,\n    \"fullCount\": false,\n    \"intermediateCommitCount\": \"<integer>\",\n    \"intermediateCommitSize\": \"<integer>\",\n    \"maxDNFConditionMembers\": \"<integer>\",\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxRuntime\": \"<number>\",\n    \"maxTransactionSize\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"satelliteSyncWait\": 60,\n    \"skipInaccessibleCollections\": false,\n    \"spillOverThresholdMemoryUsage\": \"<integer>\",\n    \"spillOverThresholdNumRows\": \"<integer>\",\n    \"stream\": false,\n    \"usePlanCache\": false\n  },\n  \"ttl\": \"<number>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fa8829b9-ebe6-4358-a49d-d78fa4824c91",
+              "name": "is returned if the result set can be created by the server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThe header is ignored if this operation is part of a Stream Transaction\n(`x-arango-trx-id` header). The header set when creating the transaction decides\nabout dirty reads for the entire transaction, not the individual read operations.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"batchSize\": 1000,\n  \"bindVars\": \"<object>\",\n  \"count\": false,\n  \"memoryLimit\": \"<integer>\",\n  \"options\": {\n    \"allowDirtyReads\": false,\n    \"allowRetry\": false,\n    \"cache\": \"<boolean>\",\n    \"failOnWarning\": \"<boolean>\",\n    \"fillBlockCache\": true,\n    \"fullCount\": false,\n    \"intermediateCommitCount\": \"<integer>\",\n    \"intermediateCommitSize\": \"<integer>\",\n    \"maxDNFConditionMembers\": \"<integer>\",\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxRuntime\": \"<number>\",\n    \"maxTransactionSize\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"satelliteSyncWait\": 60,\n    \"skipInaccessibleCollections\": false,\n    \"spillOverThresholdMemoryUsage\": \"<integer>\",\n    \"spillOverThresholdNumRows\": \"<integer>\",\n    \"stream\": false,\n    \"usePlanCache\": false\n  },\n  \"ttl\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 201,\n  \"hasMore\": false,\n  \"cached\": false,\n  \"count\": 6698,\n  \"extra\": {\n    \"warnings\": [\n      {\n        \"code\": 7896,\n        \"message\": \"string\"\n      },\n      {\n        \"code\": 3295,\n        \"message\": \"string\"\n      }\n    ],\n    \"stats\": {\n      \"writesExecuted\": 3276,\n      \"writesIgnored\": 8858,\n      \"documentLookups\": 3817,\n      \"seeks\": 5842,\n      \"scannedFull\": 5163,\n      \"scannedIndex\": 6690,\n      \"searchParallelism\": 5134,\n      \"cursorsCreated\": 9057,\n      \"cursorsRearmed\": 1930,\n      \"cacheHits\": 7214,\n      \"cacheMisses\": 8695,\n      \"filtered\": 675,\n      \"httpRequests\": 7749,\n      \"executionTime\": 1022.0605834334929,\n      \"peakMemoryUsage\": 9386,\n      \"intermediateCommits\": 1242,\n      \"fullCount\": 1774,\n      \"nodes\": [\n        {\n          \"id\": 7865,\n          \"calls\": 2050,\n          \"items\": 9943,\n          \"runtime\": 5490.461084062096\n        },\n        {\n          \"id\": 4552,\n          \"calls\": 5523,\n          \"items\": 7034,\n          \"runtime\": 4697.865560826892\n        }\n      ]\n    },\n    \"plan\": {\n      \"nodes\": [],\n      \"rules\": [\n        \"string\",\n        \"string\"\n      ],\n      \"collections\": [\n        {\n          \"name\": \"string\",\n          \"type\": \"read\"\n        },\n        {\n          \"name\": \"string\",\n          \"type\": \"write\"\n        }\n      ],\n      \"variables\": [],\n      \"estimatedCost\": 9920.437885353222,\n      \"estimatedNrItems\": 4820,\n      \"isModificationQuery\": false\n    },\n    \"profile\": {\n      \"initializing\": 1575.31297645515,\n      \"parsing\": 5701.586348298395,\n      \"optimizing ast\": 6189.031284113939,\n      \"loading collections\": 3142.7408947678737,\n      \"instantiating plan\": 6472.761455120455,\n      \"optimizing plan\": 1905.2799087756666,\n      \"instantiating executors\": 4242.205147835198,\n      \"executing\": 8964.837128706404,\n      \"finalizing\": 5750.589849040959\n    }\n  },\n  \"id\": \"string\",\n  \"nextBatchId\": \"string\",\n  \"planCacheKey\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "64b6f560-f5bd-4f7a-9d33-df42cc463dba",
+              "name": "The JSON representation is malformed, the query specification is\nmissing from the request, or the query is invalid.\n\nThe body of the response contains a JSON object with additional error\ndetails.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThe header is ignored if this operation is part of a Stream Transaction\n(`x-arango-trx-id` header). The header set when creating the transaction decides\nabout dirty reads for the entire transaction, not the individual read operations.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"batchSize\": 1000,\n  \"bindVars\": \"<object>\",\n  \"count\": false,\n  \"memoryLimit\": \"<integer>\",\n  \"options\": {\n    \"allowDirtyReads\": false,\n    \"allowRetry\": false,\n    \"cache\": \"<boolean>\",\n    \"failOnWarning\": \"<boolean>\",\n    \"fillBlockCache\": true,\n    \"fullCount\": false,\n    \"intermediateCommitCount\": \"<integer>\",\n    \"intermediateCommitSize\": \"<integer>\",\n    \"maxDNFConditionMembers\": \"<integer>\",\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxRuntime\": \"<number>\",\n    \"maxTransactionSize\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"satelliteSyncWait\": 60,\n    \"skipInaccessibleCollections\": false,\n    \"spillOverThresholdMemoryUsage\": \"<integer>\",\n    \"spillOverThresholdNumRows\": \"<integer>\",\n    \"stream\": false,\n    \"usePlanCache\": false\n  },\n  \"ttl\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 8530,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0dbfa84e-b11a-4920-af37-d078308804ca",
+              "name": "A non-existing collection is accessed in the query.\n\nThis error also occurs if you try to run this operation as part of a\nStream Transaction but the transaction ID specified in the\n`x-arango-trx-id` header is unknown to the server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThe header is ignored if this operation is part of a Stream Transaction\n(`x-arango-trx-id` header). The header set when creating the transaction decides\nabout dirty reads for the entire transaction, not the individual read operations.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"batchSize\": 1000,\n  \"bindVars\": \"<object>\",\n  \"count\": false,\n  \"memoryLimit\": \"<integer>\",\n  \"options\": {\n    \"allowDirtyReads\": false,\n    \"allowRetry\": false,\n    \"cache\": \"<boolean>\",\n    \"failOnWarning\": \"<boolean>\",\n    \"fillBlockCache\": true,\n    \"fullCount\": false,\n    \"intermediateCommitCount\": \"<integer>\",\n    \"intermediateCommitSize\": \"<integer>\",\n    \"maxDNFConditionMembers\": \"<integer>\",\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxRuntime\": \"<number>\",\n    \"maxTransactionSize\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"satelliteSyncWait\": 60,\n    \"skipInaccessibleCollections\": false,\n    \"spillOverThresholdMemoryUsage\": \"<integer>\",\n    \"spillOverThresholdNumRows\": \"<integer>\",\n    \"stream\": false,\n    \"usePlanCache\": false\n  },\n  \"ttl\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "053f2467-2a8d-49dc-9388-38c3c2f738ca",
+              "name": "An unsupported HTTP method is used.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThe header is ignored if this operation is part of a Stream Transaction\n(`x-arango-trx-id` header). The header set when creating the transaction decides\nabout dirty reads for the entire transaction, not the individual read operations.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"batchSize\": 1000,\n  \"bindVars\": \"<object>\",\n  \"count\": false,\n  \"memoryLimit\": \"<integer>\",\n  \"options\": {\n    \"allowDirtyReads\": false,\n    \"allowRetry\": false,\n    \"cache\": \"<boolean>\",\n    \"failOnWarning\": \"<boolean>\",\n    \"fillBlockCache\": true,\n    \"fullCount\": false,\n    \"intermediateCommitCount\": \"<integer>\",\n    \"intermediateCommitSize\": \"<integer>\",\n    \"maxDNFConditionMembers\": \"<integer>\",\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxRuntime\": \"<number>\",\n    \"maxTransactionSize\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"satelliteSyncWait\": 60,\n    \"skipInaccessibleCollections\": false,\n    \"spillOverThresholdMemoryUsage\": \"<integer>\",\n    \"spillOverThresholdNumRows\": \"<integer>\",\n    \"stream\": false,\n    \"usePlanCache\": false\n  },\n  \"ttl\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b83a6482-bc13-4228-831d-935c8e9b6cf7",
+              "name": "A server which processes the query or the leader of a shard which is used\nin the query stops responding, but the connection has not been closed.\n\nThis error also occurs if you try to run this operation as part of a\nStream Transaction that has just been canceled or timed out.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThe header is ignored if this operation is part of a Stream Transaction\n(`x-arango-trx-id` header). The header set when creating the transaction decides\nabout dirty reads for the entire transaction, not the individual read operations.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"batchSize\": 1000,\n  \"bindVars\": \"<object>\",\n  \"count\": false,\n  \"memoryLimit\": \"<integer>\",\n  \"options\": {\n    \"allowDirtyReads\": false,\n    \"allowRetry\": false,\n    \"cache\": \"<boolean>\",\n    \"failOnWarning\": \"<boolean>\",\n    \"fillBlockCache\": true,\n    \"fullCount\": false,\n    \"intermediateCommitCount\": \"<integer>\",\n    \"intermediateCommitSize\": \"<integer>\",\n    \"maxDNFConditionMembers\": \"<integer>\",\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxRuntime\": \"<number>\",\n    \"maxTransactionSize\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"satelliteSyncWait\": 60,\n    \"skipInaccessibleCollections\": false,\n    \"spillOverThresholdMemoryUsage\": \"<integer>\",\n    \"spillOverThresholdNumRows\": \"<integer>\",\n    \"stream\": false,\n    \"usePlanCache\": false\n  },\n  \"ttl\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Gone",
+              "code": 410,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7d5809dd-432d-4832-9104-ee80eefb4e10",
+              "name": "A server which processes the query or the leader of a shard which is used\nin the query is down, either for going through a restart, a failure, or\nconnectivity issues.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThe header is ignored if this operation is part of a Stream Transaction\n(`x-arango-trx-id` header). The header set when creating the transaction decides\nabout dirty reads for the entire transaction, not the individual read operations.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "To make this operation a part of a Stream Transaction, set this header to the\ntransaction ID returned by the `POST /_api/transaction/begin` call.\n",
+                    "key": "x-arango-trx-id",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"batchSize\": 1000,\n  \"bindVars\": \"<object>\",\n  \"count\": false,\n  \"memoryLimit\": \"<integer>\",\n  \"options\": {\n    \"allowDirtyReads\": false,\n    \"allowRetry\": false,\n    \"cache\": \"<boolean>\",\n    \"failOnWarning\": \"<boolean>\",\n    \"fillBlockCache\": true,\n    \"fullCount\": false,\n    \"intermediateCommitCount\": \"<integer>\",\n    \"intermediateCommitSize\": \"<integer>\",\n    \"maxDNFConditionMembers\": \"<integer>\",\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxRuntime\": \"<number>\",\n    \"maxTransactionSize\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"satelliteSyncWait\": 60,\n    \"skipInaccessibleCollections\": false,\n    \"spillOverThresholdMemoryUsage\": \"<integer>\",\n    \"spillOverThresholdNumRows\": \"<integer>\",\n    \"stream\": false,\n    \"usePlanCache\": false\n  },\n  \"ttl\": \"<number>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7ebb495e-9b26-48cf-8aa9-f5f3fc4b72ba",
+          "name": "Delete a cursor",
+          "request": {
+            "name": "Delete a cursor",
+            "description": {
+              "content": "Deletes the cursor and frees the resources associated with it.\n\nThe cursor will automatically be destroyed on the server when the client has\nretrieved all documents from it. The client can also explicitly destroy the\ncursor at any earlier time using an HTTP DELETE request. The cursor identifier must\nbe included as part of the URL.\n\nNote: the server will also destroy abandoned cursors automatically after a\ncertain server-controlled timeout to avoid resource leakage.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "cursor",
+                ":cursor-identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cursor-identifier",
+                  "description": "(Required) The identifier of the cursor\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e14b6374-6954-4792-817b-e9f847ef7222",
+              "name": "The server is aware of the cursor.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The identifier of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "31f1c284-24c1-48f7-9731-671a4ea1d25e",
+              "name": "The server is not aware of the cursor. This is also\nreturned if a cursor is used after it has been destroyed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The identifier of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f5f8b10a-5155-4393-adfa-f113cb200b10",
+          "name": "Read the next batch from a cursor",
+          "request": {
+            "name": "Read the next batch from a cursor",
+            "description": {
+              "content": "If the cursor is still alive, returns an object with the next query result batch.\n\nIf the cursor is not fully consumed, the time-to-live for the cursor\nis renewed by this API call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "cursor",
+                ":cursor-identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cursor-identifier",
+                  "description": "(Required) The name of the cursor\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "62255ff4-ea85-475f-9d36-36d89c63ab42",
+              "name": "Successfully fetched the batch.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"hasMore\": true,\n  \"cached\": true,\n  \"count\": 8398,\n  \"extra\": {\n    \"warnings\": [\n      {\n        \"code\": 3175,\n        \"message\": \"string\"\n      },\n      {\n        \"code\": 5292,\n        \"message\": \"string\"\n      }\n    ],\n    \"stats\": {\n      \"writesExecuted\": 9708,\n      \"writesIgnored\": 3763,\n      \"documentLookups\": 2708,\n      \"seeks\": 1755,\n      \"scannedFull\": 2047,\n      \"scannedIndex\": 1048,\n      \"searchParallelism\": 3446,\n      \"cursorsCreated\": 3380,\n      \"cursorsRearmed\": 1717,\n      \"cacheHits\": 5587,\n      \"cacheMisses\": 6178,\n      \"filtered\": 8170,\n      \"httpRequests\": 9069,\n      \"executionTime\": 9980.027609315479,\n      \"peakMemoryUsage\": 4769,\n      \"intermediateCommits\": 7458,\n      \"fullCount\": 1229,\n      \"nodes\": [\n        {\n          \"id\": 676,\n          \"calls\": 3568,\n          \"items\": 6531,\n          \"runtime\": 5127.659465083224\n        },\n        {\n          \"id\": 8339,\n          \"calls\": 6351,\n          \"items\": 262,\n          \"runtime\": 6505.273258105727\n        }\n      ]\n    },\n    \"plan\": {\n      \"nodes\": [],\n      \"rules\": [\n        \"string\",\n        \"string\"\n      ],\n      \"collections\": [\n        {\n          \"name\": \"string\",\n          \"type\": \"exclusive\"\n        },\n        {\n          \"name\": \"string\",\n          \"type\": \"write\"\n        }\n      ],\n      \"variables\": [],\n      \"estimatedCost\": 1093.490614143282,\n      \"estimatedNrItems\": 3064,\n      \"isModificationQuery\": false\n    },\n    \"profile\": {\n      \"initializing\": 761.4065619205035,\n      \"parsing\": 1554.709339227317,\n      \"optimizing ast\": 1616.7150827246678,\n      \"loading collections\": 5587.553730610887,\n      \"instantiating plan\": 3659.7751151405955,\n      \"optimizing plan\": 3336.277335351564,\n      \"instantiating executors\": 192.97067698353376,\n      \"executing\": 1022.8652336813249,\n      \"finalizing\": 9755.166308127453\n    }\n  },\n  \"id\": \"string\",\n  \"nextBatchId\": \"string\",\n  \"planCacheKey\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5ac38a77-85c3-433f-9c46-4748ccdbb602",
+              "name": "The cursor identifier is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "709f47c4-39ac-4021-802f-7ccf1d838d0b",
+              "name": "A cursor with the specified identifier cannot found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e6e85d06-5ec2-49c6-993e-e59d70c81540",
+              "name": "A server which processes the query or the leader of a shard which is\nused in the query stops responding, but the connection has not been closed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Gone",
+              "code": 410,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f5e4bca0-73c4-4792-9093-a5b2a72bff5a",
+              "name": "A server which processes the query or the leader of a shard which is used\nin the query is down, either for going through a restart, a failure,\nor connectivity issues.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "518564d0-1a88-49f1-98b5-55813273d54b",
+          "name": "Read the next batch from a cursor (deprecated)",
+          "request": {
+            "name": "Read the next batch from a cursor (deprecated)",
+            "description": {
+              "content": "> **WARNING:**\nThis endpoint is deprecated in favor its functionally equivalent POST counterpart.\n\n\nIf the cursor is still alive, returns an object with the following\nattributes:\n\n- `id`: a `cursor-identifier`\n- `result`: a list of documents for the current batch\n- `hasMore`: `false` if this was the last batch\n- `count`: if present the total number of elements\n- `code`: an HTTP status code\n- `error`: a boolean flag to indicate whether an error occurred\n- `errorNum`: a server error number (if `error` is `true`)\n- `errorMessage`: a descriptive error message (if `error` is `true`)\n- `extra`: an object with additional information about the query result, with\n  the nested objects `stats` and `warnings`. Only delivered as part of the last\n  batch in case of a cursor with the `stream` option enabled.\n\nNote that even if `hasMore` returns `true`, the next call might\nstill return no documents. If, however, `hasMore` is `false`, then\nthe cursor is exhausted.  Once the `hasMore` attribute has a value of\n`false`, the client can stop.\n\nIf the cursor is not fully consumed, the time-to-live for the cursor\nis renewed by this API call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "cursor",
+                ":cursor-identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cursor-identifier",
+                  "description": "(Required) The name of the cursor\n"
+                }
+              ]
+            },
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6fe37fc3-3861-4fdd-8812-ec038b5730c5",
+              "name": "Successfully fetched the batch.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "caf9f85b-12f2-49c4-90a7-a85174bc31b8",
+              "name": "The cursor identifier is missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9af155f4-bf3f-4756-bfd3-b6625c491bf1",
+              "name": "A cursor with the specified identifier cannot be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1f57f2d9-e391-4f8a-b164-04a567164f6a",
+              "name": "A server which processes the query or the leader of a shard which is\nused in the query stops responding, but the connection has not been closed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Gone",
+              "code": 410,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f75c1ae5-04f0-4b5f-83fd-9dda04557090",
+              "name": "A server which processes the query or the leader of a shard which is used\nin the query is down, either for going through a restart, a failure,\nor connectivity issues.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The name of the cursor\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4201db7d-8f08-49c7-acc8-d31c3b0fbbc0",
+          "name": "Read a batch from the cursor again",
+          "request": {
+            "name": "Read a batch from the cursor again",
+            "description": {
+              "content": "You can use this endpoint to retry fetching the latest batch from a cursor.\nThe endpoint requires the `allowRetry` query option to be enabled for the cursor.\n\nCalling this endpoint with the last returned batch identifier returns the\nquery results for that same batch again. This does not advance the cursor.\nClient applications can use this to re-transfer a batch once more in case of\ntransfer errors.\n\nYou can also call this endpoint with the next batch identifier, i.e. the value\nreturned in the `nextBatchId` attribute of a previous request. This advances the\ncursor and returns the results of the next batch.\n\nFrom v3.11.1 onward, you may use this endpoint even if the `allowRetry`\nattribute is `false` to fetch the next batch, but you cannot request a batch\nagain unless you set it to `true`.\n\nNote that it is only supported to query the last returned batch identifier or\nthe directly following batch identifier. The latter is only supported if there\nare more results in the cursor (i.e. `hasMore` is `true` in the latest batch).\n\nNote that when the last batch has been consumed successfully by a client\napplication, it should explicitly delete the cursor to inform the server that it\nsuccessfully received and processed the batch so that the server can free up\nresources.\n\nThe time-to-live for the cursor is renewed by this API call.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "cursor",
+                ":cursor-identifier",
+                ":batch-identifier"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cursor-identifier",
+                  "description": "(Required) The ID of the cursor.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "batch-identifier",
+                  "description": "(Required) The ID of the batch. The first batch has an ID of `1` and the value is\nincremented by 1 with every batch. You can only request the latest batch again\n(or the next batch). Earlier batches are not kept on the server-side.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d0fb2222-7d1a-4b11-8e43-7a91b2f874c0",
+              "name": "The server responds with *HTTP 200* in case of success.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier",
+                    ":batch-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The ID of the cursor.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch-identifier",
+                      "description": "(Required) The ID of the batch. The first batch has an ID of `1` and the value is\nincremented by 1 with every batch. You can only request the latest batch again\n(or the next batch). Earlier batches are not kept on the server-side.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"hasMore\": true,\n  \"cached\": true,\n  \"count\": 8398,\n  \"extra\": {\n    \"warnings\": [\n      {\n        \"code\": 3175,\n        \"message\": \"string\"\n      },\n      {\n        \"code\": 5292,\n        \"message\": \"string\"\n      }\n    ],\n    \"stats\": {\n      \"writesExecuted\": 9708,\n      \"writesIgnored\": 3763,\n      \"documentLookups\": 2708,\n      \"seeks\": 1755,\n      \"scannedFull\": 2047,\n      \"scannedIndex\": 1048,\n      \"searchParallelism\": 3446,\n      \"cursorsCreated\": 3380,\n      \"cursorsRearmed\": 1717,\n      \"cacheHits\": 5587,\n      \"cacheMisses\": 6178,\n      \"filtered\": 8170,\n      \"httpRequests\": 9069,\n      \"executionTime\": 9980.027609315479,\n      \"peakMemoryUsage\": 4769,\n      \"intermediateCommits\": 7458,\n      \"fullCount\": 1229,\n      \"nodes\": [\n        {\n          \"id\": 676,\n          \"calls\": 3568,\n          \"items\": 6531,\n          \"runtime\": 5127.659465083224\n        },\n        {\n          \"id\": 8339,\n          \"calls\": 6351,\n          \"items\": 262,\n          \"runtime\": 6505.273258105727\n        }\n      ]\n    },\n    \"plan\": {\n      \"nodes\": [],\n      \"rules\": [\n        \"string\",\n        \"string\"\n      ],\n      \"collections\": [\n        {\n          \"name\": \"string\",\n          \"type\": \"exclusive\"\n        },\n        {\n          \"name\": \"string\",\n          \"type\": \"write\"\n        }\n      ],\n      \"variables\": [],\n      \"estimatedCost\": 1093.490614143282,\n      \"estimatedNrItems\": 3064,\n      \"isModificationQuery\": false\n    },\n    \"profile\": {\n      \"initializing\": 761.4065619205035,\n      \"parsing\": 1554.709339227317,\n      \"optimizing ast\": 1616.7150827246678,\n      \"loading collections\": 5587.553730610887,\n      \"instantiating plan\": 3659.7751151405955,\n      \"optimizing plan\": 3336.277335351564,\n      \"instantiating executors\": 192.97067698353376,\n      \"executing\": 1022.8652336813249,\n      \"finalizing\": 9755.166308127453\n    }\n  },\n  \"id\": \"string\",\n  \"nextBatchId\": \"string\",\n  \"planCacheKey\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "68f2d159-b7e1-492b-8f32-1930432746c2",
+              "name": "The cursor and the batch identifier are missing.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier",
+                    ":batch-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The ID of the cursor.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch-identifier",
+                      "description": "(Required) The ID of the batch. The first batch has an ID of `1` and the value is\nincremented by 1 with every batch. You can only request the latest batch again\n(or the next batch). Earlier batches are not kept on the server-side.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd9e5430-30b7-40ff-b3c4-1caf824d7458",
+              "name": "A cursor with the specified identifier cannot be found, or the requested\nbatch isn't available.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier",
+                    ":batch-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The ID of the cursor.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch-identifier",
+                      "description": "(Required) The ID of the batch. The first batch has an ID of `1` and the value is\nincremented by 1 with every batch. You can only request the latest batch again\n(or the next batch). Earlier batches are not kept on the server-side.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "31f2d5a6-7e72-4a61-9958-f18161a92fa7",
+              "name": "The server responds with *HTTP 410* if a server which processes the query\nor is the leader for a shard which is used in the query stops responding, but\nthe connection has not been closed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier",
+                    ":batch-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The ID of the cursor.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch-identifier",
+                      "description": "(Required) The ID of the batch. The first batch has an ID of `1` and the value is\nincremented by 1 with every batch. You can only request the latest batch again\n(or the next batch). Earlier batches are not kept on the server-side.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Gone",
+              "code": 410,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ab8490a7-e5cc-4c65-aab4-b44f62661159",
+              "name": "The server responds with *HTTP 503* if a server which processes the query\nor is the leader for a shard which is used in the query is down, either for\ngoing through a restart, a failure or connectivity issues.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "cursor",
+                    ":cursor-identifier",
+                    ":batch-identifier"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cursor-identifier",
+                      "description": "(Required) The ID of the cursor.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch-identifier",
+                      "description": "(Required) The ID of the batch. The first batch has an ID of `1` and the value is\nincremented by 1 with every batch. You can only request the latest batch again\n(or the next batch). Earlier batches are not kept on the server-side.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "be54ee85-5d5b-47aa-8bd8-cf348efe7f97",
+          "name": "Explain an AQL query",
+          "request": {
+            "name": "Explain an AQL query",
+            "description": {
+              "content": "To explain how an AQL query would be executed on the server, the query string\ncan be sent to the server via an HTTP POST request. The server will then validate\nthe query and create an execution plan for it. The execution plan will be\nreturned, but the query will not be executed.\n\nThe execution plan that is returned by the server can be used to estimate the\nprobable performance of the query. Though the actual performance will depend\non many different factors, the execution plan normally can provide some rough\nestimates on the amount of work the server needs to do in order to actually run\nthe query.\n\nBy default, the explain operation will return the optimal plan as chosen by\nthe query optimizer The optimal plan is the plan with the lowest total estimated\ncost. The plan will be returned in the attribute `plan` of the response object.\nIf the option `allPlans` is specified in the request, the result will contain\nall plans created by the optimizer. The plans will then be returned in the\nattribute `plans`.\n\nThe result will also contain an attribute `warnings`, which is an array of\nwarnings that occurred during optimization or execution plan creation. Additionally,\na `stats` attribute is contained in the result with some optimizer statistics.\nIf `allPlans` is set to `false`, the result will contain an attribute `cacheable`\nthat states whether the query results can be cached on the server if the query\nresult cache were used. The `cacheable` attribute is not present when `allPlans`\nis set to `true`.\n\nEach plan in the result is a JSON object with the following attributes:\n- `nodes`: the array of execution nodes of the plan.\n\n- `estimatedCost`: the total estimated cost for the plan. If there are multiple\n  plans, the optimizer will choose the plan with the lowest total cost.\n\n- `collections`: an array of collections used in the query\n\n- `rules`: an array of rules the optimizer applied.\n\n- `variables`: array of variables used in the query (note: this may contain\n  internal variables created by the optimizer)\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "explain"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"bindVars\": \"<object>\",\n  \"options\": {\n    \"allPlans\": false,\n    \"failOnWarning\": \"<boolean>\",\n    \"fullCount\": false,\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"usePlanCache\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6fd3bae3-4edc-41c1-a99c-1aa1894ed8a7",
+              "name": "If the query is valid, the server will respond with *HTTP 200* and\nreturn the optimal execution plan in the `plan` attribute of the response.\nIf option `allPlans` was set in the request, an array of plans will be returned\nin the `allPlans` attribute instead.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "explain"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"bindVars\": \"<object>\",\n  \"options\": {\n    \"allPlans\": false,\n    \"failOnWarning\": \"<boolean>\",\n    \"fullCount\": false,\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"usePlanCache\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d8567f20-6190-4536-940c-e78397f46e2e",
+              "name": "The request is malformed or the query contains a parse error.\nThe body of the response contains the error details embedded in a JSON object.\nOmitting bind variables if the query references any also results\nan error.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "explain"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"bindVars\": \"<object>\",\n  \"options\": {\n    \"allPlans\": false,\n    \"failOnWarning\": \"<boolean>\",\n    \"fullCount\": false,\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"usePlanCache\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4aaca9dc-37df-4071-84d4-1ad53385b7c3",
+              "name": "A non-existing collection is accessed in the query.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "explain"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"bindVars\": \"<object>\",\n  \"options\": {\n    \"allPlans\": false,\n    \"failOnWarning\": \"<boolean>\",\n    \"fullCount\": false,\n    \"maxNodesPerCallstack\": \"<integer>\",\n    \"maxNumberOfPlans\": \"<integer>\",\n    \"maxWarningCount\": 10,\n    \"optimizer\": {\n      \"rules\": [\n        \"<string>\",\n        \"<string>\"\n      ]\n    },\n    \"profile\": 0,\n    \"usePlanCache\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8250e251-bce1-4a91-beaf-3fd0cb570fb5",
+          "name": "Parse an AQL query",
+          "request": {
+            "name": "Parse an AQL query",
+            "description": {
+              "content": "This endpoint is for query validation only. To actually query the database,\nsee `/api/cursor`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a214edfb-90db-4bfb-9bb1-f6a38cc47938",
+              "name": "If the query is valid, the server will respond with *HTTP 200* and\nreturn the names of the bind parameters it found in the query (if any) in\nthe `bindVars` attribute of the response. It will also return an array\nof the collections used in the query in the `collections` attribute.\nIf a query can be parsed successfully, the `ast` attribute of the returned\nJSON will contain the abstract syntax tree representation of the query.\nThe format of the `ast` is subject to change in future versions of\nArangoDB, but it can be used to inspect how ArangoDB interprets a given\nquery. Note that the abstract syntax tree will be returned without any\noptimizations applied to it.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9c15f685-993f-4e61-9c48-78f956817206",
+              "name": "The request is malformed or the query contains a parse error.\nThe body of the response contains the error details embedded in a JSON object.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "be1dbed1-8e03-46c2-a34e-b254f7014e8f",
+          "name": "Clear the AQL query results cache",
+          "request": {
+            "name": "Clear the AQL query results cache",
+            "description": {
+              "content": "Clears all results stored in the AQL query results cache for the current database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query-cache"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "30aed5fd-3e67-49d8-8ab1-ad67c78a2ffc",
+              "name": "The results cache has been cleared.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b0346584-acd2-4d30-965e-1dd620265aff",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cc7e8fb2-e605-48f7-97c9-61d540590774",
+          "name": "List the entries of the AQL query results cache",
+          "request": {
+            "name": "List the entries of the AQL query results cache",
+            "description": {
+              "content": "Returns an array containing the AQL query results currently stored in the query results\ncache of the selected database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query-cache",
+                "entries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "45361ec5-1425-488e-94a3-451809bcae89",
+              "name": "The list of cached query results.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache",
+                    "entries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"hash\": \"string\",\n    \"query\": \"string\",\n    \"size\": 3216,\n    \"results\": 5236,\n    \"hits\": 6494,\n    \"runTime\": 9107.623150525687,\n    \"started\": \"1994-11-09T17:12:22.455Z\",\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ],\n    \"bindVars\": {}\n  },\n  {\n    \"hash\": \"string\",\n    \"query\": \"string\",\n    \"size\": 2077,\n    \"results\": 8975,\n    \"hits\": 9089,\n    \"runTime\": 740.4054026933504,\n    \"started\": \"1995-09-23T20:10:30.163Z\",\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ],\n    \"bindVars\": {}\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96af29e5-cd37-4c88-91f6-3d8dc83fb919",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache",
+                    "entries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "588eb14f-803f-4b46-b4e5-a6394de139bd",
+          "name": "Get the AQL query results cache configuration",
+          "request": {
+            "name": "Get the AQL query results cache configuration",
+            "description": {
+              "content": "Returns the global AQL query results cache configuration.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query-cache",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e4d2a735-a9d5-475e-a978-23b4b27f5324",
+              "name": "The result cache configuration is returned successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"includeSystem\": true,\n  \"maxEntrySize\": {},\n  \"maxResults\": 4314,\n  \"maxResultsSize\": 6629,\n  \"mode\": \"demand\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ddaa3527-01a1-440a-91d5-504f83f92302",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7678bcd5-fe41-4b65-86b8-cb5ccccf272f",
+          "name": "Set the AQL query results cache configuration",
+          "request": {
+            "name": "Set the AQL query results cache configuration",
+            "description": {
+              "content": "Adjusts the global properties for the AQL query results cache.\n\nChanging the properties may invalidate all results currently in the cache.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query-cache",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"includeSystem\": \"<boolean>\",\n  \"maxEntrySize\": \"<integer>\",\n  \"maxResults\": \"<integer>\",\n  \"maxResultsSize\": \"<integer>\",\n  \"mode\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d68396df-e6c6-437b-a817-922a4cd1a39b",
+              "name": "The result cache configuration has been changed successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"includeSystem\": \"<boolean>\",\n  \"maxEntrySize\": \"<integer>\",\n  \"maxResults\": \"<integer>\",\n  \"maxResultsSize\": \"<integer>\",\n  \"mode\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"includeSystem\": true,\n  \"maxEntrySize\": {},\n  \"maxResults\": 4314,\n  \"maxResultsSize\": 6629,\n  \"mode\": \"demand\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "99166697-0c60-47ed-8338-fe61c31581ae",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-cache",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"includeSystem\": \"<boolean>\",\n  \"maxEntrySize\": \"<integer>\",\n  \"maxResults\": \"<integer>\",\n  \"maxResultsSize\": \"<integer>\",\n  \"mode\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2d1fb457-4643-4298-8200-429fbb008135",
+          "name": "Clear the AQL query plan cache",
+          "request": {
+            "name": "Clear the AQL query plan cache",
+            "description": {
+              "content": "Clears all execution plans stored in the AQL query plan cache for the\ncurrent database.\n\nThis requires write privileges for the current database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query-plan-cache"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "aaf9b88b-0b36-4f0e-8c88-e8fa036ae797",
+              "name": "The query plan cache has been cleared for the current database.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-plan-cache"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cb0378d7-ab6b-4b6b-afd0-8543179e19c7",
+          "name": "List the entries of the AQL query plan cache",
+          "request": {
+            "name": "List the entries of the AQL query plan cache",
+            "description": {
+              "content": "Returns an array containing information about each AQL execution plan\ncurrently stored in the cache of the selected database.\n\nThis requires read privileges for the current database. In addition, only those\nquery plans are returned for which the current user has at least read permissions\non all collections and Views included in the query.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query-plan-cache"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a70464ac-c6b2-4668-956d-0b604fd747b4",
+              "name": "The list of cached query plans.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query-plan-cache"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"hash\": \"string\",\n    \"query\": \"string\",\n    \"queryHash\": 6233,\n    \"bindVars\": {},\n    \"fullCount\": false,\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ],\n    \"created\": \"2005-05-17T04:23:20.327Z\",\n    \"hits\": 4682,\n    \"memoryUsage\": 6869\n  },\n  {\n    \"hash\": \"string\",\n    \"query\": \"string\",\n    \"queryHash\": 1180,\n    \"bindVars\": {},\n    \"fullCount\": true,\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ],\n    \"created\": \"2005-12-28T06:11:08.155Z\",\n    \"hits\": 2154,\n    \"memoryUsage\": 7516\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a5dd12cf-b504-44f0-8409-8dbf55f31e5d",
+          "name": "List the running AQL queries",
+          "request": {
+            "name": "List the running AQL queries",
+            "description": {
+              "content": "Returns a list of the AQL queries that currently run in the specified\ndatabase.\n\nQuery tracking needs to be enabled by the\n[`--query.tracking` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking)\nor at runtime with the `enabled` query tracking property of the\n`PUT /_db/{database-name}/_api/query/properties` endpoint.\nIf query tracking is disabled for the current database,\nan **empty list** is returned.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query",
+                "current"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "all",
+                  "value": "false",
+                  "description": "If set to `true`, will return the currently running queries in all databases,\nnot just the selected one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5beeec5c-fe2f-410c-a0ba-41ff3a9460a5",
+              "name": "The list of currently running AQL queries for the specified database.\nEmpty if query tracking is disabled.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"database\": \"string\",\n    \"user\": \"string\",\n    \"query\": \"string\",\n    \"bindVars\": {},\n    \"started\": \"2025-12-22T20:42:45.715Z\",\n    \"runTime\": 1598.0525833813774,\n    \"peakMemoryUsage\": 6109,\n    \"state\": \"instantiating executors\",\n    \"stream\": true,\n    \"modificationQuery\": false,\n    \"warnings\": 9790,\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  {\n    \"id\": \"string\",\n    \"database\": \"string\",\n    \"user\": \"string\",\n    \"query\": \"string\",\n    \"bindVars\": {},\n    \"started\": \"1993-04-06T05:41:30.179Z\",\n    \"runTime\": 8511.503342564025,\n    \"peakMemoryUsage\": 7251,\n    \"state\": \"invalid\",\n    \"stream\": false,\n    \"modificationQuery\": true,\n    \"warnings\": 918,\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bc666c0e-e7e8-4617-a462-7d2d476949b1",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82587c27-3727-4019-b192-23acec0abae5",
+              "name": "Returned when the `all` parameter is used but the request was made\nin a database other than `_system`, or by a user without superuser\nprivileges.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "current"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 9518,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3303e44e-b558-4be0-ab81-4fd9d362de73",
+          "name": "Get the AQL query tracking configuration",
+          "request": {
+            "name": "Get the AQL query tracking configuration",
+            "description": {
+              "content": "Returns the current query tracking properties of the specified database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ebe92736-77b4-4910-8034-f0fe2f226658",
+              "name": "The query tracking properties were retrieved successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"enabled\": false,\n  \"trackSlowQueries\": true,\n  \"trackBindVars\": true,\n  \"maxSlowQueries\": 4521,\n  \"slowQueryThreshold\": 286.9452187058219,\n  \"slowStreamingQueryThreshold\": 6035.325567733798,\n  \"maxQueryStringLength\": 3976\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "58b58bdd-e6e2-4ce6-9eb1-0fdc46ed3a13",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c6565c72-7088-4539-bdab-8664a1fd0518",
+          "name": "Update the AQL query tracking configuration",
+          "request": {
+            "name": "Update the AQL query tracking configuration",
+            "description": {
+              "content": "Modify one or more query tracking properties at runtime for the\nspecified database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query",
+                "properties"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": \"<boolean>\",\n  \"maxQueryStringLength\": 4096,\n  \"maxSlowQueries\": 64,\n  \"slowQueryThreshold\": \"<number>\",\n  \"slowStreamingQueryThreshold\": \"<number>\",\n  \"trackBindVars\": \"<boolean>\",\n  \"trackSlowQueries\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "34434a9a-355d-4841-b919-73462323cdf7",
+              "name": "The properties were changed successfully. The response body contains\nthe current set of query tracking properties.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": \"<boolean>\",\n  \"maxQueryStringLength\": 4096,\n  \"maxSlowQueries\": 64,\n  \"slowQueryThreshold\": \"<number>\",\n  \"slowStreamingQueryThreshold\": \"<number>\",\n  \"trackBindVars\": \"<boolean>\",\n  \"trackSlowQueries\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"enabled\": false,\n  \"trackSlowQueries\": true,\n  \"trackBindVars\": true,\n  \"maxSlowQueries\": 4521,\n  \"slowQueryThreshold\": 286.9452187058219,\n  \"slowStreamingQueryThreshold\": 6035.325567733798,\n  \"maxQueryStringLength\": 3976\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7849eda4-3b71-488c-b376-f2aba5f04e79",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "properties"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"enabled\": \"<boolean>\",\n  \"maxQueryStringLength\": 4096,\n  \"maxSlowQueries\": 64,\n  \"slowQueryThreshold\": \"<number>\",\n  \"slowStreamingQueryThreshold\": \"<number>\",\n  \"trackBindVars\": \"<boolean>\",\n  \"trackSlowQueries\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2a37a150-8a10-428f-ad88-60db5027928a",
+          "name": "List all AQL optimizer rules",
+          "request": {
+            "name": "List all AQL optimizer rules",
+            "description": {
+              "content": "A list of all optimizer rules and their properties.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query",
+                "rules"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "73d3e41c-4db3-40db-8e1a-94ec37d8b715",
+              "name": "is returned if the list of optimizer rules can be retrieved successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "rules"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"string\",\n    \"flags\": {\n      \"hidden\": true,\n      \"clusterOnly\": true,\n      \"canBeDisabled\": true,\n      \"canCreateAdditionalPlans\": false,\n      \"disabledByDefault\": true,\n      \"enterpriseOnly\": true\n    }\n  },\n  {\n    \"name\": \"string\",\n    \"flags\": {\n      \"hidden\": true,\n      \"clusterOnly\": false,\n      \"canBeDisabled\": false,\n      \"canCreateAdditionalPlans\": false,\n      \"disabledByDefault\": false,\n      \"enterpriseOnly\": true\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d845b76d-5fd2-43b8-92fa-f5de6557de08",
+          "name": "Clear the list of slow AQL queries",
+          "request": {
+            "name": "Clear the list of slow AQL queries",
+            "description": {
+              "content": "Clears the list of slow AQL queries for the current database.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query",
+                "slow"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "all",
+                  "value": "false",
+                  "description": "If set to `true`, clears the slow query history in all databases, not just\nthe specified one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ecf7cb2b-b7c4-435d-b99c-f539536959da",
+              "name": "The list of slow queries was cleared successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "slow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "18310bf8-d978-4a99-b7bb-4b6565e60ac9",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "slow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2dbfa22b-fe63-4b39-a6ac-a9e84b3171a8",
+          "name": "List the slow AQL queries",
+          "request": {
+            "name": "List the slow AQL queries",
+            "description": {
+              "content": "Returns a list of the recently finished AQL queries that exceeded the\nslow query threshold in the specified database.\n\nSlow query tracking needs to be enabled by the\n[`--query.tracking-slow-queries` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-slow-queries)\nor at runtime with the `trackSlowQueries` query tracking property of the\n`PUT /_db/{database-name}/_api/query/properties` endpoint.\nIf slow query tracking is disabled for the current database,\nan **empty list** is returned.\n\nThe maximum amount of queries in the list can be controlled by setting\nthe `maxSlowQueries` query tracking property via the\n`PUT /_db/{database-name}/_api/query/properties` endpoint at runtime.\n\nThe threshold for treating a query as *slow* can be adjusted separate\nfor queries with the `stream` option on or off by setting the\n[`--query.slow-threshold`](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-threshold)\nand [`--query.slow-streaming-threshold`](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-streaming-threshold)\nstartup options or at runtime with the `slowQueryThreshold` and\n`slowStreamingQueryThreshold` query tracking properties of the\n`PUT /_db/{database-name}/_api/query/properties` endpoint.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query",
+                "slow"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "all",
+                  "value": "false",
+                  "description": "If set to `true`, returns the slow queries from all databases, not just\nthe specified one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "03ac47c5-4e65-4be3-90ca-40fd0bc16bdc",
+              "name": "The list of recently finished AQL queries that exceeded the slow\nquery threshold. Empty if query tracking or slow query tracking is\ndisabled.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "slow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"database\": \"string\",\n    \"user\": \"string\",\n    \"query\": \"string\",\n    \"bindVars\": {},\n    \"started\": \"2002-09-02T12:27:21.000Z\",\n    \"runTime\": 3743.5232720423605,\n    \"peakMemoryUsage\": 9456,\n    \"state\": \"invalid\",\n    \"stream\": true,\n    \"modificationQuery\": true,\n    \"warnings\": 8199,\n    \"exitCode\": 579,\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  {\n    \"id\": \"string\",\n    \"database\": \"string\",\n    \"user\": \"string\",\n    \"query\": \"string\",\n    \"bindVars\": {},\n    \"started\": \"1969-02-02T20:47:37.542Z\",\n    \"runTime\": 9235.498828234566,\n    \"peakMemoryUsage\": 674,\n    \"state\": \"finished\",\n    \"stream\": true,\n    \"modificationQuery\": false,\n    \"warnings\": 8012,\n    \"exitCode\": 5922,\n    \"dataSources\": [\n      \"string\",\n      \"string\"\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d2e75e2f-21a6-4582-9d97-e5c37d6393ea",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "slow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 197,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "332610f9-abe8-4a58-91e5-69e807fadcd3",
+              "name": "Returned when the `all` parameter is used but the request was made\nin a database other than `_system`, or by a user without superuser\nprivileges.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    "slow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 403,\n  \"errorNum\": 9518,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2094aee1-fdb3-48e3-bbb4-7bac7627b811",
+          "name": "Kill a running AQL query",
+          "request": {
+            "name": "Kill a running AQL query",
+            "description": {
+              "content": "Kills a running query in the currently selected database. The query will be\nterminated at the next cancellation point.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "query",
+                ":query-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "all",
+                  "value": "false",
+                  "description": "If set to `true`, attempt to kill the specified query in all databases,\nnot just the selected one.\nUsing the parameter is only allowed in the `_system` database and with superuser\nprivileges.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "query-id",
+                  "description": "(Required) The identifier of the query.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2bfe93a5-995a-4d24-84db-3b04a46bd0f8",
+              "name": "The query was still running when the kill request was executed and\nthe query's kill flag has been set.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    ":query-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "query-id",
+                      "description": "(Required) The identifier of the query.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7d088400-86f0-458d-b0dc-31b498d4125e",
+              "name": "The request is malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    ":query-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "query-id",
+                      "description": "(Required) The identifier of the query.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d6ace9df-d873-4027-95af-e74b1cc8f9c1",
+              "name": "In case the `all` parameter is used but the request was made in a\ndifferent database than `_system`, or by a non-privileged user.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    ":query-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "query-id",
+                      "description": "(Required) The identifier of the query.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "63ac4c44-f1dd-4184-b5b9-2c4e4544f887",
+              "name": "A query with the specified identifier cannot be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "query",
+                    ":query-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "query-id",
+                      "description": "(Required) The identifier of the query.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d1c05478-9fe0-400a-840a-345449421a52",
+    "name": "ArangoDB Core Queries API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Run, process, and manage AQL queries\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

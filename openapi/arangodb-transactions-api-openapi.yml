@@ -1,0 +1,947 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Transactions API
+  version: 3.12.10 (API v0)
+  description: Execute JavaScript and Stream Transactions
+tags:
+- description: Execute JavaScript and Stream Transactions
+  name: Transactions
+paths:
+  /_db/{database-name}/_api/transaction:
+    get:
+      description: 'List the currently running Stream Transactions.
+
+        In a cluster, the list contains the transactions from all Coordinators.
+
+        '
+      operationId: listStreamTransactions
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  transactions:
+                    description: 'An array of currently running transactions. In a cluster, this
+
+                      contains the transactions from all Coordinators.
+
+                      '
+                    items:
+                      properties:
+                        id:
+                          description: 'The identifier of the transaction.
+
+                            '
+                          type: string
+                        state:
+                          const: running
+                          description: 'The status of the transaction. Always `running`
+
+                            if it''s in the list of running transactions.
+
+                            '
+                          type: string
+                      required:
+                      - id
+                      - state
+                      type: object
+                    type: array
+                required:
+                - transactions
+                type: object
+          description: 'The list of transactions can be retrieved successfully.
+
+            '
+      summary: List the running Stream Transactions
+      tags:
+      - Transactions
+    post:
+      deprecated: true
+      description: "> **WARNING:**\nJavaScript Transactions are deprecated from v3.12.0 onward and are\nremoved in v4.0.\n\n\nThe transaction description must be passed in the body of the POST request.\n\nIf the transaction is fully executed and committed on the server,\n*HTTP 200* will be returned. Additionally, the return value of the\ncode defined in `action` will be returned in the `result` attribute.\n\nFor successfully committed transactions, the returned JSON object has the\nfollowing properties:\n\n- `error`: boolean flag to indicate if an error occurred (`false`\n  in this case)\n\n- `code`: the HTTP status code\n\n- `result`: the return value of the transaction\n\nIf the transaction specification is either missing or malformed, the server\nwill respond with *HTTP 400*.\n\nThe body of the response will then contain a JSON object with additional error\ndetails. The object has the following attributes:\n\n- `error`: boolean flag to indicate that an error occurred (`true` in this case)\n\n- `code`: the HTTP status code\n\n- `errorNum`: the server error number\n\n- `errorMessage`: a descriptive error message\n\nIf a transaction fails to commit, either by an exception thrown in the\n`action` code, or by an internal error, the server will respond with\nan error.\nAny other errors will be returned with any of the return codes\n*HTTP 400*, *HTTP 409*, or *HTTP 500*.\n"
+      operationId: executeJavaScriptTransaction
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                action:
+                  description: 'The actual transaction operations to be executed, in the
+
+                    form of stringified JavaScript code. The code is executed on the server
+
+                    side, with late binding. It is thus critical that the code specified in
+
+                    `action` properly sets up all the variables it needs.
+
+                    If the code specified in `action` ends with a return statement, the
+
+                    value returned is also returned by the REST API in the `result`
+
+                    attribute if the transaction committed successfully.
+
+                    '
+                  type: string
+                allowImplicit:
+                  default: true
+                  description: 'Allow reading from undeclared collections.
+
+                    '
+                  type: boolean
+                collections:
+                  description: 'Must be a JSON object that can have one or all sub-attributes
+
+                    `read`, `write` or `exclusive`, each being an array of collection names or a
+
+                    single collection name as string. Collections that will be written to in the
+
+                    transaction must be declared with the `write` or `exclusive` attribute or it
+
+                    will fail, whereas non-declared collections from which is solely read will be
+
+                    added lazily. The optional sub-attribute `allowImplicit` can be set to `false`
+
+                    to let transactions fail in case of undeclared collections for reading.
+
+                    Collections for reading should be fully declared if possible, to avoid
+
+                    deadlocks.
+
+                    '
+                  properties:
+                    exclusive:
+                      description: 'A single collection or a list of collections to acquire
+
+                        exclusive write access for.
+
+                        '
+                    read:
+                      description: 'A single collection or a list of collections to use in
+
+                        the transaction in read-only mode.
+
+                        '
+                    write:
+                      description: 'A single collection or a list of collections to use in
+
+                        the transaction in write or read mode.
+
+                        '
+                  type: object
+                lockTimeout:
+                  default: 900
+                  description: 'The timeout in seconds for waiting on collection locks.
+
+                    This option is only meaningful when using exclusive locks.
+
+                    Set `lockTimeout` to `0` to make ArangoDB not time out
+
+                    waiting for a lock.
+
+                    '
+                  type: integer
+                maxTransactionSize:
+                  default: 18446744073709551615
+                  description: 'Transaction size limit in bytes.
+
+                    '
+                  type: integer
+                params:
+                  description: 'Optional argument passed to `action`. Can be of any type.
+
+                    '
+                waitForSync:
+                  description: 'An optional boolean flag that, if set, forces the
+
+                    transaction to write all data to disk before returning.
+
+                    '
+                  type: boolean
+              required:
+              - collections
+              - action
+              type: object
+      responses:
+        '200':
+          description: 'If the transaction is fully executed and committed on the server,
+
+            *HTTP 200* will be returned.
+
+            '
+        '400':
+          description: 'If the transaction specification is either missing or malformed, the server
+
+            will respond with *HTTP 400*.
+
+            '
+        '404':
+          description: 'If the transaction specification contains an unknown collection, the server
+
+            will respond with *HTTP 404*.
+
+            '
+        '500':
+          description: 'Exceptions thrown by users will make the server respond with a return code of
+
+            *HTTP 500*
+
+            '
+      summary: Execute a JavaScript Transaction
+      tags:
+      - Transactions
+  /_db/{database-name}/_api/transaction/begin:
+    post:
+      description: 'Begin a Stream Transaction that allows clients to call selected APIs over a
+
+        short period of time, referencing the transaction ID, and have the server
+
+        execute the operations transactionally.
+
+
+        Committing or aborting a running transaction must be done by the client.
+
+        It is bad practice to not commit or abort a transaction once you are done
+
+        using it. It forces the server to keep resources and collection locks
+
+        until the entire transaction times out.
+
+
+        The transaction description must be passed in the body of the POST request.
+
+        '
+      operationId: beginStreamTransaction
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Set this header to `true` to allow the Coordinator to ask any shard replica for
+
+          the data, not only the shard leader. This may result in "dirty reads".
+
+
+          This header decides about dirty reads for the entire transaction. Individual
+
+          read operations, that are performed as part of the transaction, cannot override it.
+
+          '
+        in: header
+        name: x-arango-allow-dirty-read
+        required: false
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                allowImplicit:
+                  default: true
+                  description: 'Allow reading from undeclared collections.
+
+                    '
+                  type: boolean
+                collections:
+                  description: 'Must be a JSON object that can have the sub-attributes
+
+                    `read`, `write`, and `exclusive`, each being an array of collection names or a
+
+                    single collection name as string. Collections that will be written to in the
+
+                    transaction must be declared with the `write` or `exclusive` attribute or the
+
+                    respective write operations will fail (but not automatically abort the
+
+                    Stream Transaction), whereas non-declared collections from which is solely
+
+                    read will be added lazily.
+
+                    '
+                  properties:
+                    exclusive:
+                      description: 'A single collection or a list of collections to acquire
+
+                        exclusive write access for.
+
+                        '
+                    read:
+                      description: 'A single collection or a list of collections to use in
+
+                        the transaction in read-only mode.
+
+                        '
+                    write:
+                      description: 'A single collection or a list of collections to use in
+
+                        the transaction in write or read mode.
+
+                        '
+                  type: object
+                lockTimeout:
+                  default: 900
+                  description: 'The timeout in seconds for waiting on collection locks.
+
+                    This option is only meaningful when using exclusive locks.
+
+                    Set `lockTimeout` to `0` to make ArangoDB not time out
+
+                    waiting for a lock.
+
+                    '
+                  type: integer
+                maxTransactionSize:
+                  description: 'Transaction size limit in bytes.
+
+
+                    Default: Controlled by the [`--transaction.streaming-max-transaction-size` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--transactionstreaming-max-transaction-size).
+
+                    '
+                  type: integer
+                skipFastLockRound:
+                  default: false
+                  description: 'Whether to disable fast locking for write operations.
+
+
+                    Skipping the fast lock round can be faster overall if there are many concurrent
+
+                    Stream Transactions queued that all try to lock the same collection exclusively.
+
+                    It avoids deadlocking and retrying which can occur with the fast locking by
+
+                    guaranteeing a deterministic locking order at the expense of each actual
+
+                    locking operation taking longer.
+
+
+                    Fast locking should not be skipped for read-only Stream Transactions because
+
+                    it degrades performance if there are no concurrent transactions that use
+
+                    exclusive locks on the same collection.
+
+                    '
+                  type: boolean
+                waitForSync:
+                  description: 'An optional boolean flag that, if set, forces the
+
+                    transaction to write all data to disk before returning.
+
+                    '
+                  type: boolean
+              required:
+              - collections
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 201
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'An object describing the started transaction.
+
+                      '
+                    properties:
+                      id:
+                        description: 'The identifier of the transaction.
+
+                          '
+                        type: string
+                      status:
+                        const: running
+                        description: 'The status of the transaction. Always `running` for a
+
+                          successfully started transaction.
+
+                          '
+                        type: string
+                    required:
+                    - id
+                    - status
+                    type: object
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'The transaction has been started on the server.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The transaction specification is either missing or malformed.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The transaction specification contains an unknown collection.
+
+            '
+      summary: Begin a Stream Transaction
+      tags:
+      - Transactions
+  /_db/{database-name}/_api/transaction/{transaction-id}:
+    delete:
+      description: "Abort a running server-side transaction. Aborting is an idempotent operation.\nIt is not an error to abort a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: aborting an already-aborted\n  transaction returns `200` (idempotent), and aborting an already-committed\n  transaction returns `400`.\n- The first abort against an unknown identifier returns `404` and records\n  it as aborted. Subsequent aborts for the same identifier return `200`\n  until the record is garbage-collected, after which the identifier is\n  again unknown and the next abort once more returns `404`.\n"
+      operationId: abortStreamTransaction
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The transaction identifier,
+
+          '
+        in: path
+        name: transaction-id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'An object describing the aborted transaction.
+
+                      '
+                    properties:
+                      id:
+                        description: 'The identifier of the transaction.
+
+                          '
+                        type: string
+                      status:
+                        const: aborted
+                        description: 'The status of the transaction. Always `aborted` for a
+
+                          successfully aborted transaction.
+
+                          '
+                        type: string
+                    required:
+                    - id
+                    - status
+                    type: object
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'The transaction has been aborted.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The transaction identifier is malformed, or the transaction is in
+
+            a state that does not allow aborting (for example, it was
+
+            already committed).
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'No transaction is known under the specified identifier.
+
+            '
+      summary: Abort a Stream Transaction
+      tags:
+      - Transactions
+    get:
+      description: 'Retrieve the status of a Stream Transaction by its identifier.
+
+
+        After a transaction is committed or aborted, the server remembers its
+
+        final state for a limited time. During this window, querying the
+
+        transaction returns its final status (`committed` or `aborted`). Once
+
+        the server garbage-collects this record, the same identifier becomes
+
+        unknown and the endpoint returns `404`.
+
+        '
+      operationId: getStreamTransaction
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The transaction identifier.
+
+          '
+        in: path
+        name: transaction-id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'An object describing the status of the transaction.
+
+                      '
+                    properties:
+                      id:
+                        description: 'The identifier of the transaction.
+
+                          '
+                        type: string
+                      status:
+                        description: 'The status of the transaction.
+
+                          '
+                        enum:
+                        - running
+                        - committed
+                        - aborted
+                        type: string
+                    required:
+                    - id
+                    - status
+                    type: object
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'The transaction is found and its status returned.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The transaction identifier is either missing or malformed.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'No transaction was found with the specified identifier.
+
+            '
+      summary: Get the status of a Stream Transaction
+      tags:
+      - Transactions
+    put:
+      description: "Commit a running server-side transaction. Committing is an idempotent operation.\nIt is not an error to commit a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: committing an already-committed\n  transaction returns `200` (idempotent), and committing an already-aborted\n  transaction returns `400`.\n- Once the server has garbage-collected the transaction's record, the\n  identifier is no longer known and the endpoint returns `404`.\n"
+      operationId: commitStreamTransaction
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The transaction identifier,
+
+          '
+        in: path
+        name: transaction-id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'An object describing the committed transaction.
+
+                      '
+                    properties:
+                      id:
+                        description: 'The identifier of the transaction.
+
+                          '
+                        type: string
+                      status:
+                        const: committed
+                        description: 'The status of the transaction. Always `committed` for a
+
+                          successfully committed transaction.
+
+                          '
+                        type: string
+                    required:
+                    - id
+                    - status
+                    type: object
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'The transaction has been committed.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The transaction identifier is malformed, or the transaction is in
+
+            a state that does not allow committing (for example, it was
+
+            already aborted).
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'No transaction is known under the specified identifier.
+
+            '
+      summary: Commit a Stream Transaction
+      tags:
+      - Transactions
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

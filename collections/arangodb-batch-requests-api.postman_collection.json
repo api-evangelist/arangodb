@@ -1,0 +1,211 @@
+{
+  "item": [
+    {
+      "id": "0f7147f1-cc64-40b7-bad0-097ff7520646",
+      "name": "Batch Requests",
+      "description": {
+        "content": "Run multiple operations using a single request",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "74dc3c9a-592b-4909-8ff3-b72411057e4c",
+          "name": "Execute a batch request",
+          "request": {
+            "name": "Execute a batch request",
+            "description": {
+              "content": "> **WARNING:**\nThe `/_api/batch` endpoint was deprecated in v3.8.0 and has been removed\nin v3.12.3.\n\n\nExecutes a batch request. A batch request can contain any number of\nother requests that can be sent to ArangoDB in isolation. The benefit of\nusing batch requests is that batching requests requires less client/server\nroundtrips than when sending isolated requests.\n\nAll parts of a batch request are executed serially on the server. The\nserver will return the results of all parts in a single response when all\nparts are finished.\n\nTechnically, a batch request is a multipart HTTP request, with\ncontent-type `multipart/form-data`. A batch request consists of an\nenvelope and the individual batch part actions. Batch part actions\nare \"regular\" HTTP requests, including full header and an optional body.\nMultiple batch parts are separated by a boundary identifier. The\nboundary identifier is declared in the batch envelope. The MIME content-type\nfor each individual batch part must be `application/x-arango-batchpart`.\n\nPlease note that when constructing the individual batch parts, you must\nuse CRLF (`\\r\\n`) as the line terminator as in regular HTTP messages.\n\nThe response sent by the server will be an `HTTP 200` response, with an\noptional error summary header `x-arango-errors`. This header contains the\nnumber of batch part operations that failed with an HTTP error code of at\nleast 400. This header is only present in the response if the number of\nerrors is greater than zero.\n\nThe response sent by the server is a multipart response, too. It contains\nthe individual HTTP responses for all batch parts, including the full HTTP\nresult header (with status code and other potential headers) and an\noptional result body. The individual batch parts in the result are\nseparated using the same boundary value as specified in the request.\n\nThe order of batch parts in the response will be the same as in the\noriginal client request. Client can additionally use the `Content-Id`\nMIME header in a batch part to define an individual id for each batch part.\nThe server will return this id is the batch part responses, too.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/plain; charset=utf-8"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "response": [
+            {
+              "id": "1bff64e2-70d1-41df-9230-cba607dd24ab",
+              "name": "is returned if the batch was received successfully. HTTP 200 is returned\neven if one or multiple batch part actions failed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7f1f6b8a-6d44-4636-8062-69b9c15030d4",
+              "name": "is returned if the batch envelope is malformed or incorrectly formatted.\nThis code will also be returned if the content-type of the overall batch\nrequest or the individual MIME parts is not as expected.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2b8f963f-57d2-4699-bc44-8e874c8d2df6",
+              "name": "is returned when an invalid HTTP method is used.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                }
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "549c614f-b6a9-4b4a-9216-bb0a9c10d755",
+    "name": "ArangoDB Core Batch Requests API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Run multiple operations using a single request\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

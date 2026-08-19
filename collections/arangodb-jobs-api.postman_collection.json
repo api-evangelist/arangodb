@@ -1,0 +1,1039 @@
+{
+  "item": [
+    {
+      "id": "b632c1a5-8e60-42eb-9d9a-cbfdae3323fe",
+      "name": "Jobs",
+      "description": {
+        "content": "Execute requests asynchronously",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0f33bb75-92e6-4c9d-8cac-e6710b338785",
+          "name": "Delete async job results",
+          "request": {
+            "name": "Delete async job results",
+            "description": {
+              "content": "Deletes either all job results, expired job results, or the result of a\nspecific job.\nClients can use this method to perform an eventual garbage collection of job\nresults.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "job",
+                ":job-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "stamp",
+                  "value": "<number>",
+                  "description": "A Unix timestamp specifying the expiration threshold for when the `job-id` is\nset to `expired`.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "job-id",
+                  "description": "(Required) The ID of the job to delete. The ID can be:\n- `all`: Deletes all jobs results. Currently executing or queued async\n  jobs are not stopped by this call.\n- `expired`: Deletes expired results. To determine the expiration status of a\n  result, pass the stamp query parameter. stamp needs to be a Unix timestamp,\n  and all async job results created before this time are deleted.\n- **A numeric job ID**: In this case, the call removes the result of the\n  specified async job. If the job is currently executing or queued, it is\n  not aborted.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d6ade958-d2f6-4413-b0ea-2ea81a6fb7a4",
+              "name": "The result of a specific job has been deleted successfully.\nThis code is also returned if the deletion of `all` or `expired`\njobs has been requested, including if no results were deleted.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "stamp",
+                      "value": "<number>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The ID of the job to delete. The ID can be:\n- `all`: Deletes all jobs results. Currently executing or queued async\n  jobs are not stopped by this call.\n- `expired`: Deletes expired results. To determine the expiration status of a\n  result, pass the stamp query parameter. stamp needs to be a Unix timestamp,\n  and all async job results created before this time are deleted.\n- **A numeric job ID**: In this case, the call removes the result of the\n  specified async job. If the job is currently executing or queued, it is\n  not aborted.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "160cd308-903a-400f-a2ff-8bcb6c76ead6",
+              "name": "The `job-id` is missing in the request or has an invalid value.\nIn this case, no `x-arango-async-id` HTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "stamp",
+                      "value": "<number>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The ID of the job to delete. The ID can be:\n- `all`: Deletes all jobs results. Currently executing or queued async\n  jobs are not stopped by this call.\n- `expired`: Deletes expired results. To determine the expiration status of a\n  result, pass the stamp query parameter. stamp needs to be a Unix timestamp,\n  and all async job results created before this time are deleted.\n- **A numeric job ID**: In this case, the call removes the result of the\n  specified async job. If the job is currently executing or queued, it is\n  not aborted.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 400,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 7433\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "333dfaff-2409-468f-acb8-8e4c5a563d5e",
+              "name": "The job cannot be found or has already been deleted, or the result\nhas already been fetched. In this case, no `x-arango-async-id`\nHTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "stamp",
+                      "value": "<number>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The ID of the job to delete. The ID can be:\n- `all`: Deletes all jobs results. Currently executing or queued async\n  jobs are not stopped by this call.\n- `expired`: Deletes expired results. To determine the expiration status of a\n  result, pass the stamp query parameter. stamp needs to be a Unix timestamp,\n  and all async job results created before this time are deleted.\n- **A numeric job ID**: In this case, the call removes the result of the\n  specified async job. If the job is currently executing or queued, it is\n  not aborted.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 404,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 9643\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0a9c9edd-2d36-4625-8641-b433f4cf7394",
+          "name": "List async jobs by status or get the status of specific job",
+          "request": {
+            "name": "List async jobs by status or get the status of specific job",
+            "description": {
+              "content": "This endpoint returns either of the following, depending on the specified value\nfor the `job-id` parameter:\n\n- The IDs of async jobs with a specific status\n- The processing status of a specific async job\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "job",
+                ":job-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "count",
+                  "value": "100",
+                  "description": "The maximum number of job IDs to return per call. If not specified, a\nserver-defined maximum value is used. Only applicable if you specify `pending`\nor `done` as `job-id` to list jobs.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "job-id",
+                  "description": "(Required) If you provide a value of `pending` or `done`, then the endpoint returns an\narray of strings with the job IDs of ongoing or completed async jobs.\n\nIf you provide a numeric job ID, then the endpoint returns the status of the\nspecific async job in the form of an HTTP reply without payload. Check the\nHTTP status code of the response for the job status.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b9ee4ea5-234f-437b-84e2-a80f1f6dda3e",
+              "name": "The job has finished and you can fetch the result (the response has\nno body in this case), or your request for the list of `pending` or\n`done` jobs has been successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "count",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) If you provide a value of `pending` or `done`, then the endpoint returns an\narray of strings with the job IDs of ongoing or completed async jobs.\n\nIf you provide a numeric job ID, then the endpoint returns the status of the\nspecific async job in the form of an HTTP reply without payload. Check the\nHTTP status code of the response for the job status.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  \"string\",\n  \"string\"\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "deed74f9-9c1b-495d-b4d6-104d55bb64e7",
+              "name": "The job is still in the queue of pending (or not yet finished) jobs.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "count",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) If you provide a value of `pending` or `done`, then the endpoint returns an\narray of strings with the job IDs of ongoing or completed async jobs.\n\nIf you provide a numeric job ID, then the endpoint returns the status of the\nspecific async job in the form of an HTTP reply without payload. Check the\nHTTP status code of the response for the job status.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c6a5a1f4-55dc-41ca-b190-77c92259b49e",
+              "name": "The `job-id` is missing in the request or has an invalid value.\nIn this case, no `x-arango-async-id` HTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "count",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) If you provide a value of `pending` or `done`, then the endpoint returns an\narray of strings with the job IDs of ongoing or completed async jobs.\n\nIf you provide a numeric job ID, then the endpoint returns the status of the\nspecific async job in the form of an HTTP reply without payload. Check the\nHTTP status code of the response for the job status.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 400,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 7433\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d1568a75-3a74-433d-a8f4-f0f267d09e79",
+              "name": "The job cannot be found or has already been deleted, or the result\nhas already been fetched. In this case, no `x-arango-async-id`\nHTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "count",
+                      "value": "100"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) If you provide a value of `pending` or `done`, then the endpoint returns an\narray of strings with the job IDs of ongoing or completed async jobs.\n\nIf you provide a numeric job ID, then the endpoint returns the status of the\nspecific async job in the form of an HTTP reply without payload. Check the\nHTTP status code of the response for the job status.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 404,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 9643\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7d4147bd-c7a5-42a9-bb56-6f5ad9c7f967",
+          "name": "Get the results of an async job",
+          "request": {
+            "name": "Get the results of an async job",
+            "description": {
+              "content": "Returns the result of an async job identified by `job-id` if it's ready.\n\nIf the async job result is available on the server, the endpoint returns\nthe original operation's result headers and body, plus the additional\n`x-arango-async-job-id` HTTP header. The result and job are then removed\nwhich means that you can retrieve the result exactly once.\n\nIf the result is not available yet or if the job is not known (anymore),\nthe additional header is not present and you can tell the status from\nthe HTTP status code.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "job",
+                ":job-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "job-id",
+                  "description": "(Required) The async job id.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e4e1487b-f1a2-4db8-a4c3-c935a0c3e136",
+              "name": "The job is still in the queue of pending (or not yet finished) jobs.\nIn this case, no `x-arango-async-id` HTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The async job id.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "48be1b0a-498f-4af5-8a4d-16dbe93a1b7c",
+              "name": "The `job-id` is missing in the request or has an invalid value.\nIn this case, no `x-arango-async-id` HTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The async job id.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 400,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 7433\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4d210447-49c9-4453-bb46-4b75bd08541e",
+              "name": "The job cannot be found or has already been deleted, or the result\nhas already been fetched. In this case, no `x-arango-async-id`\nHTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The async job id.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 404,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 9643\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3d200aba-c7ee-4351-9d28-d49d598195d8",
+              "name": "If the job has finished, you get the result with the headers of the\noriginal operation with an additional `x-arango-async-id` HTTP header.\nThe HTTP status code is also that of the operation that executed\nasynchronously, which can be a success or error code depending on\nthe outcome of the operation.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The async job id.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8404f4a0-5348-42ce-be9e-d2bebc9a1bc7",
+          "name": "Cancel an async job",
+          "request": {
+            "name": "Cancel an async job",
+            "description": {
+              "content": "Cancels the currently running job identified by `job-id`. Note that it still\nmight take some time to actually cancel the running async job.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "job",
+                ":job-id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "job-id",
+                  "description": "(Required) The async job id.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "55e7532a-08ec-4577-9f26-e74ecc96687e",
+              "name": "The job cancellation has been initiated.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The async job id.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"result\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "19dcb1c9-b4ad-43e0-89f7-5b4cc192e446",
+              "name": "The `job-id` is missing in the request or has an invalid value.\nIn this case, no `x-arango-async-id` HTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The async job id.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 400,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 7433\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4c1f9816-f7e4-4a60-9dd4-19b8087bec8b",
+              "name": "The job cannot be found or has already been deleted, or the result\nhas already been fetched. In this case, no `x-arango-async-id`\nHTTP header is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "job",
+                    ":job-id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "job-id",
+                      "description": "(Required) The async job id.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 404,\n  \"error\": true,\n  \"errorMessage\": \"string\",\n  \"errorNum\": 9643\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "b8fa5492-3712-4382-8611-e76b2ef2f0aa",
+    "name": "ArangoDB Core Jobs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Execute requests asynchronously\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

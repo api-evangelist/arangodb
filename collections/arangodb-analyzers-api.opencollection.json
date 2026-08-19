@@ -1,0 +1,116 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Analyzers API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Analyzers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Analyzers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/analyzer",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a an array of all Analyzer definitions.\nThe resulting array contains objects with the following attributes:\n- `name`: the Analyzer name\n- `type`: the Analyzer type\n- `properties`: the properties used to configure the specified type\n- `features`: the set of features to set on the Analyzer generated fields\n"
+        },
+        {
+          "info": {
+            "name": "Create an Analyzer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/analyzer",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Analyzer based on the provided configuration.\n"
+        },
+        {
+          "info": {
+            "name": "Get an Analyzer definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/analyzer/:analyzer-name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "analyzer-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Analyzer to retrieve.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves the full definition for the specified Analyzer name.\nThe resulting object contains the following attributes:\n- `name`: the Analyzer name\n- `type`: the Analyzer type\n- `properties`: the properties used to configure the specified type\n- `features`: the set of features to set on the Analyzer generated fields\n"
+        },
+        {
+          "info": {
+            "name": "Remove an Analyzer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/analyzer/:analyzer-name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "analyzer-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Analyzer to remove.\n"
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "The Analyzer configuration should be removed even if it is in-use.\n"
+              }
+            ]
+          },
+          "docs": "Removes an Analyzer configuration identified by `analyzer-name`.\n\nIf the Analyzer definition was successfully dropped, an object is returned with\nthe following attributes:\n- `error`: `false`\n- `name`: The name of the removed Analyzer\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

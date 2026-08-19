@@ -1,0 +1,1026 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Graphs API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Graphs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get inbound and outbound edges",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/edges/:collection",
+            "headers": [
+              {
+                "name": "x-arango-allow-dirty-read",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection you want to retrieve edges from.\n"
+              },
+              {
+                "name": "vertex",
+                "value": "",
+                "type": "query",
+                "description": "The document identifier of the start node.\n"
+              },
+              {
+                "name": "direction",
+                "value": "",
+                "type": "query",
+                "description": "- `\"in\"`: Return edges that reference the `vertex` in the `_to` attribute.\n- `\"out\"`: Return edges that reference the `vertex` in the `_from` attribute.\n- `\"any\"`: Return edges that reference the `vertex` in the `_from` or `_to` attribute.\n"
+              }
+            ]
+          },
+          "docs": "Returns an array of edges starting or ending in the node identified by\n`vertex`.\n"
+        },
+        {
+          "info": {
+            "name": "List all graphs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Lists all graphs stored in this database.\n"
+        },
+        {
+          "info": {
+            "name": "Create a graph",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until everything is synced to disk.\nChanges the success HTTP response status code.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The creation of a graph requires the name of the graph and a\ndefinition of its edges.\n"
+        },
+        {
+          "info": {
+            "name": "Get a graph",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              }
+            ]
+          },
+          "docs": "Selects information for a given graph.\nReturns the edge definitions as well as the orphan collections,\nor returns an error if the graph does not exist.\n"
+        },
+        {
+          "info": {
+            "name": "Drop a graph",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "dropCollections",
+                "value": "",
+                "type": "query",
+                "description": "Drop the collections of this graph as well. Collections are only\ndropped if they are not used in other graphs.\n"
+              }
+            ]
+          },
+          "docs": "Drops an existing graph object by name.\nOptionally all collections not used by other graphs\ncan be dropped as well.\n"
+        },
+        {
+          "info": {
+            "name": "List edge collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              }
+            ]
+          },
+          "docs": "Lists all edge collections within this graph.\n"
+        },
+        {
+          "info": {
+            "name": "Add an edge definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds an additional edge definition to the graph.\n\nThis edge definition has to contain a `collection` and an array of\neach `from` and `to` node collections. An edge definition can only\nbe added if this definition is either not used in any other graph, or\nit is used with exactly the same definition. For example, it is not\npossible to store a definition \"e\" from \"v1\" to \"v2\" in one graph, and\n\"e\" from \"v2\" to \"v1\" in another graph, but both can have \"e\" from\n\"v1\" to \"v2\".\n\nAdditionally, collection "
+        },
+        {
+          "info": {
+            "name": "Create an edge",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge/:collection",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection the edge belongs to.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new edge in the specified collection.\nWithin the body the edge has to contain a `_from` and `_to` value referencing to valid nodes in the graph.\nFurthermore, the edge has to be valid according to the edge definitions.\n"
+        },
+        {
+          "info": {
+            "name": "Replace an edge definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge/:collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection used in the edge definition.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "dropCollections",
+                "value": "",
+                "type": "query",
+                "description": "Drop the edge collection in addition to removing it from the graph.\nThe collection is only dropped if it is not used in other graphs.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Change the node collections of one specific edge definition.\nThis modifies all occurrences of this definition in all graphs known to your database.\n"
+        },
+        {
+          "info": {
+            "name": "Remove an edge definition",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge/:collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection used in the edge definition.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "dropCollections",
+                "value": "",
+                "type": "query",
+                "description": "Drop the edge collection in addition to removing it from the graph.\nThe collection is only dropped if it is not used in other graphs.\n"
+              }
+            ]
+          },
+          "docs": "Remove one edge definition from the graph. This only removes the\nedge collection from the graph definition. The node collections of the\nedge definition become orphan collections but otherwise remain untouched\nand can still be used in your queries.\n"
+        },
+        {
+          "info": {
+            "name": "Get an edge",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge/:collection/:edge",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "If-None-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection the edge belongs to.\n"
+              },
+              {
+                "name": "edge",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the edge.\n"
+              }
+            ]
+          },
+          "docs": "Gets an edge from the given collection.\n"
+        },
+        {
+          "info": {
+            "name": "Replace an edge",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge/:collection/:edge",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection the edge belongs to.\n"
+              },
+              {
+                "name": "edge",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the node.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "Define if values set to `null` should be stored.\nBy default (`true`), the given documents attribute(s) are set to `null`.\nIf this parameter is set to `false`, top-level attribute and sub-attributes with\na `null` value in the request are removed from the document (but not attributes\nof objects that are nested inside of arrays).\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the data of an edge in the collection.\n"
+        },
+        {
+          "info": {
+            "name": "Update an edge",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge/:collection/:edge",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection the edge belongs to.\n"
+              },
+              {
+                "name": "edge",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the node.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "Define if values set to `null` should be stored.\nBy default (`true`), the given documents attribute(s) are set to `null`.\nIf this parameter is set to `false`, top-level attribute and sub-attributes with\na `null` value in the request are removed from the document (but not attributes\nof objects that are nested inside of arrays).\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially modify the data of the specific edge in the collection.\n"
+        },
+        {
+          "info": {
+            "name": "Remove an edge",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/edge/:collection/:edge",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the edge collection the edge belongs to.\n"
+              },
+              {
+                "name": "edge",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the edge.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              }
+            ]
+          },
+          "docs": "Removes an edge from an edge collection of the named graph. Any other edges\nthat directly reference this edge like a node are removed, too.\n"
+        },
+        {
+          "info": {
+            "name": "List node collections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              }
+            ]
+          },
+          "docs": "Lists all node collections within this graph, including orphan collections.\n"
+        },
+        {
+          "info": {
+            "name": "Add a node collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a node collection to the set of orphan collections of the graph.\nIf the collection does not exist, it is created.\n"
+        },
+        {
+          "info": {
+            "name": "Create a node",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex/:collection",
+            "headers": [
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the node collection the node should be inserted into.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a node to the given collection.\n"
+        },
+        {
+          "info": {
+            "name": "Remove a node collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex/:collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the node collection.\n"
+              },
+              {
+                "name": "dropCollection",
+                "value": "",
+                "type": "query",
+                "description": "Drop the collection in addition to removing it from the graph.\nThe collection is only dropped if it is not used in other graphs.\n"
+              }
+            ]
+          },
+          "docs": "Removes a node collection from the list of the graph's\norphan collections. It can optionally delete the collection if it is\nnot used in any other graph.\n\nYou cannot remove node collections that are used in one of the\nedge definitions of the graph. You need to modify or remove the\nedge definition first in order to fully remove a node collection from\nthe graph.\n"
+        },
+        {
+          "info": {
+            "name": "Get a node",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex/:collection/:vertex",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "If-None-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the node collection the node belongs to.\n"
+              },
+              {
+                "name": "vertex",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the node.\n"
+              }
+            ]
+          },
+          "docs": "Gets a node from the given collection.\n"
+        },
+        {
+          "info": {
+            "name": "Replace a node",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex/:collection/:vertex",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the node collection the node belongs to.\n"
+              },
+              {
+                "name": "vertex",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the node.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "Define if values set to `null` should be stored.\nBy default (`true`), the given documents attribute(s) are set to `null`.\nIf this parameter is set to `false`, top-level attribute and sub-attributes with\na `null` value in the request are removed from the document (but not attributes\nof objects that are nested inside of arrays).\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the data of a node in the collection.\n"
+        },
+        {
+          "info": {
+            "name": "Update a node",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex/:collection/:vertex",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the node collection the node belongs to.\n"
+              },
+              {
+                "name": "vertex",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the node.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "keepNull",
+                "value": "",
+                "type": "query",
+                "description": "Define if values set to `null` should be stored.\nBy default (`true`), the given documents attribute(s) are set to `null`.\nIf this parameter is set to `false`, top-level attribute and sub-attributes with\na `null` value in the request are removed from the document (but not attributes\nof objects that are nested inside of arrays).\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              },
+              {
+                "name": "returnNew",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete new document under the\n`new` attribute in the result.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the data of the specific node in the collection.\n"
+        },
+        {
+          "info": {
+            "name": "Remove a node",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/gharial/:graph/vertex/:collection/:vertex",
+            "headers": [
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "x-arango-trx-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "graph",
+                "value": "",
+                "type": "path",
+                "description": "The name of the graph.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the node collection the node belongs to.\n"
+              },
+              {
+                "name": "vertex",
+                "value": "",
+                "type": "path",
+                "description": "The `_key` attribute of the node.\n"
+              },
+              {
+                "name": "waitForSync",
+                "value": "",
+                "type": "query",
+                "description": "Define if the request should wait until synced to disk.\n"
+              },
+              {
+                "name": "returnOld",
+                "value": "",
+                "type": "query",
+                "description": "Whether to additionally include the complete previous document under the\n`old` attribute in the result.\n"
+              }
+            ]
+          },
+          "docs": "Removes a node from a collection of the named graph. Additionally removes all\nincoming and outgoing edges of the node.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

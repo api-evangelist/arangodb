@@ -1,0 +1,1268 @@
+{
+  "item": [
+    {
+      "id": "8f7deb35-b72c-4990-bd9b-d599406c4762",
+      "name": "Transactions",
+      "description": {
+        "content": "Execute JavaScript and Stream Transactions",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d384cd86-a604-45f6-b4d6-7805c46e037f",
+          "name": "List the running Stream Transactions",
+          "request": {
+            "name": "List the running Stream Transactions",
+            "description": {
+              "content": "List the currently running Stream Transactions.\nIn a cluster, the list contains the transactions from all Coordinators.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "transaction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "184bb70d-b7f2-4795-8547-6004c96c6066",
+              "name": "The list of transactions can be retrieved successfully.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transactions\": [\n    {\n      \"id\": \"string\",\n      \"state\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"state\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "47f46ab7-1868-43ca-9c39-f5033d401ede",
+          "name": "Execute a JavaScript Transaction",
+          "request": {
+            "name": "Execute a JavaScript Transaction",
+            "description": {
+              "content": "> **WARNING:**\nJavaScript Transactions are deprecated from v3.12.0 onward and are\nremoved in v4.0.\n\n\nThe transaction description must be passed in the body of the POST request.\n\nIf the transaction is fully executed and committed on the server,\n*HTTP 200* will be returned. Additionally, the return value of the\ncode defined in `action` will be returned in the `result` attribute.\n\nFor successfully committed transactions, the returned JSON object has the\nfollowing properties:\n\n- `error`: boolean flag to indicate if an error occurred (`false`\n  in this case)\n\n- `code`: the HTTP status code\n\n- `result`: the return value of the transaction\n\nIf the transaction specification is either missing or malformed, the server\nwill respond with *HTTP 400*.\n\nThe body of the response will then contain a JSON object with additional error\ndetails. The object has the following attributes:\n\n- `error`: boolean flag to indicate that an error occurred (`true` in this case)\n\n- `code`: the HTTP status code\n\n- `errorNum`: the server error number\n\n- `errorMessage`: a descriptive error message\n\nIf a transaction fails to commit, either by an exception thrown in the\n`action` code, or by an internal error, the server will respond with\nan error.\nAny other errors will be returned with any of the return codes\n*HTTP 400*, *HTTP 409*, or *HTTP 500*.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "transaction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"action\": \"<string>\",\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": 18446744073709552000,\n  \"params\": {},\n  \"waitForSync\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "15002523-06dc-4c24-a0f2-96141168ff36",
+              "name": "If the transaction is fully executed and committed on the server,\n*HTTP 200* will be returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"action\": \"<string>\",\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": 18446744073709552000,\n  \"params\": {},\n  \"waitForSync\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ddbb49f4-3807-4238-b8fe-3a9e815d4a14",
+              "name": "If the transaction specification is either missing or malformed, the server\nwill respond with *HTTP 400*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"action\": \"<string>\",\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": 18446744073709552000,\n  \"params\": {},\n  \"waitForSync\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f5d014a3-9585-4889-98d7-b9c8b0f3dfbc",
+              "name": "If the transaction specification contains an unknown collection, the server\nwill respond with *HTTP 404*.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"action\": \"<string>\",\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": 18446744073709552000,\n  \"params\": {},\n  \"waitForSync\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ed8f046a-7117-4273-aa9c-87ee176f7e95",
+              "name": "Exceptions thrown by users will make the server respond with a return code of\n*HTTP 500*\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"action\": \"<string>\",\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": 18446744073709552000,\n  \"params\": {},\n  \"waitForSync\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cb8946c4-38f6-49d3-9c10-321d1a598022",
+          "name": "Begin a Stream Transaction",
+          "request": {
+            "name": "Begin a Stream Transaction",
+            "description": {
+              "content": "Begin a Stream Transaction that allows clients to call selected APIs over a\nshort period of time, referencing the transaction ID, and have the server\nexecute the operations transactionally.\n\nCommitting or aborting a running transaction must be done by the client.\nIt is bad practice to not commit or abort a transaction once you are done\nusing it. It forces the server to keep resources and collection locks\nuntil the entire transaction times out.\n\nThe transaction description must be passed in the body of the POST request.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "transaction",
+                "begin"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThis header decides about dirty reads for the entire transaction. Individual\nread operations, that are performed as part of the transaction, cannot override it.\n",
+                "key": "x-arango-allow-dirty-read",
+                "value": "<boolean>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": \"<integer>\",\n  \"skipFastLockRound\": false,\n  \"waitForSync\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0abeeba0-03a7-43cc-b47d-6d7e0c965e83",
+              "name": "The transaction has been started on the server.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    "begin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThis header decides about dirty reads for the entire transaction. Individual\nread operations, that are performed as part of the transaction, cannot override it.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": \"<integer>\",\n  \"skipFastLockRound\": false,\n  \"waitForSync\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 201,\n  \"result\": {\n    \"id\": \"string\",\n    \"status\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4dad0101-605a-4440-a34e-bf876574719b",
+              "name": "The transaction specification is either missing or malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    "begin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThis header decides about dirty reads for the entire transaction. Individual\nread operations, that are performed as part of the transaction, cannot override it.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": \"<integer>\",\n  \"skipFastLockRound\": false,\n  \"waitForSync\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 4064,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "269d0d75-0abc-40b4-b2cf-c845ed996cb2",
+              "name": "The transaction specification contains an unknown collection.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    "begin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Set this header to `true` to allow the Coordinator to ask any shard replica for\nthe data, not only the shard leader. This may result in \"dirty reads\".\n\nThis header decides about dirty reads for the entire transaction. Individual\nread operations, that are performed as part of the transaction, cannot override it.\n",
+                    "key": "x-arango-allow-dirty-read",
+                    "value": "<boolean>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"collections\": {\n    \"exclusive\": {},\n    \"read\": {},\n    \"write\": {}\n  },\n  \"allowImplicit\": true,\n  \"lockTimeout\": 900,\n  \"maxTransactionSize\": \"<integer>\",\n  \"skipFastLockRound\": false,\n  \"waitForSync\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7498,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "468d513d-b0ed-4c7d-a1bf-59aebe0cf53f",
+          "name": "Abort a Stream Transaction",
+          "request": {
+            "name": "Abort a Stream Transaction",
+            "description": {
+              "content": "Abort a running server-side transaction. Aborting is an idempotent operation.\nIt is not an error to abort a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: aborting an already-aborted\n  transaction returns `200` (idempotent), and aborting an already-committed\n  transaction returns `400`.\n- The first abort against an unknown identifier returns `404` and records\n  it as aborted. Subsequent aborts for the same identifier return `200`\n  until the record is garbage-collected, after which the identifier is\n  again unknown and the next abort once more returns `404`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "transaction",
+                ":transaction-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transaction-id",
+                  "description": "(Required) The transaction identifier,\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d4d92fd5-761f-4ca9-8f6c-3d7076e9ea0f",
+              "name": "The transaction has been aborted.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier,\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": {\n    \"id\": \"string\",\n    \"status\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "91a1ea4e-3a4d-4117-89e9-d41085bba8c5",
+              "name": "The transaction identifier is malformed, or the transaction is in\na state that does not allow aborting (for example, it was\nalready committed).\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier,\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 4064,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "93e6b7c1-6c41-457b-83af-35d157985b06",
+              "name": "No transaction is known under the specified identifier.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier,\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7498,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9834bdf0-1a76-4645-92c9-3fd225cb0f6c",
+          "name": "Get the status of a Stream Transaction",
+          "request": {
+            "name": "Get the status of a Stream Transaction",
+            "description": {
+              "content": "Retrieve the status of a Stream Transaction by its identifier.\n\nAfter a transaction is committed or aborted, the server remembers its\nfinal state for a limited time. During this window, querying the\ntransaction returns its final status (`committed` or `aborted`). Once\nthe server garbage-collects this record, the same identifier becomes\nunknown and the endpoint returns `404`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "transaction",
+                ":transaction-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transaction-id",
+                  "description": "(Required) The transaction identifier.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b6d78166-b95e-469f-86a8-b71f211e5c57",
+              "name": "The transaction is found and its status returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": {\n    \"id\": \"string\",\n    \"status\": \"running\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8d0eda2b-fef5-4322-a47d-4ec2fa51c951",
+              "name": "The transaction identifier is either missing or malformed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 4064,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afb0e23b-5539-419c-a401-73c89cc40b7e",
+              "name": "No transaction was found with the specified identifier.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7498,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d727f5b6-ba21-48cc-876f-b77f5931ee6f",
+          "name": "Commit a Stream Transaction",
+          "request": {
+            "name": "Commit a Stream Transaction",
+            "description": {
+              "content": "Commit a running server-side transaction. Committing is an idempotent operation.\nIt is not an error to commit a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: committing an already-committed\n  transaction returns `200` (idempotent), and committing an already-aborted\n  transaction returns `400`.\n- Once the server has garbage-collected the transaction's record, the\n  identifier is no longer known and the endpoint returns `404`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "transaction",
+                ":transaction-id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "transaction-id",
+                  "description": "(Required) The transaction identifier,\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c8056b18-4a08-41e0-8736-3a5cf9d038e8",
+              "name": "The transaction has been committed.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier,\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": false,\n  \"code\": 200,\n  \"result\": {\n    \"id\": \"string\",\n    \"status\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9c1f7d32-fce4-4faf-9ec6-16cc870d7350",
+              "name": "The transaction identifier is malformed, or the transaction is in\na state that does not allow committing (for example, it was\nalready aborted).\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier,\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 400,\n  \"errorNum\": 4064,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "052223a5-e206-45d5-aa54-d676ba0d1946",
+              "name": "No transaction is known under the specified identifier.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "transaction",
+                    ":transaction-id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "transaction-id",
+                      "description": "(Required) The transaction identifier,\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": true,\n  \"code\": 404,\n  \"errorNum\": 7498,\n  \"errorMessage\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "2dd80e28-86c4-4d54-ab7c-32eeba988169",
+    "name": "ArangoDB Core Transactions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Execute JavaScript and Stream Transactions\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,390 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Monitoring API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Monitoring",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the global server logs (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/log",
+            "params": [
+              {
+                "name": "upto",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries up to log level `upto`. Note that `upto` must be:\n- `fatal` or `0`\n- `error` or `1`\n- `warning` or `2`\n- `info` or `3`\n- `debug` or `4`\n- `trace` or `5`\n"
+              },
+              {
+                "name": "level",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries of log level `level`. Note that the query parameters\n`upto` and `level` are mutually exclusive.\n"
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries such that their log entry identifier (`lid` value)\nis greater or equal to `start`.\n"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Restricts the result to at most `size` log entries.\n"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Starts to return log entries skipping the first `offset` log entries. `offset`\nand `size` can be used for pagination.\n"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Only return the log entries containing the text specified in `search`.\n"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort the log entries either ascending (if `sort` is `asc`) or descending\n(if `sort` is `desc`) according to their `lid` values. Note that the `lid`\nimposes a chronological order.\n"
+              },
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries of the specified server. All other query parameters\nremain valid. If no serverId is given, the asked server\nwill reply. This parameter is only meaningful on Coordinators.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis endpoint should no longer be used. It is deprecated from version\n3.8.0 onward and removed in ArangoDB 4.0.\nUse `/_admin/log/entries` instead, which provides the same data in a more\nintuitive and easier to process format.\n\n\nReturns fatal, error, warning or info log messages from the server's global log.\nThe result is a JSON object with the attributes described below.\n\nThis API can be turned off via the startup option `--log.api-enabled`. In case\nthe API is disabled, all reques"
+        },
+        {
+          "info": {
+            "name": "Get the global server logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/log/entries",
+            "params": [
+              {
+                "name": "upto",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries up to log level `upto`. Note that `upto` must be:\n- `fatal` or `0`\n- `error` or `1`\n- `warning` or `2`\n- `info` or `3`\n- `debug` or `4`\n- `trace` or `5`\n"
+              },
+              {
+                "name": "level",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries of log level `level`. Note that the query parameters\n`upto` and `level` are mutually exclusive.\n"
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries such that their log entry identifier (`id` value)\nis greater or equal to `start`.\n"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Restricts the result to at most `size` log entries.\n"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Starts to return log entries skipping the first `offset` log entries. `offset`\nand `size` can be used for pagination.\n"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Only return the log entries containing the text specified in `search`.\n"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort the log entries either ascending (if `sort` is `asc`) or descending\n(if `sort` is `desc`) according to their `id` values. Note that the `id`\nimposes a chronological order.\n"
+              },
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Returns all log entries of the specified server. All other query parameters\nremain valid. If no serverId is given, the asked server\nwill reply. This parameter is only meaningful on Coordinators.\n"
+              }
+            ]
+          },
+          "docs": "Returns fatal, error, warning or info log messages from the server's global log.\nThe result is a JSON object with the following properties:\n\n- **total**: the total amount of log entries before pagination\n- **messages**: an array with log messages that matched the criteria\n\nThis API can be turned off via the startup option `--log.api-enabled`. In case\nthe API is disabled, all requests will be responded to with HTTP 403. If the\nAPI is enabled, accessing it requires admin privileges, or even superu"
+        },
+        {
+          "info": {
+            "name": "Get the server log levels",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/log/level",
+            "params": [
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Forwards the request to the specified server.\n"
+              },
+              {
+                "name": "withAppenders",
+                "value": "",
+                "type": "query",
+                "description": "Set this option to `true` to return the individual log level settings\nof all log outputs (`appenders`) as well as the `global` settings.\n\nThe response structure is as follows:\n\n```json\n{\n  \"global\": {\n    \"agency\": \"INFO\",\n    \"agencycomm\": \"INFO\",\n    \"agencystore\": \"WARNING\",\n    ...\n  },\n  \"appenders\": {\n    \"-\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    \"file:///path/to/file\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    ...\n  }\n}\n```\n"
+              }
+            ]
+          },
+          "docs": "Returns the server's current log level settings.\nThe result is a JSON object with the log topics being the object keys, and\nthe log levels being the object values.\n\nThis API can be turned off via the startup option `--log.api-enabled`. In case\nthe API is disabled, all requests will be responded to with HTTP 403. If the\nAPI is enabled, accessing it requires admin privileges, or even superuser\nprivileges, depending on the value of the `--log.api-enabled` startup option.\n"
+        },
+        {
+          "info": {
+            "name": "Set the server log levels",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_admin/log/level",
+            "params": [
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Forwards the request to the specified server.\n"
+              },
+              {
+                "name": "withAppenders",
+                "value": "",
+                "type": "query",
+                "description": "Set this option to `true` to set individual log level settings\nfor log outputs (`appenders`). The request and response structure is\nas follows:\n\n```json\n{\n  \"global\": {\n    \"agency\": \"INFO\",\n    \"agencycomm\": \"INFO\",\n    \"agencystore\": \"WARNING\",\n    ...\n  },\n  \"appenders\": {\n    \"-\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    \"file:///path/to/file\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    ...\n  }\n}\n```\n\nChanging the `global` settings affects all outputs and is the same\nas setting a log level with this option turned off.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modifies and returns the server's current log level settings.\nThe request body must be a JSON string with a log level or a JSON object with the\nlog topics being the object keys and the log levels being the object values.\n\nIf only a JSON string is specified as input, the log level is adjusted for the\n\"general\" log topic only. If a JSON object is specified as input, the log levels will\nbe set only for the log topic mentioned in the input object, but preserved for every\nother log topic.\nTo set the "
+        },
+        {
+          "info": {
+            "name": "Reset the server log levels",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_admin/log/level",
+            "params": [
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Forwards the request to the specified server.\n"
+              }
+            ]
+          },
+          "docs": "Revert the server's log level settings to the values they had at startup,\nas determined by the startup options specified on the command-line, a\nconfiguration file, and the factory defaults.\n\nThe result is a JSON object with the log topics being the object keys, and\nthe log levels being the object values.\n\nThis API can be turned off via the startup option `--log.api-enabled`. In case\nthe API is disabled, all requests will be responded to with HTTP 403. If the\nAPI is enabled, accessing it requires"
+        },
+        {
+          "info": {
+            "name": "Get the structured log settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_admin/log/structured"
+          },
+          "docs": "Returns the server's current structured log settings.\nThe result is a JSON object with the log parameters being the object keys, and\n`true` or `false` being the object values, meaning the parameters are either\nenabled or disabled.\n\nThis API can be turned off via the startup option `--log.api-enabled`. In case\nthe API is disabled, all requests will be responded to with HTTP 403. If the\nAPI is enabled, accessing it requires admin privileges, or even superuser\nprivileges, depending on the value of "
+        },
+        {
+          "info": {
+            "name": "Set the structured log settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_admin/log/structured",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modifies and returns the server's current structured log settings.\nThe request body must be a JSON object with the structured log parameters\nbeing the object keys and `true` or `false` object values, for either\nenabling or disabling the parameters.\n\nThe result is a JSON object with all available structured log parameters being\nthe object keys, and `true` or `false` being the object values, meaning the\nparameter in the object key is either enabled or disabled.\n\nThis API can be turned off via the "
+        },
+        {
+          "info": {
+            "name": "Get the metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/metrics",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              },
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Returns metrics of the specified server. If no serverId is given, the asked\nserver will reply. This parameter is only meaningful on Coordinators.\n"
+              }
+            ]
+          },
+          "docs": "Returns the instance's current metrics in Prometheus format. The\nreturned document collects all instance metrics, which are measured\nat any given time and exposes them for collection by Prometheus.\n\nThe document contains different metrics and metrics groups dependent\non the role of the queried instance. All exported metrics are\npublished with a `arangodb_` or `rocksdb_` prefix to distinguish them\nfrom other collected data.\n\nThe API then needs to be added to the Prometheus configuration file\nfor "
+        },
+        {
+          "info": {
+            "name": "Get the metrics (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/metrics/v2",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              },
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Returns metrics of the specified server. If no serverId is given, the asked\nserver will reply. This parameter is only meaningful on Coordinators.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThe `GET /_admin/metrics` and `GET /_admin/metrics/v2` endpoints return\nthe same metrics since ArangoDB v3.10.0. The latter is deprecated and\nremoved in v4.0.\n\n\nReturns the instance's current metrics in Prometheus format. The\nreturned document collects all instance metrics, which are measured\nat any given time and exposes them for collection by Prometheus.\n\nThe document contains different metrics and metrics groups dependent\non the role of the queried instance. All exported metric"
+        },
+        {
+          "info": {
+            "name": "Get recent API calls",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/server/api-calls",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\nIf `--log.recording-api-enabled` is set to `jwt`, you need to use\na superuser token to access the endpoint.\n"
+              }
+            ]
+          },
+          "docs": "Get a list of the most recent requests with a timestamp and the endpoint.\nIn cluster deployments, the list contains only those requests that were\nsubmitted to the Coordinator you call this endpoint on.\nThis feature is for debugging purposes.\n\nYou can control how much memory is used to record API calls with the\n`--server.api-recording-memory-limit` startup option.\n\nYou can disable this and the `/_admin/server/aql-queries` endpoint\nwith the `--log.recording-api-enabled` startup option.\n\nWhether AP"
+        },
+        {
+          "info": {
+            "name": "Get recent AQL queries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/server/aql-queries",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\nIf `--log.recording-api-enabled` is set to `jwt`, you need to use\na superuser token to access the endpoint.\n"
+              }
+            ]
+          },
+          "docs": "Get a list of the most recent AQL queries with a timestamp and\ninformation about the submitted query. In cluster deployments, the list\ncontains only those queries that were submitted to the Coordinator you\ncall this endpoint on. This feature is for debugging purposes.\n\nYou can control how much memory is used to record AQL queries with the\n`--server.aql-recording-memory-limit` startup option.\n\nYou can disable this and the `/_admin/server/api-calls` endpoint\nwith the `--log.recording-api-enabled` "
+        },
+        {
+          "info": {
+            "name": "Get the statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/statistics",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis endpoint should no longer be used. It is deprecated from\nversion 3.8.0 onward and removed in ArangoDB v4.0.\nUse `GET /_admin/metrics` instead, which provides the data exposed by\nthis API and a lot more.\n\n\nReturns the statistics information. The returned object contains the\nstatistics figures grouped together according to the description returned by\n`/_admin/statistics-description`. For instance, to access a figure `userTime`\nfrom the group `system`, you first select the sub-o"
+        },
+        {
+          "info": {
+            "name": "Get the statistics description",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/statistics-description",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis endpoint should no longer be used. It is deprecated from\nversion 3.8.0 onward and removed in ArangoDB v4.0.\nUse `GET /_admin/metrics` instead, which provides the data exposed by the\nstatistics API and a lot more.\n\n\nReturns a description of the statistics returned by `/_admin/statistics`.\nThe returned objects contains an array of statistics groups in the attribute\n`groups` and an array of statistics figures in the attribute `figures`.\n\nA statistics group is described by\n\n- `gr"
+        },
+        {
+          "info": {
+            "name": "Get the usage metrics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/usage-metrics",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              },
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "Returns the usage metrics of the specified server (`PRMR-...`).\nIf no `serverId` is specified, the asked server replies.\nThis parameter is only meaningful on Coordinators.\n"
+              }
+            ]
+          },
+          "docs": "Returns detailed shard usage metrics on DB-Servers.\n\nThese metrics can be enabled by setting the\n[`--server.export-shard-usage-metrics` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serverexport-shard-usage-metrics)\nto `enabled-per-shard` to make DB-Servers collect per-shard\nusage metrics, or to `enabled-per-shard-per-user` to make DB-Servers collect\nusage metrics per shard and per user whenever a shard is accessed.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,1166 @@
+{
+  "item": [
+    {
+      "id": "c890343f-9f58-45b7-ba0a-66cb01a74451",
+      "name": "Hot Backups",
+      "description": {
+        "content": "Manage incremental data backups",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8c209f07-a269-4e34-b671-e4249c0900f7",
+          "name": "Create a backup",
+          "request": {
+            "name": "Create a backup",
+            "description": {
+              "content": "Creates a consistent local backup \"as soon as possible\", very much\nlike a snapshot in time, with a given label. The ambiguity in the\nphrase \"as soon as possible\" refers to the next window during which a\nglobal write lock across all databases can be obtained in order to\nguarantee consistency. Note that the backup at first resides on the\nsame machine and hard drive as the original data. Make sure to upload\nit to a remote site for an actual backup.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "backup",
+                "create"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowInconsistent\": false,\n  \"force\": false,\n  \"label\": \"<string>\",\n  \"timeout\": 120\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "88cfa213-6230-45bd-8815-e8b0db72eef8",
+              "name": "If all is well, code 201 is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"allowInconsistent\": false,\n  \"force\": false,\n  \"label\": \"<string>\",\n  \"timeout\": 120\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "e7fccb20-8bcf-4097-91f0-b91c477e7a8f",
+              "name": "If the create command is invoked with bad parameters or any HTTP\nmethod other than `POST`, then an *HTTP 400* is returned. The specifics\nare detailed in the returned error document.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"allowInconsistent\": false,\n  \"force\": false,\n  \"label\": \"<string>\",\n  \"timeout\": 120\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "49e2dc28-e284-4270-85af-c6470c797088",
+              "name": "If the operation cannot obtain a global transaction lock\nwithin the timeout, then an *HTTP 408* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"allowInconsistent\": false,\n  \"force\": false,\n  \"label\": \"<string>\",\n  \"timeout\": 120\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Request Timeout",
+              "code": 408,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "37324a38-5aa7-400b-a983-ead213414c6c",
+          "name": "Delete a backup",
+          "request": {
+            "name": "Delete a backup",
+            "description": {
+              "content": "Delete a specific local backup identified by the given `id`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "backup",
+                "delete"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e6849ecb-4637-4b8f-a464-ca169f70e139",
+              "name": "If all is well, this code 200 is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ce4a9ee5-5c2d-4591-b9a5-30d7c7671459",
+              "name": "If the delete command is invoked with bad parameters or any HTTP\nmethod other than `POST`, then an *HTTP 400* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ee941f78-a78b-4967-ab53-aa8eec6a8fc3",
+              "name": "If a backup corresponding to the identifier `id` cannot be found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "delete"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "40eed7e2-2f6d-4e58-a98d-0156ba74e6fe",
+          "name": "Download a backup from a remote repository",
+          "request": {
+            "name": "Download a backup from a remote repository",
+            "description": {
+              "content": "Download a specific local backup from a remote repository, or query\nprogress on a previously scheduled download operation, or abort\na running download operation.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "backup",
+                "download"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remoteRepository\": \"<string>\",\n  \"config\": \"<object>\",\n  \"abort\": false,\n  \"downloadId\": \"<string>\",\n  \"id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "54ee9895-793b-4dc3-b395-d2857df259c8",
+              "name": "If all is well, code 200 is returned if progress is inquired or the\noperation is aborted.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"remoteRepository\": \"<string>\",\n  \"config\": \"<object>\",\n  \"abort\": false,\n  \"downloadId\": \"<string>\",\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6dad6f90-4d60-4b83-95e0-094085ba7df5",
+              "name": "If all is well, code 202 is returned if a new operation is scheduled.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"remoteRepository\": \"<string>\",\n  \"config\": \"<object>\",\n  \"abort\": false,\n  \"downloadId\": \"<string>\",\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9faedf46-a48c-4faf-a40b-bc228edc8e71",
+              "name": "If the download command is invoked with bad parameters or any HTTP\nmethod other than `POST`, then an *HTTP 400* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"remoteRepository\": \"<string>\",\n  \"config\": \"<object>\",\n  \"abort\": false,\n  \"downloadId\": \"<string>\",\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "70a5cf3e-126a-459d-acf2-bc5be645dbfb",
+              "name": "If the authentication to the remote repository fails, then an *HTTP\n401* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"remoteRepository\": \"<string>\",\n  \"config\": \"<object>\",\n  \"abort\": false,\n  \"downloadId\": \"<string>\",\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "b538bf9a-0710-45d4-ae1b-56bf90911781",
+              "name": "If a backup corresponding to the identifier `id`  cannot be found, or if\nthere is no known download operation with the given `downloadId`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"remoteRepository\": \"<string>\",\n  \"config\": \"<object>\",\n  \"abort\": false,\n  \"downloadId\": \"<string>\",\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c21b42a1-6fe2-4441-9359-98117ce3c060",
+          "name": "List all backups",
+          "request": {
+            "name": "List all backups",
+            "description": {
+              "content": "Lists all locally found backups.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "backup",
+                "list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c91369f5-f12e-4d3a-b498-ea3595402345",
+              "name": "If all is well, code 200 is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ab5be1b9-c270-460c-9529-bac87e6121d5",
+              "name": "If the list command is invoked with bad parameters, then an *HTTP 400*\nis returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "26be9064-58a2-4a4a-8201-f6ef58b77527",
+              "name": "If an `id` or a list of ids was given and the given ids were not found\nas identifiers of a backup, an *HTTP 404 Not Found* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3d9e535a-37e3-4fb3-92ec-b84d31d75876",
+              "name": "If the list command is invoked with any HTTP\nmethod other than `POST`, then an *HTTP 405 Method Not Allowed* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Method Not Allowed",
+              "code": 405,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4b411c24-8647-4ec2-bfe3-ef4072a27fae",
+          "name": "Restore a backup",
+          "request": {
+            "name": "Restore a backup",
+            "description": {
+              "content": "Restores a consistent local backup from a\nsnapshot in time, with a given id. The backup snapshot must reside on\nthe ArangoDB service locally.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "backup",
+                "restore"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1cba0277-2eb1-44fc-b954-462f3c2f892c",
+              "name": "Is returned if the backup could be restored. Note that there is an\ninevitable discrepancy between the single server and the cluster. In a\nsingle server, the request returns successfully, but the restore is\nonly executed afterwards. In the cluster, the request only returns when\nthe restore operation has been completed successfully. The cluster\nbehavior is obviously the desired one, but in a single instance, one\ncannot keep a connection open across a restart.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "restore"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "19c73893-16e9-472b-b60f-1e2326a5edf8",
+              "name": "If the restore command is invoked with bad parameters or any HTTP\nmethod other than `POST`, then an *HTTP 400* is returned. The specifics\nare detailed in the returned error document.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "restore"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "faf147e8-9e0c-439d-89fe-c8afc3a509b4",
+          "name": "Upload a backup to a remote repository",
+          "request": {
+            "name": "Upload a backup to a remote repository",
+            "description": {
+              "content": "Upload a specific local backup to a remote repository, or query\nprogress on a previously scheduled upload operation, or abort\na running upload operation.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_admin",
+                "backup",
+                "upload"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"abort\": false,\n  \"config\": \"<object>\",\n  \"id\": \"<string>\",\n  \"remoteRepository\": \"<string>\",\n  \"uploadId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "17cb7753-ee1c-425a-a423-9c03383b57e2",
+              "name": "If all is well, code 200 is returned if progress is inquired or the\noperation is aborted.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"abort\": false,\n  \"config\": \"<object>\",\n  \"id\": \"<string>\",\n  \"remoteRepository\": \"<string>\",\n  \"uploadId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "425a5ed8-8de7-4853-b975-cf1a87c237a8",
+              "name": "If all is well, code 202 is returned if a new operation is scheduled.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"abort\": false,\n  \"config\": \"<object>\",\n  \"id\": \"<string>\",\n  \"remoteRepository\": \"<string>\",\n  \"uploadId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fbdc1dd6-c004-414f-99bc-6b4ea49b2e8d",
+              "name": "If the upload command is invoked with bad parameters or any HTTP\nmethod other than `POST`, then an *HTTP 400* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"abort\": false,\n  \"config\": \"<object>\",\n  \"id\": \"<string>\",\n  \"remoteRepository\": \"<string>\",\n  \"uploadId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c44d163a-78ab-4bd1-bea7-3561165c2253",
+              "name": "If the authentication to the remote repository fails, then an *HTTP\n400* is returned.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"abort\": false,\n  \"config\": \"<object>\",\n  \"id\": \"<string>\",\n  \"remoteRepository\": \"<string>\",\n  \"uploadId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d5068198-a6ec-42e2-aa7e-3fe15e97cc66",
+              "name": "If a backup corresponding to the identifier `id`  cannot be found, or if\nthere is no known upload operation with the given `uploadId`.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_admin",
+                    "backup",
+                    "upload"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"abort\": false,\n  \"config\": \"<object>\",\n  \"id\": \"<string>\",\n  \"remoteRepository\": \"<string>\",\n  \"uploadId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "fd225993-ac7e-4e73-9351-06366681a7cb",
+    "name": "ArangoDB Core Hot Backups API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Manage incremental data backups\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

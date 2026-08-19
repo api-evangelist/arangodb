@@ -1,0 +1,59 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Security API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Security",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Rotate the encryption at rest key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/server/encryption"
+          },
+          "docs": "Change the user-supplied encryption at rest key by sending a request without\npayload to this endpoint. The file supplied via `--rocksdb.encryption-keyfolder`\nwill be reloaded and the internal encryption key will be re-encrypted with the\nnew user key.\n\nThis is a protected API and can only be executed with superuser rights.\nThis API is not available on Coordinator nodes.\n"
+        },
+        {
+          "info": {
+            "name": "Reload the TLS data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_admin/server/tls"
+          },
+          "docs": "This API call triggers a reload of all the TLS data (server key, client-auth CA)\nand then returns a summary. The JSON response is exactly as in the corresponding\nGET request.\n\nThis is a protected API and can only be executed with superuser rights.\n"
+        },
+        {
+          "info": {
+            "name": "Get the TLS data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_admin/server/tls",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database. If the `--server.harden` startup option is enabled,\nadministrate access to the `_system` database is required.\n"
+              }
+            ]
+          },
+          "docs": "Return a summary of the TLS data. The JSON response will contain a field\n`result` with the following components:\n\n  - `keyfile`: Information about the key file.\n  - `clientCA`: Information about the Certificate Authority (CA) for\n    client certificate verification.\n\nIf server name indication (SNI) is used and multiple key files are\nconfigured for different server names, then there is an additional\nattribute `SNI`, which contains for each configured server name\nthe corresponding information abou"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

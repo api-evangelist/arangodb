@@ -1,0 +1,411 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Users API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List available users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              }
+            ]
+          },
+          "docs": "Fetches data about all users. You need the *Administrate* server access level\nin order to execute this REST call.  Otherwise, you will only get information\nabout yourself.\n\nThe call will return a JSON object with at least the following\nattributes on success:\n\n- `user`: The name of the user as a string.\n- `active`: Whether the user account is able to log in to the database system.\n- `extra`: A JSON object with extra user information. It is used by the web\n  interface to store graph viewer setting"
+        },
+        {
+          "info": {
+            "name": "Create a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new user. You need server access level *Administrate* in order to\nexecute this REST call.\n"
+        },
+        {
+          "info": {
+            "name": "Get a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user\n"
+              }
+            ]
+          },
+          "docs": "Fetches data about the specified user. You can fetch information about\nyourself or you need the *Administrate* server access level in order to\nexecute this REST call.\n"
+        },
+        {
+          "info": {
+            "name": "Replace a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the data of an existing user. This resets the user's\naccess levels for databases and collections. You need server access level\n*Administrate* in order to execute this REST call. Additionally, users can\nchange their own data.\n"
+        },
+        {
+          "info": {
+            "name": "Update a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially modifies the data of an existing user. You need server access level\n*Administrate* in order to execute this REST call. Additionally, users can\nchange their own data.\n"
+        },
+        {
+          "info": {
+            "name": "Remove a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user\n"
+              }
+            ]
+          },
+          "docs": "Removes an existing user, identified by `user`.\n\nYou need *Administrate* permissions for the server access level in order to\nexecute this REST call.\n"
+        },
+        {
+          "info": {
+            "name": "List a user&rsquo;s accessible databases",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user/database",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user for which you want to query the databases.\n"
+              },
+              {
+                "name": "full",
+                "value": "",
+                "type": "query",
+                "description": "Return the full set of access levels for all databases and all collections.\n"
+              }
+            ]
+          },
+          "docs": "Fetch the list of databases available to the specified `user`.\n\nYou need *Administrate* permissions for the server access level in order to\nexecute this REST call.\n\nThe call will return a JSON object with the per-database access\nprivileges for the specified user. The `result` object will contain\nthe databases names as object keys, and the associated privileges\nfor the database as values.\n\nIn case you specified `full`, the result will contain the permissions\nfor the databases as well as the permi"
+        },
+        {
+          "info": {
+            "name": "Get a user&rsquo;s database access level",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user/database/:dbname",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user for which you want to query the databases.\n"
+              },
+              {
+                "name": "dbname",
+                "value": "",
+                "type": "path",
+                "description": "The name of the database to query the access level of.\n"
+              }
+            ]
+          },
+          "docs": "Fetch the database access level for a specific database\n"
+        },
+        {
+          "info": {
+            "name": "Set a user&rsquo;s database access level",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user/database/:dbname",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user.\n"
+              },
+              {
+                "name": "dbname",
+                "value": "",
+                "type": "path",
+                "description": "The name of the database to set the access level for.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the database access levels for the database `dbname` of user `user`. You\nneed the *Administrate* server access level in order to execute this REST\ncall.\n"
+        },
+        {
+          "info": {
+            "name": "Clear a user&rsquo;s database access level",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user/database/:dbname",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user.\n"
+              },
+              {
+                "name": "dbname",
+                "value": "",
+                "type": "path",
+                "description": "The name of the database to clear the access level for.\n"
+              }
+            ]
+          },
+          "docs": "Clears the database access level for the database `dbname` of user `user`. As\nconsequence, the default database access level is used. If there is no defined\ndefault database access level, it defaults to *No access*.\n\nYou need write permissions (*Administrate* access level) for the `_system`\ndatabase in order to execute this REST call.\n"
+        },
+        {
+          "info": {
+            "name": "Get a user&rsquo;s collection access level",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user/database/:dbname/:collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user for which you want to query the databases.\n"
+              },
+              {
+                "name": "dbname",
+                "value": "",
+                "type": "path",
+                "description": "The name of the database to query the access level of.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection to query the access level of.\n"
+              }
+            ]
+          },
+          "docs": "Returns the collection access level for a specific collection\n"
+        },
+        {
+          "info": {
+            "name": "Set a user&rsquo;s collection access level",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user/database/:dbname/:collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user.\n"
+              },
+              {
+                "name": "dbname",
+                "value": "",
+                "type": "path",
+                "description": "The name of the database to set the access level for.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection to set the access level for.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the collection access level for the `collection` in the database `dbname`\nfor user `user`. You need the *Administrate* server access level in order to\nexecute this REST call.\n"
+        },
+        {
+          "info": {
+            "name": "Clear a user&rsquo;s collection access level",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/user/:user/database/:dbname/:collection",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. Which database you use doesn't matter as long\nas the user account you authenticate with has at least read access\nto this database and administrate access to the `_system` database.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "path",
+                "description": "The name of the user.\n"
+              },
+              {
+                "name": "dbname",
+                "value": "",
+                "type": "path",
+                "description": "The name of the database to clear the access level for.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "path",
+                "description": "The name of the collection to clear the access level for.\n"
+              }
+            ]
+          },
+          "docs": "Clears the collection access level for the collection `collection` in the\ndatabase `dbname` of user `user`. As consequence, the default collection\naccess level is used. If there is no defined default collection access level,\nit defaults to *No access*.\n\nYou need write permissions (*Administrate* access level) for the `_system`\ndatabase in order to execute this REST call.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

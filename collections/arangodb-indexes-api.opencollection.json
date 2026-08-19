@@ -1,0 +1,337 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Indexes API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Indexes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all indexes of a collection",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              },
+              {
+                "name": "withStats",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include figures and estimates in the result.\n"
+              },
+              {
+                "name": "withHidden",
+                "value": "",
+                "type": "query",
+                "description": "Whether to include hidden indexes in the result. Internal indexes\n(such as `arangosearch`) and ones that are currently built in the\nbackground are hidden.\n"
+              }
+            ]
+          },
+          "docs": "Returns an object with an `indexes` attribute containing an array of all\nindex descriptions for the given collection. The same information is also\navailable in the `identifiers` attribute as an object with the index identifiers\nas object keys.\n"
+        },
+        {
+          "info": {
+            "name": "Create an index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new index in the collection `collection`. Expects\nan object containing the index details.\n\nThe type of the index to be created must specified in the **type**\nattribute of the index details. Depending on the index type, additional\nother attributes may need to specified in the request in order to create\nthe index.\n\nIndexes require the to be indexed attribute(s) in the **fields** attribute\nof the index details. Depending on the index type, a single attribute or\nmultiple attributes can be "
+        },
+        {
+          "info": {
+            "name": "Create a full-text index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index#fulltext",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **WARNING:**\nThe fulltext index type is deprecated from version 3.10 onwards.\n\n\nCreates a fulltext index for the collection `collection-name`, if\nit does not already exist. The call expects an object containing the index\ndetails.\n"
+        },
+        {
+          "info": {
+            "name": "Create a geo-spatial index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index#geo",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a geo-spatial index in the collection `collection`, if\nit does not already exist.\n\nGeo indexes are always sparse, meaning that documents that do not contain\nthe index attributes or have non-numeric values in the index attributes\nwill not be indexed.\n"
+        },
+        {
+          "info": {
+            "name": "Create an inverted index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index#inverted",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an inverted index for the collection `collection-name`, if\nit does not already exist. The call expects an object containing the index\ndetails.\n"
+        },
+        {
+          "info": {
+            "name": "Create a multi-dimensional index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index#mdi",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a multi-dimensional index for the collection `collection-name`, if\nit does not already exist.\n"
+        },
+        {
+          "info": {
+            "name": "Create a persistent index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index#persistent",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a persistent index for the collection `collection-name`, if\nit does not already exist.\n\nIn a sparse index all documents will be excluded from the index that do not\ncontain at least one of the specified index attributes (i.e. `fields`) or that\nhave a value of `null` in any of the specified index attributes. Such documents\nwill not be indexed, and not be taken into account for uniqueness checks if\nthe `unique` flag is set.\n\nIn a non-sparse index, these documents will be indexed (for non-pr"
+        },
+        {
+          "info": {
+            "name": "Create a TTL index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index#ttl",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a time-to-live (TTL) index for the collection `collection-name` if it\ndoes not already exist.\n"
+        },
+        {
+          "info": {
+            "name": "Create a vector index",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index#vector",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The collection name.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a vector index for the collection `collection-name`, if\nit does not already exist.\n"
+        },
+        {
+          "info": {
+            "name": "Get an index",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index/:index-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "index-id",
+                "value": "",
+                "type": "path",
+                "description": "The index identifier.\n"
+              }
+            ]
+          },
+          "docs": "The result is an object describing the index. It has at least the following\nattributes:\n\n- `id`: the identifier of the index\n\n- `type`: the index type\n\nAll other attributes are type-dependent. For example, some indexes provide\n`unique` or `sparse` flags, whereas others don't. Some indexes also provide\na selectivity estimate in the `selectivityEstimate` attribute of the result.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an index",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/index/:index-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "index-id",
+                "value": "",
+                "type": "path",
+                "description": "The index id.\n"
+              }
+            ]
+          },
+          "docs": "Deletes an index with `index-id`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

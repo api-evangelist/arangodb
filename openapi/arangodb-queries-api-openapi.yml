@@ -1,0 +1,4926 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Queries API
+  version: 3.12.10 (API v0)
+  description: Run, process, and manage AQL queries
+tags:
+- description: Run, process, and manage AQL queries
+  name: Queries
+paths:
+  /_db/{database-name}/_api/aqlfunction:
+    get:
+      deprecated: true
+      description: 'Returns all registered user-defined functions (UDFs) for the use in AQL of the
+
+        current database.
+
+
+        The call returns a JSON array with status codes and all user functions found under `result`.
+
+        '
+      operationId: listAqlUserFunctions
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Returns all registered AQL user functions from the specified namespace.
+
+          '
+        in: query
+        name: namespace
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'All functions, or the ones matching the `namespace` parameter
+
+                      '
+                    items:
+                      properties:
+                        code:
+                          description: 'A string representation of the function body
+
+                            '
+                          type: string
+                        isDeterministic:
+                          description: 'Whether the function results are fully deterministic, i.e.
+
+                            the function return value solely depends on the input value
+
+                            and the return value is the same for repeated calls with same
+
+                            input.
+
+
+                            This attribute is currently not used but may be used for
+
+                            optimizations in the future.
+
+                            '
+                          type: boolean
+                        name:
+                          description: 'The fully qualified name of the user function
+
+                            '
+                          type: string
+                      required:
+                      - name
+                      - code
+                      - isDeterministic
+                      type: object
+                    type: array
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'on success *HTTP 200* is returned.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'If the user function name is malformed, the server will respond with *HTTP 400*.
+
+            '
+      summary: List the registered user-defined AQL functions
+      tags:
+      - Queries
+    post:
+      deprecated: true
+      description: 'Registers a user-defined function (UDF) written in JavaScript for the use in
+
+        AQL queries in the current database.
+
+
+        In case of success, HTTP 200 is returned.
+
+        If the function isn''t valid etc. HTTP 400 including a detailed error message will be returned.
+
+        '
+      operationId: createAqlUserFunction
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                code:
+                  description: 'A string representation of the JavaScript function definition.
+
+                    '
+                  type: string
+                isDeterministic:
+                  default: false
+                  description: 'Whether the function results are fully deterministic, i.e.
+
+                    the function return value solely depends on the input value
+
+                    and the return value is the same for repeated calls with same
+
+                    input.
+
+
+                    This attribute is currently not used but may be used for
+
+                    optimizations in the future.
+
+                    '
+                  type: boolean
+                name:
+                  description: 'The fully qualified name of the user functions.
+
+                    '
+                  type: string
+              required:
+              - name
+              - code
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  isNewlyCreated:
+                    description: 'boolean flag to indicate whether the function was newly created (`false` in this case)
+
+                      '
+                    type: boolean
+                required:
+                - error
+                - code
+                - isNewlyCreated
+                type: object
+          description: 'If the function already existed and was replaced by the
+
+            call, the server will respond with *HTTP 200*.
+
+            '
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 201
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  isNewlyCreated:
+                    description: 'boolean flag to indicate whether the function was newly created (`true` in this case)
+
+                      '
+                    type: boolean
+                required:
+                - error
+                - code
+                - isNewlyCreated
+                type: object
+          description: 'If the function can be registered by the server, the server will respond with
+
+            *HTTP 201*.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'If the JSON representation is malformed or mandatory data is missing from the
+
+            request, the server will respond with *HTTP 400*.
+
+            '
+      summary: Create a user-defined AQL function
+      tags:
+      - Queries
+  /_db/{database-name}/_api/aqlfunction/{name}:
+    delete:
+      deprecated: true
+      description: 'Deletes an existing user-defined function (UDF) or function group identified by
+
+        `name` from the current database.
+
+        '
+      operationId: deleteAqlUserFunction
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'the name of the AQL user function.
+
+          '
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: "Possible values:\n- `true`: The function name provided in `name` is treated as\n  a namespace prefix, and all functions in the specified namespace will be deleted.\n  The returned number of deleted functions may become 0 if none matches the string.\n- `false`: The function name provided in `name` must be fully\n  qualified, including any namespaces. If none matches the `name`, HTTP 404 is returned.\n"
+        in: query
+        name: group
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  deletedCount:
+                    description: 'The number of deleted user functions, always `1` when `group` is set to `false`.
+
+                      Any number `>= 0` when `group` is set to `true`.
+
+                      '
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                required:
+                - error
+                - code
+                - deletedCount
+                type: object
+          description: 'If the function can be removed by the server, the server will respond with
+
+            *HTTP 200*.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'If the user function name is malformed, the server will respond with *HTTP 400*.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'If the specified user function does not exist, the server will respond with *HTTP 404*.
+
+            '
+      summary: Remove a user-defined AQL function
+      tags:
+      - Queries
+  /_db/{database-name}/_api/cursor:
+    post:
+      description: 'Submits an AQL query for execution in the current database. The server returns
+
+        a result batch and may indicate that further batches need to be fetched using
+
+        a cursor identifier.
+
+
+        The query details include the query string plus optional query options and
+
+        bind parameters. These values need to be passed in a JSON representation in
+
+        the body of the POST request.
+
+        '
+      operationId: createAqlQueryCursor
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Set this header to `true` to allow the Coordinator to ask any shard replica for
+
+          the data, not only the shard leader. This may result in "dirty reads".
+
+
+          The header is ignored if this operation is part of a Stream Transaction
+
+          (`x-arango-trx-id` header). The header set when creating the transaction decides
+
+          about dirty reads for the entire transaction, not the individual read operations.
+
+          '
+        in: header
+        name: x-arango-allow-dirty-read
+        required: false
+        schema:
+          type: boolean
+      - description: 'To make this operation a part of a Stream Transaction, set this header to the
+
+          transaction ID returned by the `POST /_api/transaction/begin` call.
+
+          '
+        in: header
+        name: x-arango-trx-id
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                batchSize:
+                  default: 1000
+                  description: 'The maximum number of result documents to be transferred from
+
+                    the server to the client in one roundtrip. If this attribute is
+
+                    not set, a server-controlled default value will be used. A `batchSize` value of
+
+                    `0` is disallowed.
+
+                    '
+                  type: integer
+                bindVars:
+                  description: 'An object with key/value pairs representing the bind parameters.
+
+                    For a bind variable `@var` in the query, specify the value using an attribute
+
+                    with the name `var`. For a collection bind variable `@@coll`, use `@coll` as the
+
+                    attribute name. For example: `"bindVars": { "var": 42, "@coll": "products" }`.
+
+                    '
+                  type: object
+                count:
+                  default: false
+                  description: 'Whether the number of documents in the result set should be returned in
+
+                    the `count` attribute of the result.
+
+                    Calculating this count might have a performance impact for some queries
+
+                    in the future, so this option is turned off by default and `count`
+
+                    is only returned when requested.
+
+                    '
+                  type: boolean
+                memoryLimit:
+                  description: 'The maximum amount of memory (in bytes) that the query is allowed to
+
+                    use. If set, then the query fails with error "resource limit exceeded" in
+
+                    case it allocates too much memory. A value of `0` indicates that there is
+
+                    no memory limit, but the [`--query.global-memory-limit` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryglobal-memory-limit)
+
+                    may still limit it.
+
+
+                    Default: You can configure a default per-query memory limit with the
+
+                    [`--query.memory-limit` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querymemory-limit). You can only increase
+
+                    this default memory limit if `--query.memory-limit-override`
+
+                    is enabled.
+
+                    '
+                  type: integer
+                options:
+                  description: 'key/value object with extra options for the query.
+
+                    '
+                  properties:
+                    allowDirtyReads:
+                      default: false
+                      description: 'If you set this option to `true` and execute the query against a cluster
+
+                        deployment, then the Coordinator is allowed to read from any shard replica and
+
+                        not only from the leader.
+
+
+                        You may observe data inconsistencies (dirty reads) when reading from followers,
+
+                        namely obsolete revisions of documents because changes have not yet been
+
+                        replicated to the follower, as well as changes to documents before they are
+
+                        officially committed on the leader.
+
+
+                        The option is ignored if this operation is part of a Stream Transaction
+
+                        (`x-arango-trx-id` header). The `x-arango-allow-dirty-read` header set
+
+                        when creating the transaction decides about dirty reads for the entire
+
+                        transaction, not the individual read operations.
+
+                        '
+                      type: boolean
+                    allowRetry:
+                      default: false
+                      description: 'Set this option to `true` to make it possible to retry
+
+                        fetching the latest batch from a cursor.
+
+
+                        If retrieving a result batch fails because of a connection issue, you can ask
+
+                        for that batch again using the `POST /_api/cursor/<cursor-id>/<batch-id>`
+
+                        endpoint. The first batch has an ID of `1` and the value is incremented by 1
+
+                        with every batch. Every result response except the last one also includes a
+
+                        `nextBatchId` attribute, indicating the ID of the batch after the current.
+
+                        You can remember and use this batch ID should retrieving the next batch fail.
+
+
+                        You can only request the latest batch again (or the next batch).
+
+                        Earlier batches are not kept on the server-side.
+
+                        Requesting a batch again does not advance the cursor.
+
+
+                        You can also call this endpoint with the next batch identifier, i.e. the value
+
+                        returned in the `nextBatchId` attribute of a previous request. This advances the
+
+                        cursor and returns the results of the next batch. This is only supported if there
+
+                        are more results in the cursor (i.e. `hasMore` is `true` in the latest batch).
+
+
+                        From v3.11.1 onward, you may use the `POST /_api/cursor/<cursor-id>/<batch-id>`
+
+                        endpoint even if the `allowRetry` attribute is `false` to fetch the next batch,
+
+                        but you cannot request a batch again unless you set it to `true`.
+
+
+                        To allow refetching of the very last batch of the query, the server cannot
+
+                        automatically delete the cursor. After the first attempt of fetching the last
+
+                        batch, the server would normally delete the cursor to free up resources. As you
+
+                        might need to reattempt the fetch, it needs to keep the final batch when the
+
+                        `allowRetry` option is enabled. Once you successfully received the last batch,
+
+                        you should call the `DELETE /_api/cursor/<cursor-id>` endpoint so that the
+
+                        server doesn''t unnecessarily keep the batch until the cursor times out
+
+                        (`ttl` query option).
+
+                        '
+                      type: boolean
+                    cache:
+                      description: 'Whether the [AQL query results cache](https://docs.arango.ai/arangodb/3.12/aql/execution-and-performance/caching-query-results/)
+
+                        shall be used for adding as well as for retrieving results.
+
+
+                        If the query cache mode is set to `demand` and you set the `cache` query option
+
+                        to `true` for a query, then its query result is cached if it''s eligible for
+
+                        caching. If the query cache mode is set to `on`, query results are automatically
+
+                        cached if they are eligible for caching unless you set the `cache` option to `false`.
+
+
+                        If you set the `cache` option to `false`, then any query cache lookup is skipped
+
+                        for the query. If you set it to `true`, the query cache is checked for a cached result
+
+                        **if** the query cache mode is either set to `on` or `demand`.
+
+
+                        Default: Controlled by the [`--query.cache-mode` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querycache-mode).
+
+                        '
+                      type: boolean
+                    failOnWarning:
+                      description: 'If set to `true`, the query throws an exception and aborts instead of producing
+
+                        a warning. You should use this option during development to catch potential issues
+
+                        early. When the attribute is set to `false`, warnings are not propagated to
+
+                        exceptions and are returned with the query result.
+
+
+                        Default: Controlled by the [`--query.fail-on-warning` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryfail-on-warning),
+
+                        so you don''t need to set it on a per-query basis.
+
+                        '
+                      type: boolean
+                    fillBlockCache:
+                      default: true
+                      description: 'If set to `true`, then the query stores the data it
+
+                        reads via the RocksDB storage engine in the RocksDB block cache. This is usually
+
+                        the desired behavior. The option can be set to `false` for queries that are
+
+                        known to either read a lot of data which would thrash the block cache, or for queries
+
+                        that read data which are known to be outside of the hot set. By setting the option
+
+                        to `false`, data read by the query does not make it into the RocksDB block cache if
+
+                        not already in there, thus leaving more room for the actual hot set.
+
+                        '
+                      type: boolean
+                    fullCount:
+                      default: false
+                      description: 'If set to `true` and the query contains a `LIMIT` clause, then the
+
+                        result will have an `extra` attribute with the sub-attributes `stats`
+
+                        and `fullCount`, `{ ... , "extra": { "stats": { "fullCount": 123 } } }`.
+
+                        The `fullCount` attribute will contain the number of documents in the result before the
+
+                        last top-level LIMIT in the query was applied. It can be used to count the number of
+
+                        documents that match certain filter criteria, but only return a subset of them, in one go.
+
+                        It is thus similar to MySQL''s *SQL_CALC_FOUND_ROWS* hint. Note that setting the option
+
+                        will disable a few LIMIT optimizations and may lead to more documents being processed,
+
+                        and thus make queries run longer. Note that the `fullCount` attribute may only
+
+                        be present in the result if the query has a top-level LIMIT clause and the LIMIT
+
+                        clause is actually used in the query.
+
+                        '
+                      type: boolean
+                    intermediateCommitCount:
+                      description: 'The maximum number of operations after which an intermediate commit is performed
+
+                        automatically.
+
+
+                        Default: Controlled by the [`--rocksdb.intermediate-commit-count` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--rocksdbintermediate-commit-count).
+
+                        '
+                      type: integer
+                    intermediateCommitSize:
+                      description: 'The maximum total size of operations after which an intermediate commit is performed
+
+                        automatically.
+
+
+                        Default: Controlled by [`--rocksdb.intermediate-commit-size` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--rocksdbintermediate-commit-size).
+
+                        '
+                      type: integer
+                    maxDNFConditionMembers:
+                      description: 'A threshold for the maximum number of `OR` sub-nodes in the internal
+
+                        representation of an AQL `FILTER` condition.
+
+
+                        Yon can use this option to limit the computation time and memory usage when
+
+                        converting complex AQL `FILTER` conditions into the internal DNF
+
+                        (disjunctive normal form) format. `FILTER` conditions with a lot of logical
+
+                        branches (`AND`, `OR`, `NOT`) can take a large amount of processing time and
+
+                        memory. This query option limits the computation time and memory usage for
+
+                        such conditions.
+
+
+                        Once the threshold value is reached during the DNF conversion of a `FILTER`
+
+                        condition, the conversion is aborted, and the query continues with a simplified
+
+                        internal representation of the condition, which **cannot be used for index lookups**.
+
+
+                        Default: Controlled by the [`--query.max-dnf-condition-members` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querymax-dnf-condition-members)
+
+                        to set the threshold globally instead of per query.
+
+                        '
+                      type: integer
+                    maxNodesPerCallstack:
+                      description: 'The number of execution nodes in the query plan after that stack splitting is
+
+                        performed to avoid a potential stack overflow.
+
+
+                        This option is only useful for testing and debugging and normally does not need
+
+                        any adjustment.
+
+
+                        Default: Controlled by the [`--query.max-nodes-per-callstack` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querymax-nodes-per-callstack).
+
+                        '
+                      type: integer
+                    maxNumberOfPlans:
+                      description: 'Limits the maximum number of plans that are created by the AQL query optimizer.
+
+
+                        Default: Controlled by the [`--query.optimizer-max-plans` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryoptimizer-max-plans).
+
+                        '
+                      type: integer
+                    maxRuntime:
+                      description: 'The query has to be executed within the given runtime or it is killed.
+
+                        The value is specified in seconds. A value of `0.0` means no timeout.
+
+
+                        Default: Controlled by the [`--query.max-runtime` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querymax-runtime).
+
+                        '
+                      type: number
+                    maxTransactionSize:
+                      description: 'The transaction size limit in bytes.
+
+
+                        Default: Controlled by the [`--rocksdb.max-transaction-size` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--rocksdbmax-transaction-size).
+
+                        '
+                      type: integer
+                    maxWarningCount:
+                      default: 10
+                      description: 'Limits the number of warnings a query can return.
+
+                        You can increased or decreased the number with this option.
+
+                        '
+                      type: integer
+                    optimizer:
+                      description: 'Options related to the query optimizer.
+
+                        '
+                      properties:
+                        rules:
+                          description: 'A list of optimizer rules, telling the optimizer to
+
+                            include or exclude specific rules. See the
+
+                            [List of optimizer rules](https://docs.arango.ai/arangodb/3.12/aql/execution-and-performance/query-optimization/#list-of-optimizer-rules).
+
+
+                            To disable a rule, prefix its name with `-`. To enable a rule,
+
+                            prefix it with `+`. There is also a pseudo-rule `all` that
+
+                            matches all optimizer rules. `-all` disables all rules.
+
+                            '
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    profile:
+                      default: 0
+                      description: 'If set to `true` or `1`, then the additional query profiling information is returned
+
+                        in the `profile` sub-attribute of the `extra` return attribute, unless the query result
+
+                        is served from the query results cache. If set to `2`, the query includes execution stats
+
+                        per query plan node in `stats.nodes` sub-attribute of the `extra` return attribute.
+
+                        Additionally, the query plan is returned in the `extra.plan` sub-attribute.
+
+                        '
+                      type: integer
+                    satelliteSyncWait:
+                      default: 60
+                      description: 'How long a DB-Server has time (in seconds) to bring the SatelliteCollections
+
+                        involved in the query into sync. When the maximal time is reached, the query is stopped.
+
+                        '
+                      type: number
+                    skipInaccessibleCollections:
+                      default: false
+                      description: 'Let AQL queries (especially graph traversals) treat collections to which a user
+
+                        has no access rights for as if these collections are empty. Instead of returning a
+
+                        forbidden access error, your queries execute normally. This is intended to help
+
+                        with certain use-cases: A graph contains several collections and different users
+
+                        execute AQL queries on that graph. You can naturally limit the accessible
+
+                        results by changing the access rights of users on collections.
+
+                        '
+                      type: boolean
+                    spillOverThresholdMemoryUsage:
+                      description: 'This option allows queries to store intermediate and final results temporarily
+
+                        on disk if the amount of memory used (in bytes) exceeds the specified value.
+
+                        This is used for decreasing the memory usage during the query execution.
+
+
+                        This option only has an effect on queries that use the `SORT` operation but
+
+                        without a `LIMIT`, and if you enable the spillover feature by setting a path
+
+                        for the directory to store the temporary data in with the
+
+                        [`--temp.intermediate-results-path` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--tempintermediate-results-path).
+
+
+                        Default: 128 MiB, respectively the value of the
+
+                        [`--temp.intermediate-results-spillover-threshold-memory-usage` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--tempintermediate-results-spillover-threshold-memory-usage).
+
+
+                        > **INFO:**
+
+                        Spilling data from RAM onto disk is an experimental feature and is turned off
+
+                        by default. The query results are still built up entirely in RAM on Coordinators
+
+                        and single servers for non-streaming queries. To avoid the buildup of
+
+                        the entire query result in RAM, use a streaming query (see the `stream` option).
+
+                        '
+                      type: integer
+                    spillOverThresholdNumRows:
+                      description: 'This option allows queries to store intermediate and final results temporarily
+
+                        on disk if the number of rows produced by the query exceeds the specified value.
+
+                        This is used for decreasing the memory usage during the query execution. In a
+
+                        query that iterates over a collection that contains documents, each row is a
+
+                        document, and in a query that iterates over temporary values
+
+                        (i.e. `FOR i IN 1..100`), each row is one of such temporary values.
+
+
+                        This option only has an effect on queries that use the `SORT` operation but
+
+                        without a `LIMIT`, and if you enable the spillover feature by setting a path
+
+                        for the directory to store the temporary data in with the
+
+                        [`--temp.intermediate-results-path` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--tempintermediate-results-path).
+
+
+                        Default: 5 million rows, respectively the value of the
+
+                        [`--temp.intermediate-results-spillover-threshold-num-rows` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--tempintermediate-results-spillover-threshold-num-rows).
+
+
+                        > **INFO:**
+
+                        Spilling data from RAM onto disk is an experimental feature and is turned off
+
+                        by default. The query results are still built up entirely in RAM on Coordinators
+
+                        and single servers for non-streaming queries. To avoid the buildup of
+
+                        the entire query result in RAM, use a streaming query (see the `stream` option).
+
+                        '
+                      type: integer
+                    stream:
+                      default: false
+                      description: "Can be enabled to execute the query lazily. If set to `true`, then the query is\nexecuted as long as necessary to produce up to `batchSize` results. These\nresults are returned immediately and the query is suspended until the client\nasks for the next batch (if there are more results). Depending on the query\nthis can mean that the first results will be available much faster and that\nless memory is needed because the server only needs to store a subset of\nresults at a time. Read-only queries can benefit the most, unless `SORT`\nwithout index or `COLLECT` are involved that make it necessary to process all\ndocuments before a partial result can be returned. It is advisable to only use\nthis option for queries without exclusive locks.\n\nRemarks:\n- The query will hold resources until it ends (such as RocksDB snapshots, which\n  prevents compaction to some degree). Writes will be in memory until the query\n  is committed.\n- If existing documents are modified, then write locks are held on these\n  documents and other queries trying to modify the same documents will fail\n  because of this conflict.\n- A streaming query may fail late because of a conflict or for other reasons\n  after some batches were already returned successfully, possibly rendering the\n  results up to that point meaningless.\n- The query options `cache`, `count` and `fullCount` are not supported for\n  streaming queries.\n- Query statistics, profiling data and warnings are delivered as part of the\n  last batch.\n\nIf the `stream` option is `false`, then the complete result of the\nquery is calculated before any of it is returned to the client. The server\nstores the full result in memory (on the contacted Coordinator if in a cluster).\nAll other resources are freed immediately (locks, RocksDB snapshots). The query\nwill fail before it returns results in case of a conflict.\n"
+                      type: boolean
+                    usePlanCache:
+                      default: false
+                      description: 'Set this option to `true` to utilize a cached query plan or add the execution plan
+
+                        of this query to the cache if it''s not in the cache yet. Otherwise, the plan cache
+
+                        is bypassed (introduced in v3.12.4).
+
+
+                        Query plan caching can reduce the total time for processing queries by avoiding
+
+                        to parse, plan, and optimize queries over and over again that effectively have
+
+                        the same execution plan with at most some changes to bind parameter values.
+
+
+                        An error is raised if a query doesn''t meet the requirements for plan caching.
+
+                        See [Cache eligibility](https://docs.arango.ai/arangodb/3.12/aql/execution-and-performance/caching-query-plans/#cache-eligibility)
+
+                        for details.
+
+                        '
+                      type: boolean
+                  type: object
+                query:
+                  description: 'The AQL query string to execute.
+
+                    '
+                  type: string
+                ttl:
+                  description: 'The time-to-live for the cursor (in seconds). If the result set is small enough
+
+                    (less than or equal to `batchSize`) then results are returned right away.
+
+                    Otherwise they are stored in memory and will be accessible via the cursor with
+
+                    respect to the `ttl`. The cursor will be removed on the server automatically
+
+                    after the specified amount of time. This is useful to ensure garbage collection
+
+                    of cursors that are not fully fetched by clients.
+
+
+                    The time-to-live is renewed upon every access to the cursor.
+
+
+                    Default: Controlled by the [`--query.registry-ttl` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryregistry-ttl).
+
+                    If not set, the defaults are 30 seconds for single servers and 600 seconds for
+
+                    Coordinators of a cluster deployment.
+
+                    '
+                  type: number
+              required:
+              - query
+              type: object
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cached:
+                    description: 'A boolean flag indicating whether the query result was served
+
+                      from the query results cache or not. If the query result is served from the query
+
+                      cache, the `extra` attribute in the response does not contain the `stats`
+
+                      and `profile` sub-attributes.
+
+                      '
+                    type: boolean
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 201
+                    type: integer
+                  count:
+                    description: 'The total number of result documents available (only
+
+                      available if the query was executed with the `count` attribute set).
+
+                      '
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  extra:
+                    description: 'An optional JSON object with extra information about the query result.
+
+
+                      Only delivered as part of the first batch, or the last batch in case of a cursor
+
+                      with the `stream` option enabled.
+
+                      '
+                    properties:
+                      plan:
+                        description: 'The execution plan.
+
+                          '
+                        properties:
+                          collections:
+                            description: 'A list of the collections involved in the query. The list only includes the
+
+                              collections that can statically be determined at query compile time.
+
+                              '
+                            items:
+                              properties:
+                                name:
+                                  description: 'The collection name.
+
+                                    '
+                                  type: string
+                                type:
+                                  description: 'How the collection is used.
+
+                                    '
+                                  enum:
+                                  - read
+                                  - write
+                                  - exclusive
+                                  type: string
+                              required:
+                              - name
+                              - type
+                              type: object
+                            type: array
+                          estimatedCost:
+                            description: 'The estimated cost of the query.
+
+                              '
+                            type: number
+                          estimatedNrItems:
+                            description: 'The estimated number of results.
+
+                              '
+                            type: integer
+                          isModificationQuery:
+                            description: 'Whether the query contains write operations.
+
+                              '
+                            type: boolean
+                          nodes:
+                            description: 'A nested list of the execution plan nodes.
+
+                              '
+                            items:
+                              type: object
+                            type: array
+                          rules:
+                            description: 'A list with the names of the applied optimizer rules.
+
+                              '
+                            items:
+                              type: string
+                            type: array
+                          variables:
+                            description: 'All of the query variables, including user-created and internal ones.
+
+                              '
+                            items:
+                              type: object
+                            type: array
+                        required:
+                        - nodes
+                        - rules
+                        - collections
+                        - variables
+                        - estimatedCost
+                        - estimatedNrItems
+                        - isModificationQuery
+                        type: object
+                      profile:
+                        description: 'The duration of the different query execution phases in seconds.
+
+                          '
+                        properties:
+                          executing:
+                            description: ''
+                            type: number
+                          finalizing:
+                            description: ''
+                            type: number
+                          initializing:
+                            description: ''
+                            type: number
+                          instantiating executors:
+                            description: ''
+                            type: number
+                          instantiating plan:
+                            description: ''
+                            type: number
+                          loading collections:
+                            description: ''
+                            type: number
+                          optimizing ast:
+                            description: ''
+                            type: number
+                          optimizing plan:
+                            description: ''
+                            type: number
+                          parsing:
+                            description: ''
+                            type: number
+                        required:
+                        - initializing
+                        - parsing
+                        - optimizing ast
+                        - loading collections
+                        - instantiating plan
+                        - optimizing plan
+                        - instantiating executors
+                        - executing
+                        - finalizing
+                        type: object
+                      stats:
+                        description: 'An object with query statistics.
+
+                          '
+                        properties:
+                          cacheHits:
+                            description: 'The total number of index entries read from in-memory caches for indexes
+
+                              of type edge or persistent. This value is only non-zero when reading from indexes
+
+                              that have an in-memory cache enabled, and when the query allows using the in-memory
+
+                              cache (i.e. using equality lookups on all index attributes).
+
+                              '
+                            type: integer
+                          cacheMisses:
+                            description: 'The total number of cache read attempts for index entries that could not
+
+                              be served from in-memory caches for indexes of type edge or persistent. This value
+
+                              is only non-zero when reading from indexes that have an in-memory cache enabled, the
+
+                              query allows using the in-memory cache (i.e. using equality lookups on all index attributes)
+
+                              and the looked-up values are not present in the cache.
+
+                              '
+                            type: integer
+                          cursorsCreated:
+                            description: 'The total number of cursor objects created during query execution. Cursor
+
+                              objects are created for index lookups.
+
+                              '
+                            type: integer
+                          cursorsRearmed:
+                            description: 'The total number of times an existing cursor object was repurposed.
+
+                              Repurposing an existing cursor object is normally more efficient compared to destroying an
+
+                              existing cursor object and creating a new one from scratch.
+
+                              '
+                            type: integer
+                          documentLookups:
+                            description: 'The number of real document lookups caused by late materialization
+
+                              as well as `IndexNode`s that had to load document attributes not covered
+
+                              by the index. This is how many documents had to be fetched from storage after
+
+                              an index scan that initially covered the attribute access for these documents.
+
+                              '
+                            type: integer
+                          executionTime:
+                            description: 'The query execution time (wall-clock time) in seconds.
+
+                              '
+                            type: number
+                          filtered:
+                            description: 'The total number of documents removed after executing a filter condition
+
+                              in a `FilterNode` or another node that post-filters data. Note that nodes of the
+
+                              `IndexNode` type can also filter documents by selecting only the required index range
+
+                              from a collection, and the `filtered` value only indicates how much filtering was done by a
+
+                              post filter in the `IndexNode` itself or following `FilterNode` nodes.
+
+                              Nodes of the `EnumerateCollectionNode` and `TraversalNode` types can also apply
+
+                              filter conditions and can report the number of filtered documents.
+
+                              '
+                            type: integer
+                          fullCount:
+                            description: 'The total number of documents that matched the search condition if the query''s
+
+                              final top-level `LIMIT` operation were not present.
+
+                              This attribute may only be returned if the `fullCount` option was set when starting the
+
+                              query and only contains a sensible value if the query contains a `LIMIT` operation on
+
+                              the top level.
+
+                              '
+                            type: integer
+                          httpRequests:
+                            description: 'The total number of cluster-internal HTTP requests performed.
+
+                              '
+                            type: integer
+                          intermediateCommits:
+                            description: 'The number of intermediate commits performed by the query. This is only non-zero
+
+                              for write queries, and only for queries that reached either the `intermediateCommitSize`
+
+                              or `intermediateCommitCount` thresholds. Note: in a cluster, intermediate commits can happen
+
+                              on each participating DB-Server.
+
+                              '
+                            type: integer
+                          nodes:
+                            description: 'When the query is executed with the `profile` option set to at least `2`,
+
+                              then this attribute contains runtime statistics per query execution node.
+
+                              For a human-readable output, you can execute
+
+                              `db._profileQuery(<query>, <bind-vars>)` in arangosh.
+
+                              '
+                            items:
+                              properties:
+                                calls:
+                                  description: 'The number of calls to this node.
+
+                                    '
+                                  type: integer
+                                id:
+                                  description: 'The execution node ID to correlate the statistics with the `plan` returned in
+
+                                    the `extra` attribute.
+
+                                    '
+                                  type: integer
+                                items:
+                                  description: 'The number of items returned by this node. Items are the temporary results
+
+                                    returned at this stage.
+
+                                    '
+                                  type: integer
+                                runtime:
+                                  description: 'The execution time of this node in seconds.
+
+                                    '
+                                  type: number
+                              required:
+                              - id
+                              - calls
+                              - items
+                              - runtime
+                              type: object
+                            type: array
+                          peakMemoryUsage:
+                            description: 'The maximum memory usage of the query while it was running. In a cluster,
+
+                              the memory accounting is done per shard, and the memory usage reported is the peak
+
+                              memory usage value from the individual shards.
+
+                              Note that to keep things lightweight, the per-query memory usage is tracked on a relatively
+
+                              high level, not including any memory allocator overhead nor any memory used for temporary
+
+                              results calculations (e.g. memory allocated/deallocated inside AQL expressions and function
+
+                              calls).
+
+                              '
+                            type: integer
+                          scannedFull:
+                            description: 'The total number of documents iterated over when scanning a collection
+
+                              without an index. Documents scanned by subqueries are included in the result, but
+
+                              operations triggered by built-in or user-defined AQL functions are not.
+
+                              '
+                            type: integer
+                          scannedIndex:
+                            description: 'The total number of documents iterated over when scanning a collection using
+
+                              an index. Documents scanned by subqueries are included in the result, but operations
+
+                              triggered by built-in or user-defined AQL functions are not.
+
+                              '
+                            type: integer
+                          searchParallelism:
+                            description: 'The number of threads used by ArangoSearch for this
+
+                              query (introduced in v3.12.9).
+
+                              '
+                            type: integer
+                          seeks:
+                            description: 'The number of seek calls done by RocksDB iterators for merge joins
+
+                              (`JoinNode` in the execution plan).
+
+                              '
+                            type: integer
+                          writesExecuted:
+                            description: 'The total number of data-modification operations successfully executed.
+
+                              '
+                            type: integer
+                          writesIgnored:
+                            description: 'The total number of data-modification operations that were unsuccessful,
+
+                              but have been ignored because of the `ignoreErrors` query option.
+
+                              '
+                            type: integer
+                        required:
+                        - writesExecuted
+                        - writesIgnored
+                        - documentLookups
+                        - seeks
+                        - scannedFull
+                        - scannedIndex
+                        - searchParallelism
+                        - cursorsCreated
+                        - cursorsRearmed
+                        - cacheHits
+                        - cacheMisses
+                        - filtered
+                        - httpRequests
+                        - executionTime
+                        - peakMemoryUsage
+                        - intermediateCommits
+                        type: object
+                      warnings:
+                        description: 'A list of query warnings.
+
+                          '
+                        items:
+                          properties:
+                            code:
+                              description: 'An error code.
+
+                                '
+                              type: integer
+                            message:
+                              description: 'A description of the problem.
+
+                                '
+                              type: string
+                          required:
+                          - code
+                          - message
+                          type: object
+                        type: array
+                    required:
+                    - warnings
+                    - stats
+                    type: object
+                  hasMore:
+                    description: 'A boolean indicator whether there are more results
+
+                      available for the cursor on the server.
+
+
+                      Note that even if `hasMore` returns `true`, the next call might still return no
+
+                      documents. Once `hasMore` is `false`, the cursor is exhausted and the client
+
+                      can stop asking for more results.
+
+                      '
+                    type: boolean
+                  id:
+                    description: 'The ID of the cursor for fetching more result batches.
+
+                      '
+                    type: string
+                  nextBatchId:
+                    description: 'Only set if the `allowRetry` query option is enabled in v3.11.0.
+
+                      From v3.11.1 onward, this attribute is always set, except in the last batch.
+
+
+                      The ID of the batch after the current one. The first batch has an ID of `1` and
+
+                      the value is incremented by 1 with every batch. You can remember and use this
+
+                      batch ID should retrieving the next batch fail. Use the
+
+                      `POST /_api/cursor/<cursor-id>/<batch-id>` endpoint to ask for the batch again.
+
+                      You can also request the next batch.
+
+                      '
+                    type: string
+                  planCacheKey:
+                    description: 'The key of the plan cache entry. This attribute is only
+
+                      present if a cached query execution plan has been used.
+
+                      '
+                    type: string
+                  result:
+                    description: 'An array of result documents for the current batch
+
+                      (might be empty if the query has no results).
+
+                      '
+                    type: array
+                required:
+                - error
+                - code
+                - hasMore
+                - cached
+                type: object
+          description: 'is returned if the result set can be created by the server.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+
+                      If the query specification is complete, the server will process the query. If an
+
+                      error occurs during query processing, the server will respond with *HTTP 400*.
+
+                      Again, the body of the response will contain details about the error.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The JSON representation is malformed, the query specification is
+
+            missing from the request, or the query is invalid.
+
+
+            The body of the response contains a JSON object with additional error
+
+            details.
+
+            '
+        '404':
+          description: 'A non-existing collection is accessed in the query.
+
+
+            This error also occurs if you try to run this operation as part of a
+
+            Stream Transaction but the transaction ID specified in the
+
+            `x-arango-trx-id` header is unknown to the server.
+
+            '
+        '405':
+          description: 'An unsupported HTTP method is used.
+
+            '
+        '410':
+          description: 'A server which processes the query or the leader of a shard which is used
+
+            in the query stops responding, but the connection has not been closed.
+
+
+            This error also occurs if you try to run this operation as part of a
+
+            Stream Transaction that has just been canceled or timed out.
+
+            '
+        '503':
+          description: 'A server which processes the query or the leader of a shard which is used
+
+            in the query is down, either for going through a restart, a failure, or
+
+            connectivity issues.
+
+            '
+      summary: Create a cursor
+      tags:
+      - Queries
+  /_db/{database-name}/_api/cursor/{cursor-identifier}:
+    delete:
+      description: 'Deletes the cursor and frees the resources associated with it.
+
+
+        The cursor will automatically be destroyed on the server when the client has
+
+        retrieved all documents from it. The client can also explicitly destroy the
+
+        cursor at any earlier time using an HTTP DELETE request. The cursor identifier must
+
+        be included as part of the URL.
+
+
+        Note: the server will also destroy abandoned cursors automatically after a
+
+        certain server-controlled timeout to avoid resource leakage.
+
+        '
+      operationId: deleteAqlQueryCursor
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The identifier of the cursor
+
+          '
+        in: path
+        name: cursor-identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: 'The server is aware of the cursor.
+
+            '
+        '404':
+          description: 'The server is not aware of the cursor. This is also
+
+            returned if a cursor is used after it has been destroyed.
+
+            '
+      summary: Delete a cursor
+      tags:
+      - Queries
+    post:
+      description: 'If the cursor is still alive, returns an object with the next query result batch.
+
+
+        If the cursor is not fully consumed, the time-to-live for the cursor
+
+        is renewed by this API call.
+
+        '
+      operationId: getNextAqlQueryCursorBatch
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the cursor
+
+          '
+        in: path
+        name: cursor-identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cached:
+                    description: 'A boolean flag indicating whether the query result was served
+
+                      from the query results cache or not. If the query result is served from the query
+
+                      cache, the `extra` attribute in the response does not contain the `stats`
+
+                      and `profile` sub-attributes.
+
+                      '
+                    type: boolean
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  count:
+                    description: 'The total number of result documents available (only
+
+                      available if the query was executed with the `count` attribute set).
+
+                      '
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  extra:
+                    description: 'An optional JSON object with extra information about the query result.
+
+
+                      Only delivered as part of the first batch, or the last batch in case of a cursor
+
+                      with the `stream` option enabled.
+
+                      '
+                    properties:
+                      plan:
+                        description: 'The execution plan.
+
+                          '
+                        properties:
+                          collections:
+                            description: 'A list of the collections involved in the query. The list only includes the
+
+                              collections that can statically be determined at query compile time.
+
+                              '
+                            items:
+                              properties:
+                                name:
+                                  description: 'The collection name.
+
+                                    '
+                                  type: string
+                                type:
+                                  description: 'How the collection is used.
+
+                                    '
+                                  enum:
+                                  - read
+                                  - write
+                                  - exclusive
+                                  type: string
+                              required:
+                              - name
+                              - type
+                              type: object
+                            type: array
+                          estimatedCost:
+                            description: 'The estimated cost of the query.
+
+                              '
+                            type: number
+                          estimatedNrItems:
+                            description: 'The estimated number of results.
+
+                              '
+                            type: integer
+                          isModificationQuery:
+                            description: 'Whether the query contains write operations.
+
+                              '
+                            type: boolean
+                          nodes:
+                            description: 'A nested list of the execution plan nodes.
+
+                              '
+                            items:
+                              type: object
+                            type: array
+                          rules:
+                            description: 'A list with the names of the applied optimizer rules.
+
+                              '
+                            items:
+                              type: string
+                            type: array
+                          variables:
+                            description: 'All of the query variables, including user-created and internal ones.
+
+                              '
+                            items:
+                              type: object
+                            type: array
+                        required:
+                        - nodes
+                        - rules
+                        - collections
+                        - variables
+                        - estimatedCost
+                        - estimatedNrItems
+                        - isModificationQuery
+                        type: object
+                      profile:
+                        description: 'The duration of the different query execution phases in seconds.
+
+                          '
+                        properties:
+                          executing:
+                            description: ''
+                            type: number
+                          finalizing:
+                            description: ''
+                            type: number
+                          initializing:
+                            description: ''
+                            type: number
+                          instantiating executors:
+                            description: ''
+                            type: number
+                          instantiating plan:
+                            description: ''
+                            type: number
+                          loading collections:
+                            description: ''
+                            type: number
+                          optimizing ast:
+                            description: ''
+                            type: number
+                          optimizing plan:
+                            description: ''
+                            type: number
+                          parsing:
+                            description: ''
+                            type: number
+                        required:
+                        - initializing
+                        - parsing
+                        - optimizing ast
+                        - loading collections
+                        - instantiating plan
+                        - optimizing plan
+                        - instantiating executors
+                        - executing
+                        - finalizing
+                        type: object
+                      stats:
+                        description: 'An object with query statistics.
+
+                          '
+                        properties:
+                          cacheHits:
+                            description: 'The total number of index entries read from in-memory caches for indexes
+
+                              of type edge or persistent. This value is only non-zero when reading from indexes
+
+                              that have an in-memory cache enabled, and when the query allows using the in-memory
+
+                              cache (i.e. using equality lookups on all index attributes).
+
+                              '
+                            type: integer
+                          cacheMisses:
+                            description: 'The total number of cache read attempts for index entries that could not
+
+                              be served from in-memory caches for indexes of type edge or persistent. This value
+
+                              is only non-zero when reading from indexes that have an in-memory cache enabled, the
+
+                              query allows using the in-memory cache (i.e. using equality lookups on all index attributes)
+
+                              and the looked-up values are not present in the cache.
+
+                              '
+                            type: integer
+                          cursorsCreated:
+                            description: 'The total number of cursor objects created during query execution. Cursor
+
+                              objects are created for index lookups.
+
+                              '
+                            type: integer
+                          cursorsRearmed:
+                            description: 'The total number of times an existing cursor object was repurposed.
+
+                              Repurposing an existing cursor object is normally more efficient compared to destroying an
+
+                              existing cursor object and creating a new one from scratch.
+
+                              '
+                            type: integer
+                          documentLookups:
+                            description: 'The number of real document lookups caused by late materialization
+
+                              as well as `IndexNode`s that had to load document attributes not covered
+
+                              by the index. This is how many documents had to be fetched from storage after
+
+                              an index scan that initially covered the attribute access for these documents.
+
+                              '
+                            type: integer
+                          executionTime:
+                            description: 'The query execution time (wall-clock time) in seconds.
+
+                              '
+                            type: number
+                          filtered:
+                            description: 'The total number of documents removed after executing a filter condition
+
+                              in a `FilterNode` or another node that post-filters data. Note that nodes of the
+
+                              `IndexNode` type can also filter documents by selecting only the required index range
+
+                              from a collection, and the `filtered` value only indicates how much filtering was done by a
+
+                              post filter in the `IndexNode` itself or following `FilterNode` nodes.
+
+                              Nodes of the `EnumerateCollectionNode` and `TraversalNode` types can also apply
+
+                              filter conditions and can report the number of filtered documents.
+
+                              '
+                            type: integer
+                          fullCount:
+                            description: 'The total number of documents that matched the search condition if the query''s
+
+                              final top-level `LIMIT` operation were not present.
+
+                              This attribute may only be returned if the `fullCount` option was set when starting the
+
+                              query and only contains a sensible value if the query contains a `LIMIT` operation on
+
+                              the top level.
+
+                              '
+                            type: integer
+                          httpRequests:
+                            description: 'The total number of cluster-internal HTTP requests performed.
+
+                              '
+                            type: integer
+                          intermediateCommits:
+                            description: 'The number of intermediate commits performed by the query. This is only non-zero
+
+                              for write queries, and only for queries that reached either the `intermediateCommitSize`
+
+                              or `intermediateCommitCount` thresholds. Note: in a cluster, intermediate commits can happen
+
+                              on each participating DB-Server.
+
+                              '
+                            type: integer
+                          nodes:
+                            description: 'When the query is executed with the `profile` option set to at least `2`,
+
+                              then this attribute contains runtime statistics per query execution node.
+
+                              For a human-readable output, you can execute
+
+                              `db._profileQuery(<query>, <bind-vars>)` in arangosh.
+
+                              '
+                            items:
+                              properties:
+                                calls:
+                                  description: 'The number of calls to this node.
+
+                                    '
+                                  type: integer
+                                id:
+                                  description: 'The execution node ID to correlate the statistics with the `plan` returned in
+
+                                    the `extra` attribute.
+
+                                    '
+                                  type: integer
+                                items:
+                                  description: 'The number of items returned by this node. Items are the temporary results
+
+                                    returned at this stage.
+
+                                    '
+                                  type: integer
+                                runtime:
+                                  description: 'The execution time of this node in seconds.
+
+                                    '
+                                  type: number
+                              required:
+                              - id
+                              - calls
+                              - items
+                              - runtime
+                              type: object
+                            type: array
+                          peakMemoryUsage:
+                            description: 'The maximum memory usage of the query while it was running. In a cluster,
+
+                              the memory accounting is done per shard, and the memory usage reported is the peak
+
+                              memory usage value from the individual shards.
+
+                              Note that to keep things lightweight, the per-query memory usage is tracked on a relatively
+
+                              high level, not including any memory allocator overhead nor any memory used for temporary
+
+                              results calculations (e.g. memory allocated/deallocated inside AQL expressions and function
+
+                              calls).
+
+                              '
+                            type: integer
+                          scannedFull:
+                            description: 'The total number of documents iterated over when scanning a collection
+
+                              without an index. Documents scanned by subqueries are included in the result, but
+
+                              operations triggered by built-in or user-defined AQL functions are not.
+
+                              '
+                            type: integer
+                          scannedIndex:
+                            description: 'The total number of documents iterated over when scanning a collection using
+
+                              an index. Documents scanned by subqueries are included in the result, but operations
+
+                              triggered by built-in or user-defined AQL functions are not.
+
+                              '
+                            type: integer
+                          searchParallelism:
+                            description: 'The number of threads used by ArangoSearch for this
+
+                              query (introduced in v3.12.9).
+
+                              '
+                            type: integer
+                          seeks:
+                            description: 'The number of seek calls done by RocksDB iterators for merge joins
+
+                              (`JoinNode` in the execution plan).
+
+                              '
+                            type: integer
+                          writesExecuted:
+                            description: 'The total number of data-modification operations successfully executed.
+
+                              '
+                            type: integer
+                          writesIgnored:
+                            description: 'The total number of data-modification operations that were unsuccessful,
+
+                              but have been ignored because of the `ignoreErrors` query option.
+
+                              '
+                            type: integer
+                        required:
+                        - writesExecuted
+                        - writesIgnored
+                        - documentLookups
+                        - seeks
+                        - scannedFull
+                        - scannedIndex
+                        - searchParallelism
+                        - cursorsCreated
+                        - cursorsRearmed
+                        - cacheHits
+                        - cacheMisses
+                        - filtered
+                        - httpRequests
+                        - executionTime
+                        - peakMemoryUsage
+                        - intermediateCommits
+                        type: object
+                      warnings:
+                        description: 'A list of query warnings.
+
+                          '
+                        items:
+                          properties:
+                            code:
+                              description: 'An error code.
+
+                                '
+                              type: integer
+                            message:
+                              description: 'A description of the problem.
+
+                                '
+                              type: string
+                          required:
+                          - code
+                          - message
+                          type: object
+                        type: array
+                    required:
+                    - warnings
+                    - stats
+                    type: object
+                  hasMore:
+                    description: 'A boolean indicator whether there are more results
+
+                      available for the cursor on the server.
+
+
+                      Note that even if `hasMore` returns `true`, the next call might still return no
+
+                      documents. Once `hasMore` is `false`, the cursor is exhausted and the client
+
+                      can stop asking for more results.
+
+                      '
+                    type: boolean
+                  id:
+                    description: 'The ID of the cursor for fetching more result batches.
+
+                      '
+                    type: string
+                  nextBatchId:
+                    description: 'Only set if the `allowRetry` query option is enabled in v3.11.0.
+
+                      From v3.11.1 onward, this attribute is always set, except in the last batch.
+
+
+                      The ID of the batch after the current one. The first batch has an ID of `1` and
+
+                      the value is incremented by 1 with every batch. You can remember and use this
+
+                      batch ID should retrieving the next batch fail. Use the
+
+                      `POST /_api/cursor/<cursor-id>/<batch-id>` endpoint to ask for the batch again.
+
+                      You can also request the next batch.
+
+                      '
+                    type: string
+                  planCacheKey:
+                    description: 'The key of the plan cache entry. This attribute is only
+
+                      present if a cached query execution plan has been used.
+
+                      '
+                    type: string
+                  result:
+                    description: 'An array of result documents for the current batch
+
+                      (might be empty if the query has no results).
+
+                      '
+                    type: array
+                required:
+                - error
+                - code
+                - hasMore
+                - cached
+                type: object
+          description: 'Successfully fetched the batch.
+
+            '
+        '400':
+          description: 'The cursor identifier is missing.
+
+            '
+        '404':
+          description: 'A cursor with the specified identifier cannot found.
+
+            '
+        '410':
+          description: 'A server which processes the query or the leader of a shard which is
+
+            used in the query stops responding, but the connection has not been closed.
+
+            '
+        '503':
+          description: 'A server which processes the query or the leader of a shard which is used
+
+            in the query is down, either for going through a restart, a failure,
+
+            or connectivity issues.
+
+            '
+      summary: Read the next batch from a cursor
+      tags:
+      - Queries
+    put:
+      deprecated: true
+      description: "> **WARNING:**\nThis endpoint is deprecated in favor its functionally equivalent POST counterpart.\n\n\nIf the cursor is still alive, returns an object with the following\nattributes:\n\n- `id`: a `cursor-identifier`\n- `result`: a list of documents for the current batch\n- `hasMore`: `false` if this was the last batch\n- `count`: if present the total number of elements\n- `code`: an HTTP status code\n- `error`: a boolean flag to indicate whether an error occurred\n- `errorNum`: a server error number (if `error` is `true`)\n- `errorMessage`: a descriptive error message (if `error` is `true`)\n- `extra`: an object with additional information about the query result, with\n  the nested objects `stats` and `warnings`. Only delivered as part of the last\n  batch in case of a cursor with the `stream` option enabled.\n\nNote that even if `hasMore` returns `true`, the next call might\nstill return no documents. If, however, `hasMore` is `false`, then\nthe cursor is exhausted.  Once the `hasMore` attribute has a value of\n`false`, the client can stop.\n\nIf the cursor is not fully consumed, the time-to-live for the cursor\nis renewed by this API call.\n"
+      operationId: getNextAqlQueryCursorBatchPut
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The name of the cursor
+
+          '
+        in: path
+        name: cursor-identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Successfully fetched the batch.
+
+            '
+        '400':
+          description: 'The cursor identifier is missing.
+
+            '
+        '404':
+          description: 'A cursor with the specified identifier cannot be found.
+
+            '
+        '410':
+          description: 'A server which processes the query or the leader of a shard which is
+
+            used in the query stops responding, but the connection has not been closed.
+
+            '
+        '503':
+          description: 'A server which processes the query or the leader of a shard which is used
+
+            in the query is down, either for going through a restart, a failure,
+
+            or connectivity issues.
+
+            '
+      summary: Read the next batch from a cursor (deprecated)
+      tags:
+      - Queries
+  /_db/{database-name}/_api/cursor/{cursor-identifier}/{batch-identifier}:
+    post:
+      description: 'You can use this endpoint to retry fetching the latest batch from a cursor.
+
+        The endpoint requires the `allowRetry` query option to be enabled for the cursor.
+
+
+        Calling this endpoint with the last returned batch identifier returns the
+
+        query results for that same batch again. This does not advance the cursor.
+
+        Client applications can use this to re-transfer a batch once more in case of
+
+        transfer errors.
+
+
+        You can also call this endpoint with the next batch identifier, i.e. the value
+
+        returned in the `nextBatchId` attribute of a previous request. This advances the
+
+        cursor and returns the results of the next batch.
+
+
+        From v3.11.1 onward, you may use this endpoint even if the `allowRetry`
+
+        attribute is `false` to fetch the next batch, but you cannot request a batch
+
+        again unless you set it to `true`.
+
+
+        Note that it is only supported to query the last returned batch identifier or
+
+        the directly following batch identifier. The latter is only supported if there
+
+        are more results in the cursor (i.e. `hasMore` is `true` in the latest batch).
+
+
+        Note that when the last batch has been consumed successfully by a client
+
+        application, it should explicitly delete the cursor to inform the server that it
+
+        successfully received and processed the batch so that the server can free up
+
+        resources.
+
+
+        The time-to-live for the cursor is renewed by this API call.
+
+        '
+      operationId: getPreviousAqlQueryCursorBatch
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The ID of the cursor.
+
+          '
+        in: path
+        name: cursor-identifier
+        required: true
+        schema:
+          type: string
+      - description: 'The ID of the batch. The first batch has an ID of `1` and the value is
+
+          incremented by 1 with every batch. You can only request the latest batch again
+
+          (or the next batch). Earlier batches are not kept on the server-side.
+
+          '
+        in: path
+        name: batch-identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  cached:
+                    description: 'A boolean flag indicating whether the query result was served
+
+                      from the query results cache or not. If the query result is served from the query
+
+                      cache, the `extra` attribute in the response does not contain the `stats`
+
+                      and `profile` sub-attributes.
+
+                      '
+                    type: boolean
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  count:
+                    description: 'The total number of result documents available (only
+
+                      available if the query was executed with the `count` attribute set).
+
+                      '
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  extra:
+                    description: 'An optional JSON object with extra information about the query result.
+
+
+                      Only delivered as part of the first batch, or the last batch in case of a cursor
+
+                      with the `stream` option enabled.
+
+                      '
+                    properties:
+                      plan:
+                        description: 'The execution plan.
+
+                          '
+                        properties:
+                          collections:
+                            description: 'A list of the collections involved in the query. The list only includes the
+
+                              collections that can statically be determined at query compile time.
+
+                              '
+                            items:
+                              properties:
+                                name:
+                                  description: 'The collection name.
+
+                                    '
+                                  type: string
+                                type:
+                                  description: 'How the collection is used.
+
+                                    '
+                                  enum:
+                                  - read
+                                  - write
+                                  - exclusive
+                                  type: string
+                              required:
+                              - name
+                              - type
+                              type: object
+                            type: array
+                          estimatedCost:
+                            description: 'The estimated cost of the query.
+
+                              '
+                            type: number
+                          estimatedNrItems:
+                            description: 'The estimated number of results.
+
+                              '
+                            type: integer
+                          isModificationQuery:
+                            description: 'Whether the query contains write operations.
+
+                              '
+                            type: boolean
+                          nodes:
+                            description: 'A nested list of the execution plan nodes.
+
+                              '
+                            items:
+                              type: object
+                            type: array
+                          rules:
+                            description: 'A list with the names of the applied optimizer rules.
+
+                              '
+                            items:
+                              type: string
+                            type: array
+                          variables:
+                            description: 'All of the query variables, including user-created and internal ones.
+
+                              '
+                            items:
+                              type: object
+                            type: array
+                        required:
+                        - nodes
+                        - rules
+                        - collections
+                        - variables
+                        - estimatedCost
+                        - estimatedNrItems
+                        - isModificationQuery
+                        type: object
+                      profile:
+                        description: 'The duration of the different query execution phases in seconds.
+
+                          '
+                        properties:
+                          executing:
+                            description: ''
+                            type: number
+                          finalizing:
+                            description: ''
+                            type: number
+                          initializing:
+                            description: ''
+                            type: number
+                          instantiating executors:
+                            description: ''
+                            type: number
+                          instantiating plan:
+                            description: ''
+                            type: number
+                          loading collections:
+                            description: ''
+                            type: number
+                          optimizing ast:
+                            description: ''
+                            type: number
+                          optimizing plan:
+                            description: ''
+                            type: number
+                          parsing:
+                            description: ''
+                            type: number
+                        required:
+                        - initializing
+                        - parsing
+                        - optimizing ast
+                        - loading collections
+                        - instantiating plan
+                        - optimizing plan
+                        - instantiating executors
+                        - executing
+                        - finalizing
+                        type: object
+                      stats:
+                        description: 'An object with query statistics.
+
+                          '
+                        properties:
+                          cacheHits:
+                            description: 'The total number of index entries read from in-memory caches for indexes
+
+                              of type edge or persistent. This value is only non-zero when reading from indexes
+
+                              that have an in-memory cache enabled, and when the query allows using the in-memory
+
+                              cache (i.e. using equality lookups on all index attributes).
+
+                              '
+                            type: integer
+                          cacheMisses:
+                            description: 'The total number of cache read attempts for index entries that could not
+
+                              be served from in-memory caches for indexes of type edge or persistent. This value
+
+                              is only non-zero when reading from indexes that have an in-memory cache enabled, the
+
+                              query allows using the in-memory cache (i.e. using equality lookups on all index attributes)
+
+                              and the looked-up values are not present in the cache.
+
+                              '
+                            type: integer
+                          cursorsCreated:
+                            description: 'The total number of cursor objects created during query execution. Cursor
+
+                              objects are created for index lookups.
+
+                              '
+                            type: integer
+                          cursorsRearmed:
+                            description: 'The total number of times an existing cursor object was repurposed.
+
+                              Repurposing an existing cursor object is normally more efficient compared to destroying an
+
+                              existing cursor object and creating a new one from scratch.
+
+                              '
+                            type: integer
+                          documentLookups:
+                            description: 'The number of real document lookups caused by late materialization
+
+                              as well as `IndexNode`s that had to load document attributes not covered
+
+                              by the index. This is how many documents had to be fetched from storage after
+
+                              an index scan that initially covered the attribute access for these documents.
+
+                              '
+                            type: integer
+                          executionTime:
+                            description: 'The query execution time (wall-clock time) in seconds.
+
+                              '
+                            type: number
+                          filtered:
+                            description: 'The total number of documents removed after executing a filter condition
+
+                              in a `FilterNode` or another node that post-filters data. Note that nodes of the
+
+                              `IndexNode` type can also filter documents by selecting only the required index range
+
+                              from a collection, and the `filtered` value only indicates how much filtering was done by a
+
+                              post filter in the `IndexNode` itself or following `FilterNode` nodes.
+
+                              Nodes of the `EnumerateCollectionNode` and `TraversalNode` types can also apply
+
+                              filter conditions and can report the number of filtered documents.
+
+                              '
+                            type: integer
+                          fullCount:
+                            description: 'The total number of documents that matched the search condition if the query''s
+
+                              final top-level `LIMIT` operation were not present.
+
+                              This attribute may only be returned if the `fullCount` option was set when starting the
+
+                              query and only contains a sensible value if the query contains a `LIMIT` operation on
+
+                              the top level.
+
+                              '
+                            type: integer
+                          httpRequests:
+                            description: 'The total number of cluster-internal HTTP requests performed.
+
+                              '
+                            type: integer
+                          intermediateCommits:
+                            description: 'The number of intermediate commits performed by the query. This is only non-zero
+
+                              for write queries, and only for queries that reached either the `intermediateCommitSize`
+
+                              or `intermediateCommitCount` thresholds. Note: in a cluster, intermediate commits can happen
+
+                              on each participating DB-Server.
+
+                              '
+                            type: integer
+                          nodes:
+                            description: 'When the query is executed with the `profile` option set to at least `2`,
+
+                              then this attribute contains runtime statistics per query execution node.
+
+                              For a human-readable output, you can execute
+
+                              `db._profileQuery(<query>, <bind-vars>)` in arangosh.
+
+                              '
+                            items:
+                              properties:
+                                calls:
+                                  description: 'The number of calls to this node.
+
+                                    '
+                                  type: integer
+                                id:
+                                  description: 'The execution node ID to correlate the statistics with the `plan` returned in
+
+                                    the `extra` attribute.
+
+                                    '
+                                  type: integer
+                                items:
+                                  description: 'The number of items returned by this node. Items are the temporary results
+
+                                    returned at this stage.
+
+                                    '
+                                  type: integer
+                                runtime:
+                                  description: 'The execution time of this node in seconds.
+
+                                    '
+                                  type: number
+                              required:
+                              - id
+                              - calls
+                              - items
+                              - runtime
+                              type: object
+                            type: array
+                          peakMemoryUsage:
+                            description: 'The maximum memory usage of the query while it was running. In a cluster,
+
+                              the memory accounting is done per shard, and the memory usage reported is the peak
+
+                              memory usage value from the individual shards.
+
+                              Note that to keep things lightweight, the per-query memory usage is tracked on a relatively
+
+                              high level, not including any memory allocator overhead nor any memory used for temporary
+
+                              results calculations (e.g. memory allocated/deallocated inside AQL expressions and function
+
+                              calls).
+
+                              '
+                            type: integer
+                          scannedFull:
+                            description: 'The total number of documents iterated over when scanning a collection
+
+                              without an index. Documents scanned by subqueries are included in the result, but
+
+                              operations triggered by built-in or user-defined AQL functions are not.
+
+                              '
+                            type: integer
+                          scannedIndex:
+                            description: 'The total number of documents iterated over when scanning a collection using
+
+                              an index. Documents scanned by subqueries are included in the result, but operations
+
+                              triggered by built-in or user-defined AQL functions are not.
+
+                              '
+                            type: integer
+                          searchParallelism:
+                            description: 'The number of threads used by ArangoSearch for this
+
+                              query (introduced in v3.12.9).
+
+                              '
+                            type: integer
+                          seeks:
+                            description: 'The number of seek calls done by RocksDB iterators for merge joins
+
+                              (`JoinNode` in the execution plan).
+
+                              '
+                            type: integer
+                          writesExecuted:
+                            description: 'The total number of data-modification operations successfully executed.
+
+                              '
+                            type: integer
+                          writesIgnored:
+                            description: 'The total number of data-modification operations that were unsuccessful,
+
+                              but have been ignored because of the `ignoreErrors` query option.
+
+                              '
+                            type: integer
+                        required:
+                        - writesExecuted
+                        - writesIgnored
+                        - documentLookups
+                        - seeks
+                        - scannedFull
+                        - scannedIndex
+                        - searchParallelism
+                        - cursorsCreated
+                        - cursorsRearmed
+                        - cacheHits
+                        - cacheMisses
+                        - filtered
+                        - httpRequests
+                        - executionTime
+                        - peakMemoryUsage
+                        - intermediateCommits
+                        type: object
+                      warnings:
+                        description: 'A list of query warnings.
+
+                          '
+                        items:
+                          properties:
+                            code:
+                              description: 'An error code.
+
+                                '
+                              type: integer
+                            message:
+                              description: 'A description of the problem.
+
+                                '
+                              type: string
+                          required:
+                          - code
+                          - message
+                          type: object
+                        type: array
+                    required:
+                    - warnings
+                    - stats
+                    type: object
+                  hasMore:
+                    description: 'A boolean indicator whether there are more results
+
+                      available for the cursor on the server.
+
+
+                      Note that even if `hasMore` returns `true`, the next call might still return no
+
+                      documents. Once `hasMore` is `false`, the cursor is exhausted and the client
+
+                      can stop asking for more results.
+
+                      '
+                    type: boolean
+                  id:
+                    description: 'The ID of the cursor for fetching more result batches.
+
+                      '
+                    type: string
+                  nextBatchId:
+                    description: 'Only set if the `allowRetry` query option is enabled in v3.11.0.
+
+                      From v3.11.1 onward, this attribute is always set, except in the last batch.
+
+
+                      The ID of the batch after the current one. The first batch has an ID of `1` and
+
+                      the value is incremented by 1 with every batch. You can remember and use this
+
+                      batch ID should retrieving the next batch fail. Use the
+
+                      `POST /_api/cursor/<cursor-id>/<batch-id>` endpoint to ask for the batch again.
+
+                      You can also request the next batch.
+
+                      '
+                    type: string
+                  planCacheKey:
+                    description: 'The key of the plan cache entry. This attribute is only
+
+                      present if a cached query execution plan has been used.
+
+                      '
+                    type: string
+                  result:
+                    description: 'An array of result documents for the current batch
+
+                      (might be empty if the query has no results).
+
+                      '
+                    type: array
+                required:
+                - error
+                - code
+                - hasMore
+                - cached
+                type: object
+          description: 'The server responds with *HTTP 200* in case of success.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The cursor and the batch identifier are missing.
+
+            '
+        '404':
+          description: 'A cursor with the specified identifier cannot be found, or the requested
+
+            batch isn''t available.
+
+            '
+        '410':
+          description: 'The server responds with *HTTP 410* if a server which processes the query
+
+            or is the leader for a shard which is used in the query stops responding, but
+
+            the connection has not been closed.
+
+            '
+        '503':
+          description: 'The server responds with *HTTP 503* if a server which processes the query
+
+            or is the leader for a shard which is used in the query is down, either for
+
+            going through a restart, a failure or connectivity issues.
+
+            '
+      summary: Read a batch from the cursor again
+      tags:
+      - Queries
+  /_db/{database-name}/_api/explain:
+    post:
+      description: "To explain how an AQL query would be executed on the server, the query string\ncan be sent to the server via an HTTP POST request. The server will then validate\nthe query and create an execution plan for it. The execution plan will be\nreturned, but the query will not be executed.\n\nThe execution plan that is returned by the server can be used to estimate the\nprobable performance of the query. Though the actual performance will depend\non many different factors, the execution plan normally can provide some rough\nestimates on the amount of work the server needs to do in order to actually run\nthe query.\n\nBy default, the explain operation will return the optimal plan as chosen by\nthe query optimizer The optimal plan is the plan with the lowest total estimated\ncost. The plan will be returned in the attribute `plan` of the response object.\nIf the option `allPlans` is specified in the request, the result will contain\nall plans created by the optimizer. The plans will then be returned in the\nattribute `plans`.\n\nThe result will also contain an attribute `warnings`, which is an array of\nwarnings that occurred during optimization or execution plan creation. Additionally,\na `stats` attribute is contained in the result with some optimizer statistics.\nIf `allPlans` is set to `false`, the result will contain an attribute `cacheable`\nthat states whether the query results can be cached on the server if the query\nresult cache were used. The `cacheable` attribute is not present when `allPlans`\nis set to `true`.\n\nEach plan in the result is a JSON object with the following attributes:\n- `nodes`: the array of execution nodes of the plan.\n\n- `estimatedCost`: the total estimated cost for the plan. If there are multiple\n  plans, the optimizer will choose the plan with the lowest total cost.\n\n- `collections`: an array of collections used in the query\n\n- `rules`: an array of rules the optimizer applied.\n\n- `variables`: array of variables used in the query (note: this may contain\n  internal variables created by the optimizer)\n"
+      operationId: explainAqlQuery
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                bindVars:
+                  description: 'An object with key/value pairs representing the bind parameters.
+
+                    For a bind variable `@var` in the query, specify the value using an attribute
+
+                    with the name `var`. For a collection bind variable `@@coll`, use `@coll` as the
+
+                    attribute name. For example: `"bindVars": { "var": 42, "@coll": "products" }`.
+
+                    '
+                  type: object
+                options:
+                  description: 'Options for the query
+
+                    '
+                  properties:
+                    allPlans:
+                      default: false
+                      description: 'If set to `true`, all possible execution plans are returned.
+
+                        The default is `false`, meaning only the optimal plan is returned.
+
+                        '
+                      type: boolean
+                    failOnWarning:
+                      description: 'If set to `true`, the query throws an exception and aborts instead of producing
+
+                        a warning. You should use this option during development to catch potential issues
+
+                        early. When the attribute is set to `false`, warnings are not propagated to
+
+                        exceptions and are returned with the query result.
+
+
+                        Default: Controlled by the [`--query.fail-on-warning` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryfail-on-warning),
+
+                        so you don''t need to set it on a per-query basis.
+
+                        '
+                      type: boolean
+                    fullCount:
+                      default: false
+                      description: 'Whether to calculate the total number of documents matching the
+
+                        filter conditions as if the query''s final top-level `LIMIT` operation
+
+                        were not applied. This option generally leads to different
+
+                        execution plans.
+
+                        '
+                      type: boolean
+                    maxNodesPerCallstack:
+                      description: 'The number of execution nodes in the query plan after that stack splitting is
+
+                        performed to avoid a potential stack overflow.
+
+
+                        This option is only useful for testing and debugging and normally does not need
+
+                        any adjustment.
+
+
+                        Default: Controlled by the [`--query.max-nodes-per-callstack` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querymax-nodes-per-callstack).
+
+                        '
+                      type: integer
+                    maxNumberOfPlans:
+                      description: 'The maximum number of plans that the optimizer is allowed to
+
+                        generate. Setting this attribute to a low value allows you to put a
+
+                        cap on the amount of work the optimizer does.
+
+
+                        Default: Controlled by the [`--query.optimizer-max-plans` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryoptimizer-max-plans).
+
+                        '
+                      type: integer
+                    maxWarningCount:
+                      default: 10
+                      description: 'Limits the number of warnings a query can return.
+
+                        You can increased or decreased the number with this option.
+
+                        '
+                      type: integer
+                    optimizer:
+                      description: 'Options related to the query optimizer.
+
+                        '
+                      properties:
+                        rules:
+                          description: 'A list of optimizer rules, telling the optimizer to
+
+                            include or exclude specific rules. See the
+
+                            [List of optimizer rules](https://docs.arango.ai/arangodb/3.12/aql/execution-and-performance/query-optimization/#list-of-optimizer-rules).
+
+
+                            To disable a rule, prefix its name with `-`. To enable a rule,
+
+                            prefix it with `+`. There is also a pseudo-rule `all` that
+
+                            matches all optimizer rules. `-all` disables all rules.
+
+                            '
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    profile:
+                      default: 0
+                      description: 'Whether to include additional query profiling information.
+
+                        If set to `2`, the response includes the time it took to process
+
+                        each optimizer rule under `stats.rules`.
+
+                        '
+                      type: integer
+                    usePlanCache:
+                      default: false
+                      description: 'Set this option to `true` to utilize a cached query plan or add the execution plan
+
+                        of this query to the cache if it''s not in the cache yet. Otherwise, the plan cache
+
+                        is bypassed (introduced in v3.12.4).
+
+
+                        Query plan caching can reduce the total time for processing queries by avoiding
+
+                        to parse, plan, and optimize queries over and over again that effectively have
+
+                        the same execution plan with at most some changes to bind parameter values.
+
+
+                        An error is raised if a query doesn''t meet the requirements for plan caching.
+
+                        See [Cache eligibility](https://docs.arango.ai/arangodb/3.12/aql/execution-and-performance/caching-query-plans/#cache-eligibility)
+
+                        for details.
+
+                        '
+                      type: boolean
+                  type: object
+                query:
+                  description: 'the query which you want explained; If the query references any bind variables,
+
+                    these must also be passed in the attribute `bindVars`. Additional
+
+                    options for the query can be passed in the `options` attribute.
+
+                    '
+                  type: string
+              required:
+              - query
+              type: object
+      responses:
+        '200':
+          description: 'If the query is valid, the server will respond with *HTTP 200* and
+
+            return the optimal execution plan in the `plan` attribute of the response.
+
+            If option `allPlans` was set in the request, an array of plans will be returned
+
+            in the `allPlans` attribute instead.
+
+            '
+        '400':
+          description: 'The request is malformed or the query contains a parse error.
+
+            The body of the response contains the error details embedded in a JSON object.
+
+            Omitting bind variables if the query references any also results
+
+            an error.
+
+            '
+        '404':
+          description: 'A non-existing collection is accessed in the query.
+
+            '
+      summary: Explain an AQL query
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query:
+    post:
+      description: 'This endpoint is for query validation only. To actually query the database,
+
+        see `/api/cursor`.
+
+        '
+      operationId: parseAqlQuery
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                query:
+                  description: 'To validate a query string without executing it, the query string can be
+
+                    passed to the server via an HTTP POST request.
+
+                    '
+                  type: string
+              required:
+              - query
+              type: object
+      responses:
+        '200':
+          description: 'If the query is valid, the server will respond with *HTTP 200* and
+
+            return the names of the bind parameters it found in the query (if any) in
+
+            the `bindVars` attribute of the response. It will also return an array
+
+            of the collections used in the query in the `collections` attribute.
+
+            If a query can be parsed successfully, the `ast` attribute of the returned
+
+            JSON will contain the abstract syntax tree representation of the query.
+
+            The format of the `ast` is subject to change in future versions of
+
+            ArangoDB, but it can be used to inspect how ArangoDB interprets a given
+
+            query. Note that the abstract syntax tree will be returned without any
+
+            optimizations applied to it.
+
+            '
+        '400':
+          description: 'The request is malformed or the query contains a parse error.
+
+            The body of the response contains the error details embedded in a JSON object.
+
+            '
+      summary: Parse an AQL query
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query-cache:
+    delete:
+      description: 'Clears all results stored in the AQL query results cache for the current database.
+
+        '
+      operationId: deleteAqlQueryCache
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                required:
+                - error
+                - code
+                type: object
+          description: 'The results cache has been cleared.
+
+            '
+        '400':
+          description: 'The request is malformed.
+
+            '
+      summary: Clear the AQL query results cache
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query-cache/entries:
+    get:
+      description: 'Returns an array containing the AQL query results currently stored in the query results
+
+        cache of the selected database.
+
+        '
+      operationId: listQueryCacheResults
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The entries of the query results cache.
+
+                  '
+                items:
+                  description: 'The properties of a cache entry.
+
+                    '
+                  properties:
+                    bindVars:
+                      description: 'The bind parameters. This attribute is omitted if the
+
+                        [`--query.tracking-with-bindvars` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-bindvars) is set
+
+                        to `false`.
+
+                        '
+                      type: object
+                    dataSources:
+                      description: 'The collections and Views involved in the query.
+
+                        '
+                      items:
+                        type: string
+                      type: array
+                    hash:
+                      description: 'The hash value calculated from the query string,
+
+                        certain query options, and the bind variables.
+
+                        '
+                      type: string
+                    hits:
+                      description: 'How many times the result has been served from the cache so far.
+
+                        '
+                      type: integer
+                    query:
+                      description: 'The query string.
+
+                        '
+                      type: string
+                    results:
+                      description: 'The number of documents/rows in the query result.
+
+                        '
+                      type: integer
+                    runTime:
+                      description: 'The total duration of the query in seconds.
+
+                        '
+                      type: number
+                    size:
+                      description: 'The size of the query result and bind parameters (in bytes).
+
+                        '
+                      type: integer
+                    started:
+                      description: 'The date and time at which the query result has been added
+
+                        to the cache (in ISO 8601 format).
+
+                        '
+                      format: date-time
+                      type: string
+                  required:
+                  - hash
+                  - query
+                  - size
+                  - results
+                  - hits
+                  - runTime
+                  - started
+                  - dataSources
+                  type: object
+                type: array
+          description: 'The list of cached query results.
+
+            '
+        '400':
+          description: 'The request is malformed.
+
+            '
+      summary: List the entries of the AQL query results cache
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query-cache/properties:
+    get:
+      description: 'Returns the global AQL query results cache configuration.
+
+        '
+      operationId: getQueryCacheProperties
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The result cache configuration.
+
+                  '
+                properties:
+                  includeSystem:
+                    description: 'Whether results of queries that involve system collections
+
+                      are stored in the query results cache.
+
+                      '
+                    type: boolean
+                  maxEntrySize:
+                    description: 'The maximum individual result size of queries that are
+
+                      stored per database-specific cache (in bytes).
+
+                      '
+                  maxResults:
+                    description: 'The maximum number of query results that are stored per
+
+                      database-specific cache.
+
+                      '
+                    type: integer
+                  maxResultsSize:
+                    description: 'The maximum cumulated size of query results that are
+
+                      stored per database-specific cache (in bytes).
+
+                      '
+                    type: integer
+                  mode:
+                    description: 'The mode the AQL query results cache operates in.
+
+                      '
+                    enum:
+                    - 'off'
+                    - 'on'
+                    - demand
+                    type: string
+                type: object
+          description: 'The result cache configuration is returned successfully.
+
+            '
+        '400':
+          description: 'The request is malformed.
+
+            '
+      summary: Get the AQL query results cache configuration
+      tags:
+      - Queries
+    put:
+      description: 'Adjusts the global properties for the AQL query results cache.
+
+
+        Changing the properties may invalidate all results currently in the cache.
+
+        '
+      operationId: setQueryCacheProperties
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: 'The result cache configuration settings to change.
+
+                '
+              properties:
+                includeSystem:
+                  description: 'Whether to store results of queries that involve
+
+                    system collections in the cache.
+
+
+                    Default: Controlled by the [`--query.cache-include-system-collections` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querycache-include-system-collections).
+
+                    '
+                  type: boolean
+                maxEntrySize:
+                  description: 'The maximum individual size of query results that are stored
+
+                    per database-specific cache (in bytes).
+
+
+                    Default: Controlled by the [`--query.cache-entry-max-size` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querycache-entry-max-size).
+
+                    '
+                  type: integer
+                maxResults:
+                  description: 'The maximum number of query results that are stored per
+
+                    database-specific cache.
+
+
+                    Default: Controlled by the [`--query.cache-entries` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querycache-entries).
+
+                    '
+                  type: integer
+                maxResultsSize:
+                  description: 'The maximum cumulated size of query results that are stored
+
+                    per database-specific cache (in bytes).
+
+
+                    Default: Controlled by the [`--query.cache-entries-max-size` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querycache-entries-max-size).
+
+                    '
+                  type: integer
+                mode:
+                  description: 'The mode the AQL query cache shall operate in.
+
+
+                    Default: Controlled by the [`--query.cache-mode` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querycache-mode).
+
+                    '
+                  enum:
+                  - 'off'
+                  - 'on'
+                  - demand
+                  type: string
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The result cache configuration.
+
+                  '
+                properties:
+                  includeSystem:
+                    description: 'Whether results of queries that involve system collections
+
+                      are stored in the query results cache.
+
+                      '
+                    type: boolean
+                  maxEntrySize:
+                    description: 'The maximum individual result size of queries that are
+
+                      stored per database-specific cache (in bytes).
+
+                      '
+                  maxResults:
+                    description: 'The maximum number of query results that are stored per
+
+                      database-specific cache.
+
+                      '
+                    type: integer
+                  maxResultsSize:
+                    description: 'The maximum cumulated size of query results that are
+
+                      stored per database-specific cache (in bytes).
+
+                      '
+                    type: integer
+                  mode:
+                    description: 'The mode the AQL query results cache operates in.
+
+                      '
+                    enum:
+                    - 'off'
+                    - 'on'
+                    - demand
+                    type: string
+                type: object
+          description: 'The result cache configuration has been changed successfully.
+
+            '
+        '400':
+          description: 'The request is malformed.
+
+            '
+      summary: Set the AQL query results cache configuration
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query-plan-cache:
+    delete:
+      description: 'Clears all execution plans stored in the AQL query plan cache for the
+
+        current database.
+
+
+        This requires write privileges for the current database.
+
+        '
+      operationId: deleteAqlQueryPlanCache
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                required:
+                - error
+                - code
+                type: object
+          description: 'The query plan cache has been cleared for the current database.
+
+            '
+      summary: Clear the AQL query plan cache
+      tags:
+      - Queries
+    get:
+      description: 'Returns an array containing information about each AQL execution plan
+
+        currently stored in the cache of the selected database.
+
+
+        This requires read privileges for the current database. In addition, only those
+
+        query plans are returned for which the current user has at least read permissions
+
+        on all collections and Views included in the query.
+
+        '
+      operationId: listQueryCachePlans
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'The entries of the query plan cache.
+
+                  '
+                items:
+                  description: 'The properties of a cache entry.
+
+                    '
+                  properties:
+                    bindVars:
+                      description: 'A subset of the original bind parameters with only the
+
+                        collection bind parameters (e.g. `@@coll`). They need to
+
+                        have the same names and values for utilizing a cached plan.
+
+                        '
+                      type: object
+                    created:
+                      description: 'The date and time at which the query plan has been added
+
+                        to the cache (in ISO 8601 format).
+
+                        '
+                      format: date-time
+                      type: string
+                    dataSources:
+                      description: 'The collections and Views involved in the query.
+
+                        '
+                      items:
+                        type: string
+                      type: array
+                    fullCount:
+                      description: 'The value of the `fullCount` query option in the
+
+                        original query. This option generally leads to different
+
+                        execution plans.
+
+                        '
+                      type: boolean
+                    hash:
+                      description: 'The plan cache key.
+
+                        '
+                      type: string
+                    hits:
+                      description: 'How many times the cached plan has been utilized so far.
+
+                        '
+                      type: integer
+                    memoryUsage:
+                      description: 'How much memory the plan cache entry takes up for the
+
+                        execution plan, query string, and so on (in bytes).
+
+                        '
+                      type: integer
+                    query:
+                      description: 'The query string.
+
+                        '
+                      type: string
+                    queryHash:
+                      description: 'The hash value of the query string.
+
+                        '
+                      type: integer
+                  required:
+                  - hash
+                  - query
+                  - queryHash
+                  - bindVars
+                  - fullCount
+                  - dataSources
+                  - created
+                  - hits
+                  - memoryUsage
+                  type: object
+                type: array
+          description: 'The list of cached query plans.
+
+            '
+      summary: List the entries of the AQL query plan cache
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query/current:
+    get:
+      description: 'Returns a list of the AQL queries that currently run in the specified
+
+        database.
+
+
+        Query tracking needs to be enabled by the
+
+        [`--query.tracking` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking)
+
+        or at runtime with the `enabled` query tracking property of the
+
+        `PUT /_db/{database-name}/_api/query/properties` endpoint.
+
+        If query tracking is disabled for the current database,
+
+        an **empty list** is returned.
+
+        '
+      operationId: listAqlQueries
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, will return the currently running queries in all databases,
+
+          not just the selected one.
+
+          Using the parameter is only allowed in the `_system` database and with superuser
+
+          privileges.
+
+          '
+        in: query
+        name: all
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  properties:
+                    bindVars:
+                      description: 'The bind parameter values used by the query.
+
+
+                        Whether the actual bind variables or an empty object is
+
+                        returned is controlled by the
+
+                        [`--query.tracking-with-bindvars` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-bindvars)
+
+                        or the `trackBindVars` query tracking property that you can
+
+                        change via the `PUT /_db/{database-name}/_api/query/properties`
+
+                        endpoint at runtime.
+
+                        '
+                      type: object
+                    dataSources:
+                      description: 'The collections and Views involved in the query.
+
+
+                        Only present if the
+
+                        [`--query.tracking-with-datasources` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-datasources)
+
+                        is enabled.
+
+                        '
+                      items:
+                        type: string
+                      type: array
+                    database:
+                      description: 'The name of the database the query runs in.
+
+                        '
+                      type: string
+                    id:
+                      description: 'The query identifier.
+
+                        '
+                      type: string
+                    modificationQuery:
+                      description: 'Whether the query writes data (`true`) or only reads (`false`).
+
+                        '
+                      type: boolean
+                    peakMemoryUsage:
+                      description: 'The query''s peak memory usage in bytes (in increments of 32KB),
+
+                        up to the point the query list was requested.
+
+                        '
+                      type: integer
+                    query:
+                      description: 'The query string (potentially truncated).
+
+
+                        The cutoff is controlled by the
+
+                        [`--query.max-artifact-log-length` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querymax-artifact-log-length)
+
+                        or the `maxQueryStringLength` query tracking property
+
+                        that you can change via the
+
+                        `PUT /_db/{database-name}/_api/query/properties` endpoint
+
+                        at runtime.
+
+
+                        Whether the actual query string is tracked or only a
+
+                        value of `"<hidden>"` is returned depends on the
+
+                        [`--query.tracking-with-querystring` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-querystring).
+
+                        '
+                      type: string
+                    runTime:
+                      description: 'The query duration up to the point the query list was
+
+                        requested (in seconds).
+
+                        '
+                      type: number
+                    started:
+                      description: 'The date and time when the query was started (in ISO 8601 format).
+
+                        '
+                      format: date-time
+                      type: string
+                    state:
+                      description: 'The query''s current execution state.
+
+                        '
+                      enum:
+                      - initializing
+                      - parsing
+                      - optimizing ast
+                      - loading collections
+                      - instantiating plan
+                      - optimizing plan
+                      - instantiating executors
+                      - executing
+                      - finalizing
+                      - finished
+                      - killed
+                      - invalid
+                      type: string
+                    stream:
+                      description: 'Whether the query uses a streaming cursor.
+
+                        '
+                      type: boolean
+                    user:
+                      description: 'The name of the user that started the query.
+
+                        '
+                      type: string
+                    warnings:
+                      description: 'The number of query warnings that occurred.
+
+
+                        Values other than `0` may not be observable because this information
+
+                        typically becomes available when the query finishes, at which point
+
+                        it is no longer listed as a running query. However, non-zero values can be
+
+                        observed when enabling `stream` and there is more than one batch of
+
+                        results.
+
+                        '
+                      type: integer
+                  required:
+                  - id
+                  - database
+                  - user
+                  - query
+                  - bindVars
+                  - started
+                  - runTime
+                  - peakMemoryUsage
+                  - state
+                  - stream
+                  - modificationQuery
+                  - warnings
+                  type: object
+                type: array
+          description: 'The list of currently running AQL queries for the specified database.
+
+            Empty if query tracking is disabled.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The request is malformed.
+
+            '
+        '403':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 403
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'Returned when the `all` parameter is used but the request was made
+
+            in a database other than `_system`, or by a user without superuser
+
+            privileges.
+
+            '
+      summary: List the running AQL queries
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query/properties:
+    get:
+      description: 'Returns the current query tracking properties of the specified database.
+
+        '
+      operationId: getAqlQueryTrackingProperties
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  enabled:
+                    description: 'Whether query tracking is enabled for the specified
+
+                      database. If set to `false`, neither the currently
+
+                      running queries nor slow queries are tracked.
+
+                      '
+                    type: boolean
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  maxQueryStringLength:
+                    description: 'Maximum query string length kept in the list of queries
+
+                      (in bytes).
+
+
+                      Query strings can have arbitrary lengths, and you can use
+
+                      this property to save memory in case very long query strings
+
+                      are used.
+
+                      '
+                    type: integer
+                  maxSlowQueries:
+                    description: 'The maximum number of slow queries kept in the list.
+
+                      If the list of slow queries is full, the oldest entry
+
+                      is discarded when additional slow queries occur.
+
+                      '
+                    type: integer
+                  slowQueryThreshold:
+                    description: 'Threshold in seconds for treating a regular query as slow
+
+                      (the `stream` option is `false` for the query).
+
+                      '
+                    type: number
+                  slowStreamingQueryThreshold:
+                    description: 'Threshold in seconds for treating a streaming query as slow
+
+                      (the `stream` option is `true` for the query).
+
+                      '
+                    type: number
+                  trackBindVars:
+                    description: 'Whether bind variables used in queries are tracked.
+
+                      '
+                    type: boolean
+                  trackSlowQueries:
+                    description: 'Whether slow queries are tracked. The `enabled` property
+
+                      must be set to `true` as well in order to track slow queries.
+
+
+                      Queries are added to the list of slow queries after
+
+                      finishing and if their runtime exceeded the value set in
+
+                      `slowQueryThreshold`.
+
+                      '
+                    type: boolean
+                required:
+                - error
+                - code
+                - enabled
+                - trackSlowQueries
+                - trackBindVars
+                - maxSlowQueries
+                - slowQueryThreshold
+                - slowStreamingQueryThreshold
+                - maxQueryStringLength
+                type: object
+          description: 'The query tracking properties were retrieved successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The request is malformed.
+
+            '
+      summary: Get the AQL query tracking configuration
+      tags:
+      - Queries
+    put:
+      description: 'Modify one or more query tracking properties at runtime for the
+
+        specified database.
+
+        '
+      operationId: updateAqlQueryTrackingProperties
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                enabled:
+                  description: 'Whether to track queries for the specified database.
+
+                    If set to `false`, neither the currently
+
+                    running queries nor slow queries are tracked.
+
+
+                    Default: Controlled by the [`--query.tracking` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking).
+
+                    '
+                  type: boolean
+                maxQueryStringLength:
+                  default: 4096
+                  description: 'The maximum query string length to keep in the list of queries.
+
+
+                    Query strings can have arbitrary lengths, and you can use
+
+                    this property to save memory in case very long query strings
+
+                    are used.
+
+
+                    You can disable the tracking of query strings by default
+
+                    with the [`--query.tracking-with-querystring` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-querystring).
+
+                    '
+                  type: integer
+                maxSlowQueries:
+                  default: 64
+                  description: 'The maximum number of slow queries to keep in the list
+
+                    of slow queries. If the list of slow queries is full, the oldest entry
+
+                    is discarded when additional slow queries occur.
+
+                    '
+                  type: integer
+                slowQueryThreshold:
+                  description: 'Threshold in seconds for treating a regular query as slow
+
+                    (the `stream` option is `false` for the query).
+
+
+                    Default: Controlled by the [`--query.slow-threshold` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-threshold).
+
+                    '
+                  type: number
+                slowStreamingQueryThreshold:
+                  description: 'Threshold in seconds for treating a streaming query as slow
+
+                    (the `stream` option is `true` for the query).
+
+
+                    Default: Controlled by the [`--query.slow-streaming-threshold` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-streaming-threshold).
+
+                    '
+                  type: number
+                trackBindVars:
+                  description: 'Whether to track bind variables used in queries.
+
+
+                    Default: Controlled by the [`--query.tracking-with-bindvars` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-bindvars).
+
+                    '
+                  type: boolean
+                trackSlowQueries:
+                  description: 'Whether to track slow queries. The `enabled` property
+
+                    must be set to `true` as well in order to track slow queries.
+
+
+                    Queries are added to the list of slow queries after
+
+                    finishing and if their runtime exceeded the value set in
+
+                    `slowQueryThreshold`.
+
+
+                    Default: Controlled by the [`--query.tracking-slow-queries` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-slow-queries).
+
+                    '
+                  type: boolean
+              type: object
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  enabled:
+                    description: 'Whether query tracking is enabled for the specified
+
+                      database. If set to `false`, neither the currently
+
+                      running queries nor slow queries are tracked.
+
+                      '
+                    type: boolean
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  maxQueryStringLength:
+                    description: 'Maximum query string length kept in the list of queries
+
+                      (in bytes).
+
+
+                      Query strings can have arbitrary lengths, and you can use
+
+                      this property to save memory in case very long query strings
+
+                      are used.
+
+                      '
+                    type: integer
+                  maxSlowQueries:
+                    description: 'The maximum number of slow queries kept in the list.
+
+                      If the list of slow queries is full, the oldest entry
+
+                      is discarded when additional slow queries occur.
+
+                      '
+                    type: integer
+                  slowQueryThreshold:
+                    description: 'Threshold in seconds for treating a regular query as slow
+
+                      (the `stream` option is `false` for the query).
+
+                      '
+                    type: number
+                  slowStreamingQueryThreshold:
+                    description: 'Threshold in seconds for treating a streaming query as slow
+
+                      (the `stream` option is `true` for the query).
+
+                      '
+                    type: number
+                  trackBindVars:
+                    description: 'Whether bind variables used in queries are tracked.
+
+                      '
+                    type: boolean
+                  trackSlowQueries:
+                    description: 'Whether slow queries are tracked. The `enabled` property
+
+                      must be set to `true` as well in order to track slow queries.
+
+
+                      Queries are added to the list of slow queries after
+
+                      finishing and if their runtime exceeded the value set in
+
+                      `slowQueryThreshold`.
+
+                      '
+                    type: boolean
+                required:
+                - error
+                - code
+                - enabled
+                - trackSlowQueries
+                - trackBindVars
+                - maxSlowQueries
+                - slowQueryThreshold
+                - slowStreamingQueryThreshold
+                - maxQueryStringLength
+                type: object
+          description: 'The properties were changed successfully. The response body contains
+
+            the current set of query tracking properties.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The request is malformed.
+
+            '
+      summary: Update the AQL query tracking configuration
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query/rules:
+    get:
+      description: 'A list of all optimizer rules and their properties.
+
+        '
+      operationId: getAqlQueryOptimizerRules
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'An array of objects. Each object describes an AQL optimizer rule.
+
+                  '
+                items:
+                  properties:
+                    flags:
+                      description: 'An object with the properties of the rule.
+
+                        '
+                      properties:
+                        canBeDisabled:
+                          description: 'Whether users are allowed to disable this rule. A few rules are mandatory.
+
+                            '
+                          type: boolean
+                        canCreateAdditionalPlans:
+                          description: 'Whether this rule may create additional query execution plans.
+
+                            '
+                          type: boolean
+                        clusterOnly:
+                          description: 'Whether the rule is applicable in the cluster deployment mode only.
+
+                            '
+                          type: boolean
+                        disabledByDefault:
+                          description: 'Whether the optimizer considers this rule by default.
+
+                            '
+                          type: boolean
+                        enterpriseOnly:
+                          description: 'Whether the rule is implemented in the non-public enterprise code.
+
+                            '
+                          type: boolean
+                        hidden:
+                          description: 'Whether the rule is displayed to users. Internal rules are hidden.
+
+                            '
+                          type: boolean
+                      required:
+                      - hidden
+                      - clusterOnly
+                      - canBeDisabled
+                      - canCreateAdditionalPlans
+                      - disabledByDefault
+                      - enterpriseOnly
+                      type: object
+                    name:
+                      description: 'The name of the optimizer rule as seen in query explain outputs.
+
+                        '
+                      type: string
+                  required:
+                  - name
+                  - flags
+                  type: object
+                type: array
+          description: 'is returned if the list of optimizer rules can be retrieved successfully.
+
+            '
+      summary: List all AQL optimizer rules
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query/slow:
+    delete:
+      description: 'Clears the list of slow AQL queries for the current database.
+
+        '
+      operationId: clearSlowAqlQueryList
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, clears the slow query history in all databases, not just
+
+          the specified one.
+
+          Using the parameter is only allowed in the `_system` database and with superuser
+
+          privileges.
+
+          '
+        in: query
+        name: all
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                required:
+                - error
+                - code
+                type: object
+          description: 'The list of slow queries was cleared successfully.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The request is malformed.
+
+            '
+      summary: Clear the list of slow AQL queries
+      tags:
+      - Queries
+    get:
+      description: 'Returns a list of the recently finished AQL queries that exceeded the
+
+        slow query threshold in the specified database.
+
+
+        Slow query tracking needs to be enabled by the
+
+        [`--query.tracking-slow-queries` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-slow-queries)
+
+        or at runtime with the `trackSlowQueries` query tracking property of the
+
+        `PUT /_db/{database-name}/_api/query/properties` endpoint.
+
+        If slow query tracking is disabled for the current database,
+
+        an **empty list** is returned.
+
+
+        The maximum amount of queries in the list can be controlled by setting
+
+        the `maxSlowQueries` query tracking property via the
+
+        `PUT /_db/{database-name}/_api/query/properties` endpoint at runtime.
+
+
+        The threshold for treating a query as *slow* can be adjusted separate
+
+        for queries with the `stream` option on or off by setting the
+
+        [`--query.slow-threshold`](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-threshold)
+
+        and [`--query.slow-streaming-threshold`](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-streaming-threshold)
+
+        startup options or at runtime with the `slowQueryThreshold` and
+
+        `slowStreamingQueryThreshold` query tracking properties of the
+
+        `PUT /_db/{database-name}/_api/query/properties` endpoint.
+
+        '
+      operationId: listSlowAqlQueries
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, returns the slow queries from all databases, not just
+
+          the specified one.
+
+          Using the parameter is only allowed in the `_system` database and with superuser
+
+          privileges.
+
+          '
+        in: query
+        name: all
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  properties:
+                    bindVars:
+                      description: 'The bind parameter values used by the query.
+
+
+                        Whether the actual bind variables or an empty object is
+
+                        returned is controlled by the
+
+                        [`--query.tracking-with-bindvars` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-bindvars)
+
+                        or the `trackBindVars` query tracking property that you can
+
+                        change via the `PUT /_db/{database-name}/_api/query/properties`
+
+                        endpoint at runtime.
+
+                        '
+                      type: object
+                    dataSources:
+                      description: 'The collections and Views involved in the query.
+
+
+                        Only present if the
+
+                        [`--query.tracking-with-datasources` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-datasources)
+
+                        is enabled.
+
+                        '
+                      items:
+                        type: string
+                      type: array
+                    database:
+                      description: 'The name of the database the query ran in.
+
+                        '
+                      type: string
+                    exitCode:
+                      description: 'An error code (`errorNum`) that indicates why the query
+
+                        failed, or `0` on success. See the
+
+                        [error codes](https://docs.arango.ai/arangodb/3.12/develop/error-codes/) documentation.
+
+                        '
+                      type: integer
+                    id:
+                      description: 'The internal identifier of the query.
+
+                        '
+                      type: string
+                    modificationQuery:
+                      description: 'Whether the query created, updated, replaced, or deleted
+
+                        any documents (`true`) or only read data (`false`).
+
+                        '
+                      type: boolean
+                    peakMemoryUsage:
+                      description: 'The query''s peak memory usage in bytes (in increments of 32KB).
+
+                        '
+                      type: integer
+                    query:
+                      description: 'The query string (potentially truncated).
+
+
+                        The cutoff is controlled by the
+
+                        [`--query.max-artifact-log-length` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querymax-artifact-log-length)
+
+                        or the `maxQueryStringLength` query tracking property
+
+                        that you can change via the
+
+                        `PUT /_db/{database-name}/_api/query/properties` endpoint
+
+                        at runtime.
+
+
+                        Whether the actual query string is tracked or only a
+
+                        value of `"<hidden>"` is returned depends on the
+
+                        [`--query.tracking-with-querystring` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-with-querystring).
+
+                        '
+                      type: string
+                    runTime:
+                      description: 'The total query duration (in seconds).
+
+                        '
+                      type: number
+                    started:
+                      description: 'The date and time when the query was started (ISO 8601).
+
+                        '
+                      format: date-time
+                      type: string
+                    state:
+                      description: 'The query''s last execution state.
+
+                        '
+                      enum:
+                      - finished
+                      - killed
+                      - invalid
+                      type: string
+                    stream:
+                      description: 'Whether the query used a streaming cursor (`stream` query option).
+
+                        '
+                      type: boolean
+                    user:
+                      description: 'The name of the user who started the query.
+
+                        '
+                      type: string
+                    warnings:
+                      description: 'The number of query warnings that occurred.
+
+                        '
+                      type: integer
+                  required:
+                  - id
+                  - database
+                  - user
+                  - query
+                  - bindVars
+                  - started
+                  - runTime
+                  - peakMemoryUsage
+                  - state
+                  - stream
+                  - modificationQuery
+                  - warnings
+                  - exitCode
+                  type: object
+                type: array
+          description: 'The list of recently finished AQL queries that exceeded the slow
+
+            query threshold. Empty if query tracking or slow query tracking is
+
+            disabled.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The request is malformed.
+
+            '
+        '403':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 403
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'Returned when the `all` parameter is used but the request was made
+
+            in a database other than `_system`, or by a user without superuser
+
+            privileges.
+
+            '
+      summary: List the slow AQL queries
+      tags:
+      - Queries
+  /_db/{database-name}/_api/query/{query-id}:
+    delete:
+      description: 'Kills a running query in the currently selected database. The query will be
+
+        terminated at the next cancellation point.
+
+        '
+      operationId: deleteAqlQuery
+      parameters:
+      - description: 'The name of the database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The identifier of the query.
+
+          '
+        in: path
+        name: query-id
+        required: true
+        schema:
+          type: string
+      - description: 'If set to `true`, attempt to kill the specified query in all databases,
+
+          not just the selected one.
+
+          Using the parameter is only allowed in the `_system` database and with superuser
+
+          privileges.
+
+          '
+        in: query
+        name: all
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'The query was still running when the kill request was executed and
+
+            the query''s kill flag has been set.
+
+            '
+        '400':
+          description: 'The request is malformed.
+
+            '
+        '403':
+          description: 'In case the `all` parameter is used but the request was made in a
+
+            different database than `_system`, or by a non-privileged user.
+
+            '
+        '404':
+          description: 'A query with the specified identifier cannot be found.
+
+            '
+      summary: Kill a running AQL query
+      tags:
+      - Queries
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

@@ -1,0 +1,2397 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Monitoring API
+  version: 3.12.10 (API v0)
+  description: Access logs, statistics, and metrics
+tags:
+- description: Access logs, statistics, and metrics
+  name: Monitoring
+paths:
+  /_admin/log:
+    get:
+      deprecated: true
+      description: '> **WARNING:**
+
+        This endpoint should no longer be used. It is deprecated from version
+
+        3.8.0 onward and removed in ArangoDB 4.0.
+
+        Use `/_admin/log/entries` instead, which provides the same data in a more
+
+        intuitive and easier to process format.
+
+
+
+        Returns fatal, error, warning or info log messages from the server''s global log.
+
+        The result is a JSON object with the attributes described below.
+
+
+        This API can be turned off via the startup option `--log.api-enabled`. In case
+
+        the API is disabled, all requests will be responded to with HTTP 403. If the
+
+        API is enabled, accessing it requires admin privileges, or even superuser
+
+        privileges, depending on the value of the `--log.api-enabled` startup option.
+
+        '
+      operationId: getLog
+      parameters:
+      - description: 'Returns all log entries up to log level `upto`. Note that `upto` must be:
+
+          - `fatal` or `0`
+
+          - `error` or `1`
+
+          - `warning` or `2`
+
+          - `info` or `3`
+
+          - `debug` or `4`
+
+          - `trace` or `5`
+
+          '
+        in: query
+        name: upto
+        required: false
+        schema:
+          default: info
+      - description: 'Returns all log entries of log level `level`. Note that the query parameters
+
+          `upto` and `level` are mutually exclusive.
+
+          '
+        in: query
+        name: level
+        required: false
+        schema:
+          type: string
+      - description: 'Returns all log entries such that their log entry identifier (`lid` value)
+
+          is greater or equal to `start`.
+
+          '
+        in: query
+        name: start
+        required: false
+        schema:
+          default: 0
+          type: number
+      - description: 'Restricts the result to at most `size` log entries.
+
+          '
+        in: query
+        name: size
+        required: false
+        schema:
+          type: number
+      - description: 'Starts to return log entries skipping the first `offset` log entries. `offset`
+
+          and `size` can be used for pagination.
+
+          '
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: number
+      - description: 'Only return the log entries containing the text specified in `search`.
+
+          '
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: 'Sort the log entries either ascending (if `sort` is `asc`) or descending
+
+          (if `sort` is `desc`) according to their `lid` values. Note that the `lid`
+
+          imposes a chronological order.
+
+          '
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: asc
+          type: string
+      - description: 'Returns all log entries of the specified server. All other query parameters
+
+          remain valid. If no serverId is given, the asked server
+
+          will reply. This parameter is only meaningful on Coordinators.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  level:
+                    description: 'A list of the log levels for all log entries.
+
+                      '
+                    type: string
+                  lid:
+                    description: 'a list of log entry identifiers. Each log message is uniquely
+
+                      identified by its @LIT{lid} and the identifiers are in ascending
+
+                      order.
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  text:
+                    description: 'a list of the texts of all log entries
+
+                      '
+                    type: string
+                  timestamp:
+                    description: 'a list of the timestamps as seconds since 1970-01-01 for all log
+
+                      entries.
+
+                      '
+                    items:
+                      type: string
+                    type: array
+                  topic:
+                    description: 'a list of the topics of all log entries
+
+                      '
+                    type: string
+                  totalAmount:
+                    description: 'the total amount of log entries before pagination.
+
+                      '
+                    type: integer
+                required:
+                - lid
+                - level
+                - timestamp
+                - text
+                - topic
+                - totalAmount
+                type: object
+          description: ''
+        '400':
+          description: 'is returned if invalid values are specified for `upto` or `level`.
+
+            '
+        '403':
+          description: 'is returned if there are insufficient privileges to access the logs.
+
+            '
+      summary: Get the global server logs (deprecated)
+      tags:
+      - Monitoring
+  /_admin/log/entries:
+    get:
+      description: 'Returns fatal, error, warning or info log messages from the server''s global log.
+
+        The result is a JSON object with the following properties:
+
+
+        - **total**: the total amount of log entries before pagination
+
+        - **messages**: an array with log messages that matched the criteria
+
+
+        This API can be turned off via the startup option `--log.api-enabled`. In case
+
+        the API is disabled, all requests will be responded to with HTTP 403. If the
+
+        API is enabled, accessing it requires admin privileges, or even superuser
+
+        privileges, depending on the value of the `--log.api-enabled` startup option.
+
+        '
+      operationId: getLogEntries
+      parameters:
+      - description: 'Returns all log entries up to log level `upto`. Note that `upto` must be:
+
+          - `fatal` or `0`
+
+          - `error` or `1`
+
+          - `warning` or `2`
+
+          - `info` or `3`
+
+          - `debug` or `4`
+
+          - `trace` or `5`
+
+          '
+        in: query
+        name: upto
+        required: false
+        schema:
+          default: info
+      - description: 'Returns all log entries of log level `level`. Note that the query parameters
+
+          `upto` and `level` are mutually exclusive.
+
+          '
+        in: query
+        name: level
+        required: false
+        schema:
+          type: string
+      - description: 'Returns all log entries such that their log entry identifier (`id` value)
+
+          is greater or equal to `start`.
+
+          '
+        in: query
+        name: start
+        required: false
+        schema:
+          default: 0
+          type: number
+      - description: 'Restricts the result to at most `size` log entries.
+
+          '
+        in: query
+        name: size
+        required: false
+        schema:
+          type: number
+      - description: 'Starts to return log entries skipping the first `offset` log entries. `offset`
+
+          and `size` can be used for pagination.
+
+          '
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          type: number
+      - description: 'Only return the log entries containing the text specified in `search`.
+
+          '
+        in: query
+        name: search
+        required: false
+        schema:
+          type: string
+      - description: 'Sort the log entries either ascending (if `sort` is `asc`) or descending
+
+          (if `sort` is `desc`) according to their `id` values. Note that the `id`
+
+          imposes a chronological order.
+
+          '
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: asc
+          type: string
+      - description: 'Returns all log entries of the specified server. All other query parameters
+
+          remain valid. If no serverId is given, the asked server
+
+          will reply. This parameter is only meaningful on Coordinators.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'is returned if the request is valid.
+
+            '
+        '400':
+          description: 'is returned if invalid values are specified for `upto` or `level`.
+
+            '
+        '403':
+          description: 'is returned if there are insufficient privileges to access the logs.
+
+            '
+      summary: Get the global server logs
+      tags:
+      - Monitoring
+  /_admin/log/level:
+    delete:
+      description: 'Revert the server''s log level settings to the values they had at startup,
+
+        as determined by the startup options specified on the command-line, a
+
+        configuration file, and the factory defaults.
+
+
+        The result is a JSON object with the log topics being the object keys, and
+
+        the log levels being the object values.
+
+
+        This API can be turned off via the startup option `--log.api-enabled`. In case
+
+        the API is disabled, all requests will be responded to with HTTP 403. If the
+
+        API is enabled, accessing it requires admin privileges, or even superuser
+
+        privileges, depending on the value of the `--log.api-enabled` startup option.
+
+        '
+      operationId: resetLogLevel
+      parameters:
+      - description: 'Forwards the request to the specified server.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'The log levels have been reset successfully.
+
+            '
+        '403':
+          description: 'You have insufficient privileges to reset the log levels.
+
+            '
+      summary: Reset the server log levels
+      tags:
+      - Monitoring
+    get:
+      description: 'Returns the server''s current log level settings.
+
+        The result is a JSON object with the log topics being the object keys, and
+
+        the log levels being the object values.
+
+
+        This API can be turned off via the startup option `--log.api-enabled`. In case
+
+        the API is disabled, all requests will be responded to with HTTP 403. If the
+
+        API is enabled, accessing it requires admin privileges, or even superuser
+
+        privileges, depending on the value of the `--log.api-enabled` startup option.
+
+        '
+      operationId: getLogLevel
+      parameters:
+      - description: 'Forwards the request to the specified server.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      - description: "Set this option to `true` to return the individual log level settings\nof all log outputs (`appenders`) as well as the `global` settings.\n\nThe response structure is as follows:\n\n```json\n{\n  \"global\": {\n    \"agency\": \"INFO\",\n    \"agencycomm\": \"INFO\",\n    \"agencystore\": \"WARNING\",\n    ...\n  },\n  \"appenders\": {\n    \"-\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    \"file:///path/to/file\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    ...\n  }\n}\n```\n"
+        in: query
+        name: withAppenders
+        required: false
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          description: 'is returned if the request is valid
+
+            '
+        '403':
+          description: 'is returned if there are insufficient privileges to read log levels.
+
+            '
+      summary: Get the server log levels
+      tags:
+      - Monitoring
+    put:
+      description: "Modifies and returns the server's current log level settings.\nThe request body must be a JSON string with a log level or a JSON object with the\nlog topics being the object keys and the log levels being the object values.\n\nIf only a JSON string is specified as input, the log level is adjusted for the\n\"general\" log topic only. If a JSON object is specified as input, the log levels will\nbe set only for the log topic mentioned in the input object, but preserved for every\nother log topic.\nTo set the log level for all log levels to a specific value, it is possible to hand\nin the special pseudo log topic \"all\".\n\nThe result is a JSON object with all available log topics being the object keys, and\nthe adjusted log levels being the object values.\n\nPossible log levels are:\n- `FATAL` - Only critical errors are logged after which the _arangod_\n  process terminates.\n- `ERROR` - Only errors are logged. You should investigate and fix errors\n  as they may harm your production.\n- `WARNING` - Errors and warnings are logged. Warnings may be serious\n  application-wise and can indicate issues that might lead to errors\n  later on.\n- `INFO` - Errors, warnings, and general information is logged.\n- `DEBUG` - Outputs debug messages used in the development of ArangoDB\n  in addition to the above.\n- `TRACE` - Logs detailed tracing of operations in addition to the above.\n  This can flood the log. Don't use this log level in production.\n\nThis API can be turned off via the startup option `--log.api-enabled`. In case\nthe API is disabled, all requests will be responded to with HTTP 403. If the\nAPI is enabled, accessing it requires admin privileges, or even superuser\nprivileges, depending on the value of the `--log.api-enabled` startup option.\n"
+      operationId: setLogLevel
+      parameters:
+      - description: 'Forwards the request to the specified server.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      - description: "Set this option to `true` to set individual log level settings\nfor log outputs (`appenders`). The request and response structure is\nas follows:\n\n```json\n{\n  \"global\": {\n    \"agency\": \"INFO\",\n    \"agencycomm\": \"INFO\",\n    \"agencystore\": \"WARNING\",\n    ...\n  },\n  \"appenders\": {\n    \"-\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    \"file:///path/to/file\": {\n      \"agency\": \"INFO\",\n      \"agencycomm\": \"INFO\",\n      \"agencystore\": \"WARNING\",\n      ...\n    },\n    ...\n  }\n}\n```\n\nChanging the `global` settings affects all outputs and is the same\nas setting a log level with this option turned off.\n"
+        in: query
+        name: withAppenders
+        required: false
+        schema:
+          default: false
+          type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                agency:
+                  description: 'Agents use this log topic to inform about any activity
+
+                    including the RAFT consensus gossip.
+
+                    '
+                  type: string
+                agencycomm:
+                  description: 'DB-Servers and Coordinators log the requests they send to the
+
+                    Agency.
+
+                    '
+                  type: string
+                agencystore:
+                  description: 'Optional verbose logging of Agency write operations.
+
+                    '
+                  type: string
+                all:
+                  description: 'Pseudo-topic to address all log topics.
+
+                    '
+                  type: string
+                aql:
+                  description: 'Logs information about the AQL query optimization and
+
+                    execution. DB-Servers and Coordinators log the cluster-internal
+
+                    communication around AQL queries. It also reports the AQL
+
+                    memory limit on startup.
+
+                    '
+                  type: string
+                arangosearch:
+                  description: 'Logs information related to ArangoSearch including Analyzers,
+
+                    the column cache, and the commit and consolidation threads.
+
+                    '
+                  type: string
+                audit-authentication:
+                  description: 'Controls whether events such as successful logins and
+
+                    missing or wrong credentials are written to the audit log.
+
+                    '
+                  type: string
+                audit-authorization:
+                  description: 'Controls whether events such as users trying to access databases
+
+                    without the necessary permissions are written to the audit log.
+
+                    '
+                  type: string
+                audit-collection:
+                  description: 'Controls whether events about collections creation, truncation,
+
+                    and deletion are written to the audit log.
+
+                    '
+                  type: string
+                audit-database:
+                  description: 'Controls whether events about database creation and deletion
+
+                    are written to the audit log.
+
+                    '
+                  type: string
+                audit-document:
+                  description: 'Controls whether document read and write events are written
+
+                    to the audit log.
+
+                    '
+                  type: string
+                audit-hotbackup:
+                  description: 'Controls whether the Hot Backup creation, restore, and delete
+
+                    events are written to the audit log.
+
+                    '
+                  type: string
+                audit-service:
+                  description: 'Controls whether the start and stop events of the audit
+
+                    service are written to the audit log.
+
+                    '
+                  type: string
+                audit-view:
+                  description: 'Controls whether events about View creation and deletion
+
+                    are written to the audit log.
+
+                    '
+                  type: string
+                authentication:
+                  description: 'Logs events related to authentication, for example, when a
+
+                    JWT secret is generated or a token is validated against a secret.
+
+                    '
+                  type: string
+                authorization:
+                  description: 'Logs when a user has insufficient permissions for a request.
+
+                    '
+                  type: string
+                backup:
+                  description: 'Logs events related to Hot Backup.
+
+                    '
+                  type: string
+                bench:
+                  description: 'Logs events related to benchmarking with _arangobench_.
+
+                    '
+                  type: string
+                cache:
+                  description: 'Logs events related to caching documents and index entries
+
+                    as well as the cache configuration on startup.
+
+                    '
+                  type: string
+                cluster:
+                  description: 'Logs information related to the cluster-internal communication
+
+                    as well as cluster operations. This includes changes to the
+
+                    state and readiness of DB-Servers and connectivity checks
+
+                    on Coordinators.
+
+                    '
+                  type: string
+                communication:
+                  description: 'Logs lower-level network connection and communication events.
+
+                    '
+                  type: string
+                config:
+                  description: 'Logs information related to the startup options and server
+
+                    configuration.
+
+                    '
+                  type: string
+                crash:
+                  description: 'Logs information about a fatal error including a backtrace
+
+                    before the process terminates.
+
+                    '
+                  type: string
+                deprecation:
+                  description: 'Warns about deprecated features and the usage of options that
+
+                    will not be allowed or have no effect in a future version.
+
+                    '
+                  type: string
+                development:
+                  description: 'This log topic is reserved for the development of ArangoDB.
+
+                    '
+                  type: string
+                dump:
+                  description: 'Logs events related to dumping data with _arangodump_.
+
+                    '
+                  type: string
+                engines:
+                  description: 'Logs various information related to ArangoDB''s use of the
+
+                    RocksDB storage engine, like the initialization and
+
+                    file operations.
+
+
+                    RocksDB''s internal log messages are passed through using the
+
+                    `rocksdb` log topic.
+
+                    '
+                  type: string
+                flush:
+                  description: 'Logs events related to flushing data from memory to disk.
+
+                    '
+                  type: string
+                general:
+                  description: 'Logs all messages of general interest and that don''t fit
+
+                    under any of the other log topics. For example, it reports
+
+                    the ArangoDB version and the detected operating system and
+
+                    memory on startup.
+
+                    '
+                  type: string
+                graphs:
+                  description: 'Logs information related to graph operations including
+
+                    graph traversal and path search tracing.
+
+                    '
+                  type: string
+                heartbeat:
+                  description: 'Logs everything related to the cluster heartbeat for
+
+                    monitoring the intra-connectivity.
+
+                    '
+                  type: string
+                httpclient:
+                  description: 'Logs the activity of the HTTP request subsystem that is used
+
+                    in replication, client tools, and V8.
+
+                    '
+                  type: string
+                libiresearch:
+                  description: 'Logs the internal log messages of IResearch, the underlying
+
+                    library of ArangoSearch.
+
+                    '
+                  type: string
+                license:
+                  description: 'Logs events related to the license management like the
+
+                    expiration of a license.
+
+                    '
+                  type: string
+                maintenance:
+                  description: 'Logs the operations of the cluster maintenance including
+
+                    shard locking and collection creation.
+
+                    '
+                  type: string
+                memory:
+                  description: 'Logs the memory configuration on startup and reports
+
+                    problems with memory alignment and operating system settings.
+
+                    '
+                  type: string
+                queries:
+                  description: 'Logs slow queries as well as internal details about the
+
+                    execution of AQL queries at low log levels.
+
+                    '
+                  type: string
+                replication:
+                  description: 'Logs information related to the data replication within a cluster.
+
+                    '
+                  type: string
+                requests:
+                  description: 'Logs the handling of internal and external requests and
+
+                    can include IP addresses, endpoints, and HTTP headers and
+
+                    bodies when using low log levels.
+
+
+                    It overlaps with the network `communication` log topic.
+
+                    '
+                  type: string
+                restore:
+                  description: 'This log topic is only used by _arangorestore_.
+
+                    '
+                  type: string
+                rocksdb:
+                  description: 'Logs RocksDB''s internal log messages as well RocksDB
+
+                    background errors.
+
+
+                    Information related to ArangoDB''s use of the
+
+                    RocksDB storage engine uses the `engines` log topic.
+
+                    '
+                  type: string
+                security:
+                  description: 'Logs the security configuration for V8.
+
+                    '
+                  type: string
+                ssl:
+                  description: 'Logs information related to the in-transit encryption of
+
+                    network communication using SSL/TLS.
+
+                    '
+                  type: string
+                startup:
+                  description: 'Logs information related to the startup and shutdown of a
+
+                    server process as well as anything related to upgrading the
+
+                    database directory.
+
+                    '
+                  type: string
+                statistics:
+                  description: 'Logs events related to processing server statistics.
+
+                    This is independent of server metrics.
+
+                    '
+                  type: string
+                supervision:
+                  description: 'Logs information related to the Agency''s cluster supervision.
+
+                    '
+                  type: string
+                syscall:
+                  description: 'Logs events related to calling operating system functions.
+
+                    It reports problems related to file descriptors and the
+
+                    server process monitoring.
+
+                    '
+                  type: string
+                threads:
+                  description: 'Logs information related to the use of operating system
+
+                    threads and the threading configuration of ArangoDB.
+
+                    '
+                  type: string
+                trx:
+                  description: 'Logs information about transaction management.
+
+                    '
+                  type: string
+                ttl:
+                  description: 'Logs the activity of the background thread for
+
+                    time-to-live (TTL) indexes.
+
+                    '
+                  type: string
+                v8:
+                  description: 'Logs various information related to ArangoDB''s use of the
+
+                    V8 JavaScript engine, like the initialization as well as
+
+                    entering and exiting contexts.
+
+                    '
+                  type: string
+                validation:
+                  description: 'Logs when the schema validation fails for a document.
+
+                    '
+                  type: string
+                views:
+                  description: 'Logs certain events related to ArangoSearch Views.
+
+                    '
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'is returned if the request is valid
+
+            '
+        '400':
+          description: 'is returned when the request body contains invalid JSON.
+
+            '
+        '403':
+          description: 'is returned if there are insufficient privileges to adjust log levels.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+      summary: Set the server log levels
+      tags:
+      - Monitoring
+  /_admin/log/structured:
+    get:
+      description: 'Returns the server''s current structured log settings.
+
+        The result is a JSON object with the log parameters being the object keys, and
+
+        `true` or `false` being the object values, meaning the parameters are either
+
+        enabled or disabled.
+
+
+        This API can be turned off via the startup option `--log.api-enabled`. In case
+
+        the API is disabled, all requests will be responded to with HTTP 403. If the
+
+        API is enabled, accessing it requires admin privileges, or even superuser
+
+        privileges, depending on the value of the `--log.api-enabled` startup option.
+
+        '
+      operationId: getStructuredLog
+      responses:
+        '200':
+          description: 'is returned if the request is valid
+
+            '
+        '403':
+          description: 'is returned if there are insufficient privileges to read structured log
+
+            parameters.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+      summary: Get the structured log settings
+      tags:
+      - Monitoring
+    put:
+      description: 'Modifies and returns the server''s current structured log settings.
+
+        The request body must be a JSON object with the structured log parameters
+
+        being the object keys and `true` or `false` object values, for either
+
+        enabling or disabling the parameters.
+
+
+        The result is a JSON object with all available structured log parameters being
+
+        the object keys, and `true` or `false` being the object values, meaning the
+
+        parameter in the object key is either enabled or disabled.
+
+
+        This API can be turned off via the startup option `--log.api-enabled`. In case
+
+        the API is disabled, all requests will be responded to with HTTP 403. If the
+
+        API is enabled, accessing it requires admin privileges, or even superuser
+
+        privileges, depending on the value of the `--log.api-enabled` startup option.
+
+        '
+      operationId: setStructuredLog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                database:
+                  description: 'One of the possible log parameters.
+
+                    '
+                  type: boolean
+                url:
+                  description: 'One of the possible log parameters.
+
+                    '
+                  type: boolean
+                username:
+                  description: 'One of the possible log parameters.
+
+                    '
+                  type: boolean
+              type: object
+      responses:
+        '200':
+          description: 'is returned if the request is valid
+
+            '
+        '403':
+          description: 'is returned if there are insufficient privileges to adjust log levels.
+
+            '
+        '405':
+          description: 'is returned when an invalid HTTP method is used.
+
+            '
+      summary: Set the structured log settings
+      tags:
+      - Monitoring
+  /_db/{database-name}/_admin/metrics:
+    get:
+      description: 'Returns the instance''s current metrics in Prometheus format. The
+
+        returned document collects all instance metrics, which are measured
+
+        at any given time and exposes them for collection by Prometheus.
+
+
+        The document contains different metrics and metrics groups dependent
+
+        on the role of the queried instance. All exported metrics are
+
+        published with a `arangodb_` or `rocksdb_` prefix to distinguish them
+
+        from other collected data.
+
+
+        The API then needs to be added to the Prometheus configuration file
+
+        for collection.
+
+        '
+      operationId: getMetrics
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database. If the `--server.harden` startup option is enabled,
+
+          administrate access to the `_system` database is required.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Returns metrics of the specified server. If no serverId is given, the asked
+
+          server will reply. This parameter is only meaningful on Coordinators.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Metrics were returned successfully.
+
+            '
+        '404':
+          description: 'The metrics API may be disabled using `--server.export-metrics-api false`
+
+            setting in the server. In this case, the result of the call indicates the API
+
+            to be not found.
+
+            '
+      summary: Get the metrics
+      tags:
+      - Monitoring
+  /_db/{database-name}/_admin/metrics/v2:
+    get:
+      deprecated: true
+      description: '> **WARNING:**
+
+        The `GET /_admin/metrics` and `GET /_admin/metrics/v2` endpoints return
+
+        the same metrics since ArangoDB v3.10.0. The latter is deprecated and
+
+        removed in v4.0.
+
+
+
+        Returns the instance''s current metrics in Prometheus format. The
+
+        returned document collects all instance metrics, which are measured
+
+        at any given time and exposes them for collection by Prometheus.
+
+
+        The document contains different metrics and metrics groups dependent
+
+        on the role of the queried instance. All exported metrics are
+
+        published with a `arangodb_` or `rocksdb_` prefix to distinguish
+
+        them from other collected data.
+
+
+        The API then needs to be added to the Prometheus configuration file
+
+        for collection.
+
+        '
+      operationId: getMetricsV2
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database. If the `--server.harden` startup option is enabled,
+
+          administrate access to the `_system` database is required.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Returns metrics of the specified server. If no serverId is given, the asked
+
+          server will reply. This parameter is only meaningful on Coordinators.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Metrics were returned successfully.
+
+            '
+        '404':
+          description: 'The metrics API may be disabled using `--server.export-metrics-api false`
+
+            setting in the server. In this case, the result of the call indicates the API
+
+            to be not found.
+
+            '
+      summary: Get the metrics (deprecated)
+      tags:
+      - Monitoring
+  /_db/{database-name}/_admin/server/api-calls:
+    get:
+      description: 'Get a list of the most recent requests with a timestamp and the endpoint.
+
+        In cluster deployments, the list contains only those requests that were
+
+        submitted to the Coordinator you call this endpoint on.
+
+        This feature is for debugging purposes.
+
+
+        You can control how much memory is used to record API calls with the
+
+        `--server.api-recording-memory-limit` startup option.
+
+
+        You can disable this and the `/_admin/server/aql-queries` endpoint
+
+        with the `--log.recording-api-enabled` startup option.
+
+
+        Whether API calls are recorded is independently controlled by the
+
+        `--server.api-call-recording` startup option.
+
+        The endpoint returns an empty list of calls if turned off.
+
+        '
+      operationId: getRecentApiCalls
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          If `--log.recording-api-enabled` is set to `jwt`, you need to use
+
+          a superuser token to access the endpoint.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The request result.
+
+                      '
+                    properties:
+                      calls:
+                        description: 'A list of the recent API calls. Empty if API call recording is disabled.
+
+                          '
+                        items:
+                          properties:
+                            database:
+                              description: 'The database name.
+
+                                '
+                              type: string
+                            path:
+                              description: 'The HTTP request path excluding the database prefix (`/_db/<database-name>`).
+
+                                '
+                              type: string
+                            requestType:
+                              description: 'The HTTP request method.
+
+                                '
+                              enum:
+                              - GET
+                              - PATCH
+                              - PUT
+                              - DELETE
+                              - HEAD
+                              type: string
+                            timeStamp:
+                              description: 'The date and time of the request in ISO 8601 format.
+
+                                '
+                              format: date-time
+                              type: string
+                          type: object
+                        type: array
+                    required:
+                    - calls
+                    type: object
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'Returns the recorded API calls.
+
+            '
+        '401':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 401
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The user account has insufficient permissions for the selected database.
+
+            '
+        '403':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 403
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The recording API has been disabled.
+
+            '
+        '501':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 501
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The method has not been called on a Coordinator or single server.
+
+            '
+      summary: Get recent API calls
+      tags:
+      - Monitoring
+  /_db/{database-name}/_admin/server/aql-queries:
+    get:
+      description: 'Get a list of the most recent AQL queries with a timestamp and
+
+        information about the submitted query. In cluster deployments, the list
+
+        contains only those queries that were submitted to the Coordinator you
+
+        call this endpoint on. This feature is for debugging purposes.
+
+
+        You can control how much memory is used to record AQL queries with the
+
+        `--server.aql-recording-memory-limit` startup option.
+
+
+        You can disable this and the `/_admin/server/api-calls` endpoint
+
+        with the `--log.recording-api-enabled` startup option.
+
+
+        Whether AQL queries are recorded is independently controlled by the
+
+        `--server.aql-query-recording` startup option.
+
+        The endpoint returns an empty list of queries if turned off.
+
+        '
+      operationId: getRecentAqlQueries
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database and administrate access to the `_system` database.
+
+          If `--log.recording-api-enabled` is set to `jwt`, you need to use
+
+          a superuser token to access the endpoint.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  result:
+                    description: 'The request result.
+
+                      '
+                    properties:
+                      queries:
+                        description: 'A list of the recent AQL queries.
+
+                          Empty if AQL query recording is disabled.
+
+                          '
+                        items:
+                          properties:
+                            bindVars:
+                              description: 'Key/value pairs representing the bind variables.
+
+                                '
+                              type: object
+                            database:
+                              description: 'The database name.
+
+                                '
+                              type: string
+                            query:
+                              description: 'The AQL query.
+
+                                '
+                              type: string
+                            timeStamp:
+                              description: 'The date and time of the request in ISO 8601 format.
+
+                                '
+                              format: date-time
+                              type: string
+                          type: object
+                        type: array
+                    required:
+                    - queries
+                    type: object
+                required:
+                - error
+                - code
+                - result
+                type: object
+          description: 'Returns the recorded AQL queries.
+
+            '
+        '401':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 401
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The user account has insufficient permissions for the selected database.
+
+            '
+        '403':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 403
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The recording API has been disabled.
+
+            '
+        '501':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 501
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - errorNum
+                - errorMessage
+                type: object
+          description: 'The method has not been called on a Coordinator or single server.
+
+            '
+      summary: Get recent AQL queries
+      tags:
+      - Monitoring
+  /_db/{database-name}/_admin/statistics:
+    get:
+      deprecated: true
+      description: '> **WARNING:**
+
+        This endpoint should no longer be used. It is deprecated from
+
+        version 3.8.0 onward and removed in ArangoDB v4.0.
+
+        Use `GET /_admin/metrics` instead, which provides the data exposed by
+
+        this API and a lot more.
+
+
+
+        Returns the statistics information. The returned object contains the
+
+        statistics figures grouped together according to the description returned by
+
+        `/_admin/statistics-description`. For instance, to access a figure `userTime`
+
+        from the group `system`, you first select the sub-object describing the
+
+        group stored in `system` and in that sub-object the value for `userTime` is
+
+        stored in the attribute of the same name.
+
+
+        In case of a distribution, the returned object contains the total count in
+
+        `count` and the distribution list in `counts`. The sum (or total) of the
+
+        individual values is returned in `sum`.
+
+
+        The transaction statistics show the local started, committed and aborted
+
+        transactions as well as intermediate commits done for the server queried. The
+
+        intermediate commit count will only take non zero values for the RocksDB
+
+        storage engine. Coordinators do almost no local transactions themselves in
+
+        their local databases, therefore cluster transactions (transactions started on a
+
+        Coordinator that require DB-Servers to finish before the transactions is
+
+        committed cluster wide) are just added to their local statistics. This means
+
+        that the statistics you would see for a single server is roughly what you can
+
+        expect in a cluster setup using a single Coordinator querying this Coordinator.
+
+        Just with the difference that cluster transactions have no notion of
+
+        intermediate commits and will not increase the value.
+
+        '
+      operationId: getStatistics
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database. If the `--server.harden` startup option is enabled,
+
+          administrate access to the `_system` database is required.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  client:
+                    description: 'information about the connected clients and their resource usage
+
+                      '
+                    properties:
+                      bytesReceived:
+                        description: 'number of bytes received from the clients
+
+                          '
+                        properties:
+                          count:
+                            description: 'number of values summarized
+
+                              '
+                            type: integer
+                          counts:
+                            description: 'array containing the values
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sum:
+                            description: 'summarized value of all counts
+
+                              '
+                            type: number
+                        required:
+                        - sum
+                        - count
+                        - counts
+                        type: object
+                      bytesSent:
+                        description: 'number of bytes sent to the clients
+
+                          '
+                        properties:
+                          count:
+                            description: 'number of values summarized
+
+                              '
+                            type: integer
+                          counts:
+                            description: 'array containing the values
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sum:
+                            description: 'summarized value of all counts
+
+                              '
+                            type: number
+                        required:
+                        - sum
+                        - count
+                        - counts
+                        type: object
+                      connectionTime:
+                        description: 'total connection times
+
+                          '
+                        properties:
+                          count:
+                            description: 'number of values summarized
+
+                              '
+                            type: integer
+                          counts:
+                            description: 'array containing the values
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sum:
+                            description: 'summarized value of all counts
+
+                              '
+                            type: number
+                        required:
+                        - sum
+                        - count
+                        - counts
+                        type: object
+                      httpConnections:
+                        description: 'the number of open http connections
+
+                          '
+                        type: integer
+                      ioTime:
+                        description: 'IO Time
+
+                          '
+                        properties:
+                          count:
+                            description: 'number of values summarized
+
+                              '
+                            type: integer
+                          counts:
+                            description: 'array containing the values
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sum:
+                            description: 'summarized value of all counts
+
+                              '
+                            type: number
+                        required:
+                        - sum
+                        - count
+                        - counts
+                        type: object
+                      queueTime:
+                        description: 'the time requests were queued waiting for processing
+
+                          '
+                        properties:
+                          count:
+                            description: 'number of values summarized
+
+                              '
+                            type: integer
+                          counts:
+                            description: 'array containing the values
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sum:
+                            description: 'summarized value of all counts
+
+                              '
+                            type: number
+                        required:
+                        - sum
+                        - count
+                        - counts
+                        type: object
+                      requestTime:
+                        description: 'the request times
+
+                          '
+                        properties:
+                          count:
+                            description: 'number of values summarized
+
+                              '
+                            type: integer
+                          counts:
+                            description: 'array containing the values
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sum:
+                            description: 'summarized value of all counts
+
+                              '
+                            type: number
+                        required:
+                        - sum
+                        - count
+                        - counts
+                        type: object
+                      totalTime:
+                        description: 'the system time
+
+                          '
+                        properties:
+                          count:
+                            description: 'number of values summarized
+
+                              '
+                            type: integer
+                          counts:
+                            description: 'array containing the values
+
+                              '
+                            items:
+                              type: integer
+                            type: array
+                          sum:
+                            description: 'summarized value of all counts
+
+                              '
+                            type: number
+                        required:
+                        - sum
+                        - count
+                        - counts
+                        type: object
+                    required:
+                    - connectionTime
+                    - totalTime
+                    - requestTime
+                    - queueTime
+                    - ioTime
+                    - bytesSent
+                    - bytesReceived
+                    - httpConnections
+                    type: object
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  enabled:
+                    description: '`true` if the server has the statistics module enabled. If not, don''t expect any values.
+
+                      '
+                    type: boolean
+                  error:
+                    description: 'A flag indicating that no error occurred.
+
+                      '
+                    example: false
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  http:
+                    description: 'the numbers of requests by Verb
+
+                      '
+                    properties:
+                      requestsAsync:
+                        description: 'total number of asynchronous http requests
+
+                          '
+                        type: integer
+                      requestsDelete:
+                        description: 'No of requests using the DELETE-verb
+
+                          '
+                        type: integer
+                      requestsGet:
+                        description: 'No of requests using the GET-verb
+
+                          '
+                        type: integer
+                      requestsHead:
+                        description: 'No of requests using the HEAD-verb
+
+                          '
+                        type: integer
+                      requestsOptions:
+                        description: 'No of requests using the OPTIONS-verb
+
+                          '
+                        type: integer
+                      requestsOther:
+                        description: 'No of requests using the none of the above identified verbs
+
+                          '
+                        type: integer
+                      requestsPatch:
+                        description: 'No of requests using the PATCH-verb
+
+                          '
+                        type: integer
+                      requestsPost:
+                        description: 'No of requests using the POST-verb
+
+                          '
+                        type: integer
+                      requestsPut:
+                        description: 'No of requests using the PUT-verb
+
+                          '
+                        type: integer
+                      requestsTotal:
+                        description: 'total number of http requests
+
+                          '
+                        type: integer
+                    required:
+                    - requestsTotal
+                    - requestsAsync
+                    - requestsGet
+                    - requestsHead
+                    - requestsPost
+                    - requestsPut
+                    - requestsPatch
+                    - requestsDelete
+                    - requestsOptions
+                    - requestsOther
+                    type: object
+                  server:
+                    description: 'statistics of the server
+
+                      '
+                    properties:
+                      physicalMemory:
+                        description: 'available physical memory on the server
+
+                          '
+                        type: integer
+                      threads:
+                        description: 'Statistics about the server worker threads (excluding V8 specific or jemalloc specific threads and system threads)
+
+                          '
+                        properties:
+                          in-progress:
+                            description: 'The number of currently busy worker threads
+
+                              '
+                            type: integer
+                          queued:
+                            description: 'The number of jobs queued up waiting for worker threads becoming available
+
+                              '
+                            type: integer
+                          scheduler-threads:
+                            description: 'The number of spawned worker threads
+
+                              '
+                            type: integer
+                        required:
+                        - scheduler-threads
+                        - in-progress
+                        - queued
+                        type: object
+                      transactions:
+                        description: 'Statistics about transactions
+
+                          '
+                        properties:
+                          aborted:
+                            description: 'the number of aborted transactions
+
+                              '
+                            type: integer
+                          committed:
+                            description: 'the number of committed transactions
+
+                              '
+                            type: integer
+                          intermediateCommits:
+                            description: 'the number of intermediate commits done
+
+                              '
+                            type: integer
+                          started:
+                            description: 'the number of started transactions
+
+                              '
+                            type: integer
+                        required:
+                        - started
+                        - committed
+                        - aborted
+                        - intermediateCommits
+                        type: object
+                      uptime:
+                        description: 'time the server is up and running
+
+                          '
+                        type: integer
+                      v8Context:
+                        description: 'Statistics about the V8 javascript contexts
+
+                          '
+                        properties:
+                          available:
+                            description: 'the number of currently spawned V8 contexts
+
+                              '
+                            type: integer
+                          busy:
+                            description: 'the number of currently active V8 contexts
+
+                              '
+                            type: integer
+                          dirty:
+                            description: 'the number of contexts that were previously used, and should now be garbage collected before being re-used
+
+                              '
+                            type: integer
+                          free:
+                            description: 'the number of V8 contexts that are free to use
+
+                              '
+                            type: integer
+                          max:
+                            description: 'the maximum number of V8 concurrent contexts we may spawn as configured by --javascript.v8-contexts
+
+                              '
+                            type: integer
+                          memory:
+                            description: 'a list of V8 memory / garbage collection watermarks; Refreshed on every garbage collection run;
+
+                              Preserves min/max memory used at that time for 10 seconds
+
+                              '
+                            items:
+                              properties:
+                                contextId:
+                                  description: 'ID of the context this set of memory statistics is from
+
+                                    '
+                                  type: integer
+                                countOfTimes:
+                                  description: 'how many times was the garbage collection run in these 10 seconds
+
+                                    '
+                                  type: integer
+                                heapMax:
+                                  description: 'High watermark of all garbage collection runs in 10 seconds
+
+                                    '
+                                  type: integer
+                                heapMin:
+                                  description: 'Low watermark of all garbage collection runs in these 10 seconds
+
+                                    '
+                                  type: integer
+                                tMax:
+                                  description: 'the timestamp where the 10 seconds interval started
+
+                                    '
+                                  type: number
+                              required:
+                              - contextId
+                              - tMax
+                              - countOfTimes
+                              - heapMax
+                              - heapMin
+                              type: object
+                            type: array
+                          min:
+                            description: 'the minimum number of V8 contexts that are spawned as configured by --javascript.v8-contexts-minimum
+
+                              '
+                            type: integer
+                        required:
+                        - available
+                        - busy
+                        - dirty
+                        - free
+                        - max
+                        - min
+                        - memory
+                        type: object
+                    required:
+                    - uptime
+                    - physicalMemory
+                    - transactions
+                    - v8Context
+                    - threads
+                    type: object
+                  system:
+                    description: 'metrics gathered from the system about this process; may depend on the host OS
+
+                      '
+                    properties:
+                      majorPageFaults:
+                        description: 'pagefaults
+
+                          '
+                        type: integer
+                      minorPageFaults:
+                        description: 'pagefaults
+
+                          '
+                        type: integer
+                      numberOfThreads:
+                        description: 'the number of threads in the server
+
+                          '
+                        type: integer
+                      residentSize:
+                        description: 'RSS of process
+
+                          '
+                        type: integer
+                      residentSizePercent:
+                        description: 'RSS of process in %
+
+                          '
+                        type: number
+                      systemTime:
+                        description: 'the system CPU time used by the server process
+
+                          '
+                        type: number
+                      userTime:
+                        description: 'the user CPU time used by the server process
+
+                          '
+                        type: number
+                      virtualSize:
+                        description: 'VSS of the process
+
+                          '
+                        type: integer
+                    required:
+                    - minorPageFaults
+                    - majorPageFaults
+                    - userTime
+                    - systemTime
+                    - numberOfThreads
+                    - residentSize
+                    - residentSizePercent
+                    - virtualSize
+                    type: object
+                  time:
+                    description: 'the current server timestamp
+
+                      '
+                    type: integer
+                required:
+                - error
+                - code
+                - time
+                - errorMessage
+                - enabled
+                - system
+                - client
+                - http
+                - server
+                type: object
+          description: 'Statistics were returned successfully.
+
+            '
+        '404':
+          description: 'Statistics are disabled on the instance.
+
+            '
+      summary: Get the statistics
+      tags:
+      - Monitoring
+  /_db/{database-name}/_admin/statistics-description:
+    get:
+      deprecated: true
+      description: '> **WARNING:**
+
+        This endpoint should no longer be used. It is deprecated from
+
+        version 3.8.0 onward and removed in ArangoDB v4.0.
+
+        Use `GET /_admin/metrics` instead, which provides the data exposed by the
+
+        statistics API and a lot more.
+
+
+
+        Returns a description of the statistics returned by `/_admin/statistics`.
+
+        The returned objects contains an array of statistics groups in the attribute
+
+        `groups` and an array of statistics figures in the attribute `figures`.
+
+
+        A statistics group is described by
+
+
+        - `group`: The identifier of the group.
+
+        - `name`: The name of the group.
+
+        - `description`: A description of the group.
+
+
+        A statistics figure is described by
+
+
+        - `group`: The identifier of the group to which this figure belongs.
+
+        - `identifier`: The identifier of the figure. It is unique within the group.
+
+        - `name`: The name of the figure.
+
+        - `description`: A description of the figure.
+
+        - `type`: Either `current`, `accumulated`, or `distribution`.
+
+        - `cuts`: The distribution vector.
+
+        - `units`: Units in which the figure is measured.
+
+        '
+      operationId: getStatisticsDescription
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database. If the `--server.harden` startup option is enabled,
+
+          administrate access to the `_system` database is required.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 200
+                    type: integer
+                  error:
+                    description: 'the error, `false` in this case
+
+                      '
+                    type: boolean
+                  figures:
+                    description: 'A statistics figure
+
+                      '
+                    items:
+                      properties:
+                        cuts:
+                          description: 'The distribution vector.
+
+                            '
+                          type: string
+                        description:
+                          description: 'A description of the figure.
+
+                            '
+                          type: string
+                        group:
+                          description: 'The identifier of the group to which this figure belongs.
+
+                            '
+                          type: string
+                        identifier:
+                          description: 'The identifier of the figure. It is unique within the group.
+
+                            '
+                          type: string
+                        name:
+                          description: 'The name of the figure.
+
+                            '
+                          type: string
+                        type:
+                          description: 'Either `current`, `accumulated`, or `distribution`.
+
+                            '
+                          type: string
+                        units:
+                          description: 'Units in which the figure is measured.
+
+                            '
+                          type: string
+                      required:
+                      - group
+                      - identifier
+                      - name
+                      - description
+                      - type
+                      - cuts
+                      - units
+                      type: object
+                    type: array
+                  groups:
+                    description: 'A statistics group
+
+                      '
+                    items:
+                      properties:
+                        description:
+                          description: 'A description of the group.
+
+                            '
+                          type: string
+                        group:
+                          description: 'The identifier of the group.
+
+                            '
+                          type: string
+                        name:
+                          description: 'The name of the group.
+
+                            '
+                          type: string
+                      required:
+                      - group
+                      - name
+                      - description
+                      type: object
+                    type: array
+                required:
+                - groups
+                - figures
+                - code
+                - error
+                type: object
+          description: 'Description was returned successfully.
+
+            '
+      summary: Get the statistics description
+      tags:
+      - Monitoring
+  /_db/{database-name}/_admin/usage-metrics:
+    get:
+      description: 'Returns detailed shard usage metrics on DB-Servers.
+
+
+        These metrics can be enabled by setting the
+
+        [`--server.export-shard-usage-metrics` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serverexport-shard-usage-metrics)
+
+        to `enabled-per-shard` to make DB-Servers collect per-shard
+
+        usage metrics, or to `enabled-per-shard-per-user` to make DB-Servers collect
+
+        usage metrics per shard and per user whenever a shard is accessed.
+
+        '
+      operationId: getUsageMetrics
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database. If the `--server.harden` startup option is enabled,
+
+          administrate access to the `_system` database is required.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'Returns the usage metrics of the specified server (`PRMR-...`).
+
+          If no `serverId` is specified, the asked server replies.
+
+          This parameter is only meaningful on Coordinators.
+
+          '
+        in: query
+        name: serverId
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 'Metrics were returned successfully.
+
+            '
+      summary: Get the usage metrics
+      tags:
+      - Monitoring
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

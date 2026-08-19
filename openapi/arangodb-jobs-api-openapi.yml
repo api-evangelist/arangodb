@@ -1,0 +1,595 @@
+openapi: 3.2.0
+info:
+  contact:
+    name: ArangoDB Inc.
+    url: https://arango.ai
+  license:
+    name: Business Source License 1.1
+    url: https://github.com/arangodb/arangodb/blob/devel/LICENSE
+  summary: The HTTP API of the ArangoDB graph database system
+  title: ArangoDB Core Jobs API
+  version: 3.12.10 (API v0)
+  description: Execute requests asynchronously
+tags:
+- description: Execute requests asynchronously
+  name: Jobs
+paths:
+  /_db/{database-name}/_api/job/{job-id}:
+    delete:
+      description: 'Deletes either all job results, expired job results, or the result of a
+
+        specific job.
+
+        Clients can use this method to perform an eventual garbage collection of job
+
+        results.
+
+        '
+      operationId: deleteJob
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: "The ID of the job to delete. The ID can be:\n- `all`: Deletes all jobs results. Currently executing or queued async\n  jobs are not stopped by this call.\n- `expired`: Deletes expired results. To determine the expiration status of a\n  result, pass the stamp query parameter. stamp needs to be a Unix timestamp,\n  and all async job results created before this time are deleted.\n- **A numeric job ID**: In this case, the call removes the result of the\n  specified async job. If the job is currently executing or queued, it is\n  not aborted.\n"
+        in: path
+        name: job-id
+        required: true
+        schema:
+          type: string
+      - description: 'A Unix timestamp specifying the expiration threshold for when the `job-id` is
+
+          set to `expired`.
+
+          '
+        in: query
+        name: stamp
+        required: false
+        schema:
+          type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    description: 'Always `true`.
+
+                      '
+                    example: true
+                    type: boolean
+                required:
+                - result
+                type: object
+          description: 'The result of a specific job has been deleted successfully.
+
+            This code is also returned if the deletion of `all` or `expired`
+
+            jobs has been requested, including if no results were deleted.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The `job-id` is missing in the request or has an invalid value.
+
+            In this case, no `x-arango-async-id` HTTP header is returned.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The job cannot be found or has already been deleted, or the result
+
+            has already been fetched. In this case, no `x-arango-async-id`
+
+            HTTP header is returned.
+
+            '
+      summary: Delete async job results
+      tags:
+      - Jobs
+    get:
+      description: 'This endpoint returns either of the following, depending on the specified value
+
+        for the `job-id` parameter:
+
+
+        - The IDs of async jobs with a specific status
+
+        - The processing status of a specific async job
+
+        '
+      operationId: getJob
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'If you provide a value of `pending` or `done`, then the endpoint returns an
+
+          array of strings with the job IDs of ongoing or completed async jobs.
+
+
+          If you provide a numeric job ID, then the endpoint returns the status of the
+
+          specific async job in the form of an HTTP reply without payload. Check the
+
+          HTTP status code of the response for the job status.
+
+          '
+        in: path
+        name: job-id
+        required: true
+        schema:
+          type: string
+      - description: 'The maximum number of job IDs to return per call. If not specified, a
+
+          server-defined maximum value is used. Only applicable if you specify `pending`
+
+          or `done` as `job-id` to list jobs.
+
+          '
+        in: query
+        name: count
+        required: false
+        schema:
+          default: 100
+          type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: 'A list of job IDs. The list can be empty.
+
+                  '
+                items:
+                  type: string
+                type: array
+          description: 'The job has finished and you can fetch the result (the response has
+
+            no body in this case), or your request for the list of `pending` or
+
+            `done` jobs has been successful.
+
+            '
+        '204':
+          description: 'The job is still in the queue of pending (or not yet finished) jobs.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The `job-id` is missing in the request or has an invalid value.
+
+            In this case, no `x-arango-async-id` HTTP header is returned.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The job cannot be found or has already been deleted, or the result
+
+            has already been fetched. In this case, no `x-arango-async-id`
+
+            HTTP header is returned.
+
+            '
+      summary: List async jobs by status or get the status of specific job
+      tags:
+      - Jobs
+    put:
+      description: 'Returns the result of an async job identified by `job-id` if it''s ready.
+
+
+        If the async job result is available on the server, the endpoint returns
+
+        the original operation''s result headers and body, plus the additional
+
+        `x-arango-async-job-id` HTTP header. The result and job are then removed
+
+        which means that you can retrieve the result exactly once.
+
+
+        If the result is not available yet or if the job is not known (anymore),
+
+        the additional header is not present and you can tell the status from
+
+        the HTTP status code.
+
+        '
+      operationId: getJobResult
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The async job id.
+
+          '
+        in: path
+        name: job-id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: 'The job is still in the queue of pending (or not yet finished) jobs.
+
+            In this case, no `x-arango-async-id` HTTP header is returned.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The `job-id` is missing in the request or has an invalid value.
+
+            In this case, no `x-arango-async-id` HTTP header is returned.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The job cannot be found or has already been deleted, or the result
+
+            has already been fetched. In this case, no `x-arango-async-id`
+
+            HTTP header is returned.
+
+            '
+        default:
+          description: 'If the job has finished, you get the result with the headers of the
+
+            original operation with an additional `x-arango-async-id` HTTP header.
+
+            The HTTP status code is also that of the operation that executed
+
+            asynchronously, which can be a success or error code depending on
+
+            the outcome of the operation.
+
+            '
+      summary: Get the results of an async job
+      tags:
+      - Jobs
+  /_db/{database-name}/_api/job/{job-id}/cancel:
+    put:
+      description: 'Cancels the currently running job identified by `job-id`. Note that it still
+
+        might take some time to actually cancel the running async job.
+
+        '
+      operationId: cancelJob
+      parameters:
+      - description: 'The name of a database. Which database you use doesn''t matter as long
+
+          as the user account you authenticate with has at least read access
+
+          to this database.
+
+          '
+        example: _system
+        in: path
+        name: database-name
+        required: true
+        schema:
+          type: string
+      - description: 'The async job id.
+
+          '
+        in: path
+        name: job-id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    description: 'Always `true`.
+
+                      '
+                    example: true
+                    type: boolean
+                required:
+                - result
+                type: object
+          description: 'The job cancellation has been initiated.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 400
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The `job-id` is missing in the request or has an invalid value.
+
+            In this case, no `x-arango-async-id` HTTP header is returned.
+
+            '
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 'The HTTP response status code.
+
+                      '
+                    example: 404
+                    type: integer
+                  error:
+                    description: 'A flag indicating that an error occurred.
+
+                      '
+                    example: true
+                    type: boolean
+                  errorMessage:
+                    description: 'A descriptive error message.
+
+                      '
+                    type: string
+                  errorNum:
+                    description: 'The ArangoDB error number for the error that occurred.
+
+                      '
+                    type: integer
+                required:
+                - code
+                - error
+                - errorMessage
+                - errorNum
+                type: object
+          description: 'The job cannot be found or has already been deleted, or the result
+
+            has already been fetched. In this case, no `x-arango-async-id`
+
+            HTTP header is returned.
+
+            '
+      summary: Cancel an async job
+      tags:
+      - Jobs
+externalDocs:
+  description: ArangoDB Documentation
+  url: https://docs.arango.ai/arangodb/

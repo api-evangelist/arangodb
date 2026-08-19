@@ -12,23 +12,21 @@ server:
     kind: docker
     image: arangodb/mcp-arangodb
     url: https://hub.docker.com/r/arangodb/mcp-arangodb
-  note: >-
-    Self-hosted. Arango publishes the MCP server as a Docker image that the agent
-    runtime launches locally and points at an ArangoDB deployment; there is no
-    vendor-hosted remote MCP endpoint, so `tools/list` cannot be introspected
-    anonymously. The tool list and parameters below are transcribed verbatim from
+  note: Self-hosted. Arango publishes the MCP server as a Docker image that the agent runtime launches
+    locally and points at an ArangoDB deployment; there is no vendor-hosted remote MCP endpoint, so `tools/list`
+    cannot be introspected anonymously. The tool list and parameters below are transcribed verbatim from
     the vendor documentation, not from a live tools/list response.
-  scope: >-
-    Purpose-built for safe, read-focused AQL work. Graph/view/index/analyzer
-    management and destructive admin operations (create/delete databases or
-    collections) are deliberately NOT exposed.
+  scope: Purpose-built for safe, read-focused AQL work. Graph/view/index/analyzer management and destructive
+    admin operations (create/delete databases or collections) are deliberately NOT exposed.
 tools:
 - name: get-aql-manual
   description: Retrieves built-in documentation for AQL syntax and optimization.
   parameters:
   - name: manual_name
     required: true
-    enum: [aql_ref, optimization]
+    enum:
+    - aql_ref
+    - optimization
   use_when: You need reference documentation for writing AQL queries.
   source_operation: null
 - name: fetch-schemas
@@ -77,3 +75,12 @@ x-evidence:
   url: https://raw.githubusercontent.com/arangodb/docs-hugo/main/site/content/ecosystem/arangodb-mcp-server.md
   http_status: 200
   content_type: text/plain
+deployment:
+  mode: none
+  endpoint: https://hub.docker.com/r/arangodb/mcp-arangodb
+  verified: probed
+  probe: dead
+  note: the endpoint this manifest claimed did not answer; recorded as none rather than deleted so the
+    claim stays auditable
+  checked: '2026-08-12'
+  source: catalog MCP census

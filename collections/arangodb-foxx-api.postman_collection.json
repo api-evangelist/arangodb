@@ -1,0 +1,2421 @@
+{
+  "item": [
+    {
+      "id": "b520e612-11a9-4dfd-a2be-6c1f5eb1af31",
+      "name": "Foxx",
+      "description": {
+        "content": "Manage microservices written in JavaScript",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "190d8a17-4eb7-494f-b0a1-e0a0cc71ca65",
+          "name": "List the installed services",
+          "request": {
+            "name": "List the installed services",
+            "description": {
+              "content": "Fetches a list of services installed in the current database.\n\nReturns a list of objects with the following attributes:\n\n- `mount`: the mount path of the service\n- `development`: `true` if the service is running in development mode\n- `legacy`: `true` if the service is running in 2.8 legacy compatibility mode\n- `provides`: the service manifest's `provides` value or an empty object\n\nAdditionally the object may contain the following attributes if they have been set on the manifest:\n\n- `name`: a string identifying the service type\n- `version`: a semver-compatible version string\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "excludeSystem",
+                  "value": "false",
+                  "description": "Whether or not system services should be excluded from the result.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7c81964f-a049-4f5c-8eda-7d9eb93fe6d1",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "excludeSystem",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ff5b3185-1c4e-4bff-922d-38d351bb2bc1",
+          "name": "Install a new service",
+          "request": {
+            "name": "Install a new service",
+            "description": {
+              "content": "Installs the given new service at the given mount path.\n\nThe request body can be any of the following formats:\n\n- `application/zip`: a raw zip bundle containing a service\n- `application/javascript`: a standalone JavaScript file\n- `application/json`: a service definition as JSON\n- `multipart/form-data`: a service definition as a multipart form\n\nA service definition is an object or form with the following properties or fields:\n\n- `configuration`: a JSON object describing configuration values\n- `dependencies`: a JSON object describing dependency settings\n- `source`: a fully qualified URL or an absolute path on the server's file system\n\nWhen using multipart data, the `source` field can also alternatively be a file field\ncontaining either a zip bundle or a standalone JavaScript file.\n\nWhen using a standalone JavaScript file the given file will be executed\nto define our service's HTTP endpoints. It is the same which would be defined\nin the field `main` of the service manifest.\n\nIf `source` is a URL, the URL must be reachable from the server.\nIf `source` is a file system path, the path will be resolved on the server.\nIn either case the path or URL is expected to resolve to a zip bundle,\nJavaScript file or (in case of a file system path) directory.\n\nNote that when using file system paths in a cluster with multiple Coordinators\nthe file system path must resolve to equivalent files on every Coordinator.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path the service should be installed at.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "development",
+                  "value": "false",
+                  "description": "Set to `true` to enable development mode.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "setup",
+                  "value": "true",
+                  "description": "Set to `false` to not run the service's setup script.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "legacy",
+                  "value": "false",
+                  "description": "Set to `true` to install the service in 2.8 legacy compatibility mode.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "566dee07-8aac-438a-b407-240f69a9e551",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "development",
+                      "value": "false"
+                    },
+                    {
+                      "key": "setup",
+                      "value": "true"
+                    },
+                    {
+                      "key": "legacy",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3cf54f27-bb85-4e9a-a301-c959b86c3546",
+          "name": "Commit the local service state",
+          "request": {
+            "name": "Commit the local service state",
+            "description": {
+              "content": "Commits the local service state of the Coordinator to the database.\n\nThis can be used to resolve service conflicts between Coordinators that cannot be fixed automatically due to missing data.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "commit"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "replace",
+                  "value": "<boolean>",
+                  "description": "Overwrite existing service files in database even if they already exist.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a5cd3cf6-0dcd-4225-9423-e054059ad461",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "commit"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "replace",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7beedb20-46d8-4c01-b20f-a8acac2551c1",
+          "name": "Get the configuration options",
+          "request": {
+            "name": "Get the configuration options",
+            "description": {
+              "content": "Fetches the current configuration for the service at the given mount path.\n\nReturns an object mapping the configuration option names to their definitions\nincluding a human-friendly `title` and the `current` value (if any).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "configuration"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "afd59198-66d1-4fef-a39c-d26ea067cad6",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "configuration"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "85d16097-cdbb-4280-a2cf-e2d39a2d0bc5",
+          "name": "Update the configuration options",
+          "request": {
+            "name": "Update the configuration options",
+            "description": {
+              "content": "Replaces the given service's configuration partially.\n\nReturns an object mapping all configuration option names to their new values.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "configuration"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4f07f70f-2f4f-4724-8af3-f90f6cabf5b8",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "configuration"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8e4c5edb-49fe-4f95-8c4c-32dc7cb49387",
+          "name": "Replace the configuration options",
+          "request": {
+            "name": "Replace the configuration options",
+            "description": {
+              "content": "Replaces the given service's configuration completely.\n\nReturns an object mapping all configuration option names to their new values.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "configuration"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d5645b2d-58b3-4f36-b6b9-7ccfe700b467",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "configuration"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "017a7932-f096-4c97-b88a-97be0dd4610e",
+          "name": "Get the dependency options",
+          "request": {
+            "name": "Get the dependency options",
+            "description": {
+              "content": "Fetches the current dependencies for service at the given mount path.\n\nReturns an object mapping the dependency names to their definitions\nincluding a human-friendly `title` and the `current` mount path (if any).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "dependencies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a6aed072-2838-48d2-b6e9-4a1691f86a8c",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "dependencies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2364f5ed-74a0-40de-9589-cfb53d6a3239",
+          "name": "Update the dependency options",
+          "request": {
+            "name": "Update the dependency options",
+            "description": {
+              "content": "Replaces the given service's dependencies.\n\nReturns an object mapping all dependency names to their new mount paths.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "dependencies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"options\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d6d08278-3f63-4a23-8f97-d3528e371ee4",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "dependencies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"options\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4857c95a-dab9-4189-a6cc-da2c103e0503",
+          "name": "Replace the dependency options",
+          "request": {
+            "name": "Replace the dependency options",
+            "description": {
+              "content": "Replaces the given service's dependencies completely.\n\nReturns an object mapping all dependency names to their new mount paths.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "dependencies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"options\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "701bfe18-54f4-48da-afaa-880c435ade06",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "dependencies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"options\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9cf1430c-c20c-4430-a98a-f825e1c795c1",
+          "name": "Disable the development mode",
+          "request": {
+            "name": "Disable the development mode",
+            "description": {
+              "content": "Puts the service at the given mount path into production mode.\n\nWhen running ArangoDB in a cluster with multiple Coordinators this will\nreplace the service on all other Coordinators with the version on this\nCoordinator.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "development"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8e48d13d-0f93-45e2-8b2e-a92d7b4a321b",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "development"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ce9537d2-42ef-49bf-9fd1-e76a517270c6",
+          "name": "Enable the development mode",
+          "request": {
+            "name": "Enable the development mode",
+            "description": {
+              "content": "Puts the service into development mode.\n\nWhile the service is running in development mode the service will be reloaded\nfrom the filesystem and its setup script (if any) will be re-executed every\ntime the service handles a request.\n\nWhen running ArangoDB in a cluster with multiple Coordinators note that changes\nto the filesystem on one Coordinator will not be reflected across the other\nCoordinators. This means you should treat your Coordinators as inconsistent\nas long as any service is running in development mode.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "development"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "083cbc13-d5ad-4a2e-b9e9-f48cafcf75dd",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "development"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0ce1ffc1-a93f-4824-a9ad-112adcb6aac3",
+          "name": "Download a service bundle",
+          "request": {
+            "name": "Download a service bundle",
+            "description": {
+              "content": "Downloads a zip bundle of the service directory.\n\nWhen development mode is enabled, this always creates a new bundle.\n\nOtherwise the bundle will represent the version of a service that\nis installed on that ArangoDB instance.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "download"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0e43fd2b-b9d0-458c-b03f-585c0abbf3ea",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "01757e67-f0a7-46bb-bb41-ce2325fefd0e",
+              "name": "Returned if the mount path is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b8a7a638-2bcd-42ba-90e1-f8f98b8016a3",
+          "name": "Get the service README",
+          "request": {
+            "name": "Get the service README",
+            "description": {
+              "content": "Fetches the service's README or README.md file's contents if any.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "readme"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ad0c780a-ba26-4baa-a315-33bd2569a8d6",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "readme"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "50fd646a-1f95-49ea-bb12-ae261bb37412",
+              "name": "Returned if no README file was found.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "readme"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4149df71-8ef7-4b79-9182-6c2cb57c6fc2",
+          "name": "List the service scripts",
+          "request": {
+            "name": "List the service scripts",
+            "description": {
+              "content": "Fetches a list of the scripts defined by the service.\n\nReturns an object mapping the raw script names to human-friendly names.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "scripts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "014da63a-e8b2-4d3b-af94-c27a45f121ee",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "scripts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "77c62824-d905-4cf4-bef9-98d09584d9b5",
+          "name": "Run a service script",
+          "request": {
+            "name": "Run a service script",
+            "description": {
+              "content": "Runs the given script for the service at the given mount path.\n\nReturns the exports of the script, if any.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "scripts",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Name of the script to run.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "841a4c39-0cd5-4fc9-93e3-4da6e2e81b34",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "scripts",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "description": "(Required) Name of the script to run.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "47c37f30-6394-4eab-ad83-683cbc8150f6",
+          "name": "Uninstall a service",
+          "request": {
+            "name": "Uninstall a service",
+            "description": {
+              "content": "Removes the service at the given mount path from the database and file system.\n\nReturns an empty response on success.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "service"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "teardown",
+                  "value": "true",
+                  "description": "Set to `false` to not run the service's teardown script.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f173ec5a-53ea-4c65-9085-61096fd36526",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "service"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "teardown",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cdd94a0a-0b2a-45d9-a165-00f4d1edaa56",
+          "name": "Get the service description",
+          "request": {
+            "name": "Get the service description",
+            "description": {
+              "content": "Fetches detailed information for the service at the given mount path.\n\nReturns an object with the following attributes:\n\n- `mount`: the mount path of the service\n- `path`: the local file system path of the service\n- `development`: `true` if the service is running in development mode\n- `legacy`: `true` if the service is running in 2.8 legacy compatibility mode\n- `manifest`: the normalized JSON manifest of the service\n\nAdditionally the object may contain the following attributes if they have been set on the manifest:\n\n- `name`: a string identifying the service type\n- `version`: a semver-compatible version string\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "service"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6bda6c60-4619-4dbb-b9f8-b8c643e19746",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "service"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c00aa4b5-b873-40f0-bb66-ddcc8bba5c14",
+              "name": "Returned if the mount path is unknown.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "service"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a909f518-1cdd-46de-97b0-63e5e58a3d17",
+          "name": "Upgrade a service",
+          "request": {
+            "name": "Upgrade a service",
+            "description": {
+              "content": "Installs the given new service on top of the service currently installed at the given mount path.\nThis is only recommended for switching between different versions of the same service.\n\nUnlike replacing a service, upgrading a service retains the old service's configuration\nand dependencies (if any) and should therefore only be used to migrate an existing service\nto a newer or equivalent service.\n\nThe request body can be any of the following formats:\n\n- `application/zip`: a raw zip bundle containing a service\n- `application/javascript`: a standalone JavaScript file\n- `application/json`: a service definition as JSON\n- `multipart/form-data`: a service definition as a multipart form\n\nA service definition is an object or form with the following properties or fields:\n\n- `configuration`: a JSON object describing configuration values\n- `dependencies`: a JSON object describing dependency settings\n- `source`: a fully qualified URL or an absolute path on the server's file system\n\nWhen using multipart data, the `source` field can also alternatively be a file field\ncontaining either a zip bundle or a standalone JavaScript file.\n\nWhen using a standalone JavaScript file the given file will be executed\nto define our service's HTTP endpoints. It is the same which would be defined\nin the field `main` of the service manifest.\n\nIf `source` is a URL, the URL must be reachable from the server.\nIf `source` is a file system path, the path will be resolved on the server.\nIn either case the path or URL is expected to resolve to a zip bundle,\nJavaScript file or (in case of a file system path) directory.\n\nNote that when using file system paths in a cluster with multiple Coordinators\nthe file system path must resolve to equivalent files on every Coordinator.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "service"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "teardown",
+                  "value": "false",
+                  "description": "Set to `true` to run the old service's teardown script.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "setup",
+                  "value": "true",
+                  "description": "Set to `false` to not run the new service's setup script.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "legacy",
+                  "value": "false",
+                  "description": "Set to `true` to install the new service in 2.8 legacy compatibility mode.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "force",
+                  "value": "false",
+                  "description": "Set to `true` to force service install even if no service is installed under given mount.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a28ae677-dccf-4510-b7cb-7a9c1aaaf66a",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "service"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "teardown",
+                      "value": "false"
+                    },
+                    {
+                      "key": "setup",
+                      "value": "true"
+                    },
+                    {
+                      "key": "legacy",
+                      "value": "false"
+                    },
+                    {
+                      "key": "force",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "be59af0d-3e7c-423b-9256-a2274e814604",
+          "name": "Replace a service",
+          "request": {
+            "name": "Replace a service",
+            "description": {
+              "content": "Removes the service at the given mount path from the database and file system.\nThen installs the given new service at the same mount path.\n\nThis is a slightly safer equivalent to performing an uninstall of the old service\nfollowed by installing the new service. The new service's main and script files\n(if any) will be checked for basic syntax errors before the old service is removed.\n\nThe request body can be any of the following formats:\n\n- `application/zip`: a raw zip bundle containing a service\n- `application/javascript`: a standalone JavaScript file\n- `application/json`: a service definition as JSON\n- `multipart/form-data`: a service definition as a multipart form\n\nA service definition is an object or form with the following properties or fields:\n\n- `configuration`: a JSON object describing configuration values\n- `dependencies`: a JSON object describing dependency settings\n- `source`: a fully qualified URL or an absolute path on the server's file system\n\nWhen using multipart data, the `source` field can also alternatively be a file field\ncontaining either a zip bundle or a standalone JavaScript file.\n\nWhen using a standalone JavaScript file the given file will be executed\nto define our service's HTTP endpoints. It is the same which would be defined\nin the field `main` of the service manifest.\n\nIf `source` is a URL, the URL must be reachable from the server.\nIf `source` is a file system path, the path will be resolved on the server.\nIn either case the path or URL is expected to resolve to a zip bundle,\nJavaScript file or (in case of a file system path) directory.\n\nNote that when using file system paths in a cluster with multiple Coordinators\nthe file system path must resolve to equivalent files on every Coordinator.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "service"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "teardown",
+                  "value": "true",
+                  "description": "Set to `false` to not run the old service's teardown script.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "setup",
+                  "value": "true",
+                  "description": "Set to `false` to not run the new service's setup script.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "legacy",
+                  "value": "false",
+                  "description": "Set to `true` to install the new service in 2.8 legacy compatibility mode.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "force",
+                  "value": "false",
+                  "description": "Set to `true` to force service install even if no service is installed under given mount.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "PUT",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ee6e9ce0-0897-43ac-b2a6-66ad85a147a4",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "service"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "teardown",
+                      "value": "true"
+                    },
+                    {
+                      "key": "setup",
+                      "value": "true"
+                    },
+                    {
+                      "key": "legacy",
+                      "value": "false"
+                    },
+                    {
+                      "key": "force",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9eadcf74-41f3-462c-99f0-fcd8429d5073",
+          "name": "Get the Swagger description",
+          "request": {
+            "name": "Get the Swagger description",
+            "description": {
+              "content": "Fetches the Swagger API description for the service at the given mount path.\n\nThe response body will be an OpenAPI 2.0 compatible JSON description of the service API.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "swagger"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ad10ca23-f9d6-4d5e-b88c-6a517409c039",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "swagger"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ee72f3a7-a42f-4ebd-a4ee-009caecd5476",
+          "name": "Run the service tests",
+          "request": {
+            "name": "Run the service tests",
+            "description": {
+              "content": "Runs the tests for the service at the given mount path and returns the results.\n\nSupported test reporters are:\n\n- `default`: a simple list of test cases\n- `suite`: an object of test cases nested in suites\n- `stream`: a raw stream of test results\n- `xunit`: an XUnit/JUnit compatible structure\n- `tap`: a raw TAP compatible stream\n\nThe `Accept` request header can be used to further control the response format:\n\nWhen using the `stream` reporter `application/x-ldjson` will result\nin the response body being formatted as a newline-delimited JSON stream.\n\nWhen using the `tap` reporter `text/plain` or `text/*` will result\nin the response body being formatted as a plain text TAP report.\n\nWhen using the `xunit` reporter `application/xml` or `text/xml` will result\nin the response body being formatted as XML instead of JSONML.\n\nOtherwise the response body will be formatted as non-prettyprinted JSON.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "_db",
+                ":database-name",
+                "_api",
+                "foxx",
+                "tests"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "mount",
+                  "value": "<string>",
+                  "description": "(Required) Mount path of the installed service.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "reporter",
+                  "value": "<string>",
+                  "description": "Test reporter to use.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "idiomatic",
+                  "value": "<boolean>",
+                  "description": "Use the matching format for the reporter, regardless of the `Accept` header.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "Only run tests where the full name (including full test suites and test case)\nmatches this string.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "database-name",
+                  "description": "(Required) The name of the database.\n"
+                }
+              ]
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "88383eea-c5ca-48f3-b9d2-7977da377387",
+              "name": "Returned if the request was successful.\n",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "_db",
+                    ":database-name",
+                    "_api",
+                    "foxx",
+                    "tests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "mount",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reporter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "idiomatic",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "database-name",
+                      "description": "(Required) The name of the database.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "b74042d5-f2f2-40af-a7dd-33255c0ef035",
+    "name": "ArangoDB Core Foxx API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Manage microservices written in JavaScript\n\nContact Support:\n Name: ArangoDB Inc.",
+      "type": "text/plain"
+    }
+  }
+}

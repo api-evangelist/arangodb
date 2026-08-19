@@ -1,0 +1,735 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Replication API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Replication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the replication applier configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/applier-config",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "global",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, returns the configuration of the global replication applier for all\ndatabases. If set to `false`, returns the configuration of the replication applier in the\nselected database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the configuration of the replication applier.\n\nThe body of the response is a JSON object with the configuration. The\nfollowing attributes may be present in the configuration:\n\n- `endpoint`: the logger server to connect to (e.g. \"tcp://192.168.173.13:8529\").\n\n- `database`: the name of the database to connect to (e.g. \"_system\").\n\n- `username`: an optional ArangoDB username to use when connecting to the endpoint.\n\n- `password`: the password to use when connecting to the endpoint.\n\n- `maxCo"
+        },
+        {
+          "info": {
+            "name": "Update the replication applier configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/applier-config",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "global",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, adjusts the configuration of the global replication applier for all\ndatabases. If set to `false`, adjusts the configuration of the replication applier in the\nselected database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the configuration of the replication applier. The configuration can\nonly be changed while the applier is not running. The updated configuration\nwill be saved immediately but only become active with the next start of the\napplier.\n\nIn case of success, the body of the response is a JSON object with the updated\nconfiguration.\n"
+        },
+        {
+          "info": {
+            "name": "Start the replication applier",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/applier-start",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "global",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, starts the global replication applier for all\ndatabases. If set to `false`, starts the replication applier in the\nselected database.\n"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The remote `lastLogTick` value from which to start applying. If not specified,\nthe last saved tick from the previous applier run is used. If there is no\nprevious applier state saved, the applier will start at the beginning of the\nlogger server's log.\n"
+              }
+            ]
+          },
+          "docs": "Starts the replication applier. This will return immediately if the\nreplication applier is already running.\n\nIf the replication applier is not already running, the applier configuration\nwill be checked, and if it is complete, the applier will be started in a\nbackground thread. This means that even if the applier will encounter any\nerrors while running, they will not be reported in the response to this\nmethod.\n\nTo detect replication applier errors after the applier was started, use the\n`/_api/rep"
+        },
+        {
+          "info": {
+            "name": "Get the replication applier state",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/applier-state",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "global",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, returns the state of the global replication applier for all\ndatabases. If set to `false`, returns the state of the replication applier in the\nselected database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the state of the replication applier, regardless of whether the\napplier is currently running or not.\n\nThe response is a JSON object with the following attributes:\n\n- `state`: a JSON object with the following sub-attributes:\n\n  - `running`: whether or not the applier is active and running\n\n  - `lastAppliedContinuousTick`: the last tick value from the continuous\n    replication log the applier has applied.\n\n  - `lastProcessedContinuousTick`: the last tick value from the continuous\n    repl"
+        },
+        {
+          "info": {
+            "name": "Stop the replication applier",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/applier-stop",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "global",
+                "value": "",
+                "type": "query",
+                "description": "If set to `true`, stops the global replication applier for all\ndatabases. If set to `false`, stops the replication applier in the\nselected database.\n"
+              }
+            ]
+          },
+          "docs": "Stops the replication applier. This will return immediately if the\nreplication applier is not running.\n"
+        },
+        {
+          "info": {
+            "name": "Create a new dump batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/batch",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Setting `state` to `true` makes the response also contain\na `state` attribute with information about the leader state.\nThis is used only internally during the replication process\nand should not be used by client applications.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **INFO:**\nThis is an internally used endpoint.\n\n\nCreates a new dump batch and returns the batch's id.\n\nThe response is a JSON object with the following attributes:\n\n- `id`: the id of the batch\n- `lastTick`: snapshot tick value using when creating the batch\n- `state`: additional leader state information (only present if the\n  `state` URL parameter was set to `true` in the request)\n\n> **INFO:**\nOn a Coordinator, this request must have a `DBserver`\nquery parameter which must be an ID of a DB-Serv"
+        },
+        {
+          "info": {
+            "name": "Extend the TTL of a dump batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/batch/:id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The id of the batch.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **INFO:**\nThis is an internally used endpoint.\n\n\nExtends the time-to-live (TTL) of an existing dump batch, using the batch's ID and\nthe provided TTL value.\n\nIf the batch's TTL can be extended successfully, the response is empty.\n\n> **INFO:**\nOn a Coordinator, this request must have a `DBserver`\nquery parameter which must be an ID of a DB-Server.\nThe very same request is forwarded synchronously to that DB-Server.\nIt is an error if this attribute is not bound in the Coordinator case.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an existing dump batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/batch/:id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The id of the batch.\n"
+              }
+            ]
+          },
+          "docs": "> **INFO:**\nThis is an internally used endpoint.\n\n\nDeletes the existing dump batch, allowing compaction and cleanup to resume.\n\n> **INFO:**\nOn a Coordinator, this request must have a `DBserver`\nquery parameter which must be an ID of a DB-Server.\nThe very same request is forwarded synchronously to that DB-Server.\nIt is an error if this attribute is not bound in the Coordinator case.\n"
+        },
+        {
+          "info": {
+            "name": "Get the cluster collections and indexes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/clusterInventory",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "includeSystem",
+                "value": "",
+                "type": "query",
+                "description": "Include system collections in the result.\n"
+              }
+            ]
+          },
+          "docs": "Returns the array of collections and indexes available on the cluster.\n\nThe response will be an array of JSON objects, one for each collection.\nEach collection contains exactly two keys, `parameters` and `indexes`.\nThis information comes from `Plan/Collections/{DB-Name}/*` in the Agency,\njust that the `indexes` attribute there is relocated to adjust it to\nthe data format of arangodump.\n"
+        },
+        {
+          "info": {
+            "name": "Get a replication dump",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/dump",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The name or id of the collection to dump.\n"
+              },
+              {
+                "name": "chunkSize",
+                "value": "",
+                "type": "query",
+                "description": "Approximate maximum size of the returned result.\n"
+              },
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "query",
+                "description": "The id of the snapshot to use\n"
+              }
+            ]
+          },
+          "docs": "Returns the data from a collection for the requested range.\n\nThe `chunkSize` query parameter can be used to control the size of the result.\nIt must be specified in bytes. The `chunkSize` value will only be honored\napproximately. Otherwise a too low `chunkSize` value could cause the server\nto not be able to put just one entry into the result and return it.\nTherefore, the `chunkSize` value will only be consulted after an entry has\nbeen written into the result. If the result size is then greater th"
+        },
+        {
+          "info": {
+            "name": "Get a replication inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/inventory",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "includeSystem",
+                "value": "",
+                "type": "query",
+                "description": "Include system collections in the result.\n"
+              },
+              {
+                "name": "global",
+                "value": "",
+                "type": "query",
+                "description": "Include all databases in the response. Only works in the context of\nthe `_system` database.\n"
+              },
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "query",
+                "description": "A valid batchId is required for this API call\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "If this parameter is set, the response will be restricted to a single collection (the one\nspecified), and no views will be returned. This can be used as an optimization to reduce\nthe size of the response.\n"
+              }
+            ]
+          },
+          "docs": "Returns the array of collections and their indexes, and the array of Views available. These\narrays can be used by replication clients to initiate an initial synchronization with the\nserver.\nThe response will contain all collections, their indexes and views in the requested database\nif `global` is not set, and all collections, indexes and views in all databases if `global`\nis set.\nIn case `global` is not set, it is possible to restrict the response to a single collection\nby setting the `collectio"
+        },
+        {
+          "info": {
+            "name": "Get the first available replication tick value",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/logger-first-tick",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis endpoint is deprecated and removed in ArangoDB v4.0.\n\n\nReturns the first available tick value that can be served from the server's\nreplication log. This method can be called by replication clients after to\ndetermine if certain data (identified by a tick value) is still available\nfor replication.\n\nThe result is a JSON object containing the attribute `firstTick`. This\nattribute contains the minimum tick value available in the server's\nreplication\nlog.\n\n> **INFO:**\nThis method i"
+        },
+        {
+          "info": {
+            "name": "Get replication log entries (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/logger-follow",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Exclusive lower bound tick value for results.\n"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Inclusive upper bound tick value for results.\n"
+              },
+              {
+                "name": "chunkSize",
+                "value": "",
+                "type": "query",
+                "description": "Approximate maximum size of the returned result.\n"
+              },
+              {
+                "name": "includeSystem",
+                "value": "",
+                "type": "query",
+                "description": "Include system collections in the result.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis route should no longer be used.\nIt is considered as deprecated from version 3.4.0 on. Client applications\nshould use the REST API endpoint `/_api/wal/tail` instead.\n\n\nReturns data from the server's replication log. This method can be called\nby replication clients after an initial synchronization of data. The method\nwill return all \"recent\" log entries from the logger server, and the clients\ncan replay and apply these entries locally so they get to the same data\nstate as the l"
+        },
+        {
+          "info": {
+            "name": "Get the replication logger state",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/logger-state",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the current state of the server's replication logger. The state will\ninclude information about whether the logger is running and about the last\nlogged tick value. This tick value is important for incremental fetching of\ndata.\n\nThe body of the response contains a JSON object with the following\nattributes:\n\n- `state`: the current logger state as a JSON object with the following\n  sub-attributes:\n\n  - `running`: whether or not the logger is running\n\n  - `lastLogTick`: the tick value of the "
+        },
+        {
+          "info": {
+            "name": "Get the tick ranges available in the WAL logfiles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/logger-tick-ranges",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis endpoint is deprecated and removed in ArangoDB v4.0.\n\n\nReturns the currently available ranges of tick values for all currently\navailable WAL logfiles. The tick values can be used to determine if certain\ndata (identified by tick value) are still available for replication.\n\nThe body of the response contains a JSON array. Each array member is an\nobject\nthat describes a single logfile. Each object has the following attributes:\n\n- `datafile`: name of the logfile\n\n- `status`: statu"
+        },
+        {
+          "info": {
+            "name": "Turn a server into a follower of another",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/make-follower",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **WARNING:**\nCalling this endpoint will synchronize data from the collections found on the\nremote leader to the local ArangoDB database. All data in the local collections\nwill be purged and replaced with data from the leader. Use with caution!\n\n\n> **INFO:**\nThis command may take a long time to complete and return. This is because it\nwill first do a full data synchronization with the leader, which will take time\nroughly proportional to the amount of data.\n\n\nChanges the role to a follower and st"
+        },
+        {
+          "info": {
+            "name": "Get documents by revision",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/revisions/documents",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The name or id of the collection to query.\n"
+              },
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "query",
+                "description": "The id of the snapshot to use\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis revision-based replication endpoint will only work with collections\ncreated in ArangoDB v3.8.0 or later.\n\n\nReturns documents by revision for replication.\n\nThe body of the request should be JSON/VelocyPack and should consist of an\narray of string-encoded revision IDs:\n\n```\n[\n  <String, revision>,\n  <String, revision>,\n  ...\n  <String, revision>\n]\n```\n\nIn particular, the revisions should be sorted in ascending order of their\ndecoded values.\n\nThe result will be a JSON/VelocyPack"
+        },
+        {
+          "info": {
+            "name": "List document revision IDs within requested ranges",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/revisions/ranges",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The name or id of the collection to query.\n"
+              },
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "query",
+                "description": "The id of the snapshot to use\n"
+              },
+              {
+                "name": "resume",
+                "value": "",
+                "type": "query",
+                "description": "The revision at which to resume, if a previous request was truncated\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis revision-based replication endpoint will only work with the RocksDB\nengine, and with collections created in ArangoDB v3.8.0 or later.\n\n\nReturns the revision IDs of documents within the requested ranges.\n\nThe body of the request should be JSON/VelocyPack and should consist of an\narray of pairs of string-encoded revision IDs:\n\n```\n[\n  [<String, revision>, <String, revision>],\n  [<String, revision>, <String, revision>],\n  ...\n  [<String, revision>, <String, revision>]\n]\n```\n\nIn "
+        },
+        {
+          "info": {
+            "name": "Get the replication revision tree",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/revisions/tree",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The name or id of the collection to query.\n"
+              },
+              {
+                "name": "batchId",
+                "value": "",
+                "type": "query",
+                "description": "The id of the snapshot to use\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis revision-based replication endpoint will only work with collections\ncreated in ArangoDB v3.8.0 or later.\n\n\nReturns the Merkle tree associated with the specified collection.\n\nThe result will be JSON/VelocyPack in the following format:\n```\n{\n  version: <Number>,\n  branchingFactor: <Number>\n  maxDepth: <Number>,\n  rangeMin: <String, revision>,\n  rangeMax: <String, revision>,\n  nodes: [\n    { count: <Number>, hash: <String, revision> },\n    { count: <Number>, hash: <String, revis"
+        },
+        {
+          "info": {
+            "name": "Rebuild the replication revision tree",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/revisions/tree",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "collection",
+                "value": "",
+                "type": "query",
+                "description": "The name or id of the collection to query.\n"
+              }
+            ]
+          },
+          "docs": "> **WARNING:**\nThis revision-based replication endpoint will only work with collections\ncreated in ArangoDB v3.8.0 or later.\n\n\nRebuilds the Merkle tree for a collection.\n\nIf successful, there will be no return body.\n"
+        },
+        {
+          "info": {
+            "name": "Get the replication server ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/server-id",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the servers id. The id is also returned by other replication API\nmethods, and this method is an easy means of determining a server's id.\n\nThe body of the response is a JSON object with the attribute `serverId`. The\nserver id is returned as a string.\n"
+        },
+        {
+          "info": {
+            "name": "Start replication from a remote endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/replication/sync",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Starts a full data synchronization from a remote endpoint into the local\nArangoDB database.\n\nThe *sync* method can be used by replication clients to connect an ArangoDB database\nto a remote endpoint, fetch the remote list of collections and indexes, and collection\ndata. It will thus create a local backup of the state of data at the remote ArangoDB\ndatabase. *sync* works on a per-database level.\n\n*sync* will first fetch the list of collections and indexes from the remote endpoint.\nIt does so by c"
+        },
+        {
+          "info": {
+            "name": "Get the last available tick value",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/wal/lastTick",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. The user account you authenticate with needs\nat least read access to this database and administrate access to the\n`_system` database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the last available tick value that can be served from the server's\nreplication log. This corresponds to the tick of the latest successful operation.\n\nThe result is a JSON object containing the attributes `tick`, `time` and `server`.\n- `tick`: contains the last available tick, `time`\n- `time`: the server time as string in format `YYYY-MM-DDTHH:MM:SSZ`\n- `server`: An object with fields `version` and `serverId`\n\n> **INFO:**\nThis method is not supported on a Coordinator in a cluster deployme"
+        },
+        {
+          "info": {
+            "name": "Get the tick ranges available in the WAL",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/wal/range",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. The user account you authenticate with needs\nat least read access to this database and administrate access to the\n`_system` database.\n"
+              }
+            ]
+          },
+          "docs": "Returns the currently available ranges of tick values for all Write-Ahead Log\n(WAL) files. The tick values can be used to determine if certain\ndata (identified by tick value) are still available for replication.\n\nThe body of the response contains a JSON object.\n- `tickMin`: minimum tick available\n- `tickMax`: maximum tick available\n- `time`: the server time as string in format `YYYY-MM-DDTHH:MM:SSZ`\n- `server`: An object with fields `version` and `serverId`\n"
+        },
+        {
+          "info": {
+            "name": "Tail recent server operations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/wal/tail",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of a database. The user account you authenticate with needs\nat least read access to this database and administrate access to the\n`_system` database.\n"
+              },
+              {
+                "name": "global",
+                "value": "",
+                "type": "query",
+                "description": "Whether operations for all databases should be included. If set to `false`,\nonly the operations for the current database are included. The value `true` is\nonly valid on the `_system` database.\n"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Exclusive lower bound tick value for results. On successive calls\nto this API you should set this to the value returned\nwith the `x-arango-replication-lastincluded` header (unless that header\ncontains 0).\n"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "Inclusive upper bound tick value for results.\n"
+              },
+              {
+                "name": "lastScanned",
+                "value": "",
+                "type": "query",
+                "description": "Should be set to the value of the `x-arango-replication-lastscanned` header\nor alternatively `0` on the first try. This allows the RocksDB storage engine to break up\nlarge transactions over multiple responses.\n"
+              },
+              {
+                "name": "chunkSize",
+                "value": "",
+                "type": "query",
+                "description": "Approximate maximum size of the returned result.\n"
+              },
+              {
+                "name": "syncerId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the client used to tail results. The server uses this to\nkeep operations until the client has fetched them. Must be a positive integer.\n> **INFO:**\nEither `syncerId` or `serverId` is required to fetch all operations.\n"
+              },
+              {
+                "name": "serverId",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the client machine. If `syncerId` is unset, the server uses\nthis to keep operations until the client has fetched them. Must be a positive\ninteger.\n> **INFO:**\nEither `syncerId` or `serverId` is required to fetch all operations.\n"
+              },
+              {
+                "name": "clientInfo",
+                "value": "",
+                "type": "query",
+                "description": "Short description of the client, used for informative purposes only.\n"
+              }
+            ]
+          },
+          "docs": "Returns data from the server's write-ahead log (also named replication log). This method can be called\nby replication clients after an initial synchronization of data. The method\nreturns all \"recent\" logged operations from the server. Clients\ncan replay and apply these operations locally so they get to the same data\nstate as the server.\n\nClients can call this method repeatedly to incrementally fetch all changes\nfrom the server. In this case, they should provide the `from` value so\nthey only get "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

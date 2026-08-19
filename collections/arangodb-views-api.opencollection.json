@@ -1,0 +1,382 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ArangoDB Core Views API",
+    "version": "3.12.10 (API v0)"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Views",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Views",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ]
+          },
+          "docs": "Returns an object containing a listing of all Views in the current database,\nregardless of their type.\n"
+        },
+        {
+          "info": {
+            "name": "Create an arangosearch View",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new View with a given name and properties if it does not\nalready exist.\n"
+        },
+        {
+          "info": {
+            "name": "Create a search-alias View",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view#searchalias",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new View with a given name and properties if it does not\nalready exist.\n"
+        },
+        {
+          "info": {
+            "name": "Get information about a View",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ]
+          },
+          "docs": "Returns the basic information about a specific View.\n"
+        },
+        {
+          "info": {
+            "name": "Drop a View",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View to drop.\n"
+              }
+            ]
+          },
+          "docs": "Deletes the View identified by `view-name`.\n"
+        },
+        {
+          "info": {
+            "name": "Get information about a View",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name#searchalias",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ]
+          },
+          "docs": "Returns the basic information about a specific View.\n"
+        },
+        {
+          "info": {
+            "name": "Get the properties of a View",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ]
+          },
+          "docs": "Returns an object containing the definition of the View identified by `view-name`.\n"
+        },
+        {
+          "info": {
+            "name": "Replace the properties of an arangosearch View",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Changes all properties of a View by replacing them, except for immutable properties.\n"
+        },
+        {
+          "info": {
+            "name": "Update the properties of an arangosearch View",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/properties",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Partially changes the properties of a View by updating the specified attributes.\n"
+        },
+        {
+          "info": {
+            "name": "Read properties of a View",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/properties#searchalias",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ]
+          },
+          "docs": "Returns an object containing the definition of the View identified by `view-name`.\n"
+        },
+        {
+          "info": {
+            "name": "Replace the properties of a search-alias View",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/properties#searchalias",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces the list of indexes of a `search-alias` View.\n"
+        },
+        {
+          "info": {
+            "name": "Update the properties of a search-alias View",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/properties#searchalias",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the list of indexes of a `search-alias` View.\n"
+        },
+        {
+          "info": {
+            "name": "Rename a View",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/rename",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View to rename.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Renames a View.\n\n> **INFO:**\nRenaming Views is not supported in cluster deployments.\n"
+        },
+        {
+          "info": {
+            "name": "Rename a View",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/_db/:database-name/_api/view/:view-name/rename#searchalias",
+            "params": [
+              {
+                "name": "database-name",
+                "value": "_system",
+                "type": "path",
+                "description": "The name of the database.\n"
+              },
+              {
+                "name": "view-name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the View to rename.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Renames a View.\n\n> **INFO:**\nRenaming Views is not supported in cluster deployments.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
