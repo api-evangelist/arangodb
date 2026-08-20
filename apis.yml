@@ -136,6 +136,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - Collection
+  tags_raw:
   - Collections
   properties:
   - type: OpenAPI
@@ -232,6 +234,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - Job
+  tags_raw:
   - Jobs
   properties:
   - type: OpenAPI
@@ -256,6 +260,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - Query
+  tags_raw:
   - Queries
   properties:
   - type: OpenAPI
@@ -292,6 +298,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - Task
+  tags_raw:
   - Tasks
   properties:
   - type: OpenAPI
@@ -304,6 +312,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
@@ -316,6 +326,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
