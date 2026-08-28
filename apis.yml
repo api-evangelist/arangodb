@@ -10,6 +10,18 @@ description: 'ArangoDB (now operating as Arango) is the company behind the open-
   a companion oasisctl CLI. Arango publishes official drivers for JavaScript, Python,
   Java, Go and PHP, an official Model Context Protocol server for AQL generation, and
   a Kubernetes operator.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://arango.ai/wp-content/uploads/2026/03/arango-home-social-horz-2026.03-compress.png
 url: https://raw.githubusercontent.com/api-evangelist/arangodb/refs/heads/main/apis.yml
 x-type: company
