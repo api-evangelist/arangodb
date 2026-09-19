@@ -70,6 +70,12 @@ apis:
   - Cloud Infrastructure
   - Managed Database
   - gRPC
+  - Identity and Access Management
+  - Billing
+  tags_raw:
+  - Cloud Infrastructure
+  - Managed Database
+  - gRPC
   - IAM
   - Billing
   properties:
@@ -88,6 +94,11 @@ apis:
   humanURL: https://docs.arango.ai/amp/security-and-access-control/single-sign-on/scim-provisioning/
   baseURL: https://dashboard.arangodb.cloud/api/scim/v1
   tags:
+  - SCIM
+  - Identity
+  - Provisioning
+  - SSO
+  tags_raw:
   - SCIM
   - Identity
   - Provisioning
@@ -175,6 +186,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - Database
+  tags_raw:
   - Databases
   properties:
   - type: OpenAPI
@@ -247,6 +260,8 @@ apis:
   humanURL: https://docs.arango.ai/arangodb/stable/develop/http-api/
   baseURL: https://{deployment-id}.arangodb.cloud:8529
   tags:
+  - Index
+  tags_raw:
   - Indexes
   properties:
   - type: OpenAPI
