@@ -18,9 +18,7 @@ paths:
     get:
       description: 'List the currently running Stream Transactions.
 
-        In a cluster, the list contains the transactions from all Coordinators.
-
-        '
+        In a cluster, the list contains the transactions from all Coordinators.'
       operationId: listStreamTransactions
       parameters:
       - description: 'The name of the database.
@@ -75,7 +73,70 @@ paths:
       - Transactions
     post:
       deprecated: true
-      description: "> **WARNING:**\nJavaScript Transactions are deprecated from v3.12.0 onward and are\nremoved in v4.0.\n\n\nThe transaction description must be passed in the body of the POST request.\n\nIf the transaction is fully executed and committed on the server,\n*HTTP 200* will be returned. Additionally, the return value of the\ncode defined in `action` will be returned in the `result` attribute.\n\nFor successfully committed transactions, the returned JSON object has the\nfollowing properties:\n\n- `error`: boolean flag to indicate if an error occurred (`false`\n  in this case)\n\n- `code`: the HTTP status code\n\n- `result`: the return value of the transaction\n\nIf the transaction specification is either missing or malformed, the server\nwill respond with *HTTP 400*.\n\nThe body of the response will then contain a JSON object with additional error\ndetails. The object has the following attributes:\n\n- `error`: boolean flag to indicate that an error occurred (`true` in this case)\n\n- `code`: the HTTP status code\n\n- `errorNum`: the server error number\n\n- `errorMessage`: a descriptive error message\n\nIf a transaction fails to commit, either by an exception thrown in the\n`action` code, or by an internal error, the server will respond with\nan error.\nAny other errors will be returned with any of the return codes\n*HTTP 400*, *HTTP 409*, or *HTTP 500*.\n"
+      description: '> **WARNING:**
+
+        JavaScript Transactions are deprecated from v3.12.0 onward and are
+
+        removed in v4.0.
+
+
+        The transaction description must be passed in the body of the POST request.
+
+
+        If the transaction is fully executed and committed on the server,
+
+        *HTTP 200* will be returned. Additionally, the return value of the
+
+        code defined in `action` will be returned in the `result` attribute.
+
+
+        For successfully committed transactions, the returned JSON object has the
+
+        following properties:
+
+
+        - `error`: boolean flag to indicate if an error occurred (`false`
+
+        in this case)
+
+
+        - `code`: the HTTP status code
+
+
+        - `result`: the return value of the transaction
+
+
+        If the transaction specification is either missing or malformed, the server
+
+        will respond with *HTTP 400*.
+
+
+        The body of the response will then contain a JSON object with additional error
+
+        details. The object has the following attributes:
+
+
+        - `error`: boolean flag to indicate that an error occurred (`true` in this case)
+
+
+        - `code`: the HTTP status code
+
+
+        - `errorNum`: the server error number
+
+
+        - `errorMessage`: a descriptive error message
+
+
+        If a transaction fails to commit, either by an exception thrown in the
+
+        `action` code, or by an internal error, the server will respond with
+
+        an error.
+
+        Any other errors will be returned with any of the return codes
+
+        *HTTP 400*, *HTTP 409*, or *HTTP 500*.'
       operationId: executeJavaScriptTransaction
       parameters:
       - description: 'The name of the database.
@@ -234,9 +295,7 @@ paths:
         until the entire transaction times out.
 
 
-        The transaction description must be passed in the body of the POST request.
-
-        '
+        The transaction description must be passed in the body of the POST request.'
       operationId: beginStreamTransaction
       parameters:
       - description: 'The name of the database.
@@ -489,7 +548,31 @@ paths:
       - Transactions
   /_db/{database-name}/_api/transaction/{transaction-id}:
     delete:
-      description: "Abort a running server-side transaction. Aborting is an idempotent operation.\nIt is not an error to abort a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: aborting an already-aborted\n  transaction returns `200` (idempotent), and aborting an already-committed\n  transaction returns `400`.\n- The first abort against an unknown identifier returns `404` and records\n  it as aborted. Subsequent aborts for the same identifier return `200`\n  until the record is garbage-collected, after which the identifier is\n  again unknown and the next abort once more returns `404`.\n"
+      description: 'Abort a running server-side transaction. Aborting is an idempotent operation.
+
+        It is not an error to abort a transaction more than once.
+
+
+        The server remembers a transaction''s final state for a limited time after
+
+        it ends. As a result, the response can vary depending on when you call
+
+        this endpoint:
+
+
+        - While the transaction is still tracked: aborting an already-aborted
+
+        transaction returns `200` (idempotent), and aborting an already-committed
+
+        transaction returns `400`.
+
+        - The first abort against an unknown identifier returns `404` and records
+
+        it as aborted. Subsequent aborts for the same identifier return `200`
+
+        until the record is garbage-collected, after which the identifier is
+
+        again unknown and the next abort once more returns `404`.'
       operationId: abortStreamTransaction
       parameters:
       - description: 'The name of the database.
@@ -648,9 +731,7 @@ paths:
 
         the server garbage-collects this record, the same identifier becomes
 
-        unknown and the endpoint returns `404`.
-
-        '
+        unknown and the endpoint returns `404`.'
       operationId: getStreamTransaction
       parameters:
       - description: 'The name of the database.
@@ -795,7 +876,27 @@ paths:
       tags:
       - Transactions
     put:
-      description: "Commit a running server-side transaction. Committing is an idempotent operation.\nIt is not an error to commit a transaction more than once.\n\nThe server remembers a transaction's final state for a limited time after\nit ends. As a result, the response can vary depending on when you call\nthis endpoint:\n\n- While the transaction is still tracked: committing an already-committed\n  transaction returns `200` (idempotent), and committing an already-aborted\n  transaction returns `400`.\n- Once the server has garbage-collected the transaction's record, the\n  identifier is no longer known and the endpoint returns `404`.\n"
+      description: 'Commit a running server-side transaction. Committing is an idempotent operation.
+
+        It is not an error to commit a transaction more than once.
+
+
+        The server remembers a transaction''s final state for a limited time after
+
+        it ends. As a result, the response can vary depending on when you call
+
+        this endpoint:
+
+
+        - While the transaction is still tracked: committing an already-committed
+
+        transaction returns `200` (idempotent), and committing an already-aborted
+
+        transaction returns `400`.
+
+        - Once the server has garbage-collected the transaction''s record, the
+
+        identifier is no longer known and the endpoint returns `404`.'
       operationId: commitStreamTransaction
       parameters:
       - description: 'The name of the database.

@@ -28,9 +28,7 @@ paths:
 
         same machine and hard drive as the original data. Make sure to upload
 
-        it to a remote site for an actual backup.
-
-        '
+        it to a remote site for an actual backup.'
       operationId: createBackup
       requestBody:
         content:
@@ -119,9 +117,7 @@ paths:
       - Hot Backups
   /_admin/backup/delete:
     post:
-      description: 'Delete a specific local backup identified by the given `id`.
-
-        '
+      description: Delete a specific local backup identified by the given `id`.
       operationId: deleteBackup
       requestBody:
         content:
@@ -160,9 +156,7 @@ paths:
 
         progress on a previously scheduled download operation, or abort
 
-        a running download operation.
-
-        '
+        a running download operation.'
       operationId: downloadBackup
       requestBody:
         content:
@@ -263,9 +257,7 @@ paths:
       - Hot Backups
   /_admin/backup/list:
     post:
-      description: 'Lists all locally found backups.
-
-        '
+      description: Lists all locally found backups.
       operationId: listBackups
       requestBody:
         content:
@@ -316,9 +308,7 @@ paths:
 
         snapshot in time, with a given id. The backup snapshot must reside on
 
-        the ArangoDB service locally.
-
-        '
+        the ArangoDB service locally.'
       operationId: restoreBackup
       requestBody:
         content:
@@ -367,9 +357,7 @@ paths:
 
         progress on a previously scheduled upload operation, or abort
 
-        a running upload operation.
-
-        '
+        a running upload operation.'
       operationId: uploadBackup
       requestBody:
         content:

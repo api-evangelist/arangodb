@@ -1,0 +1,35 @@
+# Front Door AI Index — arangodb — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: arangodb
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: arango.ai
+  final_host: arango.ai
+  ownership: own
+  owner: arangodb
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 49
+  host_score: 49
+  density: 33.22
+  words: 1475
+  tiers:
+    agentic: 21
+    core: 28
+    model: 0
+  ambiguous: 11
+  top_terms:
+    AI: 27
+    agent: 11
+    AI agent: 5
+    agentic: 4
+    copilot: 4
+    embedding: 3
+    vector database: 2
+    LLMs: 1
+    MCP: 1
+    RAG: 1
+    chatbot: 1

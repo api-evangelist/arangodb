@@ -21,9 +21,7 @@ paths:
 
         > **INFO:**
 
-        Retrieving the list of databases is only possible from within the `_system` database.
-
-        '
+        Retrieving the list of databases is only possible from within the `_system` database.'
       operationId: listDatabases
       responses:
         '200':
@@ -50,9 +48,7 @@ paths:
 
         > **INFO:**
 
-        Creating a new database is only possible from within the `_system` database.
-
-        '
+        Creating a new database is only possible from within the `_system` database.'
       operationId: createDatabase
       requestBody:
         content:
@@ -213,9 +209,7 @@ paths:
 
         Dropping a database is only possible from within the `_system` database.
 
-        The `_system` database itself cannot be dropped.
-
-        '
+        The `_system` database itself cannot be dropped.'
       operationId: deleteDatabase
       parameters:
       - description: 'The name of the database
@@ -266,9 +260,7 @@ paths:
 
         - `replicationFactor`: the default replication factor for collections in this database
 
-        - `writeConcern`: the default write concern for collections in this database
-
-        '
+        - `writeConcern`: the default write concern for collections in this database'
       operationId: getCurrentDatabase
       parameters:
       - description: 'The name of the database.
@@ -300,9 +292,7 @@ paths:
     get:
       description: 'Retrieves the list of all databases the current user can access without
 
-        specifying a different username or password.
-
-        '
+        specifying a different username or password.'
       operationId: listUserAccessibleDatabases
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long

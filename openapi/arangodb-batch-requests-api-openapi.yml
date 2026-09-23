@@ -24,7 +24,6 @@ paths:
         in v3.12.3.
 
 
-
         Executes a batch request. A batch request can contain any number of
 
         other requests that can be sent to ArangoDB in isolation. The benefit of
@@ -89,9 +88,7 @@ paths:
 
         MIME header in a batch part to define an individual id for each batch part.
 
-        The server will return this id is the batch part responses, too.
-
-        '
+        The server will return this id is the batch part responses, too.'
       operationId: executeBatchRequest
       parameters:
       - description: 'The name of the database.

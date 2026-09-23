@@ -25,15 +25,12 @@ paths:
         only when additional I/O load can be tolerated for a prolonged time.
 
 
-
         This endpoint can be used to reclaim disk space after substantial data
 
         deletions have taken place, by compacting the entire database system data.
 
 
-        The endpoint requires superuser access.
-
-        '
+        The endpoint requires superuser access.'
       operationId: compactAllDatabases
       requestBody:
         content:
@@ -75,12 +72,9 @@ paths:
         It is removed in ArangoDB v4.0. Use `GET /_api/version` instead.
 
 
-
         Returns the database version that this server requires.
 
-        The version is returned in the `version` attribute of the result.
-
-        '
+        The version is returned in the `version` attribute of the result.'
       operationId: getDatabaseVersion
       responses:
         '200':
@@ -106,9 +100,7 @@ paths:
 
         This is a public API so it does *not* require authentication. It is meant to be
 
-        used only in the context of server monitoring.
-
-        '
+        used only in the context of server monitoring.'
       operationId: getServerAvailability
       responses:
         '200':
@@ -137,7 +129,37 @@ paths:
       - Administration
   /_db/_system/_admin/options:
     get:
-      description: "Return the effective configuration of the queried _arangod_ instance as\nset by startup options on the command-line and via a configuration file.\n\n{{< security >}}\nThis endpoint may reveal sensitive information about the deployment!\n{{< /security >}}\n\nThe endpoint can only be accessed via the `_system` database. In addition, the\n[`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)\ncontrols the required privileges to access the option endpoints and allows\nyou to disable them entirely. The option can have the following values:\n- `disabled`: This endpoint is disabled.\n- `jwt`: This endpoint can only be accessed using a superuser JWT (default).\n- `admin`: This endpoint can only be accessed by users with\n  write access to the `_system` database.\n- `public`: Every user with read access to the `_system` database can\n  access this endpoint.\n"
+      description: 'Return the effective configuration of the queried _arangod_ instance as
+
+        set by startup options on the command-line and via a configuration file.
+
+
+        {{}}
+
+        This endpoint may reveal sensitive information about the deployment!
+
+        {{}}
+
+
+        The endpoint can only be accessed via the `_system` database. In addition, the
+
+        `--server.options-api` startup option
+
+        controls the required privileges to access the option endpoints and allows
+
+        you to disable them entirely. The option can have the following values:
+
+        - `disabled`: This endpoint is disabled.
+
+        - `jwt`: This endpoint can only be accessed using a superuser JWT (default).
+
+        - `admin`: This endpoint can only be accessed by users with
+
+        write access to the `_system` database.
+
+        - `public`: Every user with read access to the `_system` database can
+
+        access this endpoint.'
       operationId: getEffectiveStartupOptions
       responses:
         '200':
@@ -277,7 +299,30 @@ paths:
       - Administration
   /_db/_system/_admin/options-description:
     get:
-      description: "Return the startup options available to configure the queried _arangod_\ninstance, similar to the `--dump-options` startup option.\n\nThe endpoint can only be accessed via the `_system` database. In addition, the\n[`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)\ncontrols the required privileges to access the option endpoints and allows\nyou to disable them entirely. The option can have the following values:\n- `disabled`: This endpoint is disabled.\n- `jwt`: This endpoint can only be accessed using a superuser JWT (default).\n- `admin`: This endpoint can only be accessed by users with\n  write access to the `_system` database.\n- `public`: Every user with read access to the `_system` database can\n  access this endpoint.\n"
+      description: 'Return the startup options available to configure the queried _arangod_
+
+        instance, similar to the `--dump-options` startup option.
+
+
+        The endpoint can only be accessed via the `_system` database. In addition, the
+
+        `--server.options-api` startup option
+
+        controls the required privileges to access the option endpoints and allows
+
+        you to disable them entirely. The option can have the following values:
+
+        - `disabled`: This endpoint is disabled.
+
+        - `jwt`: This endpoint can only be accessed using a superuser JWT (default).
+
+        - `admin`: This endpoint can only be accessed by users with
+
+        write access to the `_system` database.
+
+        - `public`: Every user with read access to the `_system` database can
+
+        access this endpoint.'
       operationId: getAvailableStartupOptions
       responses:
         '200':
@@ -418,9 +463,7 @@ paths:
 
         control startup option `--server.support-info-api` that controls if and to whom
 
-        the API is made available.
-
-        '
+        the API is made available.'
       operationId: getSupportInfo
       responses:
         '200':
@@ -483,7 +526,6 @@ paths:
         It is considered as deprecated from version 3.4.0 on.
 
 
-
         Returns an array of all configured endpoints the server is listening on.
 
 
@@ -500,9 +542,7 @@ paths:
 
         only. Calling this action in any other database will make the server return
 
-        an error.
-
-        '
+        an error.'
       operationId: listEndpoints
       responses:
         '200':
@@ -522,7 +562,7 @@ paths:
       - Administration
   /_db/{database-name}/_admin/crashes:
     get:
-      description: '<small>Introduced in: v3.12.8</small>
+      description: 'Introduced in: v3.12.8
 
 
         Return the list of crash dump directory identifiers (UUIDs).
@@ -530,7 +570,7 @@ paths:
 
         When the server crashes, the crash handler writes diagnostic data into
 
-        a per-crash directory under `<database-directory>/crashes/<uuid>/`.
+        a per-crash directory under `/crashes//`.
 
         Each dump includes information such as recent API calls and AQL queries,
 
@@ -542,9 +582,7 @@ paths:
         during startup.
 
 
-        This endpoint requires *administrate* access to the `_system` database.
-
-        '
+        This endpoint requires *administrate* access to the `_system` database.'
       operationId: listCrashDumps
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -709,19 +747,17 @@ paths:
       - Administration
   /_db/{database-name}/_admin/crashes/{crashId}:
     delete:
-      description: '<small>Introduced in: v3.12.8</small>
+      description: 'Introduced in: v3.12.8
 
 
         Delete a specific crash dump directory and its contents. Crash dumps are
 
-        stored under `<database-directory>/crashes/<uuid>/`. The server keeps the
+        stored under `/crashes//`. The server keeps the
 
         most recent 10 crash dumps. Older ones are removed during startup.
 
 
-        This endpoint requires *administrate* access to the `_system` database.
-
-        '
+        This endpoint requires *administrate* access to the `_system` database.'
       operationId: deleteCrashDump
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -936,7 +972,7 @@ paths:
       tags:
       - Administration
     get:
-      description: '<small>Introduced in: v3.12.8</small>
+      description: 'Introduced in: v3.12.8
 
 
         Return the contents of a specific crash dump. The response includes all
@@ -947,12 +983,10 @@ paths:
 
         to their contents. Crash dumps are stored under
 
-        `<database-directory>/crashes/<uuid>/`.
+        `/crashes//`.
 
 
-        This endpoint requires *administrate* access to the `_system` database.
-
-        '
+        This endpoint requires *administrate* access to the `_system` database.'
       operationId: getCrashDump
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1179,9 +1213,7 @@ paths:
       - Administration
   /_db/{database-name}/_admin/deployment/id:
     get:
-      description: 'Get the unique identifier of this ArangoDB deployment.
-
-        '
+      description: Get the unique identifier of this ArangoDB deployment.
       operationId: getDeploymentId
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1264,10 +1296,7 @@ paths:
         removed in ArangoDB v4.0.
 
 
-
-        The call returns an object with the servers request information
-
-        '
+        The call returns an object with the servers request information'
       operationId: echoRequest
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1480,7 +1509,6 @@ paths:
         The `/_admin/execute` endpoint is deprecated and removed in ArangoDB v4.0.
 
 
-
         Executes the JavaScript code in the body on the server as the body
 
         of a function with no arguments. If you have a `return` statement
@@ -1507,9 +1535,7 @@ paths:
 
         user-defined code and disables this API endpoint entirely.
 
-        This is also the recommended setting for production.
-
-        '
+        This is also the recommended setting for production.'
       operationId: executeCode
       parameters:
       - description: 'The name of the database.
@@ -1558,9 +1584,7 @@ paths:
 
         In the Community Edition before v3.12.5, only `{"license":"none"}`
 
-        is returned.
-
-        '
+        is returned.'
       operationId: getLicense
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1709,9 +1733,7 @@ paths:
     put:
       description: 'Set a new license for an Enterprise Edition instance.
 
-        Can be called on single servers, Coordinators, and DB-Servers.
-
-        '
+        Can be called on single servers, Coordinators, and DB-Servers.'
       operationId: setLicense
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1874,13 +1896,11 @@ paths:
 
         This endpoint is available regardless of the
 
-        [`--server.options-api` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serveroptions-api)
+        `--server.options-api` startup option
 
         setting, so that the Arango Contextual Data Platform web interface for
 
-        instance can always access the public options.
-
-        '
+        instance can always access the public options.'
       operationId: getPublicStartupOptions
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2029,12 +2049,9 @@ paths:
         route reloading, are deprecated and removed in ArangoDB v4.0.
 
 
-
         Reloads the routing information from the `_routing` system collection if it
 
-        exists, and makes Foxx rebuild its local routing table on the next request.
-
-        '
+        exists, and makes Foxx rebuild its local routing table on the next request.'
       operationId: reloadRouting
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2069,9 +2086,7 @@ paths:
         Creating or dropping of databases and collections will also fail with error code `11` (_ERROR_FORBIDDEN_).
 
 
-        This API requires authentication.
-
-        '
+        This API requires authentication.'
       operationId: getServerMode
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2109,9 +2124,7 @@ paths:
 
         This is a protected API. It requires authentication and administrative
 
-        server rights.
-
-        '
+        server rights.'
       operationId: setServerMode
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2154,9 +2167,7 @@ paths:
       - Administration
   /_db/{database-name}/_admin/shutdown:
     delete:
-      description: 'This call initiates a clean shutdown sequence. Requires administrative privileges.
-
-        '
+      description: This call initiates a clean shutdown sequence. Requires administrative privileges.
       operationId: startShutdown
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2188,7 +2199,32 @@ paths:
       tags:
       - Administration
     get:
-      description: "<small>Introduced in: v3.7.12, v3.8.1, v3.9.0</small>\n\nThis call reports progress about a soft Coordinator shutdown (see\ndocumentation of `DELETE /_admin/shutdown?soft=true`).\nIn this case, the following types of operations are tracked:\n\n - AQL cursors (in particular streaming cursors)\n - Transactions (in particular stream transactions)\n - Ongoing asynchronous requests (using the `x-arango-async: store` HTTP header)\n - Finished asynchronous requests, whose result has not yet been\n   collected\n - Queued low priority requests (most normal requests)\n - Ongoing low priority requests\n\nThis API is only available on Coordinators.\n"
+      description: 'Introduced in: v3.7.12, v3.8.1, v3.9.0
+
+
+        This call reports progress about a soft Coordinator shutdown (see
+
+        documentation of `DELETE /_admin/shutdown?soft=true`).
+
+        In this case, the following types of operations are tracked:
+
+
+        - AQL cursors (in particular streaming cursors)
+
+        - Transactions (in particular stream transactions)
+
+        - Ongoing asynchronous requests (using the `x-arango-async: store` HTTP header)
+
+        - Finished asynchronous requests, whose result has not yet been
+
+        collected
+
+        - Queued low priority requests (most normal requests)
+
+        - Ongoing low priority requests
+
+
+        This API is only available on Coordinators.'
       operationId: getShutdownProgress
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2272,9 +2308,7 @@ paths:
       - Administration
   /_db/{database-name}/_admin/status:
     get:
-      description: 'Returns status information about the server.
-
-        '
+      description: Returns status information about the server.
       operationId: getStatus
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2568,9 +2602,7 @@ paths:
     get:
       description: 'The call returns an object with the `time` attribute. This contains the
 
-        current system time as a Unix timestamp with microsecond precision.
-
-        '
+        current system time as a Unix timestamp with microsecond precision.'
       operationId: getTime
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2622,9 +2654,7 @@ paths:
       - Administration
   /_db/{database-name}/_api/engine:
     get:
-      description: 'Returns the storage engine the server is configured to use.
-
-        '
+      description: Returns the storage engine the server is configured to use.
       operationId: getEngine
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2700,9 +2730,7 @@ paths:
     get:
       description: 'Returns detailed statistics related to the RocksDB storage engine activity,
 
-        including figures about data size, cache usage, individual column families, etc.
-
-        '
+        including figures about data size, cache usage, individual column families, etc.'
       operationId: getEngineStats
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2815,9 +2843,7 @@ paths:
       - Administration
   /_db/{database-name}/_api/version:
     get:
-      description: 'Returns the server name and version number.
-
-        '
+      description: Returns the server name and version number.
       operationId: getVersion
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long

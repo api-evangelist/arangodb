@@ -18,9 +18,7 @@ paths:
     get:
       description: 'Returns an object containing a listing of all Views in the current database,
 
-        regardless of their type.
-
-        '
+        regardless of their type.'
       operationId: listViews
       parameters:
       - description: 'The name of the database.
@@ -101,9 +99,7 @@ paths:
     post:
       description: 'Creates a new View with a given name and properties if it does not
 
-        already exist.
-
-        '
+        already exist.'
       operationId: createView
       parameters:
       - description: 'The name of the database.
@@ -1012,9 +1008,7 @@ paths:
     post:
       description: 'Creates a new View with a given name and properties if it does not
 
-        already exist.
-
-        '
+        already exist.'
       operationId: createViewSearchAlias
       parameters:
       - description: 'The name of the database.
@@ -1210,9 +1204,7 @@ paths:
       - Views
   /_db/{database-name}/_api/view/{view-name}:
     delete:
-      description: 'Deletes the View identified by `view-name`.
-
-        '
+      description: Deletes the View identified by `view-name`.
       operationId: deleteView
       parameters:
       - description: 'The name of the database.
@@ -1340,9 +1332,7 @@ paths:
       tags:
       - Views
     get:
-      description: 'Returns the basic information about a specific View.
-
-        '
+      description: Returns the basic information about a specific View.
       operationId: getView
       parameters:
       - description: 'The name of the database.
@@ -1454,9 +1444,7 @@ paths:
       - Views
   /_db/{database-name}/_api/view/{view-name}#searchalias:
     get:
-      description: 'Returns the basic information about a specific View.
-
-        '
+      description: Returns the basic information about a specific View.
       operationId: getViewSearchAlias
       parameters:
       - description: 'The name of the database.
@@ -1568,9 +1556,7 @@ paths:
       - Views
   /_db/{database-name}/_api/view/{view-name}/properties:
     get:
-      description: 'Returns an object containing the definition of the View identified by `view-name`.
-
-        '
+      description: Returns an object containing the definition of the View identified by `view-name`.
       operationId: getViewProperties
       parameters:
       - description: 'The name of the database.
@@ -2056,9 +2042,7 @@ paths:
       tags:
       - Views
     patch:
-      description: 'Partially changes the properties of a View by updating the specified attributes.
-
-        '
+      description: Partially changes the properties of a View by updating the specified attributes.
       operationId: updateViewProperties
       parameters:
       - description: 'The name of the database.
@@ -2712,9 +2696,7 @@ paths:
       tags:
       - Views
     put:
-      description: 'Changes all properties of a View by replacing them, except for immutable properties.
-
-        '
+      description: Changes all properties of a View by replacing them, except for immutable properties.
       operationId: replaceViewProperties
       parameters:
       - description: 'The name of the database.
@@ -3373,9 +3355,7 @@ paths:
       - Views
   /_db/{database-name}/_api/view/{view-name}/properties#searchalias:
     get:
-      description: 'Returns an object containing the definition of the View identified by `view-name`.
-
-        '
+      description: Returns an object containing the definition of the View identified by `view-name`.
       operationId: getViewPropertiesSearchAlias
       parameters:
       - description: 'The name of the database.
@@ -3531,9 +3511,7 @@ paths:
       tags:
       - Views
     patch:
-      description: 'Updates the list of indexes of a `search-alias` View.
-
-        '
+      description: Updates the list of indexes of a `search-alias` View.
       operationId: updateViewPropertiesSearchAlias
       parameters:
       - description: 'The name of the database.
@@ -3724,9 +3702,7 @@ paths:
       tags:
       - Views
     put:
-      description: 'Replaces the list of indexes of a `search-alias` View.
-
-        '
+      description: Replaces the list of indexes of a `search-alias` View.
       operationId: replaceViewPropertiesSearchAlias
       parameters:
       - description: 'The name of the database.
@@ -3914,9 +3890,7 @@ paths:
 
         > **INFO:**
 
-        Renaming Views is not supported in cluster deployments.
-
-        '
+        Renaming Views is not supported in cluster deployments.'
       operationId: renameView
       parameters:
       - description: 'The name of the database.
@@ -4405,9 +4379,7 @@ paths:
 
         > **INFO:**
 
-        Renaming Views is not supported in cluster deployments.
-
-        '
+        Renaming Views is not supported in cluster deployments.'
       operationId: renameViewSearchAlias
       parameters:
       - description: 'The name of the database.

@@ -22,9 +22,7 @@ paths:
 
         Clients can use this method to perform an eventual garbage collection of job
 
-        results.
-
-        '
+        results.'
       operationId: deleteJob
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -167,9 +165,7 @@ paths:
 
         - The IDs of async jobs with a specific status
 
-        - The processing status of a specific async job
-
-        '
+        - The processing status of a specific async job'
       operationId: getJob
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -335,9 +331,7 @@ paths:
 
         the additional header is not present and you can tell the status from
 
-        the HTTP status code.
-
-        '
+        the HTTP status code.'
       operationId: getJobResult
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -465,9 +459,7 @@ paths:
     put:
       description: 'Cancels the currently running job identified by `job-id`. Note that it still
 
-        might take some time to actually cancel the running async job.
-
-        '
+        might take some time to actually cancel the running async job.'
       operationId: cancelJob
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long

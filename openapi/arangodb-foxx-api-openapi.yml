@@ -37,9 +37,7 @@ paths:
 
         - `name`: a string identifying the service type
 
-        - `version`: a semver-compatible version string
-
-        '
+        - `version`: a semver-compatible version string'
       operationId: listFoxxServices
       parameters:
       - description: 'The name of the database.
@@ -118,9 +116,7 @@ paths:
 
         Note that when using file system paths in a cluster with multiple Coordinators
 
-        the file system path must resolve to equivalent files on every Coordinator.
-
-        '
+        the file system path must resolve to equivalent files on every Coordinator.'
       operationId: createFoxxService
       parameters:
       - description: 'The name of the database.
@@ -181,9 +177,7 @@ paths:
       description: 'Commits the local service state of the Coordinator to the database.
 
 
-        This can be used to resolve service conflicts between Coordinators that cannot be fixed automatically due to missing data.
-
-        '
+        This can be used to resolve service conflicts between Coordinators that cannot be fixed automatically due to missing data.'
       operationId: commitFoxxServiceState
       parameters:
       - description: 'The name of the database.
@@ -219,9 +213,7 @@ paths:
 
         Returns an object mapping the configuration option names to their definitions
 
-        including a human-friendly `title` and the `current` value (if any).
-
-        '
+        including a human-friendly `title` and the `current` value (if any).'
       operationId: getFoxxConfiguration
       parameters:
       - description: 'The name of the database.
@@ -254,9 +246,7 @@ paths:
       description: 'Replaces the given service''s configuration partially.
 
 
-        Returns an object mapping all configuration option names to their new values.
-
-        '
+        Returns an object mapping all configuration option names to their new values.'
       operationId: updateFoxxConfiguration
       parameters:
       - description: 'The name of the database.
@@ -299,9 +289,7 @@ paths:
       description: 'Replaces the given service''s configuration completely.
 
 
-        Returns an object mapping all configuration option names to their new values.
-
-        '
+        Returns an object mapping all configuration option names to their new values.'
       operationId: replaceFoxxConfiguration
       parameters:
       - description: 'The name of the database.
@@ -347,9 +335,7 @@ paths:
 
         Returns an object mapping the dependency names to their definitions
 
-        including a human-friendly `title` and the `current` mount path (if any).
-
-        '
+        including a human-friendly `title` and the `current` mount path (if any).'
       operationId: getFoxxDependencies
       parameters:
       - description: 'The name of the database.
@@ -382,9 +368,7 @@ paths:
       description: 'Replaces the given service''s dependencies.
 
 
-        Returns an object mapping all dependency names to their new mount paths.
-
-        '
+        Returns an object mapping all dependency names to their new mount paths.'
       operationId: updateFoxxDependencies
       parameters:
       - description: 'The name of the database.
@@ -432,9 +416,7 @@ paths:
       description: 'Replaces the given service''s dependencies completely.
 
 
-        Returns an object mapping all dependency names to their new mount paths.
-
-        '
+        Returns an object mapping all dependency names to their new mount paths.'
       operationId: replaceFoxxDependencies
       parameters:
       - description: 'The name of the database.
@@ -487,9 +469,7 @@ paths:
 
         replace the service on all other Coordinators with the version on this
 
-        Coordinator.
-
-        '
+        Coordinator.'
       operationId: disableFoxxDevelopmentMode
       parameters:
       - description: 'The name of the database.
@@ -535,9 +515,7 @@ paths:
 
         Coordinators. This means you should treat your Coordinators as inconsistent
 
-        as long as any service is running in development mode.
-
-        '
+        as long as any service is running in development mode.'
       operationId: enableFoxxDevelopmentMode
       parameters:
       - description: 'The name of the database.
@@ -576,9 +554,7 @@ paths:
 
         Otherwise the bundle will represent the version of a service that
 
-        is installed on that ArangoDB instance.
-
-        '
+        is installed on that ArangoDB instance.'
       operationId: downloadFoxxService
       parameters:
       - description: 'The name of the database.
@@ -613,9 +589,7 @@ paths:
   /_db/{database-name}/_api/foxx/readme:
     get:
       deprecated: true
-      description: 'Fetches the service''s README or README.md file''s contents if any.
-
-        '
+      description: Fetches the service's README or README.md file's contents if any.
       operationId: getFoxxReadme
       parameters:
       - description: 'The name of the database.
@@ -653,9 +627,7 @@ paths:
       description: 'Fetches a list of the scripts defined by the service.
 
 
-        Returns an object mapping the raw script names to human-friendly names.
-
-        '
+        Returns an object mapping the raw script names to human-friendly names.'
       operationId: listFoxxScripts
       parameters:
       - description: 'The name of the database.
@@ -689,9 +661,7 @@ paths:
       description: 'Runs the given script for the service at the given mount path.
 
 
-        Returns the exports of the script, if any.
-
-        '
+        Returns the exports of the script, if any.'
       operationId: runFoxxScript
       parameters:
       - description: 'The name of the database.
@@ -742,9 +712,7 @@ paths:
       description: 'Removes the service at the given mount path from the database and file system.
 
 
-        Returns an empty response on success.
-
-        '
+        Returns an empty response on success.'
       operationId: deleteFoxxService
       parameters:
       - description: 'The name of the database.
@@ -805,9 +773,7 @@ paths:
 
         - `name`: a string identifying the service type
 
-        - `version`: a semver-compatible version string
-
-        '
+        - `version`: a semver-compatible version string'
       operationId: getFoxxServiceDescription
       parameters:
       - description: 'The name of the database.
@@ -898,9 +864,7 @@ paths:
 
         Note that when using file system paths in a cluster with multiple Coordinators
 
-        the file system path must resolve to equivalent files on every Coordinator.
-
-        '
+        the file system path must resolve to equivalent files on every Coordinator.'
       operationId: upgradeFoxxService
       parameters:
       - description: 'The name of the database.
@@ -1023,9 +987,7 @@ paths:
 
         Note that when using file system paths in a cluster with multiple Coordinators
 
-        the file system path must resolve to equivalent files on every Coordinator.
-
-        '
+        the file system path must resolve to equivalent files on every Coordinator.'
       operationId: replaceFoxxService
       parameters:
       - description: 'The name of the database.
@@ -1095,9 +1057,7 @@ paths:
       description: 'Fetches the Swagger API description for the service at the given mount path.
 
 
-        The response body will be an OpenAPI 2.0 compatible JSON description of the service API.
-
-        '
+        The response body will be an OpenAPI 2.0 compatible JSON description of the service API.'
       operationId: getFoxxSwaggerDescription
       parameters:
       - description: 'The name of the database.
@@ -1163,9 +1123,7 @@ paths:
         in the response body being formatted as XML instead of JSONML.
 
 
-        Otherwise the response body will be formatted as non-prettyprinted JSON.
-
-        '
+        Otherwise the response body will be formatted as non-prettyprinted JSON.'
       operationId: runFoxxTests
       parameters:
       - description: 'The name of the database.

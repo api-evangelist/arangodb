@@ -18,9 +18,7 @@ paths:
     get:
       description: 'Returns an array of edges starting or ending in the node identified by
 
-        `vertex`.
-
-        '
+        `vertex`.'
       operationId: getVertexEdges
       parameters:
       - description: 'The name of the database.
@@ -93,9 +91,7 @@ paths:
       - Graphs
   /_db/{database-name}/_api/gharial:
     get:
-      description: 'Lists all graphs stored in this database.
-
-        '
+      description: Lists all graphs stored in this database.
       operationId: listGraphs
       parameters:
       - description: 'The name of the database.
@@ -284,9 +280,7 @@ paths:
     post:
       description: 'The creation of a graph requires the name of the graph and a
 
-        definition of its edges.
-
-        '
+        definition of its edges.'
       operationId: createGraph
       parameters:
       - description: 'The name of the database.
@@ -919,9 +913,7 @@ paths:
 
         Optionally all collections not used by other graphs
 
-        can be dropped as well.
-
-        '
+        can be dropped as well.'
       operationId: deleteGraph
       parameters:
       - description: 'The name of the database.
@@ -1068,9 +1060,7 @@ paths:
 
         Returns the edge definitions as well as the orphan collections,
 
-        or returns an error if the graph does not exist.
-
-        '
+        or returns an error if the graph does not exist.'
       operationId: getGraph
       parameters:
       - description: 'The name of the database.
@@ -1293,9 +1283,7 @@ paths:
       - Graphs
   /_db/{database-name}/_api/gharial/{graph}/edge:
     get:
-      description: 'Lists all edge collections within this graph.
-
-        '
+      description: Lists all edge collections within this graph.
       operationId: listEdgeCollections
       parameters:
       - description: 'The name of the database.
@@ -1408,9 +1396,7 @@ paths:
         "v1" to "v2".
 
 
-        Additionally, collection creation options can be set.
-
-        '
+        Additionally, collection creation options can be set.'
       operationId: createEdgeDefinition
       parameters:
       - description: 'The name of the database.
@@ -1936,9 +1922,7 @@ paths:
 
         edge definition become orphan collections but otherwise remain untouched
 
-        and can still be used in your queries.
-
-        '
+        and can still be used in your queries.'
       operationId: deleteEdgeDefinition
       parameters:
       - description: 'The name of the database.
@@ -2394,9 +2378,7 @@ paths:
 
         Within the body the edge has to contain a `_from` and `_to` value referencing to valid nodes in the graph.
 
-        Furthermore, the edge has to be valid according to the edge definitions.
-
-        '
+        Furthermore, the edge has to be valid according to the edge definitions.'
       operationId: createEdge
       parameters:
       - description: 'The name of the database.
@@ -2869,9 +2851,7 @@ paths:
     put:
       description: 'Change the node collections of one specific edge definition.
 
-        This modifies all occurrences of this definition in all graphs known to your database.
-
-        '
+        This modifies all occurrences of this definition in all graphs known to your database.'
       operationId: replaceEdgeDefinition
       parameters:
       - description: 'The name of the database.
@@ -3408,9 +3388,7 @@ paths:
     delete:
       description: 'Removes an edge from an edge collection of the named graph. Any other edges
 
-        that directly reference this edge like a node are removed, too.
-
-        '
+        that directly reference this edge like a node are removed, too.'
       operationId: deleteEdge
       parameters:
       - description: 'The name of the database.
@@ -3801,9 +3779,7 @@ paths:
       tags:
       - Graphs
     get:
-      description: 'Gets an edge from the given collection.
-
-        '
+      description: Gets an edge from the given collection.
       operationId: getEdge
       parameters:
       - description: 'The name of the database.
@@ -4147,9 +4123,7 @@ paths:
       tags:
       - Graphs
     patch:
-      description: 'Partially modify the data of the specific edge in the collection.
-
-        '
+      description: Partially modify the data of the specific edge in the collection.
       operationId: updateEdge
       parameters:
       - description: 'The name of the database.
@@ -4730,9 +4704,7 @@ paths:
       tags:
       - Graphs
     put:
-      description: 'Replaces the data of an edge in the collection.
-
-        '
+      description: Replaces the data of an edge in the collection.
       operationId: replaceEdge
       parameters:
       - description: 'The name of the database.
@@ -5332,9 +5304,7 @@ paths:
       - Graphs
   /_db/{database-name}/_api/gharial/{graph}/vertex:
     get:
-      description: 'Lists all node collections within this graph, including orphan collections.
-
-        '
+      description: Lists all node collections within this graph, including orphan collections.
       operationId: listVertexCollections
       parameters:
       - description: 'The name of the database.
@@ -5433,9 +5403,7 @@ paths:
     post:
       description: 'Adds a node collection to the set of orphan collections of the graph.
 
-        If the collection does not exist, it is created.
-
-        '
+        If the collection does not exist, it is created.'
       operationId: addVertexCollection
       parameters:
       - description: 'The name of the database.
@@ -5946,9 +5914,7 @@ paths:
 
         edge definition first in order to fully remove a node collection from
 
-        the graph.
-
-        '
+        the graph.'
       operationId: deleteVertexCollection
       parameters:
       - description: 'The name of the database.
@@ -6428,9 +6394,7 @@ paths:
       tags:
       - Graphs
     post:
-      description: 'Adds a node to the given collection.
-
-        '
+      description: Adds a node to the given collection.
       operationId: createVertex
       parameters:
       - description: 'The name of the database.
@@ -6790,9 +6754,7 @@ paths:
     delete:
       description: 'Removes a node from a collection of the named graph. Additionally removes all
 
-        incoming and outgoing edges of the node.
-
-        '
+        incoming and outgoing edges of the node.'
       operationId: deleteVertex
       parameters:
       - description: 'The name of the database.
@@ -7159,9 +7121,7 @@ paths:
       tags:
       - Graphs
     get:
-      description: 'Gets a node from the given collection.
-
-        '
+      description: Gets a node from the given collection.
       operationId: getVertex
       parameters:
       - description: 'The name of the database.
@@ -7493,9 +7453,7 @@ paths:
       tags:
       - Graphs
     patch:
-      description: 'Updates the data of the specific node in the collection.
-
-        '
+      description: Updates the data of the specific node in the collection.
       operationId: updateVertex
       parameters:
       - description: 'The name of the database.
@@ -8002,9 +7960,7 @@ paths:
       tags:
       - Graphs
     put:
-      description: 'Replaces the data of a node in the collection.
-
-        '
+      description: Replaces the data of a node in the collection.
       operationId: replaceVertex
       parameters:
       - description: 'The name of the database.

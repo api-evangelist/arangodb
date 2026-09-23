@@ -22,9 +22,7 @@ paths:
         current database.
 
 
-        The call returns a JSON array with status codes and all user functions found under `result`.
-
-        '
+        The call returns a JSON array with status codes and all user functions found under `result`.'
       operationId: listAqlUserFunctions
       parameters:
       - description: 'The name of the database.
@@ -156,9 +154,7 @@ paths:
 
         In case of success, HTTP 200 is returned.
 
-        If the function isn''t valid etc. HTTP 400 including a detailed error message will be returned.
-
-        '
+        If the function isn''t valid etc. HTTP 400 including a detailed error message will be returned.'
       operationId: createAqlUserFunction
       parameters:
       - description: 'The name of the database.
@@ -317,9 +313,7 @@ paths:
       deprecated: true
       description: 'Deletes an existing user-defined function (UDF) or function group identified by
 
-        `name` from the current database.
-
-        '
+        `name` from the current database.'
       operationId: deleteAqlUserFunction
       parameters:
       - description: 'The name of the database.
@@ -469,9 +463,7 @@ paths:
 
         bind parameters. These values need to be passed in a JSON representation in
 
-        the body of the POST request.
-
-        '
+        the body of the POST request.'
       operationId: createAqlQueryCursor
       parameters:
       - description: 'The name of the database.
@@ -1636,9 +1628,7 @@ paths:
 
         Note: the server will also destroy abandoned cursors automatically after a
 
-        certain server-controlled timeout to avoid resource leakage.
-
-        '
+        certain server-controlled timeout to avoid resource leakage.'
       operationId: deleteAqlQueryCursor
       parameters:
       - description: 'The name of the database.
@@ -1678,9 +1668,7 @@ paths:
 
         If the cursor is not fully consumed, the time-to-live for the cursor
 
-        is renewed by this API call.
-
-        '
+        is renewed by this API call.'
       operationId: getNextAqlQueryCursorBatch
       parameters:
       - description: 'The name of the database.
@@ -2207,7 +2195,51 @@ paths:
       - Queries
     put:
       deprecated: true
-      description: "> **WARNING:**\nThis endpoint is deprecated in favor its functionally equivalent POST counterpart.\n\n\nIf the cursor is still alive, returns an object with the following\nattributes:\n\n- `id`: a `cursor-identifier`\n- `result`: a list of documents for the current batch\n- `hasMore`: `false` if this was the last batch\n- `count`: if present the total number of elements\n- `code`: an HTTP status code\n- `error`: a boolean flag to indicate whether an error occurred\n- `errorNum`: a server error number (if `error` is `true`)\n- `errorMessage`: a descriptive error message (if `error` is `true`)\n- `extra`: an object with additional information about the query result, with\n  the nested objects `stats` and `warnings`. Only delivered as part of the last\n  batch in case of a cursor with the `stream` option enabled.\n\nNote that even if `hasMore` returns `true`, the next call might\nstill return no documents. If, however, `hasMore` is `false`, then\nthe cursor is exhausted.  Once the `hasMore` attribute has a value of\n`false`, the client can stop.\n\nIf the cursor is not fully consumed, the time-to-live for the cursor\nis renewed by this API call.\n"
+      description: '> **WARNING:**
+
+        This endpoint is deprecated in favor its functionally equivalent POST counterpart.
+
+
+        If the cursor is still alive, returns an object with the following
+
+        attributes:
+
+
+        - `id`: a `cursor-identifier`
+
+        - `result`: a list of documents for the current batch
+
+        - `hasMore`: `false` if this was the last batch
+
+        - `count`: if present the total number of elements
+
+        - `code`: an HTTP status code
+
+        - `error`: a boolean flag to indicate whether an error occurred
+
+        - `errorNum`: a server error number (if `error` is `true`)
+
+        - `errorMessage`: a descriptive error message (if `error` is `true`)
+
+        - `extra`: an object with additional information about the query result, with
+
+        the nested objects `stats` and `warnings`. Only delivered as part of the last
+
+        batch in case of a cursor with the `stream` option enabled.
+
+
+        Note that even if `hasMore` returns `true`, the next call might
+
+        still return no documents. If, however, `hasMore` is `false`, then
+
+        the cursor is exhausted. Once the `hasMore` attribute has a value of
+
+        `false`, the client can stop.
+
+
+        If the cursor is not fully consumed, the time-to-live for the cursor
+
+        is renewed by this API call.'
       operationId: getNextAqlQueryCursorBatchPut
       parameters:
       - description: 'The name of the database.
@@ -2303,9 +2335,7 @@ paths:
         resources.
 
 
-        The time-to-live for the cursor is renewed by this API call.
-
-        '
+        The time-to-live for the cursor is renewed by this API call.'
       operationId: getPreviousAqlQueryCursorBatch
       parameters:
       - description: 'The name of the database.
@@ -2880,7 +2910,73 @@ paths:
       - Queries
   /_db/{database-name}/_api/explain:
     post:
-      description: "To explain how an AQL query would be executed on the server, the query string\ncan be sent to the server via an HTTP POST request. The server will then validate\nthe query and create an execution plan for it. The execution plan will be\nreturned, but the query will not be executed.\n\nThe execution plan that is returned by the server can be used to estimate the\nprobable performance of the query. Though the actual performance will depend\non many different factors, the execution plan normally can provide some rough\nestimates on the amount of work the server needs to do in order to actually run\nthe query.\n\nBy default, the explain operation will return the optimal plan as chosen by\nthe query optimizer The optimal plan is the plan with the lowest total estimated\ncost. The plan will be returned in the attribute `plan` of the response object.\nIf the option `allPlans` is specified in the request, the result will contain\nall plans created by the optimizer. The plans will then be returned in the\nattribute `plans`.\n\nThe result will also contain an attribute `warnings`, which is an array of\nwarnings that occurred during optimization or execution plan creation. Additionally,\na `stats` attribute is contained in the result with some optimizer statistics.\nIf `allPlans` is set to `false`, the result will contain an attribute `cacheable`\nthat states whether the query results can be cached on the server if the query\nresult cache were used. The `cacheable` attribute is not present when `allPlans`\nis set to `true`.\n\nEach plan in the result is a JSON object with the following attributes:\n- `nodes`: the array of execution nodes of the plan.\n\n- `estimatedCost`: the total estimated cost for the plan. If there are multiple\n  plans, the optimizer will choose the plan with the lowest total cost.\n\n- `collections`: an array of collections used in the query\n\n- `rules`: an array of rules the optimizer applied.\n\n- `variables`: array of variables used in the query (note: this may contain\n  internal variables created by the optimizer)\n"
+      description: 'To explain how an AQL query would be executed on the server, the query string
+
+        can be sent to the server via an HTTP POST request. The server will then validate
+
+        the query and create an execution plan for it. The execution plan will be
+
+        returned, but the query will not be executed.
+
+
+        The execution plan that is returned by the server can be used to estimate the
+
+        probable performance of the query. Though the actual performance will depend
+
+        on many different factors, the execution plan normally can provide some rough
+
+        estimates on the amount of work the server needs to do in order to actually run
+
+        the query.
+
+
+        By default, the explain operation will return the optimal plan as chosen by
+
+        the query optimizer The optimal plan is the plan with the lowest total estimated
+
+        cost. The plan will be returned in the attribute `plan` of the response object.
+
+        If the option `allPlans` is specified in the request, the result will contain
+
+        all plans created by the optimizer. The plans will then be returned in the
+
+        attribute `plans`.
+
+
+        The result will also contain an attribute `warnings`, which is an array of
+
+        warnings that occurred during optimization or execution plan creation. Additionally,
+
+        a `stats` attribute is contained in the result with some optimizer statistics.
+
+        If `allPlans` is set to `false`, the result will contain an attribute `cacheable`
+
+        that states whether the query results can be cached on the server if the query
+
+        result cache were used. The `cacheable` attribute is not present when `allPlans`
+
+        is set to `true`.
+
+
+        Each plan in the result is a JSON object with the following attributes:
+
+        - `nodes`: the array of execution nodes of the plan.
+
+
+        - `estimatedCost`: the total estimated cost for the plan. If there are multiple
+
+        plans, the optimizer will choose the plan with the lowest total cost.
+
+
+        - `collections`: an array of collections used in the query
+
+
+        - `rules`: an array of rules the optimizer applied.
+
+
+        - `variables`: array of variables used in the query (note: this may contain
+
+        internal variables created by the optimizer)'
       operationId: explainAqlQuery
       parameters:
       - description: 'The name of the database.
@@ -3087,9 +3183,7 @@ paths:
     post:
       description: 'This endpoint is for query validation only. To actually query the database,
 
-        see `/api/cursor`.
-
-        '
+        see `/api/cursor`.'
       operationId: parseAqlQuery
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -3154,9 +3248,7 @@ paths:
       - Queries
   /_db/{database-name}/_api/query-cache:
     delete:
-      description: 'Clears all results stored in the AQL query results cache for the current database.
-
-        '
+      description: Clears all results stored in the AQL query results cache for the current database.
       operationId: deleteAqlQueryCache
       parameters:
       - description: 'The name of the database.
@@ -3204,9 +3296,7 @@ paths:
     get:
       description: 'Returns an array containing the AQL query results currently stored in the query results
 
-        cache of the selected database.
-
-        '
+        cache of the selected database.'
       operationId: listQueryCacheResults
       parameters:
       - description: 'The name of the database.
@@ -3310,9 +3400,7 @@ paths:
       - Queries
   /_db/{database-name}/_api/query-cache/properties:
     get:
-      description: 'Returns the global AQL query results cache configuration.
-
-        '
+      description: Returns the global AQL query results cache configuration.
       operationId: getQueryCacheProperties
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -3388,9 +3476,7 @@ paths:
       description: 'Adjusts the global properties for the AQL query results cache.
 
 
-        Changing the properties may invalidate all results currently in the cache.
-
-        '
+        Changing the properties may invalidate all results currently in the cache.'
       operationId: setQueryCacheProperties
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -3530,9 +3616,7 @@ paths:
         current database.
 
 
-        This requires write privileges for the current database.
-
-        '
+        This requires write privileges for the current database.'
       operationId: deleteAqlQueryPlanCache
       parameters:
       - description: 'The name of the database.
@@ -3582,9 +3666,7 @@ paths:
 
         query plans are returned for which the current user has at least read permissions
 
-        on all collections and Views included in the query.
-
-        '
+        on all collections and Views included in the query.'
       operationId: listQueryCachePlans
       parameters:
       - description: 'The name of the database.
@@ -3696,7 +3778,7 @@ paths:
 
         Query tracking needs to be enabled by the
 
-        [`--query.tracking` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking)
+        `--query.tracking` startup option
 
         or at runtime with the `enabled` query tracking property of the
 
@@ -3704,9 +3786,7 @@ paths:
 
         If query tracking is disabled for the current database,
 
-        an **empty list** is returned.
-
-        '
+        an **empty list** is returned.'
       operationId: listAqlQueries
       parameters:
       - description: 'The name of the database.
@@ -3977,9 +4057,7 @@ paths:
       - Queries
   /_db/{database-name}/_api/query/properties:
     get:
-      description: 'Returns the current query tracking properties of the specified database.
-
-        '
+      description: Returns the current query tracking properties of the specified database.
       operationId: getAqlQueryTrackingProperties
       parameters:
       - description: 'The name of the database.
@@ -4130,9 +4208,7 @@ paths:
     put:
       description: 'Modify one or more query tracking properties at runtime for the
 
-        specified database.
-
-        '
+        specified database.'
       operationId: updateAqlQueryTrackingProperties
       parameters:
       - description: 'The name of the database.
@@ -4375,9 +4451,7 @@ paths:
       - Queries
   /_db/{database-name}/_api/query/rules:
     get:
-      description: 'A list of all optimizer rules and their properties.
-
-        '
+      description: A list of all optimizer rules and their properties.
       operationId: getAqlQueryOptimizerRules
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -4464,9 +4538,7 @@ paths:
       - Queries
   /_db/{database-name}/_api/query/slow:
     delete:
-      description: 'Clears the list of slow AQL queries for the current database.
-
-        '
+      description: Clears the list of slow AQL queries for the current database.
       operationId: clearSlowAqlQueryList
       parameters:
       - description: 'The name of the database.
@@ -4565,7 +4637,7 @@ paths:
 
         Slow query tracking needs to be enabled by the
 
-        [`--query.tracking-slow-queries` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--querytracking-slow-queries)
+        `--query.tracking-slow-queries` startup option
 
         or at runtime with the `trackSlowQueries` query tracking property of the
 
@@ -4587,17 +4659,15 @@ paths:
 
         for queries with the `stream` option on or off by setting the
 
-        [`--query.slow-threshold`](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-threshold)
+        `--query.slow-threshold`
 
-        and [`--query.slow-streaming-threshold`](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--queryslow-streaming-threshold)
+        and `--query.slow-streaming-threshold`
 
         startup options or at runtime with the `slowQueryThreshold` and
 
         `slowStreamingQueryThreshold` query tracking properties of the
 
-        `PUT /_db/{database-name}/_api/query/properties` endpoint.
-
-        '
+        `PUT /_db/{database-name}/_api/query/properties` endpoint.'
       operationId: listSlowAqlQueries
       parameters:
       - description: 'The name of the database.
@@ -4860,9 +4930,7 @@ paths:
     delete:
       description: 'Kills a running query in the currently selected database. The query will be
 
-        terminated at the next cancellation point.
-
-        '
+        terminated at the next cancellation point.'
       operationId: deleteAqlQuery
       parameters:
       - description: 'The name of the database.

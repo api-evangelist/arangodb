@@ -28,7 +28,6 @@ paths:
         intuitive and easier to process format.
 
 
-
         Returns fatal, error, warning or info log messages from the server''s global log.
 
         The result is a JSON object with the attributes described below.
@@ -40,9 +39,7 @@ paths:
 
         API is enabled, accessing it requires admin privileges, or even superuser
 
-        privileges, depending on the value of the `--log.api-enabled` startup option.
-
-        '
+        privileges, depending on the value of the `--log.api-enabled` startup option.'
       operationId: getLog
       parameters:
       - description: 'Returns all log entries up to log level `upto`. Note that `upto` must be:
@@ -222,9 +219,7 @@ paths:
 
         API is enabled, accessing it requires admin privileges, or even superuser
 
-        privileges, depending on the value of the `--log.api-enabled` startup option.
-
-        '
+        privileges, depending on the value of the `--log.api-enabled` startup option.'
       operationId: getLogEntries
       parameters:
       - description: 'Returns all log entries up to log level `upto`. Note that `upto` must be:
@@ -356,9 +351,7 @@ paths:
 
         API is enabled, accessing it requires admin privileges, or even superuser
 
-        privileges, depending on the value of the `--log.api-enabled` startup option.
-
-        '
+        privileges, depending on the value of the `--log.api-enabled` startup option.'
       operationId: resetLogLevel
       parameters:
       - description: 'Forwards the request to the specified server.
@@ -395,9 +388,7 @@ paths:
 
         API is enabled, accessing it requires admin privileges, or even superuser
 
-        privileges, depending on the value of the `--log.api-enabled` startup option.
-
-        '
+        privileges, depending on the value of the `--log.api-enabled` startup option.'
       operationId: getLogLevel
       parameters:
       - description: 'Forwards the request to the specified server.
@@ -428,7 +419,65 @@ paths:
       tags:
       - Monitoring
     put:
-      description: "Modifies and returns the server's current log level settings.\nThe request body must be a JSON string with a log level or a JSON object with the\nlog topics being the object keys and the log levels being the object values.\n\nIf only a JSON string is specified as input, the log level is adjusted for the\n\"general\" log topic only. If a JSON object is specified as input, the log levels will\nbe set only for the log topic mentioned in the input object, but preserved for every\nother log topic.\nTo set the log level for all log levels to a specific value, it is possible to hand\nin the special pseudo log topic \"all\".\n\nThe result is a JSON object with all available log topics being the object keys, and\nthe adjusted log levels being the object values.\n\nPossible log levels are:\n- `FATAL` - Only critical errors are logged after which the _arangod_\n  process terminates.\n- `ERROR` - Only errors are logged. You should investigate and fix errors\n  as they may harm your production.\n- `WARNING` - Errors and warnings are logged. Warnings may be serious\n  application-wise and can indicate issues that might lead to errors\n  later on.\n- `INFO` - Errors, warnings, and general information is logged.\n- `DEBUG` - Outputs debug messages used in the development of ArangoDB\n  in addition to the above.\n- `TRACE` - Logs detailed tracing of operations in addition to the above.\n  This can flood the log. Don't use this log level in production.\n\nThis API can be turned off via the startup option `--log.api-enabled`. In case\nthe API is disabled, all requests will be responded to with HTTP 403. If the\nAPI is enabled, accessing it requires admin privileges, or even superuser\nprivileges, depending on the value of the `--log.api-enabled` startup option.\n"
+      description: 'Modifies and returns the server''s current log level settings.
+
+        The request body must be a JSON string with a log level or a JSON object with the
+
+        log topics being the object keys and the log levels being the object values.
+
+
+        If only a JSON string is specified as input, the log level is adjusted for the
+
+        "general" log topic only. If a JSON object is specified as input, the log levels will
+
+        be set only for the log topic mentioned in the input object, but preserved for every
+
+        other log topic.
+
+        To set the log level for all log levels to a specific value, it is possible to hand
+
+        in the special pseudo log topic "all".
+
+
+        The result is a JSON object with all available log topics being the object keys, and
+
+        the adjusted log levels being the object values.
+
+
+        Possible log levels are:
+
+        - `FATAL` - Only critical errors are logged after which the _arangod_
+
+        process terminates.
+
+        - `ERROR` - Only errors are logged. You should investigate and fix errors
+
+        as they may harm your production.
+
+        - `WARNING` - Errors and warnings are logged. Warnings may be serious
+
+        application-wise and can indicate issues that might lead to errors
+
+        later on.
+
+        - `INFO` - Errors, warnings, and general information is logged.
+
+        - `DEBUG` - Outputs debug messages used in the development of ArangoDB
+
+        in addition to the above.
+
+        - `TRACE` - Logs detailed tracing of operations in addition to the above.
+
+        This can flood the log. Don''t use this log level in production.
+
+
+        This API can be turned off via the startup option `--log.api-enabled`. In case
+
+        the API is disabled, all requests will be responded to with HTTP 403. If the
+
+        API is enabled, accessing it requires admin privileges, or even superuser
+
+        privileges, depending on the value of the `--log.api-enabled` startup option.'
       operationId: setLogLevel
       parameters:
       - description: 'Forwards the request to the specified server.
@@ -863,9 +912,7 @@ paths:
 
         API is enabled, accessing it requires admin privileges, or even superuser
 
-        privileges, depending on the value of the `--log.api-enabled` startup option.
-
-        '
+        privileges, depending on the value of the `--log.api-enabled` startup option.'
       operationId: getStructuredLog
       responses:
         '200':
@@ -908,9 +955,7 @@ paths:
 
         API is enabled, accessing it requires admin privileges, or even superuser
 
-        privileges, depending on the value of the `--log.api-enabled` startup option.
-
-        '
+        privileges, depending on the value of the `--log.api-enabled` startup option.'
       operationId: setStructuredLog
       requestBody:
         content:
@@ -969,9 +1014,7 @@ paths:
 
         The API then needs to be added to the Prometheus configuration file
 
-        for collection.
-
-        '
+        for collection.'
       operationId: getMetrics
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1027,7 +1070,6 @@ paths:
         removed in v4.0.
 
 
-
         Returns the instance''s current metrics in Prometheus format. The
 
         returned document collects all instance metrics, which are measured
@@ -1046,9 +1088,7 @@ paths:
 
         The API then needs to be added to the Prometheus configuration file
 
-        for collection.
-
-        '
+        for collection.'
       operationId: getMetricsV2
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1117,9 +1157,7 @@ paths:
 
         `--server.api-call-recording` startup option.
 
-        The endpoint returns an empty list of calls if turned off.
-
-        '
+        The endpoint returns an empty list of calls if turned off.'
       operationId: getRecentApiCalls
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1344,9 +1382,7 @@ paths:
 
         `--server.aql-query-recording` startup option.
 
-        The endpoint returns an empty list of queries if turned off.
-
-        '
+        The endpoint returns an empty list of queries if turned off.'
       operationId: getRecentAqlQueries
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -1556,7 +1592,6 @@ paths:
         this API and a lot more.
 
 
-
         Returns the statistics information. The returned object contains the
 
         statistics figures grouped together according to the description returned by
@@ -1597,9 +1632,7 @@ paths:
 
         Just with the difference that cluster transactions have no notion of
 
-        intermediate commits and will not increase the value.
-
-        '
+        intermediate commits and will not increase the value.'
       operationId: getStatistics
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2179,7 +2212,6 @@ paths:
         statistics API and a lot more.
 
 
-
         Returns a description of the statistics returned by `/_admin/statistics`.
 
         The returned objects contains an array of statistics groups in the attribute
@@ -2212,9 +2244,7 @@ paths:
 
         - `cuts`: The distribution vector.
 
-        - `units`: Units in which the figure is measured.
-
-        '
+        - `units`: Units in which the figure is measured.'
       operationId: getStatisticsDescription
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -2346,15 +2376,13 @@ paths:
 
         These metrics can be enabled by setting the
 
-        [`--server.export-shard-usage-metrics` startup option](https://docs.arango.ai/arangodb/3.12/components/arangodb-server/options/#--serverexport-shard-usage-metrics)
+        `--server.export-shard-usage-metrics` startup option
 
         to `enabled-per-shard` to make DB-Servers collect per-shard
 
         usage metrics, or to `enabled-per-shard-per-user` to make DB-Servers collect
 
-        usage metrics per shard and per user whenever a shard is accessed.
-
-        '
+        usage metrics per shard and per user whenever a shard is accessed.'
       operationId: getUsageMetrics
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long

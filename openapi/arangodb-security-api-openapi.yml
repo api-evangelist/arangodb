@@ -27,9 +27,7 @@ paths:
 
         This is a protected API and can only be executed with superuser rights.
 
-        This API is not available on Coordinator nodes.
-
-        '
+        This API is not available on Coordinator nodes.'
       operationId: rotateEncryptionAtRestKey
       responses:
         '200':
@@ -96,9 +94,7 @@ paths:
         GET request.
 
 
-        This is a protected API and can only be executed with superuser rights.
-
-        '
+        This is a protected API and can only be executed with superuser rights.'
       operationId: reloadServerTls
       responses:
         '200':
@@ -116,7 +112,48 @@ paths:
       - Security
   /_db/{database-name}/_admin/server/tls:
     get:
-      description: "Return a summary of the TLS data. The JSON response will contain a field\n`result` with the following components:\n\n  - `keyfile`: Information about the key file.\n  - `clientCA`: Information about the Certificate Authority (CA) for\n    client certificate verification.\n\nIf server name indication (SNI) is used and multiple key files are\nconfigured for different server names, then there is an additional\nattribute `SNI`, which contains for each configured server name\nthe corresponding information about the key file for that server name.\n\nIn all cases the value of the attribute will be a JSON object, which\nhas a subset of the following attributes (whatever is appropriate):\n\n  - `sha256`: The value is a string with the SHA256 of the whole input\n    file.\n  - `certificates`: The value is a JSON array with the public\n    certificates in the chain in the file.\n  - `privateKeySha256`: In cases where there is a private key (`keyfile`\n    but not `clientCA`), this field is present and contains a\n    JSON string with the SHA256 of the private key.\n\nThis API requires authentication.\n"
+      description: 'Return a summary of the TLS data. The JSON response will contain a field
+
+        `result` with the following components:
+
+
+        - `keyfile`: Information about the key file.
+
+        - `clientCA`: Information about the Certificate Authority (CA) for
+
+        client certificate verification.
+
+
+        If server name indication (SNI) is used and multiple key files are
+
+        configured for different server names, then there is an additional
+
+        attribute `SNI`, which contains for each configured server name
+
+        the corresponding information about the key file for that server name.
+
+
+        In all cases the value of the attribute will be a JSON object, which
+
+        has a subset of the following attributes (whatever is appropriate):
+
+
+        - `sha256`: The value is a string with the SHA256 of the whole input
+
+        file.
+
+        - `certificates`: The value is a JSON array with the public
+
+        certificates in the chain in the file.
+
+        - `privateKeySha256`: In cases where there is a private key (`keyfile`
+
+        but not `clientCA`), this field is present and contains a
+
+        JSON string with the SHA256 of the private key.
+
+
+        This API requires authentication.'
       operationId: getServerTls
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long

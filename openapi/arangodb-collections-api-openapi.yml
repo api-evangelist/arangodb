@@ -18,9 +18,7 @@ paths:
     get:
       description: 'Returns basic information for all collections in the current database,
 
-        optionally excluding system collections.
-
-        '
+        optionally excluding system collections.'
       operationId: listCollections
       parameters:
       - description: 'The name of the database.
@@ -137,9 +135,7 @@ paths:
     post:
       description: 'Creates a new collection with a given name. The request must contain an
 
-        object with the following attributes.
-
-        '
+        object with the following attributes.'
       operationId: createCollection
       parameters:
       - description: 'The name of the database.
@@ -1029,9 +1025,7 @@ paths:
       - Collections
   /_db/{database-name}/_api/collection/{collection-name}:
     delete:
-      description: 'Delete the collection identified by `collection-name` and all its documents.
-
-        '
+      description: Delete the collection identified by `collection-name` and all its documents.
       operationId: deleteCollection
       parameters:
       - description: 'The name of the database.
@@ -1176,9 +1170,7 @@ paths:
       tags:
       - Collections
     get:
-      description: 'Returns the basic information about a specific collection.
-
-        '
+      description: Returns the basic information about a specific collection.
       operationId: getCollection
       parameters:
       - description: 'The name of the database.
@@ -1360,9 +1352,7 @@ paths:
 
         > **INFO:**
 
-        Including user-defined attributes will make the checksumming slower.
-
-        '
+        Including user-defined attributes will make the checksumming slower.'
       operationId: getCollectionChecksum
       parameters:
       - description: 'The name of the database.
@@ -1531,9 +1521,7 @@ paths:
 
         the disk data for a collection may contain a lot of outdated data for which the
 
-        space shall be reclaimed. In this case the compaction operation can be used.
-
-        '
+        space shall be reclaimed. In this case the compaction operation can be used.'
       operationId: compactCollection
       parameters:
       - description: 'The name of the database.
@@ -1674,9 +1662,7 @@ paths:
       - Collections
   /_db/{database-name}/_api/collection/{collection-name}/count:
     get:
-      description: 'Get the number of documents in a collection.
-
-        '
+      description: Get the number of documents in a collection.
       operationId: getCollectionCount
       parameters:
       - description: 'The name of the database.
@@ -2145,9 +2131,7 @@ paths:
     get:
       description: 'Get the number of documents and additional statistical information
 
-        about the collection.
-
-        '
+        about the collection.'
       operationId: getCollectionFigures
       parameters:
       - description: 'The name of the database.
@@ -2800,12 +2784,9 @@ paths:
         in ArangoDB v4.0.
 
 
-
         Since ArangoDB version 3.9.0 this API does nothing. Previously, it used to
 
-        load a collection into memory.
-
-        '
+        load a collection into memory.'
       operationId: loadCollection
       parameters:
       - description: 'The name of the database.
@@ -3030,9 +3011,7 @@ paths:
 
         It is guaranteed that the in-memory cache data is consistent with the stored
 
-        index data at all times.
-
-        '
+        index data at all times.'
       operationId: loadCollectionIndexes
       parameters:
       - description: 'The name of the database.
@@ -3168,9 +3147,7 @@ paths:
       - Collections
   /_db/{database-name}/_api/collection/{collection-name}/properties:
     get:
-      description: 'Returns all properties of the specified collection.
-
-        '
+      description: Returns all properties of the specified collection.
       operationId: getCollectionProperties
       parameters:
       - description: 'The name of the database.
@@ -3677,9 +3654,7 @@ paths:
 
         created except for the listed properties, as well as the collection name via
 
-        the rename endpoint (but not in clusters).
-
-        '
+        the rename endpoint (but not in clusters).'
       operationId: updateCollectionProperties
       parameters:
       - description: 'The name of the database.
@@ -4383,9 +4358,7 @@ paths:
       - Collections
   /_db/{database-name}/_api/collection/{collection-name}/recalculateCount:
     put:
-      description: 'Recalculates the document count of a collection, if it ever becomes inconsistent.
-
-        '
+      description: Recalculates the document count of a collection, if it ever becomes inconsistent.
       operationId: recalculateCollectionCount
       parameters:
       - description: 'The name of the database.
@@ -4526,12 +4499,9 @@ paths:
         Renaming collections is not supported in cluster deployments.
 
 
-
         If renaming the collection succeeds, then the collection is also renamed in
 
-        all graph definitions inside the `_graphs` collection in the current database.
-
-        '
+        all graph definitions inside the `_graphs` collection in the current database.'
       operationId: renameCollection
       parameters:
       - description: 'The name of the database.
@@ -5076,9 +5046,7 @@ paths:
 
         > **INFO:**
 
-        This method is only available in cluster deployments on Coordinators.
-
-        '
+        This method is only available in cluster deployments on Coordinators.'
       operationId: getResponsibleShard
       parameters:
       - description: 'The name of the database.
@@ -5258,9 +5226,7 @@ paths:
 
         The revision ID is a server-generated string that clients can use to
 
-        check whether data in a collection has changed since the last revision check.
-
-        '
+        check whether data in a collection has changed since the last revision check.'
       operationId: getCollectionRevision
       parameters:
       - description: 'The name of the database.
@@ -5782,9 +5748,7 @@ paths:
 
         > **INFO:**
 
-        This method is only available in cluster deployments on Coordinators.
-
-        '
+        This method is only available in cluster deployments on Coordinators.'
       operationId: getCollectionShards
       parameters:
       - description: 'The name of the database.
@@ -6327,9 +6291,7 @@ paths:
       - Collections
   /_db/{database-name}/_api/collection/{collection-name}/truncate:
     put:
-      description: 'Removes all documents from the collection, but leaves the indexes intact.
-
-        '
+      description: Removes all documents from the collection, but leaves the indexes intact.
       operationId: truncateCollection
       parameters:
       - description: 'The name of the database.
@@ -6555,12 +6517,9 @@ paths:
         in ArangoDB v4.0.
 
 
-
         Since ArangoDB version 3.9.0 this API does nothing. Previously it used to
 
-        unload a collection from memory, while preserving all documents.
-
-        '
+        unload a collection from memory, while preserving all documents.'
       operationId: unloadCollection
       parameters:
       - description: 'The name of the database.
@@ -6744,9 +6703,7 @@ paths:
       - Collections
   /_db/{database-name}/_api/key-generators:
     get:
-      description: 'Returns the available key generators for collections.
-
-        '
+      description: Returns the available key generators for collections.
       operationId: getKeyGenerators
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long

@@ -21,9 +21,7 @@ paths:
 
         If you import documents into edge collections, all documents require a `_from`
 
-        and a `_to` attribute.
-
-        '
+        and a `_to` attribute.'
       operationId: importData
       parameters:
       - description: 'The name of the database.

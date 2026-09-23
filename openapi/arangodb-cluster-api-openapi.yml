@@ -16,7 +16,64 @@ tags:
 paths:
   /_admin/cluster/health:
     get:
-      description: "Queries the health of the cluster as assessed by the supervision (Agency) for\nmonitoring purposes. The response is a JSON object, containing the standard\n`code`, `error`, `errorNum`, and `errorMessage` fields as appropriate.\nThe endpoint-specific fields are as follows:\n\n- `ClusterId`: A UUID string identifying the cluster\n- `Health`: An object containing a descriptive sub-object for each node in the cluster.\n  - `<nodeID>`: Each entry in `Health` will be keyed by the node ID and contain the following attributes:\n    - `Endpoint`: A string representing the network endpoint of the server.\n    - `Role`: The role the server plays. Possible values are `\"AGENT\"`, `\"COORDINATOR\"`, and `\"DBSERVER\"`.\n    - `CanBeDeleted`: Boolean representing whether the node can safely be removed from the cluster.\n    - `Version`: Version String of ArangoDB used by that node.\n    - `Engine`: Storage Engine used by that node.\n    - `Status`: A string indicating the health of the node as assessed by the supervision (Agency). This should be considered primary source of truth for Coordinator and DB-Servers node health. If the node is responding normally to requests, it is `\"GOOD\"`. If it has missed one heartbeat, it is `\"BAD\"`. If it has been declared failed by the supervision, which occurs after missing heartbeats for about 15 seconds, it will be marked `\"FAILED\"`.\n\n    Additionally it will also have the following attributes for:\n\n    **Coordinators** and **DB-Servers**\n    - `SyncStatus`: The last sync status reported by the node. This value is primarily used to determine the value of `Status`. Possible values include `\"UNKNOWN\"`, `\"UNDEFINED\"`, `\"STARTUP\"`, `\"STOPPING\"`, `\"STOPPED\"`, `\"SERVING\"`, `\"SHUTDOWN\"`.\n    - `LastAckedTime`: ISO 8601 timestamp specifying the last heartbeat received.\n    - `ShortName`: A string representing the shortname of the server, e.g. `\"Coordinator0001\"`.\n    - `Timestamp`: ISO 8601 timestamp specifying the last heartbeat received. (deprecated)\n    - `Host`: An optional string, specifying the host machine if known.\n    - `SyncTime`: ISO 8601 timestamp of the last sync time reported by the node.\n\n    **Coordinators** only\n    - `AdvertisedEndpoint`: A string representing the advertised endpoint, if set. (e.g. external IP address or load balancer, optional)\n\n    **Agents**\n    - `Leader`: ID of the Agent this node regards as leader.\n    - `Leading`: Whether this Agent is the leader (true) or not (false).\n    - `LastAckedTime`: Time since last `acked` in seconds.\n"
+      description: 'Queries the health of the cluster as assessed by the supervision (Agency) for
+
+        monitoring purposes. The response is a JSON object, containing the standard
+
+        `code`, `error`, `errorNum`, and `errorMessage` fields as appropriate.
+
+        The endpoint-specific fields are as follows:
+
+
+        - `ClusterId`: A UUID string identifying the cluster
+
+        - `Health`: An object containing a descriptive sub-object for each node in the cluster.
+
+        - ``: Each entry in `Health` will be keyed by the node ID and contain the following attributes:
+
+        - `Endpoint`: A string representing the network endpoint of the server.
+
+        - `Role`: The role the server plays. Possible values are `"AGENT"`, `"COORDINATOR"`, and `"DBSERVER"`.
+
+        - `CanBeDeleted`: Boolean representing whether the node can safely be removed from the cluster.
+
+        - `Version`: Version String of ArangoDB used by that node.
+
+        - `Engine`: Storage Engine used by that node.
+
+        - `Status`: A string indicating the health of the node as assessed by the supervision (Agency). This should be considered primary source of truth for Coordinator and DB-Servers node health. If the node is responding normally to requests, it is `"GOOD"`. If it has missed one heartbeat, it is `"BAD"`. If it has been declared failed by the supervision, which occurs after missing heartbeats for about 15 seconds, it will be marked `"FAILED"`.
+
+
+        Additionally it will also have the following attributes for:
+
+
+        **Coordinators** and **DB-Servers**
+
+        - `SyncStatus`: The last sync status reported by the node. This value is primarily used to determine the value of `Status`. Possible values include `"UNKNOWN"`, `"UNDEFINED"`, `"STARTUP"`, `"STOPPING"`, `"STOPPED"`, `"SERVING"`, `"SHUTDOWN"`.
+
+        - `LastAckedTime`: ISO 8601 timestamp specifying the last heartbeat received.
+
+        - `ShortName`: A string representing the shortname of the server, e.g. `"Coordinator0001"`.
+
+        - `Timestamp`: ISO 8601 timestamp specifying the last heartbeat received. (deprecated)
+
+        - `Host`: An optional string, specifying the host machine if known.
+
+        - `SyncTime`: ISO 8601 timestamp of the last sync time reported by the node.
+
+
+        **Coordinators** only
+
+        - `AdvertisedEndpoint`: A string representing the advertised endpoint, if set. (e.g. external IP address or load balancer, optional)
+
+
+        **Agents**
+
+        - `Leader`: ID of the Agent this node regards as leader.
+
+        - `Leading`: Whether this Agent is the leader (true) or not (false).
+
+        - `LastAckedTime`: Time since last `acked` in seconds.'
       operationId: getClusterHealth
       responses:
         '200':
@@ -37,9 +94,7 @@ paths:
 
         while the maintenance mode is enabled. The cluster supervision reactivates
 
-        itself automatically at some point after disabling it.
-
-        '
+        itself automatically at some point after disabling it.'
       operationId: setClusterMaintenance
       requestBody:
         content:
@@ -70,9 +125,7 @@ paths:
       - Cluster
   /_admin/cluster/maintenance/{DB-Server-ID}:
     get:
-      description: 'Check whether the specified DB-Server is in maintenance mode and until when.
-
-        '
+      description: Check whether the specified DB-Server is in maintenance mode and until when.
       operationId: getDbserverMaintenance
       parameters:
       - description: 'The ID of a DB-Server.
@@ -156,9 +209,7 @@ paths:
 
         cluster for such planned events. DB-Servers in maintenance mode are not
 
-        considered viable failover targets because they are likely restarted soon.
-
-        '
+        considered viable failover targets because they are likely restarted soon.'
       operationId: setDbserverMaintenance
       parameters:
       - description: 'The ID of a DB-Server.
@@ -238,9 +289,7 @@ paths:
     get:
       description: 'Computes the current cluster imbalance and returns the result.
 
-        It additionally shows the amount of ongoing and pending move shard operations.
-
-        '
+        It additionally shows the amount of ongoing and pending move shard operations.'
       operationId: getClusterImbalance
       responses:
         '200':
@@ -411,9 +460,7 @@ paths:
       tags:
       - Cluster
     post:
-      description: 'Compute a set of move shard operations to improve balance.
-
-        '
+      description: Compute a set of move shard operations to improve balance.
       operationId: computeClusterRebalancePlan
       requestBody:
         content:
@@ -822,9 +869,7 @@ paths:
     put:
       description: 'Compute a set of move shard operations to improve balance.
 
-        These moves are then immediately executed.
-
-        '
+        These moves are then immediately executed.'
       operationId: startClusterRebalance
       requestBody:
         content:
@@ -1236,9 +1281,7 @@ paths:
 
         `POST /_admin/cluster/rebalance` endpoint to calculate these operations to improve
 
-        the balance of shards, leader shards, and follower shards.
-
-        '
+        the balance of shards, leader shards, and follower shards.'
       operationId: executeClusterRebalancePlan
       requestBody:
         content:
@@ -1317,10 +1360,7 @@ paths:
         this API and a lot more.
 
 
-
-        Queries the statistics of the given DB-Server
-
-        '
+        Queries the statistics of the given DB-Server'
       operationId: getClusterStatistics
       parameters:
       - description: 'The ID of a DB-Server.
@@ -1361,9 +1401,7 @@ paths:
 
         Only use this endpoint to resolve issues with the key generation,
 
-        in particular of cluster deployments created with v3.12.5-2 or older.
-
-        '
+        in particular of cluster deployments created with v3.12.5-2 or older.'
       operationId: reserveUniqueIDs
       parameters:
       - description: 'Reserve as many globally unique IDs as specified.
@@ -1473,9 +1511,7 @@ paths:
     get:
       description: 'Returns the ID of a server in a cluster. The request will fail if the
 
-        server is not running in cluster mode.
-
-        '
+        server is not running in cluster mode.'
       operationId: getServerId
       responses:
         '200':
@@ -1493,9 +1529,7 @@ paths:
     get:
       description: 'Returns the role of a server in a cluster.
 
-        The server role is returned in the `role` attribute of the result.
-
-        '
+        The server role is returned in the `role` attribute of the result.'
       operationId: getServerRole
       responses:
         '200':
@@ -1554,9 +1588,7 @@ paths:
 
         cluster mode. In case of an error the `error` attribute is set to
 
-        `true`.
-
-        '
+        `true`.'
       operationId: listClusterEndpoints
       responses:
         '200':

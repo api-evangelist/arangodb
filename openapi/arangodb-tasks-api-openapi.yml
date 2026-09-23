@@ -17,9 +17,7 @@ paths:
   /_db/{database-name}/_api/tasks:
     get:
       deprecated: true
-      description: 'Fetches all existing tasks on the server.
-
-        '
+      description: Fetches all existing tasks on the server.
       operationId: listTasks
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -102,9 +100,7 @@ paths:
       - Tasks
     post:
       deprecated: true
-      description: 'Creates a new task with a generated identifier.
-
-        '
+      description: Creates a new task with a generated identifier.
       operationId: createTask
       parameters:
       - description: 'The name of the database.
@@ -228,9 +224,7 @@ paths:
   /_db/{database-name}/_api/tasks/{id}:
     delete:
       deprecated: true
-      description: 'Deletes the task identified by `id` on the server.
-
-        '
+      description: Deletes the task identified by `id` on the server.
       operationId: deleteTask
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -313,9 +307,7 @@ paths:
       - Tasks
     get:
       deprecated: true
-      description: 'fetches one existing task on the server specified by `id`
-
-        '
+      description: fetches one existing task on the server specified by `id`
       operationId: getTask
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -407,9 +399,7 @@ paths:
       description: 'Registers a new task with the specified ID.
 
 
-        Not compatible with load balancers.
-
-        '
+        Not compatible with load balancers.'
       operationId: createTaskWithId
       parameters:
       - description: 'The name of the database.

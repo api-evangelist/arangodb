@@ -29,9 +29,7 @@ paths:
 
         To utilize the API a superuser JWT token is necessary, otherwise the response
 
-        will be _HTTP 403 Forbidden_.
-
-        '
+        will be _HTTP 403 Forbidden_.'
       operationId: reloadServerJwtSecrets
       responses:
         '200':
@@ -95,7 +93,21 @@ paths:
       - Authentication
   /_api/token/{user}:
     get:
-      description: "List the access tokens for a given user.\n\nThis only returns the access token metadata.\nThe actual access token strings are only shown when creating tokens. \n\nThe user account you authenticate with needs to have administrate access\nto the `_system` database if you want to list the access tokens for a\ndifferent user. You can always list your own access tokens,\nregardless of database access levels.\n"
+      description: 'List the access tokens for a given user.
+
+
+        This only returns the access token metadata.
+
+        The actual access token strings are only shown when creating tokens.
+
+
+        The user account you authenticate with needs to have administrate access
+
+        to the `_system` database if you want to list the access tokens for a
+
+        different user. You can always list your own access tokens,
+
+        regardless of database access levels.'
       operationId: listAccessTokens
       parameters:
       - description: 'The name of the user.
@@ -301,9 +313,7 @@ paths:
 
         different user. You can always create an access token for yourself,
 
-        regardless of database access levels.
-
-        '
+        regardless of database access levels.'
       operationId: createAccessToken
       parameters:
       - description: 'The name of the user.
@@ -596,9 +606,7 @@ paths:
 
         different user. You can always delete your own access tokens,
 
-        regardless of database access levels.
-
-        '
+        regardless of database access levels.'
       operationId: deleteAccessToken
       parameters:
       - description: 'The name of the user.
@@ -752,9 +760,7 @@ paths:
 
         To utilize the API a superuser JWT token is necessary, otherwise the response
 
-        will be _HTTP 403 Forbidden_.
-
-        '
+        will be _HTTP 403 Forbidden_.'
       operationId: getServerJwtSecrets
       parameters:
       - description: 'The name of a database. Which database you use doesn''t matter as long
@@ -845,9 +851,7 @@ paths:
 
         The lifetime for the token is controlled by the `--server.session-timeout`
 
-        startup option.
-
-        '
+        startup option.'
       operationId: createSessionToken
       requestBody:
         content:

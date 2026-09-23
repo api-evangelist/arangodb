@@ -26,9 +26,7 @@ paths:
 
         - `properties`: the properties used to configure the specified type
 
-        - `features`: the set of features to set on the Analyzer generated fields
-
-        '
+        - `features`: the set of features to set on the Analyzer generated fields'
       operationId: listAnalyzers
       parameters:
       - description: 'The name of the database.
@@ -49,9 +47,7 @@ paths:
       tags:
       - Analyzers
     post:
-      description: 'Creates a new Analyzer based on the provided configuration.
-
-        '
+      description: Creates a new Analyzer based on the provided configuration.
       operationId: createAnalyzer
       parameters:
       - description: 'The name of the database.
@@ -134,9 +130,7 @@ paths:
 
         - `error`: `false`
 
-        - `name`: The name of the removed Analyzer
-
-        '
+        - `name`: The name of the removed Analyzer'
       operationId: deleteAnalyzer
       parameters:
       - description: 'The name of the database.
@@ -204,9 +198,7 @@ paths:
 
         - `properties`: the properties used to configure the specified type
 
-        - `features`: the set of features to set on the Analyzer generated fields
-
-        '
+        - `features`: the set of features to set on the Analyzer generated fields'
       operationId: getAnalyzer
       parameters:
       - description: 'The name of the database.

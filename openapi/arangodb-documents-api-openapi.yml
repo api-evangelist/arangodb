@@ -41,7 +41,7 @@ paths:
 
         occurred, then such an object has the following attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -80,9 +80,7 @@ paths:
 
         `1200:17,1205:10` means that in 17 cases the error 1200 ("revision conflict")
 
-        has happened, and in 10 cases the error 1205 ("illegal document handle").
-
-        '
+        has happened, and in 10 cases the error 1205 ("illegal document handle").'
       operationId: deleteDocuments
       parameters:
       - description: 'The name of the database.
@@ -336,7 +334,7 @@ paths:
 
         attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -374,9 +372,7 @@ paths:
 
         `1200:17,1205:10` means that in 17 cases the error 1200 ("revision conflict")
 
-        has happened, and in 10 cases the error 1205 ("illegal document handle").
-
-        '
+        has happened, and in 10 cases the error 1205 ("illegal document handle").'
       operationId: updateDocuments
       parameters:
       - description: 'The name of the database.
@@ -669,7 +665,6 @@ paths:
         An `_id` or `_rev` attribute specified in the body is ignored.
 
 
-
         If the document was created successfully, then the `Location` header
 
         contains the path to the newly created document. The `ETag` header field
@@ -683,7 +678,7 @@ paths:
 
         JSON object with the following attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -722,9 +717,7 @@ paths:
 
         generated document, the complete new document is returned under
 
-        the `new` attribute in the result.
-
-        '
+        the `new` attribute in the result.'
       operationId: createDocument
       parameters:
       - description: 'The name of the database.
@@ -1085,7 +1078,7 @@ paths:
 
         attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -1123,9 +1116,7 @@ paths:
 
         `1200:17,1205:10` means that in 17 cases the error 1200 ("revision conflict")
 
-        has happened, and in 10 cases the error 1205 ("illegal document handle").
-
-        '
+        has happened, and in 10 cases the error 1205 ("illegal document handle").'
       operationId: replaceDocuments
       parameters:
       - description: 'The name of the database.
@@ -1371,7 +1362,47 @@ paths:
       - Documents
   /_db/{database-name}/_api/document/{collection}#get:
     put:
-      description: "> **WARNING:**\nThe endpoint for getting multiple documents is the same as for replacing\nmultiple documents but with an additional query parameter:\n`PUT /_api/document/{collection}?onlyget=true`. This is because a lot of\nsoftware does not support payload bodies in `GET` requests.\n\n\nReturns the documents identified by their `_key` attribute.\nThe body of the request _must_ contain a JSON array of either\nstrings (the `_key` values to look up) or search documents.\n\nA search document _must_ contain at least a value for the `_key` field.\nA value for `_rev` _may_ be specified to verify whether the document\nhas the same revision value, unless _ignoreRevs_ is set to false.\n\nCluster only: The search document _may_ contain\nvalues for the collection's pre-defined shard keys. Values for the shard keys\nare treated as hints to improve performance. Should the shard keys\nvalues be incorrect ArangoDB may answer with a *not found* error.\n\nThe returned array of documents contain three special attributes: \n- `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.\n- `_key`, containing the document key that uniquely identifies a document within the collection.\n- `_rev`, containing the document revision.\n"
+      description: '> **WARNING:**
+
+        The endpoint for getting multiple documents is the same as for replacing
+
+        multiple documents but with an additional query parameter:
+
+        `PUT /_api/document/{collection}?onlyget=true`. This is because a lot of
+
+        software does not support payload bodies in `GET` requests.
+
+
+        Returns the documents identified by their `_key` attribute.
+
+        The body of the request _must_ contain a JSON array of either
+
+        strings (the `_key` values to look up) or search documents.
+
+
+        A search document _must_ contain at least a value for the `_key` field.
+
+        A value for `_rev` _may_ be specified to verify whether the document
+
+        has the same revision value, unless _ignoreRevs_ is set to false.
+
+
+        Cluster only: The search document _may_ contain
+
+        values for the collection''s pre-defined shard keys. Values for the shard keys
+
+        are treated as hints to improve performance. Should the shard keys
+
+        values be incorrect ArangoDB may answer with a *not found* error.
+
+
+        The returned array of documents contain three special attributes:
+
+        - `_id`, containing the document identifier with the format `/`.
+
+        - `_key`, containing the document key that uniquely identifies a document within the collection.
+
+        - `_rev`, containing the document revision.'
       operationId: getDocuments
       parameters:
       - description: 'The name of the database.
@@ -1508,12 +1539,11 @@ paths:
         Any `_id` or `_rev` attribute specified in the body is ignored.
 
 
-
         Unless `silent` is set to `true`, the body of the response contains an
 
         array of JSON objects with the following attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -1563,9 +1593,7 @@ paths:
 
         `1200:17,1205:10` means that in 17 cases the error 1200 ("revision conflict")
 
-        has happened, and in 10 cases the error 1205 ("illegal document handle").
-
-        '
+        has happened, and in 10 cases the error 1205 ("illegal document handle").'
       operationId: createDocuments
       parameters:
       - description: 'The name of the database.
@@ -1868,7 +1896,7 @@ paths:
 
         JSON object with the following attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -1890,9 +1918,7 @@ paths:
 
         the complete previous revision of the document
 
-        is returned under the `old` attribute in the result.
-
-        '
+        is returned under the `old` attribute in the result.'
       operationId: deleteDocument
       parameters:
       - description: 'The name of the database.
@@ -2097,13 +2123,11 @@ paths:
 
         The returned document contains three special attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
-        - `_rev`, containing the document revision.
-
-        '
+        - `_rev`, containing the document revision.'
       operationId: getDocument
       parameters:
       - description: 'The name of the database.
@@ -2228,9 +2252,7 @@ paths:
 
         can use this call to get the current revision of a document or check if
 
-        the document was deleted.
-
-        '
+        the document was deleted.'
       operationId: getDocumentHeader
       parameters:
       - description: 'The name of the database.
@@ -2438,7 +2460,7 @@ paths:
 
         JSON object with the following attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -2461,9 +2483,7 @@ paths:
 
         If the document does not exist, then a *HTTP 404* is returned and the
 
-        body of the response contains an error document.
-
-        '
+        body of the response contains an error document.'
       operationId: updateDocument
       parameters:
       - description: 'The name of the database.
@@ -2842,7 +2862,7 @@ paths:
 
         JSON object with the following attributes:
 
-        - `_id`, containing the document identifier with the format `<collection-name>/<document-key>`.
+        - `_id`, containing the document identifier with the format `/`.
 
         - `_key`, containing the document key that uniquely identifies a document within the collection.
 
@@ -2865,9 +2885,7 @@ paths:
 
         If the document does not exist, then a *HTTP 404* is returned and the
 
-        body of the response contains an error document.
-
-        '
+        body of the response contains an error document.'
       operationId: replaceDocument
       parameters:
       - description: 'The name of the database.
