@@ -1,0 +1,41 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-07'
+method: searched
+source: https://arango.ai/pricing/
+sources:
+- https://arango.ai/pricing/
+provenance:
+  tool: all/0-working/economics/harvest_pricing.py
+  run: 20261007T104522
+  grounding: every price_text was found verbatim in the fetched page text
+audience: business-product
+pricing_basis: negotiated
+delivery:
+  delivery: open-core
+  method: page
+  read: '2026-10-07'
+  evidence: 'Community Edition : open source, free for evaluation and non-commercial use'
+  free_edition: Community Edition
+published: false
+note: No numeric prices; all tiers direct to sales. Community Edition described as open source/free alongside
+  paid Enterprise Edition; no licence name stated.
+plan_count: 4
+plans:
+- name: Arango Contextual Data Platform
+  price_text: Request Pricing
+  period: none
+  included_quota: Everything in Arango Platform Suite plus Arango AI Suite, GraphRAG/HybridRAG, MLOps,
+    LLM integrations, graph analytics, vector search, GPU acceleration
+- name: Arango Platform Suite
+  price_text: Request Pricing
+  period: none
+  included_quota: Everything in ArangoDB plus Arango Visualizer & Arango Enterprise Suite, HA, RBAC, SSO
+- name: ArangoDB
+  price_text: Download ArangoDB
+  period: none
+  included_quota: Native multi-model database; Community Edition open source, free for evaluation and
+    non-commercial use
+- name: OEM / Embedded
+  price_text: Request a Quote
+  period: none
+  included_quota: Flexible licensing and distribution, lifecycle support
