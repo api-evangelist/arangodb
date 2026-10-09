@@ -1,23 +1,30 @@
-generated: '2026-08-02'
+generated: '2026-09-23'
 method: generated
-source: openapi/arangodb-core-openapi-original.json
+source: openapi/arangodb-administration-api-openapi.yml, openapi/arangodb-analyzers-api-openapi.yml,
+  openapi/arangodb-authentication-api-openapi.yml, openapi/arangodb-batch-requests-api-openapi.yml,
+  openapi/arangodb-cluster-api-openapi.yml, openapi/arangodb-collections-api-openapi.yml, openapi/arangodb-databases-api-openapi.yml,
+  openapi/arangodb-documents-api-openapi.yml, openapi/arangodb-foxx-api-openapi.yml, openapi/arangodb-graphs-api-openapi.yml,
+  openapi/arangodb-hot-backups-api-openapi.yml, openapi/arangodb-import-api-openapi.yml, openapi/arangodb-indexes-api-openapi.yml,
+  openapi/arangodb-jobs-api-openapi.yml, openapi/arangodb-monitoring-api-openapi.yml, openapi/arangodb-queries-api-openapi.yml,
+  openapi/arangodb-replication-api-openapi.yml, openapi/arangodb-security-api-openapi.yml, openapi/arangodb-tasks-api-openapi.yml,
+  openapi/arangodb-transactions-api-openapi.yml, openapi/arangodb-users-api-openapi.yml, openapi/arangodb-views-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
   operations: 254
   by_action_class:
-    acting: 146
-    connected: 108
+    acting: 143
+    connected: 111
   by_consequence:
-    write: 141
-    read: 108
+    write: 138
+    read: 111
     safety-critical: 5
   human_in_the_loop_required: 5
 operations:
-- path: /_admin/backup/create
-  method: post
-  operationId: createBackup
+- path: /_admin/compact
+  method: put
+  operationId: compactAllDatabases
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -31,9 +38,79 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_admin/backup/delete
-  method: post
-  operationId: deleteBackup
+- path: /_admin/database/target-version
+  method: get
+  operationId: getDatabaseVersion
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_admin/server/availability
+  method: get
+  operationId: getServerAvailability
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/_system/_admin/options
+  method: get
+  operationId: getEffectiveStartupOptions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/_system/_admin/options-description
+  method: get
+  operationId: getAvailableStartupOptions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/_system/_admin/support-info
+  method: get
+  operationId: getSupportInfo
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/_system/_api/endpoint
+  method: get
+  operationId: listEndpoints
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/crashes
+  method: get
+  operationId: listCrashDumps
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/crashes/{crashId}
+  method: delete
+  operationId: deleteCrashDump
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -47,9 +124,29 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_admin/backup/download
+- path: /_db/{database-name}/_admin/crashes/{crashId}
+  method: get
+  operationId: getCrashDump
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/deployment/id
+  method: get
+  operationId: getDeploymentId
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/echo
   method: post
-  operationId: downloadBackup
+  operationId: echoRequest
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -63,9 +160,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_admin/backup/list
+- path: /_db/{database-name}/_admin/execute
   method: post
-  operationId: listBackups
+  operationId: executeCode
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -79,9 +176,19 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_admin/backup/restore
-  method: post
-  operationId: restoreBackup
+- path: /_db/{database-name}/_admin/license
+  method: get
+  operationId: getLicense
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/license
+  method: put
+  operationId: setLicense
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -95,9 +202,273 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_admin/backup/upload
+- path: /_db/{database-name}/_admin/options-public
+  method: get
+  operationId: getPublicStartupOptions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/routing/reload
   method: post
-  operationId: uploadBackup
+  operationId: reloadRouting
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_admin/server/mode
+  method: get
+  operationId: getServerMode
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/server/mode
+  method: put
+  operationId: setServerMode
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_admin/shutdown
+  method: delete
+  operationId: startShutdown
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /_db/{database-name}/_admin/shutdown
+  method: get
+  operationId: getShutdownProgress
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/status
+  method: get
+  operationId: getStatus
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/time
+  method: get
+  operationId: getTime
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/engine
+  method: get
+  operationId: getEngine
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/engine/stats
+  method: get
+  operationId: getEngineStats
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/version
+  method: get
+  operationId: getVersion
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/analyzer
+  method: get
+  operationId: listAnalyzers
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/analyzer
+  method: post
+  operationId: createAnalyzer
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/analyzer/{analyzer-name}
+  method: delete
+  operationId: deleteAnalyzer
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/analyzer/{analyzer-name}
+  method: get
+  operationId: getAnalyzer
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_admin/server/jwt
+  method: post
+  operationId: reloadServerJwtSecrets
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_api/token/{user}
+  method: get
+  operationId: listAccessTokens
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_api/token/{user}
+  method: post
+  operationId: createAccessToken
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_api/token/{user}/{token-id}
+  method: delete
+  operationId: deleteAccessToken
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_admin/server/jwt
+  method: get
+  operationId: getServerJwtSecrets
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_open/auth
+  method: post
+  operationId: createSessionToken
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/batch
+  method: post
+  operationId: executeBatchRequest
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -247,146 +618,6 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_admin/compact
-  method: put
-  operationId: compactAllDatabases
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_admin/database/target-version
-  method: get
-  operationId: getDatabaseVersion
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_admin/log
-  method: get
-  operationId: getLog
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_admin/log/entries
-  method: get
-  operationId: getLogEntries
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_admin/log/level
-  method: delete
-  operationId: resetLogLevel
-  x-agentic-access:
-    action-class: acting
-    consequence: safety-critical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 120
-      exchange: true
-      purpose-required: true
-      proof-of-possession: true
-    escalation:
-      human-in-the-loop: required
-    audit: required
-- path: /_admin/log/level
-  method: get
-  operationId: getLogLevel
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_admin/log/level
-  method: put
-  operationId: setLogLevel
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_admin/log/structured
-  method: get
-  operationId: getStructuredLog
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_admin/log/structured
-  method: put
-  operationId: setStructuredLog
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_admin/server/availability
-  method: get
-  operationId: getServerAvailability
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_admin/server/encryption
-  method: post
-  operationId: rotateEncryptionAtRestKey
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /_admin/server/id
   method: get
   operationId: getServerId
@@ -397,22 +628,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /_admin/server/jwt
-  method: post
-  operationId: reloadServerJwtSecrets
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /_admin/server/role
   method: get
   operationId: getServerRole
@@ -423,22 +638,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /_admin/server/tls
-  method: post
-  operationId: reloadServerTls
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /_api/cluster/endpoints
   method: get
   operationId: listClusterEndpoints
@@ -449,532 +648,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /_api/token/{user}
-  method: get
-  operationId: listAccessTokens
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_api/token/{user}
-  method: post
-  operationId: createAccessToken
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_api/token/{user}/{token-id}
-  method: delete
-  operationId: deleteAccessToken
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/_system/_admin/options
-  method: get
-  operationId: getEffectiveStartupOptions
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/_system/_admin/options-description
-  method: get
-  operationId: getAvailableStartupOptions
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/_system/_admin/support-info
-  method: get
-  operationId: getSupportInfo
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/_system/_api/database
-  method: get
-  operationId: listDatabases
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/_system/_api/database
-  method: post
-  operationId: createDatabase
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/_system/_api/database/{database-name}
-  method: delete
-  operationId: deleteDatabase
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/_system/_api/endpoint
-  method: get
-  operationId: listEndpoints
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/crashes
-  method: get
-  operationId: listCrashDumps
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/crashes/{crashId}
-  method: delete
-  operationId: deleteCrashDump
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_admin/crashes/{crashId}
-  method: get
-  operationId: getCrashDump
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/deployment/id
-  method: get
-  operationId: getDeploymentId
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/echo
-  method: post
-  operationId: echoRequest
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_admin/execute
-  method: post
-  operationId: executeCode
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_admin/license
-  method: get
-  operationId: getLicense
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/license
-  method: put
-  operationId: setLicense
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_admin/metrics
-  method: get
-  operationId: getMetrics
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/metrics/v2
-  method: get
-  operationId: getMetricsV2
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/options-public
-  method: get
-  operationId: getPublicStartupOptions
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/routing/reload
-  method: post
-  operationId: reloadRouting
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_admin/server/api-calls
-  method: get
-  operationId: getRecentApiCalls
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/server/aql-queries
-  method: get
-  operationId: getRecentAqlQueries
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/server/jwt
-  method: get
-  operationId: getServerJwtSecrets
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/server/mode
-  method: get
-  operationId: getServerMode
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/server/mode
-  method: put
-  operationId: setServerMode
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_admin/server/tls
-  method: get
-  operationId: getServerTls
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/shutdown
-  method: delete
-  operationId: startShutdown
-  x-agentic-access:
-    action-class: acting
-    consequence: safety-critical
-    subject: required
-    audience: null
-    token:
-      max-ttl: 120
-      exchange: true
-      purpose-required: true
-      proof-of-possession: true
-    escalation:
-      human-in-the-loop: required
-    audit: required
-- path: /_db/{database-name}/_admin/shutdown
-  method: get
-  operationId: getShutdownProgress
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/statistics
-  method: get
-  operationId: getStatistics
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/statistics-description
-  method: get
-  operationId: getStatisticsDescription
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/status
-  method: get
-  operationId: getStatus
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/time
-  method: get
-  operationId: getTime
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_admin/usage-metrics
-  method: get
-  operationId: getUsageMetrics
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/analyzer
-  method: get
-  operationId: listAnalyzers
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/analyzer
-  method: post
-  operationId: createAnalyzer
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/analyzer/{analyzer-name}
-  method: delete
-  operationId: deleteAnalyzer
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/analyzer/{analyzer-name}
-  method: get
-  operationId: getAnalyzer
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/aqlfunction
-  method: get
-  operationId: listAqlUserFunctions
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/aqlfunction
-  method: post
-  operationId: createAqlUserFunction
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/aqlfunction/{name}
-  method: delete
-  operationId: deleteAqlUserFunction
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/batch
-  method: post
-  operationId: executeBatchRequest
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
 - path: /_db/{database-name}/_api/collection
   method: get
   operationId: listCollections
@@ -1231,9 +904,29 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_db/{database-name}/_api/cursor
+- path: /_db/{database-name}/_api/key-generators
+  method: get
+  operationId: getKeyGenerators
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/_system/_api/database
+  method: get
+  operationId: listDatabases
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/_system/_api/database
   method: post
-  operationId: createAqlQueryCursor
+  operationId: createDatabase
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -1247,57 +940,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_db/{database-name}/_api/cursor/{cursor-identifier}
+- path: /_db/_system/_api/database/{database-name}
   method: delete
-  operationId: deleteAqlQueryCursor
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/cursor/{cursor-identifier}
-  method: post
-  operationId: getNextAqlQueryCursorBatch
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/cursor/{cursor-identifier}
-  method: put
-  operationId: getNextAqlQueryCursorBatchPut
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/cursor/{cursor-identifier}/{batch-identifier}
-  method: post
-  operationId: getPreviousAqlQueryCursorBatch
+  operationId: deleteDatabase
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -1482,52 +1127,6 @@ operations:
 - path: /_db/{database-name}/_api/document/{collection}/{key}
   method: put
   operationId: replaceDocument
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/edges/{collection}
-  method: get
-  operationId: getVertexEdges
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/engine
-  method: get
-  operationId: getEngine
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/engine/stats
-  method: get
-  operationId: getEngineStats
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/explain
-  method: post
-  operationId: explainAqlQuery
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -1835,6 +1434,16 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /_db/{database-name}/_api/edges/{collection}
+  method: get
+  operationId: getVertexEdges
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /_db/{database-name}/_api/gharial
   method: get
   operationId: listGraphs
@@ -2135,6 +1744,96 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /_admin/backup/create
+  method: post
+  operationId: createBackup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_admin/backup/delete
+  method: post
+  operationId: deleteBackup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_admin/backup/download
+  method: post
+  operationId: downloadBackup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_admin/backup/list
+  method: post
+  operationId: listBackups
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_admin/backup/restore
+  method: post
+  operationId: restoreBackup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_admin/backup/upload
+  method: post
+  operationId: uploadBackup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /_db/{database-name}/_api/import
   method: post
   operationId: importData
@@ -2373,9 +2072,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_db/{database-name}/_api/key-generators
+- path: /_admin/log
   method: get
-  operationId: getKeyGenerators
+  operationId: getLog
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -2383,6 +2082,280 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /_admin/log/entries
+  method: get
+  operationId: getLogEntries
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_admin/log/level
+  method: delete
+  operationId: resetLogLevel
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
+    audit: required
+- path: /_admin/log/level
+  method: get
+  operationId: getLogLevel
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_admin/log/level
+  method: put
+  operationId: setLogLevel
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_admin/log/structured
+  method: get
+  operationId: getStructuredLog
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_admin/log/structured
+  method: put
+  operationId: setStructuredLog
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_admin/metrics
+  method: get
+  operationId: getMetrics
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/metrics/v2
+  method: get
+  operationId: getMetricsV2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/server/api-calls
+  method: get
+  operationId: getRecentApiCalls
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/server/aql-queries
+  method: get
+  operationId: getRecentAqlQueries
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/statistics
+  method: get
+  operationId: getStatistics
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/statistics-description
+  method: get
+  operationId: getStatisticsDescription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_admin/usage-metrics
+  method: get
+  operationId: getUsageMetrics
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/aqlfunction
+  method: get
+  operationId: listAqlUserFunctions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/aqlfunction
+  method: post
+  operationId: createAqlUserFunction
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/aqlfunction/{name}
+  method: delete
+  operationId: deleteAqlUserFunction
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/cursor
+  method: post
+  operationId: createAqlQueryCursor
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/cursor/{cursor-identifier}
+  method: delete
+  operationId: deleteAqlQueryCursor
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/cursor/{cursor-identifier}
+  method: post
+  operationId: getNextAqlQueryCursorBatch
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/cursor/{cursor-identifier}
+  method: put
+  operationId: getNextAqlQueryCursorBatchPut
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_api/cursor/{cursor-identifier}/{batch-identifier}
+  method: post
+  operationId: getPreviousAqlQueryCursorBatch
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/explain
+  method: post
+  operationId: explainAqlQuery
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /_db/{database-name}/_api/query
   method: post
   operationId: parseAqlQuery
@@ -2851,6 +2824,78 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /_db/{database-name}/_api/wal/lastTick
+  method: get
+  operationId: getWalLastTick
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/wal/range
+  method: get
+  operationId: getWalRange
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_db/{database-name}/_api/wal/tail
+  method: get
+  operationId: getWalTail
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /_admin/server/encryption
+  method: post
+  operationId: rotateEncryptionAtRestKey
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_admin/server/tls
+  method: post
+  operationId: reloadServerTls
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /_db/{database-name}/_admin/server/tls
+  method: get
+  operationId: getServerTls
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /_db/{database-name}/_api/tasks
   method: get
   operationId: listTasks
@@ -3181,16 +3226,6 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /_db/{database-name}/_api/version
-  method: get
-  operationId: getVersion
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /_db/{database-name}/_api/view
   method: get
   operationId: listViews
@@ -3372,52 +3407,6 @@ operations:
 - path: /_db/{database-name}/_api/view/{view-name}/rename#searchalias
   method: put
   operationId: renameViewSearchAlias
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /_db/{database-name}/_api/wal/lastTick
-  method: get
-  operationId: getWalLastTick
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/wal/range
-  method: get
-  operationId: getWalRange
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_db/{database-name}/_api/wal/tail
-  method: get
-  operationId: getWalTail
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-- path: /_open/auth
-  method: post
-  operationId: createSessionToken
   x-agentic-access:
     action-class: acting
     consequence: write
