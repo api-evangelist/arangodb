@@ -64,41 +64,170 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-ArangoDB (now operating as **Arango**) is the company behind the open-source,
-graph-native multi-model database of the same name, which unifies graph, document,
-key/value, vector and full-text search in a single core with one declarative query
-language, AQL.
+ArangoDB (now operating as Arango) is the company behind the open-source, graph-native multi-model database of the same name, which unifies graph, document, key/value, vector and full-text search in a single core with one declarative query language, AQL. The database exposes its entire feature surface over a RESTful HTTP API documented with OpenAPI 3.1, and the company also runs the Arango Managed Platform (AMP, formerly ArangoGraph Insights Platform / Oasis) — a managed cloud on AWS, GCP and Azure whose control plane is a gRPC/Protobuf API at api.cloud.arangodb.com with a companion oasisctl CLI. Arango publishes official drivers for JavaScript, Python, Java, Go and PHP, an official Model Context Protocol server for AQL generation, and a Kubernetes operator.
 
-- Website — https://arango.ai/
-- Documentation — https://docs.arango.ai/
-- HTTP API reference — https://docs.arango.ai/arangodb/stable/develop/http-api/
-- GitHub — https://github.com/arangodb
-- Status — https://status.arangodb.cloud/
+**Areas:** Company · Database · Graph Database · Multi-Model Database · NoSQL · Vector Search · Knowledge Graph · Developer Tools · Cloud Infrastructure · Artificial Intelligence
 
-## APIs
+## ArangoDB on APIs.io
 
-| API | Style | Contract |
-|---|---|---|
-| ArangoDB Core API | REST / HTTP | OpenAPI 3.1.0 — 174 paths, 254 operations, 22 tags (`openapi/`) |
-| Arango Managed Platform (AMP) API | gRPC | 28 first-party proto3 service definitions (`grpc/`) |
-| AMP SCIM API | REST / SCIM 2.0 | documented |
+Everything profiled for ArangoDB is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/arangodb/](https://apis.io/providers/arangodb/)** — or go straight to one of the APIs or properties below.
 
-## Artifacts
+### APIs (24)
 
-| Directory | Contents |
+- [Arango Managed Platform (AMP) API](https://apis.io/apis/arangodb/amp-api/) — The control-plane API of the Arango Managed Platform (formerly ArangoGraph Insights Platform / Oasis) — the managed ArangoDB cloud. It is a gRPC API defined…
+- [Arango Managed Platform SCIM API](https://apis.io/apis/arangodb/amp-scim-api/) — SCIM 2.0 user and group provisioning endpoint for Arango Managed Platform organizations, used to synchronize identities from an external identity provider…
+- [ArangoDB Administration API](https://apis.io/apis/arangodb/arangodb-administration-api/) — Get server information, manage licenses, shut down nodes, and more
+- [ArangoDB Analyzers API](https://apis.io/apis/arangodb/arangodb-analyzers-api/) — Manage Analyzers for transforming data
+- [ArangoDB Authentication API](https://apis.io/apis/arangodb/arangodb-authentication-api/) — Manage session tokens and JWT secrets
+- [ArangoDB Batch Requests API](https://apis.io/apis/arangodb/arangodb-batch-requests-api/) — Run multiple operations using a single request
+- [ArangoDB Cluster API](https://apis.io/apis/arangodb/arangodb-cluster-api/) — Get information, monitor, and administrate cluster deployments
+- [ArangoDB Collections API](https://apis.io/apis/arangodb/arangodb-collections-api/) — Manage collections for organizing documents
+- [ArangoDB Databases API](https://apis.io/apis/arangodb/arangodb-databases-api/) — Manage databases for organizing collections
+- [ArangoDB Documents API](https://apis.io/apis/arangodb/arangodb-documents-api/) — Perform CRUD operations on JSON-based records
+- [ArangoDB Foxx API](https://apis.io/apis/arangodb/arangodb-foxx-api/) — Manage microservices written in JavaScript
+- [ArangoDB Graphs API](https://apis.io/apis/arangodb/arangodb-graphs-api/) — Manage named graphs and query edges
+- [ArangoDB Hot Backups API](https://apis.io/apis/arangodb/arangodb-hot-backups-api/) — Manage incremental data backups
+- [ArangoDB Import API](https://apis.io/apis/arangodb/arangodb-import-api/) — Load JSON data in bulk
+- [ArangoDB Indexes API](https://apis.io/apis/arangodb/arangodb-indexes-api/) — Improve the performance of queries
+- [ArangoDB Jobs API](https://apis.io/apis/arangodb/arangodb-jobs-api/) — Execute requests asynchronously
+- [ArangoDB Monitoring API](https://apis.io/apis/arangodb/arangodb-monitoring-api/) — Access logs, statistics, and metrics
+- [ArangoDB Queries API](https://apis.io/apis/arangodb/arangodb-queries-api/) — Run, process, and manage AQL queries
+- [ArangoDB Replication API](https://apis.io/apis/arangodb/arangodb-replication-api/) — Control data replication for deployments
+- [ArangoDB Security API](https://apis.io/apis/arangodb/arangodb-security-api/) — Configure audit logging, encryption at rest and encryption in transit
+- [ArangoDB Tasks API](https://apis.io/apis/arangodb/arangodb-tasks-api/) — Set up JavaScript code to run periodically or timed
+- [ArangoDB Transactions API](https://apis.io/apis/arangodb/arangodb-transactions-api/) — Execute JavaScript and Stream Transactions
+- [ArangoDB Users API](https://apis.io/apis/arangodb/arangodb-users-api/) — Manage ArangoDB user accounts
+- [ArangoDB Views API](https://apis.io/apis/arangodb/arangodb-views-api/) — Manage Views to use ArangoSearch for information retrieval
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [ArangoDB Model Context Protocol (MCP) Server](https://apis.io/servers/arangodb/arangodb/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Arangodb Agentic Access](https://apis.io/agentic-access/arangodb/arangodb-agentic-access/)
+
+#### Collections (22)
+
+Postman and Open Collection request collections.
+
+- [ArangoDB Core Administration API](https://apis.io/collections/arangodb/open-arangodb-administration-api/)
+- [ArangoDB Core Analyzers API](https://apis.io/collections/arangodb/open-arangodb-analyzers-api/)
+- [ArangoDB Core Authentication API](https://apis.io/collections/arangodb/open-arangodb-authentication-api/)
+- [ArangoDB Core Batch Requests API](https://apis.io/collections/arangodb/open-arangodb-batch-requests-api/)
+- [ArangoDB Core Cluster API](https://apis.io/collections/arangodb/open-arangodb-cluster-api/)
+- [ArangoDB Core Collections API](https://apis.io/collections/arangodb/open-arangodb-collections-api/)
+- [ArangoDB Core Databases API](https://apis.io/collections/arangodb/open-arangodb-databases-api/)
+- [ArangoDB Core Documents API](https://apis.io/collections/arangodb/open-arangodb-documents-api/)
+- [ArangoDB Core Foxx API](https://apis.io/collections/arangodb/open-arangodb-foxx-api/)
+- [ArangoDB Core Graphs API](https://apis.io/collections/arangodb/open-arangodb-graphs-api/)
+- [ArangoDB Core Hot Backups API](https://apis.io/collections/arangodb/open-arangodb-hot-backups-api/)
+- [ArangoDB Core Import API](https://apis.io/collections/arangodb/open-arangodb-import-api/)
+- [ArangoDB Core Indexes API](https://apis.io/collections/arangodb/open-arangodb-indexes-api/)
+- [ArangoDB Core Jobs API](https://apis.io/collections/arangodb/open-arangodb-jobs-api/)
+- [ArangoDB Core Monitoring API](https://apis.io/collections/arangodb/open-arangodb-monitoring-api/)
+- [ArangoDB Core Queries API](https://apis.io/collections/arangodb/open-arangodb-queries-api/)
+- [ArangoDB Core Replication API](https://apis.io/collections/arangodb/open-arangodb-replication-api/)
+- [ArangoDB Core Security API](https://apis.io/collections/arangodb/open-arangodb-security-api/)
+- [ArangoDB Core Tasks API](https://apis.io/collections/arangodb/open-arangodb-tasks-api/)
+- [ArangoDB Core Transactions API](https://apis.io/collections/arangodb/open-arangodb-transactions-api/)
+- [ArangoDB Core Users API](https://apis.io/collections/arangodb/open-arangodb-users-api/)
+- [ArangoDB Core Views API](https://apis.io/collections/arangodb/open-arangodb-views-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Arangodb Core Overlay](https://apis.io/overlays/arangodb/arangodb-core-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Arangodb Authentication](https://apis.io/security/arangodb/arangodb-authentication/)
+- [Arangodb Domain Security](https://apis.io/security/arangodb/arangodb-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Arangodb Plans Pricing](https://apis.io/plans/arangodb/arangodb-plans-pricing/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://arango.ai/)
+- [Documentation](https://docs.arango.ai/)
+- [Getting started](https://docs.arango.ai/arangodb/stable/get-started/)
+- [API reference](https://docs.arango.ai/arangodb/stable/develop/http-api/)
+- [Pricing](https://arango.ai/pricing/)
+- [Sign up](https://dashboard.arangodb.cloud/)
+- [Support](https://arango.ai/contact-us/)
+- [Blog](https://arango.ai/blog/)
+- [Privacy policy](https://arango.ai/privacy-policy/)
+- [GitHub](https://github.com/arangodb)
+- [Status](https://status.arangodb.cloud/)
+
+## API Evangelist rating
+
+**Kin Score 52.7** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
 |---|---|
-| `openapi/` | ArangoDB Core API 3.12.10, harvested verbatim from `arangodb/arangodb` |
-| `grpc/` | 28 ArangoGraph / AMP `.proto` files from `arangodb-managed/apis` |
-| `mcp/` | The official ArangoDB MCP server manifest + tool → OpenAPI crosswalk |
-| `skills/` | Five packaged Agent Skills grounded in real `operationId`s |
-| `errors/` | The full 348-entry ArangoDB `errorNum` registry + HTTP problem view |
-| `conventions/` | Cross-cutting request/response semantics (pagination, async, concurrency) |
-| `authentication/` | HTTP Basic + JWT (Core), API-key token exchange (AMP), SCIM Basic |
-| `packages/` | 14 official client libraries and CLIs across 6 languages |
-| `cli/` | ArangoDB client tools, `oasisctl`, `foxx-cli` |
-| `lifecycle/`, `changelog/` | Versioning, deprecation and the recent 3.12.x release window |
-| `conformance/`, `security/`, `data-model/`, `overlays/`, `well-known/`, `llms/`, `agentic-access/` | supporting artifacts |
+| Discoverability | 73.2 |
+| Contract quality | 42.3 |
+| Contract governance | 4.5 |
+| Operational transparency | 42.1 |
+| Developer ergonomics | 73.2 |
+| Access clarity | 65.8 |
 
-Notes recorded honestly rather than filled in: no A2A agent card is published on
-any Arango host, no `security.txt`, no trust center or named certifications, no
-OAuth surface, no AsyncAPI or webhook surface, and no `Idempotency-Key` contract.
+**Agent readiness 28.3** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 19.1** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/arangodb/](https://apis.io/providers/arangodb/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for ArangoDB: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/arangodb/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
